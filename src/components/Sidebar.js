@@ -12,7 +12,7 @@ import {
 import NavLink from "./NavLink";
 
 const LinkItems = [
-  { label: "SERVICES", isDivider: true },
+  { label: "SERVICES", icon: null, href: "", isDivider: true },
   { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/", isDivider: false },
   { label: "CCA ATTENDANCE", icon: FiSettings, href: "/", isDivider: false },
   { label: "KEIPs", icon: FiStar, href: "/" , isDivider: false},
@@ -46,8 +46,8 @@ export default function Sidebar({ onClose, ...rest }) {
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link, i, isDivider) => (
-        <NavLink key={i} link={link} isDivider={isDivider} />
+      {LinkItems.map((link, i) => (
+        <NavLink key={i} link={link}/>
       ))}
     </Box>
   );
