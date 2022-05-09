@@ -1,6 +1,7 @@
 import { SessionProvider } from "next-auth/react";
 import { ChakraProvider } from "@chakra-ui/react";
 import Head from 'next/head';
+import Layout from "@layout/index";
 
 export default function App({
   Component,
@@ -16,7 +17,9 @@ export default function App({
       <Head>
         <title>KEVII VBS</title>
       </Head>
-        <Component {...pageProps} />
+         <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </ChakraProvider>
     </SessionProvider>
   );
