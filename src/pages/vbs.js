@@ -7,7 +7,7 @@ import ProductCard from "@components/ProductCard";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
-export default function VBS({data}) {
+export default function VBS(props) {
   return (
     <Auth>
       <Box>
@@ -29,5 +29,5 @@ export default function VBS({data}) {
 export async function getServerSideProps() {
     const data = await getAllLocation();
     console.log(data);
-    return { props: { data } }
+    return { props: { data: data } }
 }
