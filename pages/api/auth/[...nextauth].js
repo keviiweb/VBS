@@ -37,7 +37,14 @@ const options = {
     callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
 
-            console.log("EMAIL : " + email["email"]);
+            var index = 0;
+            for (const key in email) {
+                if (email.hasOwnProperty(key)) {
+                    console.log(`Index: ${index}, ${key}: ${email[key]}`);
+                    index++;
+                }
+            }
+
             console.log("VERIFICATION TOKEN : " + email.verificationRequest)
 
 
