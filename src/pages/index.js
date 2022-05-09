@@ -2,7 +2,7 @@ import { useState } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
 import ProductModal from "@components/ProductModal ";
 import { motion } from "framer-motion";
-import { LinkBox, SimpleGrid, Text, Box} from "@chakra-ui/react";
+import { LinkBox, SimpleGrid, Text, Box } from "@chakra-ui/react";
 import Auth from "@components/Auth";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(LinkBox);
