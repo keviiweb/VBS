@@ -9,7 +9,7 @@ const MotionBox = motion(Box);
 
 export default function VBS(props) {
   console.log(props);
-  
+
   return (
     <Auth>
       <Box>
@@ -28,12 +28,19 @@ export default function VBS(props) {
   );
 }
 
-export async function getServerSideProps() {
-    const data = await getAllLocation();
+export async function getServerSideProps(context) {
+    const session = await getSession(context);
+    if (!session) {
+        return {
+            notFound: true,
+          }
+    }
+    
+    const data = await getAllLocation(session);
     if (!data) {
         return {
-          notFound: true,
-        }
+            notFound: true,
+          }
     }
 
     return { props: { data } }

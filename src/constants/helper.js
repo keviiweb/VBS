@@ -1,9 +1,7 @@
 import { prisma } from './db';
-import { getSession } from "next-auth/react";
 
-export const getAllLocation = async () => {
-    const session = await getSession();
 
+export const getAllLocation = async (session) => {
     if (session) {
         const locations = await prisma.venue.findMany();  
         if (locations != null) {
