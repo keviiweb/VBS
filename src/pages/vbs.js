@@ -10,7 +10,8 @@ const MotionBox = motion(Box);
 
 export default function VBS(props) {
   if (props.data && props.data.status) {
-    const result = props.data.msg.json();
+    var result = props.data.msg;
+    result = JSON.stringify(result); 
     if (result !== "") {
         console.log(result);
     }
