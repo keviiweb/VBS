@@ -34,6 +34,7 @@ export default function Sidebar({ onClose, ...rest }) {
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Image
+          display={{ base: "flex", md: "none" }}
           boxSize="80px"
           objectFit="contain"
           src="image/keviilogo.png"

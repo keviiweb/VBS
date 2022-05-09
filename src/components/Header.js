@@ -26,14 +26,13 @@ export default function Header({ onOpen, ...rest }) {
         icon={<FiMenu />}
       />
 
-      <Text
-        display={{ base: "flex", md: "none" }}
-        fontSize="2xl"
-        fontFamily="monospace"
-        fontWeight="bold"
-      >
-        Logo
-      </Text>
+      <Image
+          display={{ base: "flex", md: "none" }}
+          boxSize="80px"
+          objectFit="contain"
+          src="image/keviilogo.png"
+          alt="KEVII Logo"
+        />
 
       <UserProfile />
     </Flex>
