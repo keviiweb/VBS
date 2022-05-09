@@ -13,6 +13,7 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import { FiChevronDown, FiBell } from "react-icons/fi";
+import { signOut } from "next-auth/react";
 
 export default function UserProfile() {
   return (
@@ -58,7 +59,7 @@ export default function UserProfile() {
             <MenuItem>Settings</MenuItem>
             <MenuItem>Billing</MenuItem>
             <MenuDivider />
-            <MenuItem>Sign out</MenuItem>
+            <MenuItem onClick={() => {signOut()}}>Sign out</MenuItem>
           </MenuList>
         </Menu>
       </Flex>
