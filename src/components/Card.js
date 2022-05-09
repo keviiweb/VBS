@@ -24,23 +24,23 @@ export default function Card({ product }) {
           overflow="hidden"
           roundedTop="lg"
         >
-        {img && (  
-        <Image
-            src={img}
-            objectFit="cover"
-            alt="picture"
-            layout="fill"
-          />
-        )}
-        
+          {img && (
+            <Image src={img} objectFit="cover" alt="picture" layout="fill" />
+          )}
         </Box>
 
         <Box p="6">
-            {title && ( 
-            <Box fontWeight="semibold" as="h3" lineHeight="tight" isTruncated> 
-            {title}
-            </Box> 
-            )}            
+          {title && (
+            <Box
+              z-index="100"
+              fontWeight="semibold"
+              as="h3"
+              lineHeight="tight"
+              isTruncated
+            >
+              {title}
+            </Box>
+          )}
         </Box>
       </Box>
     </Flex>

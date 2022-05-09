@@ -20,10 +20,16 @@ export default function Home() {
           animate="animate"
         >
           <MotionBox variants={cardVariant} key="1">
-            <Card product={{ img: "", title: "VBS" }} href="/vbs" />
+            <Card
+              product={{ img: "/image/vbs.png", title: "Book a Venue" }}
+              href="/vbs"
+            />
           </MotionBox>
           <MotionBox variants={cardVariant} key="2">
-            <Card product={{ img: "", title: "CCA" }} href="/vcca" />
+            <Card
+              product={{ img: "/image/cca.png", title: "CCA Attendance" }}
+              href="/vcca"
+            />
           </MotionBox>
         </MotionSimpleGrid>
       </Box>
