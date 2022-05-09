@@ -5,7 +5,7 @@ export default function App({
   pageProps: { session, ...pageProps },
 }) {
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={session} refetchInterval={Number(process.env.NEXTAUTH_REFRESH_INTERVAL)}>
       <Component {...pageProps} />
     </SessionProvider>
   )

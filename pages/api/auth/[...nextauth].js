@@ -38,8 +38,6 @@ const options = {
 
             console.log("EMAIL : " + user.email);
             console.log("VERIFICATION TOKEN : " + email.verificationRequest);
-            user.yolo = true;
-            
             var isAllowedToSignIn = true;
 
             if (email.hasOwnProperty("verificationRequest")) {
@@ -53,21 +51,7 @@ const options = {
                 })
 
                 if (doesUserExist !== null) {
-                    //console.log("DOES USER EXIST : " + doesUserExist);
-
                     isAllowedToSignIn = true;
-                    user.studentID = doesUserExist.studentID;
-                    user.name = doesUserExist.name;
-                    user.admin = doesUserExist.admin;
-                    /*
-                    var index = 0;
-                    for (const key in doesUserExist) {
-                        if (doesUserExist.hasOwnProperty(key)) {
-                            console.log(`doesUserExist Index: ${index}, ${key}: ${doesUserExist[key]}`);
-                            index++;
-                        }
-                    }
-                    */
                 }
             }
 
@@ -81,51 +65,12 @@ const options = {
             }
         },
         async session({ session, token, user }) {
-            // Send properties to the client, like an access_token from a provider.
-            var index = 0;
-            for (const key in session) {
-                if (session.hasOwnProperty(key)) {
-                    console.log(`session Index: ${index}, ${key}: ${session[key]}`);
-                    index++;
-                }
-            }
-
-            var index = 0;
-            for (const key in session.user) {
-                if (session.user.hasOwnProperty(key)) {
-                    console.log(`sessionUser Index: ${index}, ${key}: ${session.user[key]}`);
-                    index++;
-                }
-            }
-
-            var index = 0;
-            for (const key in token) {
-                if (token.hasOwnProperty(key)) {
-                    console.log(`token Index: ${index}, ${key}: ${token[key]}`);
-                    index++;
-                }
-            }
-
-            var index = 0;
-            for (const key in user) {
-                if (user.hasOwnProperty(key)) {
-                    console.log(`user Index: ${index}, ${key}: ${user[key]}`);
-                    index++;
-                }
-            }
-
+            session.user.username = 'hello';
+            session.user.studentID = 'hello';
             return session
         },
         async jwt({ token, account }) {
-            if (account) {
-                var index = 0;
-                for (const key in account) {
-                    if (account.hasOwnProperty(key)) {
-                        console.log(`account Index: ${index}, ${key}: ${account[key]}`);
-                        index++;
-                    }
-                }
-            }
+
             return token
         }
       }
