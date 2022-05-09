@@ -9,7 +9,7 @@ import {
   Button,
   CircularProgress,
 } from '@chakra-ui/react';
-import { signIn } from "next-auth/react";
+import { signIn , getSession} from "next-auth/react";
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -20,7 +20,7 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      await signIn("email", { email: email });
+      await signIn("email", { email: email, callbackUrl: `${window.location.origin}/`, });
       setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -37,7 +37,7 @@ export default function Login() {
         boxShadow="lg"
       >
             <Box textAlign="center">
-              <Heading>Login</Heading>
+              <Heading>KEVII VBS</Heading>
             </Box>
             <Box my={4} textAlign="left">
               <form onSubmit={handleSubmit}>
