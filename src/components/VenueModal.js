@@ -14,7 +14,6 @@ import {
 } from "@chakra-ui/react";
 
 export default function VenueModal({ isOpen, onClose, modalData }) {
-  const { title, price, img } = modalData || {};
   const toast = useToast();
 
   const handleModalClose = () => {
@@ -47,9 +46,8 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                 lineHeight="tight"
                 isTruncated
               >
-                {title}
+               {modalData.name}
               </Box>
-              ${price}
             </Box>
           </Box>
         </ModalBody>
