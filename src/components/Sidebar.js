@@ -1,11 +1,9 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-
 import { Box, CloseButton, Flex, Text } from "@chakra-ui/react";
 
 import {
   FiHome,
-  FiTrendingUp,
   FiCompass,
   FiStar,
   FiSettings,
@@ -14,11 +12,11 @@ import {
 import NavLink from "./NavLink";
 
 const LinkItems = [
-  { label: "Home", icon: FiHome, href: "/" },
-  { label: "Trending", icon: FiTrendingUp, href: "/" },
-  { label: "Explore", icon: FiCompass, href: "/" },
-  { label: "Favourites", icon: FiStar, href: "/" },
-  { label: "Settings", icon: FiSettings, href: "/" },
+  { label: "SERVICES", isDivider: true },
+  { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/", isDivider: false },
+  { label: "CCA ATTENDANCE", icon: FiSettings, href: "/", isDivider: false },
+  { label: "KEIPs", icon: FiStar, href: "/" , isDivider: false},
+  { label: "CONTACT US", icon: FiCompass, href: "/", isDivider: false },
 ];
 
 export default function Sidebar({ onClose, ...rest }) {
@@ -48,8 +46,8 @@ export default function Sidebar({ onClose, ...rest }) {
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link, i) => (
-        <NavLink key={i} link={link} />
+      {LinkItems.map((link, i, divider) => (
+        <NavLink key={i} link={link} divider={divider} />
       ))}
     </Box>
   );
