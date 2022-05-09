@@ -1,4 +1,4 @@
-import { prisma } from '@constants/db';
+import { prisma } from './db';
 import { getSession } from "next-auth/react";
 
 export const getAllLocation = async () => {
