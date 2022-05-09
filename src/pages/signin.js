@@ -1,58 +1,75 @@
-import * as React from "react";
+import React, { useState } from 'react';
 import {
+  Flex,
+  Box,
+  Heading,
   FormControl,
   FormLabel,
-  FormHelperText,
   Input,
   Button,
-  Center, 
-  Flex
-} from "@chakra-ui/react";
-import * as yup from "yup";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+  CircularProgress,
+} from '@chakra-ui/react';
+import { signIn } from "next-auth/react";
 
-const schema = yup.object().shape({
-  email: yup.string().email().required()
-});
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-export default function LoginForm() {
-  const { register, handleSubmit, errors } = useForm({
-    mode: "onBlur",
-    resolver: yupResolver(schema)
-  });
+  const handleSubmit = async event => {
+    event.preventDefault();
+    setIsLoading(true);
 
-  const onSubmit = (values) => console.log(values.email);
+    try {
+      await signIn("email", { email: email });
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-      <Flex justify="center" h="100vh" w="100vw" align="center">
-      <Center w="100%">
-      <form style={{ width: 350 }}>
-      <FormControl
-        p="4"
-        isRequired
+    <Flex width="full" align="center" justifyContent="center">
+      <Box
+        p={8}
+        maxWidth="500px"
+        borderWidth={1}
+        borderRadius={8}
+        boxShadow="lg"
       >
-        <FormLabel>Email</FormLabel>
-        <Input type="email" name="email" placeholder="Email" ref={register} />
-        <FormHelperText>
-          Please use your school email ending with @u.nus.edu
-        </FormHelperText>
-      </FormControl>  
-      <Button
-        onClick={handleSubmit(onSubmit)}
-        p="4"
-        mx="4"
-        mt="6"
-        w="90%"
-        colorScheme="blue"
-        variant="solid"
-      >
-        Login
-      </Button>
-    </form>
-      </Center>
+            <Box textAlign="center">
+              <Heading>Login</Heading>
+            </Box>
+            <Box my={4} textAlign="left">
+              <form onSubmit={handleSubmit}>
+                <FormControl isRequired>
+                  <FormLabel>Email</FormLabel>
+                  <Input
+                    type="email"
+                    placeholder="test@u.nus.edu"
+                    size="lg"
+                    onChange={event => setEmail(event.currentTarget.value)}
+                  />
+                </FormControl>
+                <Button
+                  variantColor="teal"
+                  variant="outline"
+                  type="submit"
+                  width="full"
+                  mt={4}
+                >
+                  {isLoading ? (
+                    <CircularProgress
+                      isIndeterminate
+                      size="24px"
+                      color="teal"
+                    />
+                  ) : (
+                    'Sign In'
+                  )}
+                </Button>
+              </form>
+            </Box>
+      </Box>
     </Flex>
-
-   
   );
 }
