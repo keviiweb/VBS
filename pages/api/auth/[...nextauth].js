@@ -37,7 +37,7 @@ const options = {
     callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
 
-            console.log("EMAIL : " + email.email);
+            console.log("EMAIL : " + email["email"]);
             console.log("VERIFICATION TOKEN : " + email.verificationRequest)
 
 
