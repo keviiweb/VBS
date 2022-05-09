@@ -23,11 +23,6 @@ export default function Home() {
         initial="initial"
         animate="animate"
       >
-        {data.map((product, i) => (
-          <MotionBox variants={cardVariant} key={i}>
-            <ProductCard product={product} setModalData={setModalData} />
-          </MotionBox>
-        ))}
       </MotionSimpleGrid>
       <ProductModal
         isOpen={modalData ? true : false}
