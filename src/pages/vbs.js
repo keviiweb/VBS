@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
 import { motion } from "framer-motion";
 import { SimpleGrid, Box } from "@chakra-ui/react";
@@ -5,10 +6,13 @@ import Auth from "@components/Auth";
 import { getAllLocation } from "@constants/helper";
 import { getSession } from "next-auth/react";
 import VenueCard from "@components/VenueCard";
+import VenueModal from "@components/VenueModal";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
 export default function VBS(props) {
+  const [modalData, setModalData] = useState(null);
+
   var result = null;
   var cards = [];
 
@@ -41,6 +45,11 @@ export default function VBS(props) {
         >
           {cards}
         </MotionSimpleGrid>
+        <VenueModal
+          isOpen={modalData ? true : false}
+          onClose={() => setModalData(null)}
+          modalData={modalData}
+      />
       </Box>
     </Auth>
   );

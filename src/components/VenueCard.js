@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Box, Flex } from "@chakra-ui/react";
 
-export default function VenueCard({ item }) {
+export default function VenueCard({ item, setModalData }) {
   return (
     <Flex
       w="full"
@@ -13,6 +13,7 @@ export default function VenueCard({ item }) {
       rounded="xl"
       shadow="lg"
       borderWidth="1px"
+      onClick={() => setModalData(item)}
     >
       <Box w="full" h="full">
         {item.image && (
