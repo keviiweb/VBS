@@ -23,7 +23,6 @@ export default function VBS({data}) {
           animate="animate"
         >
           <MotionBox variants={cardVariant} key={i}>
-            <ProductCard product={product} setModalData={setModalData} />
           </MotionBox>
         </MotionSimpleGrid>
       </Box>
