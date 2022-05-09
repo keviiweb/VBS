@@ -59,7 +59,7 @@ export default function UserProfile() {
             <MenuItem>Settings</MenuItem>
             <MenuItem>Billing</MenuItem>
             <MenuDivider />
-            <MenuItem onClick={() => {signOut()}}>Sign out</MenuItem>
+            <MenuItem onClick={() => signOut()}>Sign out</MenuItem>
           </MenuList>
         </Menu>
       </Flex>
