@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 
-export const getAllLocation = () => {
+export const getAllLocation = async () => {
     const prisma = new PrismaClient();
-    const { data: session} = useSession();
+    const { data: session} = await getSession();
 
     if (session) {
         const locations = await prisma.location.findMany();
