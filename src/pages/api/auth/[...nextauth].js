@@ -19,20 +19,20 @@ const options = {
         },
       },
       from: process.env.EMAIL_FROM,
-      sendVerificationRequest({
+      async sendVerificationRequest({
         identifier: email,
         url,
         provider: { server, from },
       }) {
-        const { host } = new URL(url)
-        const transport = nodemailer.createTransport(server)
+        const { host } = new URL(url);
+        const transport = nodemailer.createTransport(server);
         await transport.sendMail({
           to: email,
           from,
           subject: `KEVII VBS: Sign in`,
           text: text({ url, host }),
           html: html({ url, host, email }),
-        })
+        });
       },
     }),
   ],
@@ -92,16 +92,15 @@ const options = {
   },
 };
 
-// Email HTML body
 function html({ url, host, email }) {
-  const escapedEmail = `${email.replace(/\./g, "&#8203;.")}`
+  const escapedEmail = `${email.replace(/\./g, "&#8203;.")}`;
 
-  const backgroundColor = "#f9f9f9"
-  const textColor = "#444444"
-  const mainBackgroundColor = "#ffffff"
-  const buttonBackgroundColor = "#346df1"
-  const buttonBorderColor = "#346df1"
-  const buttonTextColor = "#ffffff"
+  const backgroundColor = "#f9f9f9";
+  const textColor = "#444444";
+  const mainBackgroundColor = "#ffffff";
+  const buttonBackgroundColor = "#346df1";
+  const buttonBorderColor = "#346df1";
+  const buttonTextColor = "#ffffff";
 
   return `
 <body style="background: ${backgroundColor};">
@@ -137,10 +136,9 @@ function html({ url, host, email }) {
     </tr>
   </table>
 </body>
-`
+`;
 }
 
-// Email Text body (fallback for email clients that don't render HTML, e.g. feature phones)
 function text({ url, host }) {
-  return `Sign in to ${host}\n${url}\n\n`
+  return `Sign in to ${host}\n${url}\n\n`;
 }

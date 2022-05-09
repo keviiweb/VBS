@@ -46,10 +46,10 @@ export default function VBS(props) {
           {cards}
         </MotionSimpleGrid>
         <VenueModal
-        isOpen={modalData ? true : false}
-        onClose={() => setModalData(null)}
-        modalData={modalData}
-         />
+          isOpen={modalData ? true : false}
+          onClose={() => setModalData(null)}
+          modalData={modalData}
+        />
       </Box>
     </Auth>
   );

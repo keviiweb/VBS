@@ -27,7 +27,7 @@ export default function Loading() {
           <Stack align={"center"}>
             <Heading fontSize={"4xl"}>KEVII VBS</Heading>
             <Text fontSize={"sm"} color={"gray.600"}>
-              Loading webpage...
+              Loading webpage... Please give it a moment
             </Text>
             <Spinner />
           </Stack>

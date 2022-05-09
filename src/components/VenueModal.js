@@ -1,4 +1,3 @@
-import Image from "next/image";
 import {
   Box,
   Modal,
@@ -10,13 +9,11 @@ import {
   ModalCloseButton,
   Button,
   useToast,
-  Flex,
 } from "@chakra-ui/react";
+import Calendar from "@components/Calendar";
 
 export default function VenueModal({ isOpen, onClose, modalData }) {
-  const { title, price, img } = modalData || {};
   const toast = useToast();
-
   const handleModalClose = () => {
     toast({
       title: "Purchase successsful.",
@@ -31,29 +28,21 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <Modal
+      closeOnOverlayClick={false}
+      isOpen={isOpen}
+      onClose={onClose}
+      size="xl"
+      isCentered
+      motionPreset="slideInBottom"
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
         <ModalHeader>Product Details</ModalHeader>
         <ModalBody>
           <Box w="full" h="full">
-            <Flex w="full" h="300px" position="relative">
-              <Image src={img} alt="a house" objectFit="cover" layout="fill" />
-            </Flex>
-
-            <Box pt="3">
-              <Box
-                mt="3"
-                fontWeight="semibold"
-                as="h4"
-                lineHeight="tight"
-                isTruncated
-              >
-                {title}
-              </Box>
-              ${price}
-            </Box>
+            <Calendar defaultView="dayGridMonth" />
           </Box>
         </ModalBody>
         <ModalFooter>
