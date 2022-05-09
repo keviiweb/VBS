@@ -90,6 +90,14 @@ const options = {
             }
 
             var index = 0;
+            for (const key in session.user) {
+                if (session.user.hasOwnProperty(key)) {
+                    console.log(`sessionUser Index: ${index}, ${key}: ${session.user[key]}`);
+                    index++;
+                }
+            }
+
+            var index = 0;
             for (const key in token) {
                 if (token.hasOwnProperty(key)) {
                     console.log(`token Index: ${index}, ${key}: ${token[key]}`);
