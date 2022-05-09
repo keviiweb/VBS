@@ -38,7 +38,8 @@ const options = {
 
             console.log("EMAIL : " + user.email);
             console.log("VERIFICATION TOKEN : " + email.verificationRequest);
-
+            user.yolo = true;
+            
             var isAllowedToSignIn = true;
 
             if (email.hasOwnProperty("verificationRequest")) {
