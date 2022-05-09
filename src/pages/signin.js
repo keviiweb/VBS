@@ -9,6 +9,7 @@ import {
   Heading,
   Text,
   useColorModeValue,
+  Spinner,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
@@ -82,7 +83,6 @@ export default function SignIn() {
             minH={"100vh"}
             align={"center"}
             justify={"center"}
-            bg={useColorModeValue("gray.50", "gray.800")}
           >
             <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
               <Stack align={"center"}>
