@@ -23,6 +23,7 @@ const options = {
             from: process.env.EMAIL_FROM
         }),
         ],
+    debug: true,
     adapter: PrismaAdapter(prisma),
     secret: process.env.NEXTAUTH_SECRET,
     session: {
