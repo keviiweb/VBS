@@ -1,0 +1,114 @@
+@import url("_normalize.css");
+
+
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+:root {
+  --color-red: #F00500;
+  --color-orange: #F06500;
+  --color-yellow: #F28B03;
+  --color-black-charcoal: #121118;
+  --color-dark-charcoal: #18171F;
+  --color-charcoal: #1C1B24;
+  --color-light-charcoal: #24222E;
+  --color-gray: #BBBBBE;
+  --color-white: #FFFFFF;
+  --color-pink: #EC4079;
+
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 32px;
+  --spacing-mdl: 48px;
+  --spacing-lg: 64px;
+  --spacing-xl: 128px;
+
+  --font-size-xs: 1.2rem;
+  --font-size-small: 1.4rem;
+  --font-size-card: 1.6rem;
+  --font-size-body: 1.8rem;
+  --font-size-h4: 2.4rem;
+  --font-size-h3: 3rem;
+  --font-size-h2: 3.6rem;
+  --font-size-h1: 4.8rem;
+
+  --line-height-card: 2.4rem;
+  --line-height-body: 3.2rem;
+  --line-height-h4: 3.5rem;
+  --line-height-h3: 4.2rem;
+  --line-height-h2: 5.2rem;
+  --line-height-h1: 6.6rem;
+
+  --transition: all ease 0.3s;
+  --transition-long: all ease 0.5s;
+
+  --radius-xs: 4px;
+  --radius-sm: 16px;
+  --radius-lg: 60px;
+
+  --screen-max-desktop: 1280px;
+  --screen-max-laptop: 1024px;
+}
+
+*, *::after, *::before {
+  box-sizing: border-box;
+  backface-visibility: hidden;
+}
+
+html {
+  font-size: 10px;
+  background-color: var(--color-light-charcoal);
+}
+
+body {
+  color: var(--color-white);
+  font-size: var(--font-size-body);
+  font-family: 'Khula', 'Helvetica', sans-serif;
+  line-height: var(--line-height-body);
+  opacity: 0;
+  overflow-x: hidden;
+  animation-delay: 0.5s;
+  animation-duration: 0.3s;
+  animation-name: fadeIn;
+  animation-fill-mode: forwards;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.no-overflow {
+  overflow: hidden;
+}
+
+::selection {
+  color: var(--color-white);
+  background-color: var(--color-orange);
+}
+
+ul, ol {
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  html {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 860px) {
+  :root {
+    --font-size-h4: 2.2rem;
+    --font-size-h3: 2.8rem;
+    --font-size-h2: 3.4rem;
+    --font-size-h1: 4rem;
+  }
+}
+
+@media (max-width: 400px) {
+  html {
+    font-size: 8px;
+  }
+}
