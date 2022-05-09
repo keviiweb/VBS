@@ -32,7 +32,7 @@ export default function VBS(props) {
       <Box>
         <MotionSimpleGrid
           mt="4"
-          minChildWidth="250px"
+          minChildWidth="120px"
           spacing="2em"
           minH="full"
           variants={parentVariant}

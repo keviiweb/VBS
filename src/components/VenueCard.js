@@ -18,7 +18,7 @@ export default function VenueCard({ item }) {
         {item.image && (
           <Box
             w="100%"
-            height="200px"
+            height="170px"
             position="relative"
             overflow="hidden"
             roundedTop="lg"
@@ -35,7 +35,7 @@ export default function VenueCard({ item }) {
         {!item.image && (
           <Box
             w="100%"
-            height="200px"
+            height="170px"
             position="relative"
             overflow="hidden"
             roundedTop="lg"
