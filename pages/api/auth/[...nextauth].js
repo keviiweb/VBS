@@ -55,7 +55,9 @@ const options = {
                     //console.log("DOES USER EXIST : " + doesUserExist);
 
                     isAllowedToSignIn = true;
-
+                    user.studentID = doesUserExist.studentID;
+                    user.name = doesUserExist.name;
+                    user.admin = doesUserExist.admin;
                     /*
                     var index = 0;
                     for (const key in doesUserExist) {
