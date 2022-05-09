@@ -8,6 +8,8 @@ const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
 export default function VBS(props) {
+  console.log(props);
+  
   return (
     <Auth>
       <Box>
