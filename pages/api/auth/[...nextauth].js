@@ -79,19 +79,16 @@ const options = {
                 return;
             }
 
+            /*
             var index = 0;
             for (const key in session.user) {
                 if (session.user.hasOwnProperty(key)) {
                     console.log(`sessionUser Index: ${index}, ${key}: ${session.user[key]}`);
                     index++;
                 }
-            }
+            }*/
 
             return session
-        },
-        async jwt({ token, account }) {
-
-            return token
         }
       }
 };

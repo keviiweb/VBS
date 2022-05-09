@@ -6,6 +6,8 @@ export default function Component() {
     return (
       <>
         Signed in as {session.user.email} <br />
+        Hello {session.user.studentID} <br />
+        Hello {session.user.username} <br />
         <button onClick={() => signOut()}>Sign out</button>
       </>
     )
