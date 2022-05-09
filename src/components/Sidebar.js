@@ -12,11 +12,10 @@ import {
 import NavLink from "./NavLink";
 
 const LinkItems = [
-  { label: "SERVICES", icon: null, href: "", isDivider: true },
-  { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/", isDivider: false },
-  { label: "CCA ATTENDANCE", icon: FiSettings, href: "/", isDivider: false },
-  { label: "KEIPs", icon: FiStar, href: "/" , isDivider: false},
-  { label: "CONTACT US", icon: FiCompass, href: "/", isDivider: false },
+  { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/" },
+  { label: "CCA ATTENDANCE", icon: FiSettings, href: "/" },
+  { label: "KEIPs", icon: FiStar, href: "/" },
+  { label: "CONTACT US", icon: FiCompass, href: "/"},
 ];
 
 export default function Sidebar({ onClose, ...rest }) {

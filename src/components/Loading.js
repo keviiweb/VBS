@@ -21,8 +21,8 @@ import {
             <Text fontSize={'sm'} color={'gray.600'}>
               Loading webpage...
             </Text>
+            <Spinner />
           </Stack>
-          <Spinner />
         </Stack>
       </Flex>
     );
