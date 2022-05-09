@@ -12,7 +12,7 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
-import { FiChevronDown, FiBell } from "react-icons/fi";
+import { FiChevronDown} from "react-icons/fi";
 import { signOut, useSession } from "next-auth/react";
 
 export default function UserProfile() {
@@ -25,12 +25,6 @@ export default function UserProfile() {
 
   return (
     <HStack spacing={{ base: "0", md: "6" }}>
-      <IconButton
-        size="lg"
-        variant="ghost"
-        aria-label="open menu"
-        icon={<FiBell />}
-      />
       <Flex alignItems="center">
         <Menu>
           <MenuButton
