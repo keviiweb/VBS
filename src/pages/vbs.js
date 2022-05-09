@@ -23,7 +23,7 @@ export default function VBS(props) {
         if (item.visible) {
           cards.push(
             <MotionBox variants={cardVariant} key={item.id}>
-              <VenueCard item={item} />
+              <VenueCard item={item} setModalData={setModalData} />
             </MotionBox>
           );
         }
