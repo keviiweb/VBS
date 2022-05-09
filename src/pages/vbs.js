@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { SimpleGrid, Box } from "@chakra-ui/react";
 import Auth from "@components/Auth";
 import { getAllLocation } from "@constants/helper";
+import { getSession } from "next-auth/react"
 import ProductCard from "@components/ProductCard";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -35,7 +36,7 @@ export async function getServerSideProps(context) {
             notFound: true,
           }
     }
-    
+
     const data = await getAllLocation(session);
     if (!data) {
         return {
