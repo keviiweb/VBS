@@ -14,10 +14,15 @@ import {
 } from "@chakra-ui/react";
 
 export default function VenueModal({ isOpen, onClose, modalData }) {
+  const { title, price, img } = modalData || {};
   const toast = useToast();
 
   const handleModalClose = () => {
     toast({
+      title: "Purchase successsful.",
+      description: "Fashion ++",
+      status: "success",
+      duration: 3000,
       isClosable: true,
     });
     setTimeout(() => {
@@ -33,8 +38,22 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         <ModalHeader>Product Details</ModalHeader>
         <ModalBody>
           <Box w="full" h="full">
- 
+            <Flex w="full" h="300px" position="relative">
+              <Image src={img} alt="a house" objectFit="cover" layout="fill" />
+            </Flex>
 
+            <Box pt="3">
+              <Box
+                mt="3"
+                fontWeight="semibold"
+                as="h4"
+                lineHeight="tight"
+                isTruncated
+              >
+                {title}
+              </Box>
+              ${price}
+            </Box>
           </Box>
         </ModalBody>
         <ModalFooter>
@@ -46,7 +65,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
             onClick={handleModalClose}
             _hover={{ bg: "cyan.800" }}
           >
-            Book
+            Purchase
           </Button>
         </ModalFooter>
       </ModalContent>
