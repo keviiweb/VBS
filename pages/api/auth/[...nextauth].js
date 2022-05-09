@@ -36,11 +36,11 @@ const options = {
     callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
 
-            console.log("Email: " + email);
-            console.log("Credentials: " + credentials);
-            console.log("Profile: " + profile);
-            console.log("Account: " + account);
-            console.log("User: " + user);
+            for(var propertyName in email) {
+                console.log(propertyName + ": " + email[propertyName]);
+                // propertyName is what you want
+                // you can get the value like this: myObject[propertyName]
+             }
 
 
             /*
