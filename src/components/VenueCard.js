@@ -15,7 +15,7 @@ export default function VenueCard({ product, setModalData }) {
       rounded="xl"
       shadow="lg"
       borderWidth="1px"
-      onClick={() => alert(product)}
+      onClick={() => alert("HELLO")}
     >
       <Box w="full" h="full">
         <Box
