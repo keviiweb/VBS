@@ -67,6 +67,40 @@ const options = {
         async session({ session, token, user }) {
             session.user.username = 'hello';
             session.user.studentID = 'hello';
+
+            // Send properties to the client, like an access_token from a provider.
+            var index = 0;
+            for (const key in session) {
+                if (session.hasOwnProperty(key)) {
+                    console.log(`session Index: ${index}, ${key}: ${session[key]}`);
+                    index++;
+                }
+            }
+
+            var index = 0;
+            for (const key in session.user) {
+                if (session.user.hasOwnProperty(key)) {
+                    console.log(`sessionUser Index: ${index}, ${key}: ${session.user[key]}`);
+                    index++;
+                }
+            }
+
+            var index = 0;
+            for (const key in token) {
+                if (token.hasOwnProperty(key)) {
+                    console.log(`token Index: ${index}, ${key}: ${token[key]}`);
+                    index++;
+                }
+            }
+
+            var index = 0;
+            for (const key in user) {
+                if (user.hasOwnProperty(key)) {
+                    console.log(`user Index: ${index}, ${key}: ${user[key]}`);
+                    index++;
+                }
+            }
+
             return session
         },
         async jwt({ token, account }) {
