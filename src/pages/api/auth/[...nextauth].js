@@ -73,6 +73,7 @@ const options = {
       if (userFromDB != null) {
         session.user.username = userFromDB.name;
         session.user.studentID = userFromDB.studentID;
+        session.user.admin = userFromDB.admin;
       } else {
         return;
       }

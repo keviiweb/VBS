@@ -13,16 +13,12 @@ const Auth = ({ children }) => {
     if (!loading && !hasUser) {
       router.push("/signin");
     }
-  }, [loading, hasUser]);
-  
+  }, [loading, hasUser, router]);
+
   if (loading || !hasUser) {
-    return <Loading />
+    return <Loading />;
   }
-  return (
-    <Layout>
-      {children}
-    </Layout>
-  );
+  return <Layout>{children}</Layout>;
 };
 
 export default Auth;

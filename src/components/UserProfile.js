@@ -12,11 +12,11 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
-import { FiChevronDown} from "react-icons/fi";
+import { FiChevronDown } from "react-icons/fi";
 import { signOut, useSession } from "next-auth/react";
 
 export default function UserProfile() {
-  const { data: session} = useSession();
+  const { data: session } = useSession();
   if (session.user.admin) {
     var admin = "Admin";
   } else {
@@ -45,8 +45,8 @@ export default function UserProfile() {
                 spacing="1px"
                 ml="2"
               >
-                <Text fontSize="lg">{session.user.username}</Text>
-                <Text fontSize="md" color="gray.600">
+                <Text fontSize="md">{session.user.username}</Text>
+                <Text fontSize="sm" color="gray.600">
                   {admin}
                 </Text>
               </VStack>
@@ -60,7 +60,9 @@ export default function UserProfile() {
             <MenuItem>Settings</MenuItem>
             <MenuItem>Billing</MenuItem>
             <MenuDivider />
-            <MenuItem onClick={() => signOut({ callbackUrl: '/signin' })}>Sign out</MenuItem>
+            <MenuItem onClick={() => signOut({ callbackUrl: "/signin" })}>
+              Sign out
+            </MenuItem>
           </MenuList>
         </Menu>
       </Flex>
