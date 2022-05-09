@@ -1,19 +1,17 @@
-import { useState } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
-import ProductModal from "@components/ProductModal ";
 import { motion } from "framer-motion";
-import { LinkBox, SimpleGrid, Text, Box } from "@chakra-ui/react";
+import { LinkBox, SimpleGrid, Box } from "@chakra-ui/react";
 import Auth from "@components/Auth";
+import Card from "@components/Card";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(LinkBox);
 
 export default function Home() {
-  const [modalData, setModalData] = useState(null);
   return (
     <Auth>
       <Box>
         <MotionSimpleGrid
-          mt="6"
+          mt="4"
           minChildWidth="250px"
           spacing="2em"
           minH="full"
@@ -21,18 +19,14 @@ export default function Home() {
           initial="initial"
           animate="animate"
         >
-          <MotionBox variants={cardVariant} key="1" href="/vbs">
-            <Text>Venue Booking System</Text>
+          <MotionBox variants={cardVariant} key="1">
+            <Card product={{ img: "", title: "VBS" }} href="/vbs" />
           </MotionBox>
-          <MotionBox variants={cardVariant} key="1" href="/cca">
-            <Text>CCA Attendance Tracking</Text>
+          <MotionBox variants={cardVariant} key="2">
+            <Card product={{ img: "", title: "CCA" }} href="/vcca" />
           </MotionBox>
         </MotionSimpleGrid>
-        <ProductModal
-          isOpen={modalData ? true : false}
-          onClose={() => setModalData(null)}
-          modalData={modalData}
-        />
+        <ProductModal isOpen={false} />
       </Box>
     </Auth>
   );

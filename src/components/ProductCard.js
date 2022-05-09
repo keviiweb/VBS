@@ -6,8 +6,6 @@ const ChakraStar = chakra(AiTwotoneStar);
 
 export default function ProductCard({ product, setModalData }) {
   const { img, title, price } = product;
-  const score = Math.floor(Math.random(5) * 5);
-  const reviewCount = Math.floor(Math.random(50) * 50);
 
   return (
     <Flex

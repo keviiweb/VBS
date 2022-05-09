@@ -20,9 +20,6 @@ export default function ProductModal({ isOpen, onClose, modalData }) {
   const handleModalClose = () => {
     toast({
       title: "Purchase successsful.",
-      description: "Fashion ++",
-      status: "success",
-      duration: 3000,
       isClosable: true,
     });
     setTimeout(() => {

@@ -30,7 +30,7 @@ export default function NavLink({ link, ...rest }) {
               as={icon}
             />
           )}
-          <Text fontSize="0.6rem">{label}</Text>
+          <Text fontSize="0.8rem">{label}</Text>
         </Flex>
       </a>
     </NextLink>
