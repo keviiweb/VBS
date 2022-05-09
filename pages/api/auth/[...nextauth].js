@@ -37,9 +37,9 @@ const options = {
         async signIn({ user, account, profile, email, credentials }) {
 
             console.log("EMAIL : " + user.email);
-            console.log("VERIFICATION TOKEN : " + email.verificationRequest)
+            console.log("VERIFICATION TOKEN : " + email.verificationRequest);
 
-            var isAllowedToSignIn = true
+            var isAllowedToSignIn = true;
 
             if (email.hasOwnProperty("verificationRequest")) {
                 isAllowedToSignIn = false;
@@ -52,10 +52,11 @@ const options = {
                 })
 
                 if (doesUserExist !== null) {
-                    console.log("DOES USER EXIST : " + doesUserExist);
+                    //console.log("DOES USER EXIST : " + doesUserExist);
 
                     isAllowedToSignIn = true;
 
+                    /*
                     var index = 0;
                     for (const key in doesUserExist) {
                         if (doesUserExist.hasOwnProperty(key)) {
@@ -63,18 +64,58 @@ const options = {
                             index++;
                         }
                     }
-
+                    */
                 }
             }
 
             if (isAllowedToSignIn) {
-                return true
+                return true;
             } else {
                 // Return false to display a default error message
-                return false
+                return false;
                 // Or you can return a URL to redirect to:
                 // return '/unauthorized'
             }
+        },
+        async session({ session, token, user }) {
+            // Send properties to the client, like an access_token from a provider.
+            var index = 0;
+            for (const key in session) {
+                if (session.hasOwnProperty(key)) {
+                    console.log(`session Index: ${index}, ${key}: ${session[key]}`);
+                    index++;
+                }
+            }
+
+            var index = 0;
+            for (const key in token) {
+                if (token.hasOwnProperty(key)) {
+                    console.log(`token Index: ${index}, ${key}: ${token[key]}`);
+                    index++;
+                }
+            }
+
+            var index = 0;
+            for (const key in user) {
+                if (user.hasOwnProperty(key)) {
+                    console.log(`user Index: ${index}, ${key}: ${user[key]}`);
+                    index++;
+                }
+            }
+
+            return session
+        },
+        async jwt({ token, account }) {
+            if (account) {
+                var index = 0;
+                for (const key in account) {
+                    if (account.hasOwnProperty(key)) {
+                        console.log(`account Index: ${index}, ${key}: ${account[key]}`);
+                        index++;
+                    }
+                }
+            }
+            return token
         }
       }
 };
