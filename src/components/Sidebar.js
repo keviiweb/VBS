@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { Box, CloseButton, Flex, Text } from "@chakra-ui/react";
 import { FiHome, FiCompass, FiStar, FiSettings } from "react-icons/fi";
 import NavLink from "./NavLink";
+import Link from "next/link";
 
 const LinkItems = [
   { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/vbs" },
@@ -33,9 +34,11 @@ export default function Sidebar({ onClose, ...rest }) {
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          KEVII
-        </Text>
+        <Link href="/">
+          <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+            KEVII
+          </Text>
+        </Link>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link, i) => (

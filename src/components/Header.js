@@ -1,6 +1,7 @@
 import { IconButton, Flex, Text } from "@chakra-ui/react";
 import { FiMenu } from "react-icons/fi";
 import UserProfile from "./UserProfile";
+import Link from "next/link";
 
 export default function Header({ onOpen, ...rest }) {
   return (
@@ -26,6 +27,7 @@ export default function Header({ onOpen, ...rest }) {
         icon={<FiMenu />}
       />
 
+      <Link href="/">
       <Text
         display={{ base: "flex", md: "none" }}
         fontSize="2xl"
@@ -34,7 +36,7 @@ export default function Header({ onOpen, ...rest }) {
       >
         KEVII
       </Text>
-
+      </Link>
       <UserProfile />
     </Flex>
   );
