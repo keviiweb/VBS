@@ -1,9 +1,11 @@
 import { Box, Flex, Image } from "@chakra-ui/react";
+import Link from "next/link";
 
 export default function Card({ product }) {
-  const { img, title } = product;
+  const { img, title, link } = product;
 
   return (
+    <Link href={link}>
     <Flex
       w="full"
       h="full"
@@ -26,7 +28,7 @@ export default function Card({ product }) {
           <Image
             src={img}
             objectFit="cover"
-            alt="picture of a house"
+            alt="image"
             layout="fill"
           />
         </Box>
@@ -38,5 +40,6 @@ export default function Card({ product }) {
         </Box>
       </Box>
     </Flex>
+    </Link>
   );
 }
