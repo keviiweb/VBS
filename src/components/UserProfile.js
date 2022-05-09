@@ -13,9 +13,16 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import { FiChevronDown, FiBell } from "react-icons/fi";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 export default function UserProfile() {
+  const { data: session} = useSession();
+  if (session.user.admin) {
+    var admin = "Admin";
+  } else {
+    var admin = "User";
+  }
+
   return (
     <HStack spacing={{ base: "0", md: "6" }}>
       <IconButton
@@ -35,7 +42,7 @@ export default function UserProfile() {
               <Avatar
                 size="md"
                 src={
-                  "https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+                  "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
                 }
               />
               <VStack
@@ -44,9 +51,9 @@ export default function UserProfile() {
                 spacing="1px"
                 ml="2"
               >
-                <Text fontSize="lg">Ademola Jones</Text>
+                <Text fontSize="lg">{session.user.username}</Text>
                 <Text fontSize="md" color="gray.600">
-                  Admin
+                  {admin}
                 </Text>
               </VStack>
               <Box display={{ base: "none", md: "flex" }}>
@@ -59,7 +66,7 @@ export default function UserProfile() {
             <MenuItem>Settings</MenuItem>
             <MenuItem>Billing</MenuItem>
             <MenuDivider />
-            <MenuItem onClick={() => signOut()}>Sign out</MenuItem>
+            <MenuItem onClick={() => signOut({ callbackUrl: '/signin' })}>Sign out</MenuItem>
           </MenuList>
         </Menu>
       </Flex>
