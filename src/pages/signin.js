@@ -14,16 +14,19 @@ import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 
 export default function SignIn() {
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      setLoading(true);
       await signIn("email", {
         email: email,
         callbackUrl: `${window.location.origin}/`,
       });
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -73,6 +76,24 @@ export default function SignIn() {
             </Stack>
           </form>
         </Box>
+
+        {loading && (
+          <Flex
+            minH={"100vh"}
+            align={"center"}
+            justify={"center"}
+            bg={useColorModeValue("gray.50", "gray.800")}
+          >
+            <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
+              <Stack align={"center"}>
+                <Text fontSize={"sm"} color={"gray.600"}>
+                  Logging in...
+                </Text>
+                <Spinner />
+              </Stack>
+            </Stack>
+          </Flex>
+        )}
       </Stack>
     </Flex>
   );
