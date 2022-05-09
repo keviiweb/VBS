@@ -38,8 +38,8 @@ const options = {
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("EMAIL : " + user.email);
-      console.log("VERIFICATION TOKEN : " + email.verificationRequest);
+      //console.log("EMAIL : " + user.email);
+      //console.log("VERIFICATION TOKEN : " + email.verificationRequest);
       var isAllowedToSignIn = true;
 
       if (email.hasOwnProperty("verificationRequest")) {
