@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Image } from "@chakra-ui/react";
+import { Box, Flex, Image } from "@chakra-ui/react";
 
 export default function Card({ product }) {
   const { img, title } = product;
@@ -23,15 +23,18 @@ export default function Card({ product }) {
           overflow="hidden"
           roundedTop="lg"
         >
-          {img && (
-            <Image objectFit="contain" src={img} alt="Image" />
-          )}
+          <Image
+            src={img}
+            objectFit="cover"
+            alt="picture of a house"
+            layout="fill"
+          />
+        </Box>
 
-          {title && (
-            <Box fontWeight="semibold" as="h4" lineHeight="tight" isTruncated>
-              <Text z-index="100">{title}</Text>
-            </Box>
-          )}
+        <Box p="6">
+          <Box fontWeight="semibold" as="h4" lineHeight="tight" isTruncated>
+            {title}
+          </Box>
         </Box>
       </Box>
     </Flex>
