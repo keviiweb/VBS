@@ -2,7 +2,6 @@ import { useState } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
 import ProductModal from "@components/ProductModal ";
 import { motion } from "framer-motion";
-import data from "../data";
 import ProductCard from "@components/ProductCard";
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import Auth from "@components/Auth";
