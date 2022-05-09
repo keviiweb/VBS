@@ -52,7 +52,7 @@ import {
                   shadow="base"
                 >
                   <VStack spacing={5}>
-                    <Text>Please contact ke7webdev@gmail.com for any enquiries.</Text>
+                    <Text>Please contact ke7webdev@gmail.com for any queries.</Text>
                   </VStack>
                 </Box>
               </VStack>
