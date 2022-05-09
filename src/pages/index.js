@@ -11,7 +11,7 @@ export default function Home() {
     <Auth>
       <Box>
         <MotionSimpleGrid
-          mt="4"
+          mt="3"
           minChildWidth="250px"
           spacing="2em"
           minH="full"

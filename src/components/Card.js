@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex. Text } from "@chakra-ui/react";
 
 export default function Card({ product }) {
   const { img, title } = product;
@@ -27,21 +27,13 @@ export default function Card({ product }) {
           {img && (
             <Image src={img} objectFit="cover" alt="picture" layout="fill" />
           )}
-        </Box>
-
-        <Box p="6">
+       
           {title && (
-            <Box
-              z-index="100"
-              fontWeight="semibold"
-              as="h3"
-              lineHeight="tight"
-              isTruncated
-            >
-              {title}
-            </Box>
+            <Text z-index="100">
+             {title}
+            </Text>
           )}
-        </Box>
+           </Box>
       </Box>
     </Flex>
   );
