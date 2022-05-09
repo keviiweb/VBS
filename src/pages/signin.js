@@ -9,7 +9,9 @@ import {
   Button,
   CircularProgress,
 } from '@chakra-ui/react';
-import { signIn , getSession} from "next-auth/react";
+import { signIn } from "next-auth/react";
+import Image from 'next/image';
+import logo from '../public/image/keviilogo.png';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -36,6 +38,7 @@ export default function Login() {
         borderRadius={8}
         boxShadow="lg"
       >
+         <Image alt="KEVII logo" src={logo} />
             <Box textAlign="center">
               <Heading>KEVII VBS</Heading>
             </Box>
