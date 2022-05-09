@@ -34,10 +34,6 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         <ModalHeader>Product Details</ModalHeader>
         <ModalBody>
           <Box w="full" h="full">
-            <Flex w="full" h="300px" position="relative">
-              <Image src={img} alt="a house" objectFit="cover" layout="fill" />
-            </Flex>
-
             <Box pt="3">
               <Box
                 mt="3"
