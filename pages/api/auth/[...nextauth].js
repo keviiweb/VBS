@@ -45,6 +45,22 @@ const options = {
                 }
             }
 
+            var index = 0;
+            for (const key in credentials) {
+                if (credentials.hasOwnProperty(key)) {
+                    console.log(`Credentials Index: ${index}, ${key}: ${credentials[key]}`);
+                    index++;
+                }
+            }
+
+            var index = 0;
+            for (const key in user) {
+                if (user.hasOwnProperty(key)) {
+                    console.log(`User Index: ${index}, ${key}: ${user[key]}`);
+                    index++;
+                }
+            }
+
             console.log("VERIFICATION TOKEN : " + email.verificationRequest)
 
 
