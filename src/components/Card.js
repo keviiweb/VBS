@@ -24,7 +24,7 @@ export default function Card({ product }) {
           roundedTop="lg"
         >
           {img && (
-            <Image boxSize="100px" objectFit="contain" src={img} alt="Image" />
+            <Image objectFit="contain" src={img} alt="Image" />
           )}
 
           {title && (

@@ -1,4 +1,4 @@
-import { IconButton, Flex, Image } from "@chakra-ui/react";
+import { IconButton, Flex, Text } from "@chakra-ui/react";
 import { FiMenu } from "react-icons/fi";
 import UserProfile from "./UserProfile";
 
@@ -26,13 +26,14 @@ export default function Header({ onOpen, ...rest }) {
         icon={<FiMenu />}
       />
 
-      <Image
-          display={{ base: "flex", md: "none" }}
-          boxSize="80px"
-          objectFit="contain"
-          src="image/keviilogo.png"
-          alt="KEVII Logo"
-        />
+      <Text
+        display={{ base: "flex", md: "none" }}
+        fontSize="2xl"
+        fontFamily="monospace"
+        fontWeight="bold"
+      >
+        KEVII
+      </Text>
 
       <UserProfile />
     </Flex>
