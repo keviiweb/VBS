@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import Layout from "../layout";
+import Loading from "./Loading";
 
 const Auth = ({ children }) => {
   const { data: session, status } = useSession();
@@ -15,7 +16,7 @@ const Auth = ({ children }) => {
   }, [loading, hasUser]);
   
   if (loading || !hasUser) {
-    return <div>Waiting for session...</div>;
+    return <Loading />
   }
   return (
     <Layout>
