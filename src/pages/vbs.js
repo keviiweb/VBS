@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { SimpleGrid, Box } from "@chakra-ui/react";
 import Auth from "@components/Auth";
 import { getAllLocation } from "@constants/helper";
-import { getSession } from "next-auth/react"
+import { getSession } from "next-auth/react";
 import VenueCard from "@components/VenueCard";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -14,17 +14,16 @@ export default function VBS(props) {
 
   if (props.data && props.data.status) {
     result = props.data.msg;
-    result = JSON.stringify(result); 
     if (result !== "") {
-        result.forEach((item) => {
-            if(item.visible) {
-                cards.push(
-                    <MotionBox variants={cardVariant} key={item.id}>
-                        <VenueCard item={item}/>
-                    </MotionBox>
-                );
-            }
-        });
+      result.forEach((item) => {
+        if (item.visible) {
+          cards.push(
+            <MotionBox variants={cardVariant} key={item.id}>
+              <VenueCard item={item} />
+            </MotionBox>
+          );
+        }
+      });
     }
   }
 
@@ -40,7 +39,7 @@ export default function VBS(props) {
           initial="initial"
           animate="animate"
         >
-            {cards}
+          {cards}
         </MotionSimpleGrid>
       </Box>
     </Auth>
@@ -48,19 +47,19 @@ export default function VBS(props) {
 }
 
 export async function getServerSideProps(context) {
-    const session = await getSession(context);
-    if (!session) {
-        return {
-            notFound: true,
-          }
-    }
+  const session = await getSession(context);
+  if (!session) {
+    return {
+      notFound: true,
+    };
+  }
 
-    const data = await getAllLocation(session);
-    if (!data) {
-        return {
-            notFound: true,
-          }
-    }
+  const data = await getAllLocation(session);
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
 
-    return { props: { data } }
+  return { props: { data } };
 }

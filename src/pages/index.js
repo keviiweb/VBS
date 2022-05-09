@@ -19,17 +19,25 @@ export default function Home() {
           initial="initial"
           animate="animate"
         >
-            <MotionBox variants={cardVariant} key="1">
-              <Card
-                product={{ img: "/image/vbs.png", title: "Book a Venue" , link: "/vbs"}}
-              />
-            </MotionBox>
+          <MotionBox variants={cardVariant} key="1">
+            <Card
+              product={{
+                img: "/image/vbs.png",
+                title: "Book a Venue",
+                link: "/vbs",
+              }}
+            />
+          </MotionBox>
 
-            <MotionBox variants={cardVariant} key="2">
-              <Card
-                product={{ img: "/image/cca.png", title: "CCA Attendance" , link: "/cca"}}
-              />
-            </MotionBox>
+          <MotionBox variants={cardVariant} key="2">
+            <Card
+              product={{
+                img: "/image/cca.png",
+                title: "CCA Attendance",
+                link: "/cca",
+              }}
+            />
+          </MotionBox>
         </MotionSimpleGrid>
       </Box>
     </Auth>

@@ -37,13 +37,16 @@ export default function SignIn() {
       align={"center"}
       justify={"center"}
       bg={useColorModeValue("gray.50", "gray.800")}
-    >  
+    >
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
           {loading && (
-            <><Text fontSize={"sm"} color={"gray.600"}>
-              Logging in...
-            </Text><Spinner /></>
+            <>
+              <Text fontSize={"sm"} color={"gray.600"}>
+                Logging in...
+              </Text>
+              <Spinner />
+            </>
           )}
           <Heading fontSize={"4xl"}>KEVII VBS</Heading>
           <Text fontSize={"sm"} color={"gray.600"}>
@@ -81,7 +84,7 @@ export default function SignIn() {
               </Stack>
             </Stack>
           </form>
-        </Box>     
+        </Box>
       </Stack>
     </Flex>
   );

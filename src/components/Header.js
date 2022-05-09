@@ -28,14 +28,14 @@ export default function Header({ onOpen, ...rest }) {
       />
 
       <Link href="/">
-      <Text
-        display={{ base: "flex", md: "none" }}
-        fontSize="2xl"
-        fontFamily="monospace"
-        fontWeight="bold"
-      >
-        KEVII
-      </Text>
+        <Text
+          display={{ base: "flex", md: "none" }}
+          fontSize="2xl"
+          fontFamily="monospace"
+          fontWeight="bold"
+        >
+          KEVII
+        </Text>
       </Link>
       <UserProfile />
     </Flex>

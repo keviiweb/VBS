@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from '@constants/db';
+import { prisma } from "@constants/db";
 
 const authHandler = (req, res) => NextAuth(req, res, options);
 export default authHandler;
