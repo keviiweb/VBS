@@ -9,7 +9,12 @@ const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
 export default function VBS(props) {
-  console.log(props);
+  if (props.data && props.data.status) {
+    const result = props.data.msg.json();
+    if (result !== "") {
+        console.log(result);
+    }
+  }
 
   return (
     <Auth>
