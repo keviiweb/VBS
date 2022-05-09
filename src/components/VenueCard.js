@@ -1,8 +1,5 @@
 import Image from "next/image";
-import { Box, Flex, chakra } from "@chakra-ui/react";
-import { AiTwotoneStar } from "react-icons/ai";
-
-const ChakraStar = chakra(AiTwotoneStar);
+import { Box, Flex } from "@chakra-ui/react";
 
 export default function VenueCard({ product, setModalData }) {
   const image = product.image ? product.image : "/image/placeholder.png";
@@ -18,7 +15,7 @@ export default function VenueCard({ product, setModalData }) {
       rounded="xl"
       shadow="lg"
       borderWidth="1px"
-      onClick={() => setModalData(product)}
+      onClick={() => alert(product)}
     >
       <Box w="full" h="full">
         <Box
@@ -31,7 +28,7 @@ export default function VenueCard({ product, setModalData }) {
           <Image
             src={image}
             objectFit="cover"
-            alt="picture of a house"
+            alt="picture of a venue"
             layout="fill"
           />
         </Box>
