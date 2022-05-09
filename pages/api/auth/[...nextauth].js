@@ -25,4 +25,41 @@ const options = {
         ],
     adapter: PrismaAdapter(prisma),
     secret: process.env.NEXTAUTH_SECRET,
+    session: {
+        jwt: true,
+        maxAge: 1 * 24 * 60 * 60 // 1 day
+    },
+    jwt: {
+        secret: process.env.NEXTAUTH_JWT_SIGNING_PRIVATE_KEY,
+        encryption: true,
+    },
+    callbacks: {
+        async signIn({ user, account, profile, email, credentials }) {
+
+            console.log(credentials);
+            
+            /*
+            const isAllowedToSignIn = false
+            const doesUserExist = await prisma.users.findFirst({
+                where: {
+                    email: credentials.email
+                }
+            });
+
+            if (doesUserExist !== null) {
+                isAllowedToSignIn = true
+            }
+
+            if (isAllowedToSignIn) {
+                return true
+            } else {
+                // Return false to display a default error message
+                return false
+                // Or you can return a URL to redirect to:
+                // return '/unauthorized'
+            }*/
+
+            return true;
+        }
+      }
 };
