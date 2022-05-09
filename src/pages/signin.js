@@ -24,11 +24,8 @@ export const App = () => {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    setIsLoading(true);
-
     try {
       await signIn("email", { email: email, callbackUrl: `${window.location.origin}/`, });
-      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
