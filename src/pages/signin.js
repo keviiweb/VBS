@@ -1,24 +1,20 @@
 import {
   Box,
   Button,
-  Checkbox,
   Container,
-  Divider,
   FormControl,
   FormLabel,
   Heading,
-  HStack,
   Input,
   Stack,
-  Text,
   useBreakpointValue,
   useColorModeValue,
-} from '@chakra-ui/react'
-import * as React from 'react'
-import { Logo } from '../components/Logo'
+} from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Logo } from '../components/Logo';
 import { signIn } from "next-auth/react";
 
-export const App = () => {
+const SignIn = () => {
 
   const [email, setEmail] = useState('');
 
@@ -108,3 +104,5 @@ export const App = () => {
   </Container>
   )
 }
+
+export default SignIn;
