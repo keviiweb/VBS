@@ -45,15 +45,15 @@ const options = {
                 isAllowedToSignIn = false;
 
                 // Check for signin
-                const doesUserExist = await prisma.users.findFirst({
+                const doesUserExist = await prisma.users.findUnique({
                     where: {
-                        email: user.email
-                    }
-                });
-
-                console.log("DOES USER EXIST : " + doesUserExist);
+                      email: user.email,
+                    },
+                })
 
                 if (doesUserExist !== null) {
+                    console.log("DOES USER EXIST : " + doesUserExist);
+
                     isAllowedToSignIn = true;
 
                     var index = 0;
