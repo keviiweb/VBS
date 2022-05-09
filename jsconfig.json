@@ -3,12 +3,12 @@
     "baseUrl": "./",
     "paths": {
       "@root/*": ["/*"],
-      "@components/*": ["components/*"],
-      "@styles/*": ["styles/*"],
-      "@sections/*": ["sections/*"],
-      "@layout/*": ["layout/*"],
+      "@components/*": ["src/components/*"],
+      "@styles/*": ["src/styles/*"],
+      "@sections/*": ["src/sections/*"],
+      "@layout/*": ["src/layout/*"],
       "@public/*": ["public/*"],
-      "@lib/*": ["lib/*"]
+      "@lib/*": ["src/lib/*"]
     }
   }
 }

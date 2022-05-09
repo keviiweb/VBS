@@ -1,23 +1,22 @@
 import {
+  Flex,
   Box,
-  Button,
-  Container,
   FormControl,
   FormLabel,
-  Heading,
   Input,
+  Checkbox,
   Stack,
-  useBreakpointValue,
+  Link,
+  Button,
+  Heading,
+  Text,
   useColorModeValue,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { Logo } from '../components/Logo';
 import { signIn } from "next-auth/react";
 
-const SignIn = () => {
-
+export default function SignIn() {
   const [email, setEmail] = useState('');
-
   const handleSubmit = async event => {
     event.preventDefault();
     try {
@@ -28,81 +27,49 @@ const SignIn = () => {
   };
 
   return (
-    <Container
-    maxW="lg"
-    py={{
-      base: '12',
-      md: '24',
-    }}
-    px={{
-      base: '0',
-      sm: '8',
-    }}
-  >
-    <Stack spacing="8">
-      <Stack spacing="6">
-        <Logo />
-        <Stack
-          spacing={{
-            base: '2',
-            md: '3',
-          }}
-          textAlign="center"
-        >
-          <Heading
-            size={useBreakpointValue({
-              base: 'xs',
-              md: 'sm',
-            })}
-          >
-            Please use your school email to login.
-          </Heading>
+    <Flex
+      minH={'100vh'}
+      align={'center'}
+      justify={'center'}
+      bg={useColorModeValue('gray.50', 'gray.800')}>
+      <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+        <Stack align={'center'}>
+          <Heading fontSize={'4xl'}>Sign in to your account</Heading>
+          <Text fontSize={'lg'} color={'gray.600'}>
+            to enjoy all of our cool <Link color={'blue.400'}>features</Link> ✌️
+          </Text>
         </Stack>
-      </Stack>
-      <Box
-        py={{
-          base: '0',
-          sm: '8',
-        }}
-        px={{
-          base: '4',
-          sm: '10',
-        }}
-        bg={useBreakpointValue({
-          base: 'transparent',
-          sm: 'bg-surface',
-        })}
-        boxShadow={{
-          base: 'none',
-          sm: useColorModeValue('md', 'md-dark'),
-        }}
-        borderRadius={{
-          base: 'none',
-          sm: 'xl',
-        }}
-      >
-        <form onSubmit={handleSubmit}>
-        <Stack spacing="6">
-          <Stack spacing="5">
-            <FormControl>
-              <FormLabel htmlFor="email">Email</FormLabel>
+        <Box
+          rounded={'lg'}
+          bg={useColorModeValue('white', 'gray.700')}
+          boxShadow={'lg'}
+          p={8}>
+          <form onSubmit={handleSubmit}>
+          <Stack spacing={4}>
+            <FormControl id="email">
+              <FormLabel>Email address</FormLabel>
               <Input
                     type="email"
                     placeholder="test@u.nus.edu"
                     size="lg"
                     onChange={event => setEmail(event.currentTarget.value)}
                   />
-            </FormControl>  
-          </Stack>          
-          <Stack spacing="6">
-            <Button type="submit" variant="primary">Sign in</Button>
+            </FormControl>
+            <Stack spacing={10}>  
+              <Button
+                type="submit"
+                bg={'blue.400'}
+                color={'white'}
+                _hover={{
+                  bg: 'blue.500',
+                }}>
+                Sign in
+              </Button>
+            </Stack>
           </Stack>
-        </Stack>
-        </form>
-      </Box>
-    </Stack>
-  </Container>
-  )
+          </form>
+        </Box>
+      </Stack>
+    </Flex>
+  );
 }
-
-export default SignIn;

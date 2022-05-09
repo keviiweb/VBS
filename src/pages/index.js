@@ -1,21 +1,19 @@
 import { useState } from "react";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { cardVariant, parentVariant } from "@root/motion";
 import ProductModal from "@components/ProductModal ";
 import { motion } from "framer-motion";
 import data from "@root/data";
 import ProductCard from "@components/ProductCard";
 import { Box, SimpleGrid } from "@chakra-ui/react";
-
+import Auth from "@components/Auth";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
 export default function Home() {
-  const { data: session } = useSession();
   const [modalData, setModalData] = useState(null);
-  
-  if (session) {
   return (
+    <Auth>
     <Box>
       <MotionSimpleGrid
         mt="4"
@@ -38,31 +36,6 @@ export default function Home() {
         modalData={modalData}
       />
     </Box>
+    </Auth>
   );
-  } else {
-    return (
-      <>
-        Not signed in <br />
-        <button onClick={() => signIn()}>Sign in</button>
-      </>
-    );
-  }
-  
-  
-
-}
-
-
-
-
-
-
-const Index = (_props) => {
-  const { data: session } = useSession();
-
-  
- 
-};
-
-export default Index;
-
+  } 
