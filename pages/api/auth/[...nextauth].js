@@ -36,8 +36,13 @@ const options = {
     callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
 
-            console.log(credentials);
-            
+            console.log(String.format("Email: %s", email));
+            console.log(String.format("Credentials: %s", credentials));
+            console.log(String.format("Profile: %s", profile));
+            console.log(String.format("Account: %s", account));
+            console.log(String.format("User: %s", user));
+
+
             /*
             const isAllowedToSignIn = false
             const doesUserExist = await prisma.users.findFirst({
