@@ -26,7 +26,6 @@ export default function Home() {
             <Card product={{ img: "", title: "CCA" }} href="/vcca" />
           </MotionBox>
         </MotionSimpleGrid>
-        <ProductModal isOpen={false} />
       </Box>
     </Auth>
   );
