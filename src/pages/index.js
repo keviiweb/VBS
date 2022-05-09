@@ -1,22 +1,39 @@
+import React from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 
-export default function Index() {
+import "./index.css";
+
+const Index = (_props) => {
   const { data: session } = useSession();
 
   if (session) {
     return (
+      <React.Fragment>
+        <div className="homeContainer">
+          <div className="ctaContainer">
+          <button onClick={() => signOut()}>Sign out</button>
+            <text className="title">
+              By KEVIIANS,
+              <br />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For KEVIIANS
+            </text>
+            <a href="/vbs" className="cta">
+              Try Our Venue Booking System
+            </a>
+          </div>
+        </div>
+      </React.Fragment>
+    );
+  } else {
+    return (
       <>
-        Signed in as {session.user.email} <br />
-        Hello {session.user.studentID} <br />
-        Hello {session.user.username} <br />
-        <button onClick={() => signOut()}>Sign out</button>
+        Not signed in <br />
+        <button onClick={() => signIn()}>Sign in</button>
       </>
     );
   }
-  return (
-    <>
-      Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
-    </>
-  );
-}
+ 
+};
+
+export default Home;
+
