@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Box, Flex, chakra } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 
 export default function Card({ product }) {
   const { img, title } = product;
