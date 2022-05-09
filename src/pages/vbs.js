@@ -2,7 +2,7 @@ import { cardVariant, parentVariant } from "@root/motion";
 import { motion } from "framer-motion";
 import { SimpleGrid, Box } from "@chakra-ui/react";
 import Auth from "@components/Auth";
-import helpers from "@constants/helper";
+import getAllLocation from "@constants/helper";
 import ProductCard from "@components/ProductCard";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -32,7 +32,7 @@ export default function VBS({data}) {
 }
 
 export async function getServerSideProps() {
-    const res = await helpers.getAllLocation();
+    const res = await getAllLocation();
     const data = await res.json();
 return { props: { data } }
 }
