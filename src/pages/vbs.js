@@ -4,16 +4,27 @@ import { SimpleGrid, Box } from "@chakra-ui/react";
 import Auth from "@components/Auth";
 import { getAllLocation } from "@constants/helper";
 import { getSession } from "next-auth/react"
-import ProductCard from "@components/ProductCard";
+import VenueCard from "@components/VenueCard";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
 export default function VBS(props) {
+  var result = null;
+  var cards = [];
+
   if (props.data && props.data.status) {
-    var result = props.data.msg;
+    result = props.data.msg;
     result = JSON.stringify(result); 
     if (result !== "") {
-        console.log(result);
+        result.forEach((item) => {
+            if(item.visible) {
+                cards.push(
+                    <MotionBox variants={cardVariant} key={item.id}>
+                        <VenueCard item={item}/>
+                    </MotionBox>
+                );
+            }
+        });
     }
   }
 
@@ -21,7 +32,7 @@ export default function VBS(props) {
     <Auth>
       <Box>
         <MotionSimpleGrid
-          mt="3"
+          mt="4"
           minChildWidth="250px"
           spacing="2em"
           minH="full"
@@ -29,6 +40,7 @@ export default function VBS(props) {
           initial="initial"
           animate="animate"
         >
+            {cards}
         </MotionSimpleGrid>
       </Box>
     </Auth>
