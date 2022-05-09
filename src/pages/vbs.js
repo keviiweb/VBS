@@ -28,6 +28,11 @@ export default function VBS(props) {
 
 export async function getServerSideProps() {
     const data = await getAllLocation();
-    console.log(data);
-    return { props: { data: data } }
+    if (!data) {
+        return {
+          notFound: true,
+        }
+    }
+
+    return { props: { data } }
 }

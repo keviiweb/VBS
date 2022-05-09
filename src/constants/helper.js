@@ -6,8 +6,6 @@ export const getAllLocation = async () => {
 
     if (session) {
         const locations = await prisma.venue.findMany();  
-        console.log(locations);
-
         if (locations != null) {
             return {"status": true, "error": null, "msg": locations};
         } else {
