@@ -22,8 +22,6 @@ export default function VBS({data}) {
           initial="initial"
           animate="animate"
         >
-          <MotionBox variants={cardVariant} key={i}>
-          </MotionBox>
         </MotionSimpleGrid>
       </Box>
     </Auth>
