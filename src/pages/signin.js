@@ -10,12 +10,23 @@ import {
   CircularProgress,
 } from "@chakra-ui/core";
 import { signIn } from "next-auth/react";
+import * as yup from 'yup';
+import { useForm } from "react-hook-form";
+
+const schema = yup.object().shape({
+  email: yup.string().email().required(),
+});
 
 export default function Login() {
-  const [email, setEmail] = useState("");
+
+  const { register, handleSubmit } = useForm({
+    mode: 'onBlur',
+    resolver: yupResolver(schema),
+  });
+
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
     try {
@@ -39,14 +50,14 @@ export default function Login() {
           <Heading>KEVII VBS</Heading>
         </Box>
         <Box my={4} textAlign="left">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isRequired>
               <FormLabel>Email</FormLabel>
-              <Input
+              <Input 
+                ref={register}
                 type="email"
                 placeholder="test@test.com"
                 size="lg"
-                onChange={(event) => setEmail(event.currentTarget.value)}
               />
             </FormControl>
             <Button
