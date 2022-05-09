@@ -1,34 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Overview
+This repo holds sourcecode for King Edward VII's Venue Booking System and CCA Attendance tracking. Project is built on top of https://nextjs.org and Chakra-UI to allow easy contributions be it to code or other areas of the website.
 
 ## Getting Started
+Install latest (LTS) version of NodeJS
+Verify your installation by running node -v; npm -v command in your terminal / command line, you should see 2 version outputs
+Install project dependencies by running npm i from project root
+Run npm run dev and start building awesome things!
 
-First, run the development server:
+## Commands
+npm run clean - Cleans build artifacts
+npm run dev - Starts project locally (localhost:3000) and recompiles on source code changes
+npm run build - Builds static assets into out folder
+npm run start - Serves static assets from out folder
+npm run prettier - Checks code for correct formating
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Project Structure
+public - Public / static assets for images etc...
+src/components - Basic & reusable components like cards, text, icon etc...
+src/pages - Individual website pages. _app is a special file for editing global settings
+src/layout - Main layout of the page, with sidebar and drawers
+src/constants - Any constants that are not stored in the database
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
+NextJS - React Framework for Production
+Chakra-UI - Component library 
+Prisma - ORM to define data models and their relations 
+PlanetScale - MySQL-compatible serverless database platform
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Contributing
+Fork this repository to your own profile
+Work on any changes you'd like to make
+When ready, submit a PR to main branch of this repository
+If all automated checks pass, community will review your PR and either approve it or ask for changes
