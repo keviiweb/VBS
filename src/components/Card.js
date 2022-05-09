@@ -27,13 +27,13 @@ export default function Card({ product }) {
           {img && (
             <Image src={img} objectFit="cover" alt="picture" layout="fill" />
           )}
-       
+
           {title && (
-            <Text z-index="100">
-             {title}
-            </Text>
+            <Box fontWeight="semibold" as="h4" lineHeight="tight" isTruncated>
+              <Text z-index="100">{title}</Text>
+            </Box>
           )}
-           </Box>
+        </Box>
       </Box>
     </Flex>
   );

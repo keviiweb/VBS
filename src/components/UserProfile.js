@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { FiChevronDown } from "react-icons/fi";
 import { signOut, useSession } from "next-auth/react";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 
 export default function UserProfile() {
   const { data: session } = useSession();
@@ -59,7 +59,7 @@ export default function UserProfile() {
             </HStack>
           </MenuButton>
           <MenuList fontSize="lg" bg="white" borderColor="gray.200">
-            <MenuItem onClick={() => router.push("/profile") }>Profile</MenuItem>
+            <MenuItem onClick={() => router.push("/profile")}>Profile</MenuItem>
             <MenuDivider />
             <MenuItem onClick={() => signOut({ callbackUrl: "/signin" })}>
               Sign out

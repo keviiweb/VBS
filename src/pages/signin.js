@@ -79,11 +79,7 @@ export default function SignIn() {
         </Box>
 
         {loading && (
-          <Flex
-            minH={"100vh"}
-            align={"center"}
-            justify={"center"}
-          >
+          <Flex minH={"100vh"} align={"center"} justify={"center"}>
             <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
               <Stack align={"center"}>
                 <Text fontSize={"sm"} color={"gray.600"}>

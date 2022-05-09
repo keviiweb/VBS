@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { Box, CloseButton, Flex, Text } from "@chakra-ui/react";
-
+import Image from "next/image";
 import { FiHome, FiCompass, FiStar, FiSettings } from "react-icons/fi";
+import constants from "../constants";
 
 import NavLink from "./NavLink";
 
@@ -35,9 +36,7 @@ export default function Sidebar({ onClose, ...rest }) {
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
-        </Text>
+        <Image src={constants["keviilogo"]} layout="fill" />
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link, i) => (
