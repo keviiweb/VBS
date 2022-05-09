@@ -23,7 +23,6 @@ const options = {
             from: process.env.EMAIL_FROM
         }),
         ],
-    debug: true,
     adapter: PrismaAdapter(prisma),
     secret: process.env.NEXTAUTH_SECRET,
     session: {
@@ -37,43 +36,35 @@ const options = {
     callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
 
-            var index = 0;
-            for (const key in email) {
-                if (email.hasOwnProperty(key)) {
-                    console.log(`Index: ${index}, ${key}: ${email[key]}`);
-                    index++;
-                }
-            }
-
-            var index = 0;
-            for (const key in credentials) {
-                if (credentials.hasOwnProperty(key)) {
-                    console.log(`Credentials Index: ${index}, ${key}: ${credentials[key]}`);
-                    index++;
-                }
-            }
-
-            var index = 0;
-            for (const key in user) {
-                if (user.hasOwnProperty(key)) {
-                    console.log(`User Index: ${index}, ${key}: ${user[key]}`);
-                    index++;
-                }
-            }
-
+            console.log("EMAIL : " + user.email);
             console.log("VERIFICATION TOKEN : " + email.verificationRequest)
 
+            var isAllowedToSignIn = true
 
-            /*
-            const isAllowedToSignIn = false
-            const doesUserExist = await prisma.users.findFirst({
-                where: {
-                    email: credentials.email
+            if (email.hasOwnProperty("verificationRequest")) {
+                isAllowedToSignIn = false;
+
+                // Check for signin
+                const doesUserExist = await prisma.users.findFirst({
+                    where: {
+                        email: user.email
+                    }
+                });
+
+                console.log("DOES USER EXIST : " + doesUserExist);
+
+                if (doesUserExist !== null) {
+                    isAllowedToSignIn = true;
+
+                    var index = 0;
+                    for (const key in doesUserExist) {
+                        if (doesUserExist.hasOwnProperty(key)) {
+                            console.log(`doesUserExist Index: ${index}, ${key}: ${doesUserExist[key]}`);
+                            index++;
+                        }
+                    }
+
                 }
-            });
-
-            if (doesUserExist !== null) {
-                isAllowedToSignIn = true
             }
 
             if (isAllowedToSignIn) {
@@ -83,9 +74,7 @@ const options = {
                 return false
                 // Or you can return a URL to redirect to:
                 // return '/unauthorized'
-            }*/
-
-            return true;
+            }
         }
       }
 };
