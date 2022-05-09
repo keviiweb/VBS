@@ -4,33 +4,33 @@ This repo holds sourcecode for King Edward VII's Venue Booking System and CCA At
 
 ## Getting Started
 
-Install latest (LTS) version of NodeJS
-Verify your installation by running node -v; npm -v command in your terminal / command line, you should see 2 version outputs
-Install project dependencies by running npm i from project root
+* Install latest (LTS) version of NodeJS
+* Verify your installation by running node -v; npm -v command in your terminal / command line, you should see 2 version outputs
+* Install project dependencies by running npm i from project root
 Run npm run dev and start building awesome things!
 
 ## Commands
 
-npm run clean - Cleans build artifacts
-npm run dev - Starts project locally (localhost:3000) and recompiles on source code changes
-npm run build - Builds static assets into out folder
-npm run start - Serves static assets from out folder
-npm run prettier - Checks code for correct formating
+    npm run clean - Cleans build artifacts
+    npm run dev - Starts project locally (localhost:3000) and recompiles on source code changes
+    npm run build - Builds static assets into out folder
+    npm run start - Serves static assets from out folder
+    npm run prettier - Checks code for correct formating
 
 ## Project Structure
 
-public - Public / static assets for images etc...
-src/components - Basic & reusable components like cards, text, icon etc...
-src/pages - Individual website pages. \_app is a special file for editing global settings
-src/layout - Main layout of the page, with sidebar and drawers
-src/constants - Any constants that are not stored in the database
+* public - Public / static assets for images etc...
+* src/components - Basic & reusable components like cards, text, icon etc...
+* src/pages - Individual website pages. \_app is a special file for editing global settings
+* src/layout - Main layout of the page, with sidebar and drawers
+* src/constants - Any constants that are not stored in the database
 
 ## Tech Stack
 
-NextJS - React Framework for Production
-Chakra-UI - Component library
-Prisma - ORM to define data models and their relations
-PlanetScale - MySQL-compatible serverless database platform
+* NextJS - React Framework for Production
+* Chakra-UI - Component library
+* Prisma - ORM to define data models and their relations
+* PlanetScale - MySQL-compatible serverless database platform
 
 ## Contributing
 
