@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { LinkBox, SimpleGrid, Box } from "@chakra-ui/react";
 import Auth from "@components/Auth";
 import Card from "@components/Card";
-import Link from "next/link";
+import NextLink from "next/link";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(LinkBox);
 
@@ -21,18 +21,23 @@ export default function Home() {
           animate="animate"
         >
           <MotionBox variants={cardVariant} key="1">
-            <Link href="/vbs">
-              <Card
-                product={{ img: "/image/vbs.png", title: "Book a Venue" }}
-              />
-            </Link>
+            <LinkBox as="article">
+              <NextLink href="/vbs" passHref>
+                <Card
+                  product={{ img: "/image/vbs.png", title: "Book a Venue" }}
+                />
+              </NextLink>
+            </LinkBox>
           </MotionBox>
+
           <MotionBox variants={cardVariant} key="2">
-            <Link href="/cca">
-              <Card
-                product={{ img: "/image/cca.png", title: "CCA Attendance" }}
-              />
-            </Link>
+            <LinkBox as="article">
+              <NextLink href="/cca" passHref>
+                <Card
+                  product={{ img: "/image/cca.png", title: "CCA Attendance" }}
+                />
+              </NextLink>
+            </LinkBox>
           </MotionBox>
         </MotionSimpleGrid>
       </Box>

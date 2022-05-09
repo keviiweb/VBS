@@ -1,5 +1,4 @@
-import Image from "next/image";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text, Image } from "@chakra-ui/react";
 
 export default function Card({ product }) {
   const { img, title } = product;
@@ -25,7 +24,7 @@ export default function Card({ product }) {
           roundedTop="lg"
         >
           {img && (
-            <Image src={img} objectFit="cover" alt="picture" layout="fill" />
+            <Image boxSize="100px" objectFit="contain" src={img} alt="Image" />
           )}
 
           {title && (

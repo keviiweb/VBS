@@ -33,12 +33,12 @@ export default function Sidebar({ onClose, ...rest }) {
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-      <Image
-        boxSize='100px'
-        objectFit='contain'
-        src='image/keviilogo.png'
-        alt='KEVII Logo'
-      />
+        <Image
+          boxSize="100px"
+          objectFit="contain"
+          src="image/keviilogo.png"
+          alt="KEVII Logo"
+        />
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link, i) => (
