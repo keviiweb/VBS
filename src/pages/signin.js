@@ -55,7 +55,7 @@ const SignIn = () => {
               md: 'sm',
             })}
           >
-            Log in to your account
+            Please use your school email to login.
           </Heading>
         </Stack>
       </Stack>
@@ -95,7 +95,7 @@ const SignIn = () => {
             </FormControl>  
           </Stack>          
           <Stack spacing="6">
-            <Button variant="primary">Sign in</Button>
+            <Button type="submit" variant="primary">Sign in</Button>
           </Stack>
         </Stack>
         </form>
