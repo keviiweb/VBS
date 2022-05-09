@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
-export const getAllLocation = async () => {
+export const getAllLocation = () => {
     const prisma = new PrismaClient();
     const { data: session} = useSession();
 

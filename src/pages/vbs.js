@@ -32,6 +32,6 @@ export default function VBS({data}) {
 }
 
 export async function getServerSideProps() {
-    const data = await getAllLocation();
+    const data = getAllLocation();
     return { props: { data } }
 }
