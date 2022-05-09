@@ -18,7 +18,6 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
 
   const handleModalClose = () => {
     toast({
-      title: "Purchase successsful.",
       isClosable: true,
     });
     setTimeout(() => {
@@ -34,17 +33,8 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         <ModalHeader>Product Details</ModalHeader>
         <ModalBody>
           <Box w="full" h="full">
-            <Box pt="3">
-              <Box
-                mt="3"
-                fontWeight="semibold"
-                as="h4"
-                lineHeight="tight"
-                isTruncated
-              >
-               {modalData.name}
-              </Box>
-            </Box>
+ 
+
           </Box>
         </ModalBody>
         <ModalFooter>
@@ -56,7 +46,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
             onClick={handleModalClose}
             _hover={{ bg: "cyan.800" }}
           >
-            Purchase
+            Book
           </Button>
         </ModalFooter>
       </ModalContent>
