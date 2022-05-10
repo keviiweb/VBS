@@ -10,7 +10,7 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
-import Calendar from "@components/Calendar";
+import CalendarWidget from "@components/CalendarWidget";
 
 export default function VenueModal({ isOpen, onClose, modalData }) {
   const toast = useToast();
@@ -42,7 +42,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         <ModalHeader>Product Details</ModalHeader>
         <ModalBody>
           <Box w="full" h="full">
-            <Calendar />
+            <CalendarWidget />
           </Box>
         </ModalBody>
         <ModalFooter>
