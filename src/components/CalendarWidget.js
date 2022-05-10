@@ -32,7 +32,9 @@ export default function CalendarWidget() {
       minDetail="year"
       next2Label={null}
       prev2Label={null}
-      navigationLabel={displayLabel}
+      navigationLabel={({ date, label, locale, view }) =>
+        displayLabel(date, label, locale, view)
+      }
     />
   );
 }

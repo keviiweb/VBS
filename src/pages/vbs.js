@@ -20,7 +20,6 @@ export default function VBS(props) {
     async function fetchData(props) {
       setIsLoading(true);
       const data = await props;
-      console.log(data?.data);
       setData(data?.data);
       setIsLoading(false);
     }
