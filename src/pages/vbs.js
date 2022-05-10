@@ -19,14 +19,14 @@ export default function VBS(props) {
   useEffect(() => {
     async function fetchData(props) {
       setIsLoading(true);
-      const data = await props?.data;
-      console.log(data);
-      setData(data);
+      const data = await props;
+      console.log(data?.data);
+      setData(data?.data);
       setIsLoading(false);
     }
     fetchData(props);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); 
+  }, []);
 
   var result = null;
   var cards = [];
@@ -77,22 +77,21 @@ export default function VBS(props) {
 export async function getServerSideProps(context) {
   return {
     props: (async function () {
-
       const session = await getSession(context);
       if (!session) {
         return {
-          props: { data: null },
+          data: null,
         };
       }
 
       const data = await getAllLocation(session);
       if (!data) {
         return {
-          props: { data: null },
+          data: null,
         };
       }
       return {
-        props: { data },
+        data: data,
       };
     })(),
   };
