@@ -1,7 +1,7 @@
 import { getSession } from "next-auth/react";
 import { prisma } from "@constants/db";
 
-export const retrieveAllLocation = async (req, res) => {
+export default async (req, res) => {
   const session = await getSession({ req });
 
   if (session) {
@@ -15,12 +15,8 @@ export const retrieveAllLocation = async (req, res) => {
       res.status(200).json({ status: true, error: null, msg: "" });
     }
   } else {
-    res
-      .status(200)
-      .json({ status: false, error: "User must be authenticated", msg: "" });
+    res.status(401);
   }
 
   res.end();
 };
-
-export default retrieveAllLocation;
