@@ -75,16 +75,23 @@ export default function VBS(props) {
 export async function getServerSideProps() {
   return {
     props: (async function () {
-      const response = await fetch(process.env.NEXTAUTH_URL + "/api/venue");
-      const data = await response.json();
-
-      if (!data) {
+      try {
+        const response = await fetch(process.env.NEXTAUTH_URL + "/api/venue");
+        const data = await response.json();
+  
+        if (!data) {
+          return {
+            data: null,
+          };
+        } else {
+          return {
+            data: data,
+          };
+        }
+      } catch (error) {
+        console.error(error);
         return {
           data: null,
-        };
-      } else {
-        return {
-          data: data,
         };
       }
     })(),

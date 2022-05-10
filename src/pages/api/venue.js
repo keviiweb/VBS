@@ -1,7 +1,7 @@
 import { getSession } from "next-auth/react";
 import { prisma } from "@constants/db";
 
-export default async (req, res) => {
+const venue = async (req, res) => {
   const session = await getSession({ req });
 
   if (session) {
@@ -20,3 +20,5 @@ export default async (req, res) => {
 
   res.end();
 };
+
+export default venue;

@@ -23,7 +23,7 @@ export default function SignIn() {
       setLoading(true);
       await signIn("email", {
         email: email,
-        callbackUrl: `${window.location.origin}/`,
+        callbackUrl: process.env.NEXTAUTH_URL + "/",
       });
     } catch (error) {
       console.log(error);
