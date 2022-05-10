@@ -20,6 +20,7 @@ export default function VBS(props) {
     async function fetchData(props) {
       setIsLoading(true);
       const data = await props?.data;
+      console.log(data);
       setData(data);
       setIsLoading(false);
     }
@@ -74,15 +75,16 @@ export default function VBS(props) {
 }
 
 export async function getServerSideProps(context) {
-  const session = await getSession(context);
-  if (!session) {
-    return {
-      props: { data: null },
-    };
-  }
-
   return {
     props: (async function () {
+
+      const session = await getSession(context);
+      if (!session) {
+        return {
+          props: { data: null },
+        };
+      }
+
       const data = await getAllLocation(session);
       if (!data) {
         return {
