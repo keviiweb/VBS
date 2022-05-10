@@ -79,10 +79,12 @@ export default function SignIn() {
 
           {loading && (
             <>
-              <Text fontSize={"sm"} color={"gray.600"}>
-                Logging in...
-              </Text>
-              <Spinner />
+              <Stack align={"center"}>
+                <Text fontSize={"sm"} color={"gray.600"}>
+                  Logging in...
+                </Text>
+                <Spinner />
+              </Stack>
             </>
           )}
         </Box>

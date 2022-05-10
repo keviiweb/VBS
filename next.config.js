@@ -2,5 +2,8 @@
  * @type {import('next').NextConfig}
  */
 module.exports = {
-  /* config options here */
-}
+  reactStrictMode: true,
+  images: {
+    domains: ["https://vbs-kevii.vercel.app/", "https://vbs-hikoya.vercel.app"],
+  },
+};
