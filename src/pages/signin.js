@@ -79,7 +79,7 @@ export default function SignIn() {
 
           {loading && (
             <>
-              <Stack align={"center"}>
+              <Stack spacing={10} align={"center"}>
                 <Text fontSize={"sm"} color={"gray.600"}>
                   Logging in...
                 </Text>
