@@ -1,6 +1,6 @@
 import Calendar from "react-calendar";
 import React, { useState } from "react";
-import 'react-calendar/dist/Calendar.css';
+import "react-calendar/dist/Calendar.css";
 import { monthNamesFull } from "@constants/months";
 
 export default function CalendarWidget() {
@@ -13,7 +13,7 @@ export default function CalendarWidget() {
   const [date, setDate] = useState(new Date());
   const handleChange = (date) => {
     setDate(date);
-  }
+  };
 
   const displayLabel = (date, label, locale, view) => {
     var month = monthNamesFull[date.getMonth()];
@@ -22,7 +22,7 @@ export default function CalendarWidget() {
       return `${month}`;
     }
     return `${year}`;
-  }
+  };
 
   return (
     <Calendar
