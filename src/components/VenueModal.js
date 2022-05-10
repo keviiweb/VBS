@@ -18,6 +18,7 @@ import { getSession } from "next-auth/react";
 export default function VenueModal({ isOpen, onClose, modalData }) {
   const [selectedDate, changeDate] = useState(null);
   const [timeSlots, setTimeSlots] = useState([]);
+  const name = modalData?.name ? modalData.name : "Venue";
 
   const handleModalClose = () => {
     setTimeout(() => {

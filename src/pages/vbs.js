@@ -3,8 +3,6 @@ import { cardVariant, parentVariant } from "@root/motion";
 import { motion } from "framer-motion";
 import { SimpleGrid, Box } from "@chakra-ui/react";
 import Auth from "@components/Auth";
-import { retrieveAllLocation } from "@constants/helper";
-import { getSession } from "next-auth/react";
 import VenueCard from "@components/VenueCard";
 import VenueModal from "@components/VenueModal";
 import Loading from "@components/Loading";
@@ -72,25 +70,23 @@ export default function VBS(props) {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
   return {
     props: (async function () {
-      const session = await getSession(context);
-      if (!session) {
-        return {
-          data: null,
-        };
-      }
+      
+      const response = await fetch('/api/venue');
+      const data = await response.json();
 
-      const data = await retrieveAllLocation(session);
       if (!data) {
         return {
           data: null,
         };
       }
-      return {
-        data: data,
-      };
+      else {
+          return {
+          data: data,
+        };
+      }
     })(),
   };
 }
