@@ -33,7 +33,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
       const allTimeSlots = await retrieveTimeSlots(session, modalData, date);
       console.log(allTimeSlots);
     }
-  }
+  };
 
   return (
     <Modal
@@ -49,21 +49,17 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         <ModalCloseButton />
         <ModalHeader>{name}</ModalHeader>
         <ModalBody>
-        <Flex>
-          <Box w="full" h="full">
-            <CalendarWidget selectedDate={handleDate}/>
-          </Box>
-          {selectedDate && (
-            <VStack spacing={5} align={"center"}>
-              <Box>
-                {selectedDate}
-              </Box>
-              <Box>
-                Select Timeslot(s)
-              </Box>
-            </VStack>
+          <Flex>
+            <Box w="full" h="full">
+              <CalendarWidget selectedDate={handleDate} />
+            </Box>
+            {selectedDate && (
+              <VStack spacing={5} align={"center"}>
+                <Box>{selectedDate}</Box>
+                <Box>Select Timeslot(s)</Box>
+              </VStack>
             )}
-        </Flex>
+          </Flex>
         </ModalBody>
         <ModalFooter>
           <Button

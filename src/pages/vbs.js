@@ -17,10 +17,12 @@ export default function VBS(props) {
   useEffect(() => {
     async function fetchData(props) {
       const data = await props;
+      console.log(props);
+      console.log(data);
       setData(data?.data);
       setIsLoading(false);
     }
-    fetchData(props);
+    await fetchData(props);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -43,7 +45,7 @@ export default function VBS(props) {
 
   return (
     <>
-      {isLoading && (<Loading />)}
+      {isLoading && <Loading />}
       {!isLoading && (
         <Auth>
           <Box>
@@ -73,17 +75,15 @@ export default function VBS(props) {
 export async function getServerSideProps() {
   return {
     props: (async function () {
-      
-      const response = await fetch(process.env.NEXTAUTH_URL + '/api/venue');
+      const response = await fetch(process.env.NEXTAUTH_URL + "/api/venue");
       const data = await response.json();
 
       if (!data) {
         return {
           data: null,
         };
-      }
-      else {
-          return {
+      } else {
+        return {
           data: data,
         };
       }
