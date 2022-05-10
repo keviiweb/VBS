@@ -15,7 +15,7 @@ export default function VenueCard({ product, setModalData }) {
       rounded="xl"
       shadow="lg"
       borderWidth="1px"
-      onClick={() => console.log(product)}
+      onClick={() => setModalData(product)}
     >
       <Box w="full" h="full">
         <Box

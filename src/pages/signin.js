@@ -79,11 +79,13 @@ export default function SignIn() {
 
           {loading && (
             <>
-              <Stack spacing={10} align={"center"}>
-                <Text fontSize={"sm"} color={"gray.600"}>
-                  Logging in...
-                </Text>
-                <Spinner />
+              <Stack spacing={10}>
+                <Stack align={"center"}>
+                  <Text fontSize={"sm"} color={"gray.600"}>
+                    Logging in...
+                  </Text>
+                  <Spinner />
+                </Stack>
               </Stack>
             </>
           )}
