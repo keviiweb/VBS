@@ -34,7 +34,7 @@ Run npm run dev and start building awesome things!
 
 ## Contributing
 
-Fork this repository to your own profile
-Work on any changes you'd like to make
-When ready, submit a PR to main branch of this repository
-If all automated checks pass, community will review your PR and either approve it or ask for changes
+* Fork this repository to your own profile
+* Work on any changes you'd like to make
+* When ready, submit a PR to main branch of this repository
+* If all automated checks pass, community will review your PR and either approve it or ask for changes
