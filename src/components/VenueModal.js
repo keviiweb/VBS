@@ -47,7 +47,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>{modalData.name}</ModalHeader>
+        <ModalHeader>{name}</ModalHeader>
         <ModalBody>
         <Flex>
           <Box w="full" h="full">
