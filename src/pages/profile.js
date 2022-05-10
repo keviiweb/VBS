@@ -61,7 +61,7 @@ export default function Profile() {
           p={{ base: 5, lg: 16 }}
         >
           <Box>
-            <VStack spacing={{ base: 4, md: 8, lg: 20 }}>
+            <VStack spacing={{ base: 4, md: 8, lg: 16 }}>
               <Heading
                 fontSize={{
                   base: "4xl",

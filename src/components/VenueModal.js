@@ -1,5 +1,6 @@
 import {
   Box,
+  Flex,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -8,42 +9,53 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
-  useToast,
 } from "@chakra-ui/react";
 import CalendarWidget from "@components/CalendarWidget";
+import React, { useState } from "react";
+import { getSession } from "next-auth/react";
 
 export default function VenueModal({ isOpen, onClose, modalData }) {
-  const toast = useToast();
+  const [selectedDate, changeDate] = useState(null);
+  const [timeSlots, setTimeSlots] = useState([]);
+
   const handleModalClose = () => {
-    toast({
-      title: "Purchase successsful.",
-      description: "Fashion ++",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
     setTimeout(() => {
       onClose();
     }, 1000);
   };
+
+  const handleDate = async (date) => {
+    changeDate(date);
+    const session = await getSession();
+    if (session) {
+      const allTimeSlots = await retrieveTimeSlots(session, modalData, date);
+    }
+  }
 
   return (
     <Modal
       closeOnOverlayClick={false}
       isOpen={isOpen}
       onClose={onClose}
-      size="xl"
+      size="full"
       isCentered
       motionPreset="slideInBottom"
     >
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Product Details</ModalHeader>
+        <ModalHeader>{modalData.name}</ModalHeader>
         <ModalBody>
+        <Flex>
           <Box w="full" h="full">
-            <CalendarWidget />
+            <CalendarWidget selectedDate={handleDate}/>
           </Box>
+          <VStack spacing={5} align={"center"}>
+            <Box>
+              {selectedDate}
+            </Box>
+          </VStack>
+        </Flex>
         </ModalBody>
         <ModalFooter>
           <Button
@@ -54,7 +66,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
             onClick={handleModalClose}
             _hover={{ bg: "cyan.800" }}
           >
-            Purchase
+            Submit
           </Button>
         </ModalFooter>
       </ModalContent>

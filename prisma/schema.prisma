@@ -56,3 +56,12 @@ model Venue {
   created_at DateTime @default(now()) @db.DateTime(0)
   updated_at DateTime @default(now()) @db.DateTime(0)
 }
+
+model VenueBooking {
+  id      String    @id @default(cuid())
+  email     String      
+  venue     Int
+  date      Int
+  timingSlot    Int
+  notes     String  @db.VarChar(500)
+}

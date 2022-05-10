@@ -3,7 +3,7 @@ import { cardVariant, parentVariant } from "@root/motion";
 import { motion } from "framer-motion";
 import { SimpleGrid, Box } from "@chakra-ui/react";
 import Auth from "@components/Auth";
-import { getAllLocation } from "@constants/helper";
+import { retrieveAllLocation } from "@constants/helper";
 import { getSession } from "next-auth/react";
 import VenueCard from "@components/VenueCard";
 import VenueModal from "@components/VenueModal";
@@ -13,12 +13,11 @@ const MotionBox = motion(Box);
 
 export default function VBS(props) {
   const [modalData, setModalData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState(null);
 
   useEffect(() => {
     async function fetchData(props) {
-      setIsLoading(true);
       const data = await props;
       setData(data?.data);
       setIsLoading(false);
@@ -46,7 +45,7 @@ export default function VBS(props) {
 
   return (
     <>
-      {isLoading && <Loading />}
+      {isLoading && (<Loading />)}
       {!isLoading && (
         <Auth>
           <Box>
@@ -83,7 +82,7 @@ export async function getServerSideProps(context) {
         };
       }
 
-      const data = await getAllLocation(session);
+      const data = await retrieveAllLocation(session);
       if (!data) {
         return {
           data: null,

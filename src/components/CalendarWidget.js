@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import { monthNamesFull } from "@constants/months";
 
-export default function CalendarWidget() {
+export default function CalendarWidget({ selectedDate }) {
   const minDate = new Date();
   minDate.setDate(new Date().getDate() + Number(process.env.CALENDAR_MIN_DAY));
 
@@ -11,8 +11,10 @@ export default function CalendarWidget() {
   maxDate.setDate(new Date().getDate() + Number(process.env.CALENDAR_MAX_DAY));
 
   const [date, setDate] = useState(new Date());
-  const handleChange = (date) => {
+  const handleChange = async (date) => {
     setDate(date);
+    const prettyDate = parseSelectedDate(date);
+    await selectedDate(prettyDate);
   };
 
   const displayLabel = (date, label, locale, view) => {
@@ -24,12 +26,21 @@ export default function CalendarWidget() {
     return `${year}`;
   };
 
+  const parseSelectedDate = (selectedDate) => {
+    return `${selectedDate.getFullYear()}/${
+      selectedDate.getMonth() < 9
+        ? "0" + (selectedDate.getMonth() + 1)
+        : selectedDate.getMonth() + 1
+    }/${selectedDate.getDate()}`;
+  };
+
   return (
     <Calendar
       onChange={handleChange}
       value={date}
       minDate={minDate}
       minDetail="year"
+      maxDate={maxDate}
       next2Label={null}
       prev2Label={null}
       navigationLabel={({ date, label, locale, view }) =>
