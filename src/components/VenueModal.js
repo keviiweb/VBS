@@ -42,7 +42,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         <ModalHeader>Product Details</ModalHeader>
         <ModalBody>
           <Box w="full" h="full">
-            <Calendar defaultView="dayGridMonth" />
+            <Calendar />
           </Box>
         </ModalBody>
         <ModalFooter>
