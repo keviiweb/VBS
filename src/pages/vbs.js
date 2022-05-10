@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
 import { motion } from "framer-motion";
 import { SimpleGrid, Box } from "@chakra-ui/react";
