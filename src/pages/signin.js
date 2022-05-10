@@ -40,14 +40,6 @@ export default function SignIn() {
     >
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
-          {loading && (
-            <>
-              <Text fontSize={"sm"} color={"gray.600"}>
-                Logging in...
-              </Text>
-              <Spinner />
-            </>
-          )}
           <Heading fontSize={"4xl"}>KEVII VBS</Heading>
           <Text fontSize={"sm"} color={"gray.600"}>
             Please enter your school email ending with @u.nus.edu
@@ -84,6 +76,15 @@ export default function SignIn() {
               </Stack>
             </Stack>
           </form>
+
+          {loading && (
+            <>
+              <Text fontSize={"sm"} color={"gray.600"}>
+                Logging in...
+              </Text>
+              <Spinner />
+            </>
+          )}
         </Box>
       </Stack>
     </Flex>
