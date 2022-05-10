@@ -74,7 +74,7 @@ export async function getServerSideProps() {
   return {
     props: (async function () {
       
-      const response = await fetch('/api/venue');
+      const response = await fetch(process.env.NEXTAUTH_URL + '/api/venue');
       const data = await response.json();
 
       if (!data) {

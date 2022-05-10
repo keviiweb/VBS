@@ -18,5 +18,7 @@ export const retrieveAllLocation = async (req, res) => {
         res.status(200).json({ status: false, error: "User must be authenticated", msg: "" });
     }
     
-    res.end()
+    res.end();
 };
+
+export default retrieveAllLocation;
