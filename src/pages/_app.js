@@ -1,6 +1,7 @@
 import { SessionProvider } from "next-auth/react";
 import { ChakraProvider } from "@chakra-ui/react";
 import Head from "next/head";
+import "@styles/Calendar.css";
 
 export default function App({
   Component,

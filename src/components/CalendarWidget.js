@@ -1,7 +1,6 @@
 import Calendar from "react-calendar";
 import React, { useState } from "react";
 import 'react-calendar/dist/Calendar.css';
-import "@styles/Calendar.css";
 import { monthNamesFull } from "@constants/months";
 
 export default function CalendarWidget() {

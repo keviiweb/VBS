@@ -330,4 +330,4 @@ const CCAList = [
   "Volleyball F",
 ];
 
-export default { CCAData, CCAList };
+export { CCAData, CCAList };

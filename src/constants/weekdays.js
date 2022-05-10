@@ -18,4 +18,4 @@ const numberToWeekday = {
   7: "Sunday",
 };
 
-export default { numberToWeekday, weekdayToNumber };
+export { numberToWeekday, weekdayToNumber };

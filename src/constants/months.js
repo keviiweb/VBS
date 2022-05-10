@@ -13,4 +13,4 @@ const monthNamesFull = [
     "December",
   ];
 
-export default { monthNamesFull };
+export { monthNamesFull };

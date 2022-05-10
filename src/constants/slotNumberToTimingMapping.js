@@ -33,4 +33,4 @@ const timingSlotNumberToTimingMapping = {
   32: "10.30pm - 11pm",
 };
 
-export default { timingSlotNumberToTimingMapping };
+export { timingSlotNumberToTimingMapping };

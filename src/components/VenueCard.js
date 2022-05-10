@@ -20,7 +20,7 @@ export default function VenueCard({ product, setModalData }) {
       <Box w="full" h="full">
         <Box
           w="100%"
-          height="200px"
+          height="13vw"
           position="relative"
           overflow="hidden"
           roundedTop="lg"
