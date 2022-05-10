@@ -9,6 +9,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
+  VStack,
 } from "@chakra-ui/react";
 import CalendarWidget from "@components/CalendarWidget";
 import React, { useState } from "react";
@@ -29,6 +30,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
     const session = await getSession();
     if (session) {
       const allTimeSlots = await retrieveTimeSlots(session, modalData, date);
+      console.log(allTimeSlots);
     }
   }
 
@@ -50,11 +52,16 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
           <Box w="full" h="full">
             <CalendarWidget selectedDate={handleDate}/>
           </Box>
-          <VStack spacing={5} align={"center"}>
-            <Box>
-              {selectedDate}
-            </Box>
-          </VStack>
+          {selectedDate && (
+            <VStack spacing={5} align={"center"}>
+              <Box>
+                {selectedDate}
+              </Box>
+              <Box>
+                Select Timeslot(s)
+              </Box>
+            </VStack>
+            )}
         </Flex>
         </ModalBody>
         <ModalFooter>

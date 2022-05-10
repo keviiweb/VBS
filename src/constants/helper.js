@@ -43,8 +43,6 @@ export const retrieveTimeSlots = async (session, venueData, date) => {
         slots[i] = {id: i, slot: val, booked: false};
       })
     }
-
-    console.log(slots);
     return slots;
   } else {
     return [];
