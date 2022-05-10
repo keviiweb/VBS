@@ -22,7 +22,7 @@ export default function VBS(props) {
       setData(data?.data);
       setIsLoading(false);
     }
-    await fetchData(props);
+    fetchData(props);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
