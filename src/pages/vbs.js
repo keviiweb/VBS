@@ -18,12 +18,12 @@ export default function VBS(props) {
 
   useEffect(() => {
     async function fetchData(props) {
-      const res = await props;
-      const resData = res.data;
-      console.log("RES " + res);
-      console.log("RES D " + resData);
-      if (resData.length > 0) {
-        setData(res?.data);
+      if (props.data) {
+        const res = await props.data;
+        console.log(res);
+        if (res.length > 0) {
+          setData(res);
+        }
       }
       setIsLoading(false);
     }
@@ -47,10 +47,8 @@ export default function VBS(props) {
           }
         });
       }
-
       console.log(cards);
     }
-
   }
 
   return (
