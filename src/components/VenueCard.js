@@ -3,7 +3,7 @@ import { Box, Flex } from "@chakra-ui/react";
 
 export default function VenueCard({ product, setModalData }) {
   const image = product.image ? product.image : "/image/placeholder.png";
-
+  const name = product.name ? product.name : "Venue";
   return (
     <Flex
       w="full"
@@ -35,7 +35,7 @@ export default function VenueCard({ product, setModalData }) {
 
         <Box p="6">
           <Box fontWeight="semibold" as="h4" lineHeight="tight" isTruncated>
-            {product.name}
+            {name}
           </Box>
         </Box>
       </Box>

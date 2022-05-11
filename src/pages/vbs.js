@@ -16,11 +16,11 @@ export default function VBS(props) {
 
   useEffect(() => {
     async function fetchData(props) {
-      const data = await props;
+      const res = await props;
       console.log(props);
-      console.log(data);
-      if (data.data) {
-        setData(data?.data);
+      console.log(res.data);
+      if (res.data) {
+        setData(res?.data);
       }
       setIsLoading(false);
     }
