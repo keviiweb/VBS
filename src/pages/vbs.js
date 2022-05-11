@@ -39,6 +39,8 @@ export default function VBS(props) {
 
   var result = null;
   var cards = [];
+
+  /*
   if (data) {
     try {
       if (data.status) {
@@ -60,7 +62,7 @@ export default function VBS(props) {
       console.log(cards);
       cards = [];
     }
-  }
+  }*/
 
   return (
     <>
