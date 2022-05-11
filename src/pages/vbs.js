@@ -90,6 +90,8 @@ export async function getServerSideProps(context) {
         console.log("Session", JSON.stringify(session, null, 2));
 
         const data = fetchVenue(session);
+        console.log(data);
+
         if (!data && !session) {
           return {
             data: null,
