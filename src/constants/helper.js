@@ -7,15 +7,21 @@ const convertDateToUnix = (date) => {
 
 export const fetchVenue = async (session) => {
   if (session) {
-    const locations = await prisma.venue.findMany({
-      where: { visible: true },
-    });
-
-    if (locations != null) {
-      return { status: true, error: null, msg: locations };
-    } else {
-      return { status: true, error: null, msg: "" };
+    try {
+      const locations = await prisma.venue.findMany({
+        where: { visible: true },
+      });
+  
+      if (locations != null) {
+        return { status: true, error: null, msg: locations };
+      } else {
+        return { status: true, error: null, msg: "" };
+      }
+    } catch (error) {
+      console.log(error);
+      return { status: false, error: "Connection timeout", msg: "" };
     }
+   
   } else {
     return { status: false, error: "User must be authenticated", msg: "" };
   }
