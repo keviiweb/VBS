@@ -19,8 +19,10 @@ export default function VBS(props) {
   useEffect(() => {
     async function fetchData(props) {
       const res = await props;
-      console.log(res.data);
-      if (res.data) {
+      const resData = res.data;
+      console.log("RES " + res);
+      console.log("RES D " + resData);
+      if (resData.length > 0) {
         setData(res?.data);
       }
       setIsLoading(false);
@@ -85,8 +87,10 @@ export async function getServerSideProps(context) {
     props: (async function () {
       try {
         const session = await getSession(context);
+        console.log("Session", JSON.stringify(session, null, 2));
+
         const data = fetchVenue(session);
-        if (!data || !session) {
+        if (!data && !session) {
           return {
             data: null,
           };

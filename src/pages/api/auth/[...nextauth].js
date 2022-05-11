@@ -75,8 +75,8 @@ const options = {
       }
     },
     async session({ session, token, user }) {
-      console.log("Session", JSON.stringify(session, null, 2));
-      console.log("User", JSON.stringify(user, null, 2));
+      //console.log("Session", JSON.stringify(session, null, 2));
+      //console.log("User", JSON.stringify(user, null, 2));
       const userFromDB = await prisma.users.findUnique({
         where: {
           email: user.email,
