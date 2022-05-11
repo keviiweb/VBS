@@ -18,8 +18,9 @@ export default function VBS(props) {
 
   useEffect(() => {
     async function fetchData(props) {
-      if (props.data) {
-        const res = await props.data;
+      const propRes = await props;
+      if (propRes.data) {
+        const res = await propRes.data;
         console.log(res);
         if (res.length > 0) {
           setData(res);
@@ -34,20 +35,25 @@ export default function VBS(props) {
   var result = null;
   var cards = [];
   if (data) {
-    if (data.status) {
-      result = data.msg;
-      if (result !== "") {
-        result.forEach((item) => {
-          if (item.visible) {
-            cards.push(
-              <MotionBox variants={cardVariant} key={item.id}>
-                <VenueCard product={item} setModalData={setModalData} />
-              </MotionBox>
-            );
-          }
-        });
+    try {
+      if (data.status) {
+        result = data.msg;
+        if (result !== "") {
+          result.forEach((item) => {
+            if (item.visible) {
+              cards.push(
+                <MotionBox variants={cardVariant} key={item.id}>
+                  <VenueCard product={item} setModalData={setModalData} />
+                </MotionBox>
+              );
+            }
+          });
+        }
+        console.log(cards);
       }
+    } catch (Error) {
       console.log(cards);
+      cards = [];
     }
   }
 
@@ -85,10 +91,10 @@ export async function getServerSideProps(context) {
     props: (async function () {
       try {
         const session = await getSession(context);
-        console.log("Session", JSON.stringify(session, null, 2));
+        //console.log("Session", JSON.stringify(session, null, 2));
 
         const data = fetchVenue(session);
-        console.log(data);
+        //console.log(data);
 
         if (!data && !session) {
           return {
