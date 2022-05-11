@@ -79,7 +79,7 @@ export default function VBS(props) {
               initial="initial"
               animate="animate"
             >
-              {cards}
+              
             </MotionSimpleGrid>
             <VenueModal
               isOpen={modalData ? true : false}
