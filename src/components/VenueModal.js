@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import CalendarWidget from "@components/CalendarWidget";
 import React, { useState } from "react";
-import { getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 export default function VenueModal({ isOpen, onClose, modalData }) {
   const [selectedDate, changeDate] = useState(null);
@@ -28,7 +28,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
 
   const handleDate = async (date) => {
     changeDate(date);
-    const session = await getSession();
+    const { data: session, status } = useSession();
     if (session) {
       const allTimeSlots = await retrieveTimeSlots(session, modalData, date);
       console.log(allTimeSlots);

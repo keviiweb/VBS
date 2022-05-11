@@ -27,6 +27,7 @@ export default function SignIn(props) {
           setURL(propRes.data);
         }
       } catch (error) {
+        setURL("https://vbs-kevii.vercel.app");
         console.log(error);
       }
     }
@@ -38,7 +39,6 @@ export default function SignIn(props) {
     event.preventDefault();
     try {
       setLoading(true);
-      console.log(url);
       await signIn("email", {
         email: email,
         callbackUrl: url + "/",
@@ -113,7 +113,7 @@ export default function SignIn(props) {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(_context) {
   return {
     props: (async function () {
       try {

@@ -16,6 +16,7 @@ export default function VBS(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState(null);
 
+  /*
   useEffect(() => {
     async function fetchData(props) {
       const propRes = await props;
@@ -39,7 +40,8 @@ export default function VBS(props) {
 
   var result = null;
   var cards = [];
-
+  */
+ 
   /*
   if (data) {
     try {
