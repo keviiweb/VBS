@@ -19,7 +19,9 @@ export default function VBS(props) {
       const data = await props;
       console.log(props);
       console.log(data);
-      setData(data?.data);
+      if (data.data) {
+        setData(data?.data);
+      }
       setIsLoading(false);
     }
     fetchData(props);
@@ -77,6 +79,7 @@ export async function getServerSideProps() {
     props: (async function () {
       try {
         const data = await fetch(process.env.NEXTAUTH_URL + "/api/venue");
+        console.log(data);
         if (!data) {
           return {
             data: null,
