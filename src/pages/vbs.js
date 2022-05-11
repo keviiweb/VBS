@@ -7,6 +7,7 @@ import VenueCard from "@components/VenueCard";
 import VenueModal from "@components/VenueModal";
 import Loading from "@components/Loading";
 import { fetchVenue } from "@constants/helper";
+import { getSession } from 'next-auth/react';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -18,7 +19,6 @@ export default function VBS(props) {
   useEffect(() => {
     async function fetchData(props) {
       const res = await props;
-      console.log(props);
       console.log(res.data);
       if (res.data) {
         setData(res?.data);
@@ -31,19 +31,24 @@ export default function VBS(props) {
 
   var result = null;
   var cards = [];
-  if (data && data.status) {
-    result = data.msg;
-    if (result !== "") {
-      result.forEach((item) => {
-        if (item.visible) {
-          cards.push(
-            <MotionBox variants={cardVariant} key={item.id}>
-              <VenueCard product={item} setModalData={setModalData} />
-            </MotionBox>
-          );
-        }
-      });
+  if (data) {
+    if (data.status) {
+      result = data.msg;
+      if (result !== "") {
+        result.forEach((item) => {
+          if (item.visible) {
+            cards.push(
+              <MotionBox variants={cardVariant} key={item.id}>
+                <VenueCard product={item} setModalData={setModalData} />
+              </MotionBox>
+            );
+          }
+        });
+      }
+
+      console.log(cards);
     }
+
   }
 
   return (

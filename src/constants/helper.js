@@ -5,7 +5,6 @@ const convertDateToUnix = (date) => {
   return Math.floor(date.getTime() / 1000);
 };
 
-
 export const fetchVenue = async (session) => {
   if (session) {
     const locations = await prisma.venue.findMany({
