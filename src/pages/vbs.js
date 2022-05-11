@@ -24,7 +24,7 @@ export default function VBS(props) {
           const res = await propRes.data;
           console.log(res);
           if (res.length > 0) {
-            setData(res);
+            //setData(res);
           }
         }
       } catch (error) {
@@ -35,7 +35,7 @@ export default function VBS(props) {
     }
     fetchData(props);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [data]);
 
   var result = null;
   var cards = [];
