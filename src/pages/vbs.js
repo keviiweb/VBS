@@ -6,6 +6,7 @@ import Auth from "@components/Auth";
 import VenueCard from "@components/VenueCard";
 import VenueModal from "@components/VenueModal";
 import Loading from "@components/Loading";
+import { fetchVenue } from "@constants/helper";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -74,13 +75,13 @@ export default function VBS(props) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   return {
     props: (async function () {
       try {
-        const data = await fetch(process.env.NEXTAUTH_URL + "/api/venue");
-        console.log(data);
-        if (!data) {
+        const session = await getSession(context);
+        const data = fetchVenue(session);
+        if (!data || !session) {
           return {
             data: null,
           };

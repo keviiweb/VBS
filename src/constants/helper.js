@@ -5,8 +5,8 @@ const convertDateToUnix = (date) => {
   return Math.floor(date.getTime() / 1000);
 };
 
-/*
-export const retrieveAllLocation = async (session) => {
+
+export const fetchVenue = async (session) => {
   if (session) {
     const locations = await prisma.venue.findMany({
       where: { visible: true },
@@ -20,7 +20,7 @@ export const retrieveAllLocation = async (session) => {
   } else {
     return { status: false, error: "User must be authenticated", msg: "" };
   }
-};*/
+};
 
 export const retrieveTimeSlots = async (session, venueData, date) => {
   // Sample: 0900 - 2200
