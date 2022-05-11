@@ -11,19 +11,37 @@ import {
   useColorModeValue,
   Spinner,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 
-export default function SignIn() {
+export default function SignIn(props) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [url, setURL] = useState("");
+
+  useEffect(() => {
+    async function fetchData(props) {
+      const propRes = await props;
+      try {
+        if (propRes.data) {
+          setURL(propRes.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData(props);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       setLoading(true);
+      console.log(url);
       await signIn("email", {
         email: email,
-        callbackUrl: process.env.NEXTAUTH_URL + "/",
+        callbackUrl: url + "/",
       });
     } catch (error) {
       console.log(error);
@@ -93,4 +111,21 @@ export default function SignIn() {
       </Stack>
     </Flex>
   );
+}
+
+export async function getServerSideProps(context) {
+  return {
+    props: (async function () {
+      try {
+        return {
+          data: process.env.NEXTAUTH_URL,
+        };
+      } catch (error) {
+        console.error(error);
+        return {
+          data: null,
+        };
+      }
+    })(),
+  };
 }
