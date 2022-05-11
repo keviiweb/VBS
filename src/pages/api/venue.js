@@ -5,7 +5,7 @@ const venue = async (req, res) => {
   const session = await getSession({ req });
 
   if (session) {
-    console.log("Session", JSON.stringify(session, null, 2))
+    console.log("Session", JSON.stringify(session, null, 2));
     const locations = await prisma.venue.findMany({
       where: { visible: true },
     });
