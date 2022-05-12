@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import Layout from "../layout";
@@ -9,11 +9,21 @@ const Auth = ({ children }) => {
   const loading = status === "loading";
   const hasUser = !!session?.user;
   const router = useRouter();
+  const redirect = useRef(false);
+
   useEffect(() => {
     if (!loading && !hasUser) {
-      router.push("/signin");
+      redirect.current = true;
     }
   }, [loading, hasUser, router]);
+
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+    return <Layout>{children}</Layout>;
+  }
+
+  if (redirect.current) {
+    router.push("/signin");
+  }
 
   if (loading || !hasUser) {
     return <Loading />;

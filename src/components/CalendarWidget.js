@@ -1,43 +1,41 @@
 import Calendar from "react-calendar";
-import React, { useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import { monthNamesFull } from "@constants/months";
+import React, { useState, useEffect } from "react";
 
-export default function CalendarWidget({ selectedDate }) {
-  const minDate = new Date();
-  minDate.setDate(new Date().getDate() + Number(process.env.CALENDAR_MIN_DAY));
+export default function CalendarWidget({
+  selectedDate,
+  calendarMin,
+  calendarMax,
+}) {
+  const [currentDate, setDate] = useState(new Date());
+  const [minDate, _setMinDate] = useState(addDays(currentDate, calendarMin));
+  const [maxDate, _setMaxDate] = useState(addDays(currentDate, calendarMax));
 
-  const maxDate = new Date();
-  maxDate.setDate(new Date().getDate() + Number(process.env.CALENDAR_MAX_DAY));
+  function addDays(date, days) {
+    let result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
 
-  const [date, setDate] = useState(new Date());
   const handleChange = async (date) => {
     setDate(date);
-    const prettyDate = parseSelectedDate(date);
-    await selectedDate(prettyDate);
+    await selectedDate(date);
   };
 
   const displayLabel = (date, label, locale, view) => {
-    var month = monthNamesFull[date.getMonth()];
-    var year = date.getFullYear();
+    let month = monthNamesFull[date.getMonth()];
+    let year = date.getFullYear();
     if (view === "month") {
       return `${month}`;
     }
     return `${year}`;
   };
 
-  const parseSelectedDate = (selectedDate) => {
-    return `${selectedDate.getFullYear()}/${
-      selectedDate.getMonth() < 9
-        ? "0" + (selectedDate.getMonth() + 1)
-        : selectedDate.getMonth() + 1
-    }/${selectedDate.getDate()}`;
-  };
-
   return (
     <Calendar
       onChange={handleChange}
-      value={date}
+      value={currentDate}
       minDate={minDate}
       minDetail="year"
       maxDate={maxDate}

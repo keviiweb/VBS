@@ -45,9 +45,11 @@ export default function Profile() {
                 shadow="base"
               >
                 <VStack spacing={5}>
-                  <Text>
-                    Please contact ke7webdev@gmail.com for any queries.
+                  <Text>Please contact </Text>
+                  <Text color="blue">
+                    <a href="mailto:ke7webdev@gmail.com">ke7webdev@gmail.com</a>
                   </Text>
+                  <Text>for any queries.</Text>
                 </VStack>
               </Box>
             </VStack>

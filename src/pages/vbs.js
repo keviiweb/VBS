@@ -1,70 +1,76 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
 import { motion } from "framer-motion";
 import { SimpleGrid, Box } from "@chakra-ui/react";
 import Auth from "@components/Auth";
 import VenueCard from "@components/VenueCard";
 import VenueModal from "@components/VenueModal";
+import VenueModalConfirmation from "@components/VenueModalConfirmation";
 import Loading from "@components/Loading";
 import { fetchVenue } from "@constants/helper";
-import { getSession } from 'next-auth/react';
+
+import safeJsonStringify from "safe-json-stringify";
+
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
 export default function VBS(props) {
   const [modalData, setModalData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [modalDataConfirm, setModalDataConfirm] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
+  const [cards, setCards] = useState([]);
+  const minDate = useRef(3);
+  const maxDate = useRef(30);
 
-  /*
+  const dataFromVenueModal = (venue, venueName, date, timeSlots) => {
+    if (venue && date && timeSlots && venueName) {
+      const data = {
+        venue: venue,
+        venueName: venueName,
+        date: date,
+        timeSlots: timeSlots,
+      };
+      setModalDataConfirm(data);
+    }
+  };
+
   useEffect(() => {
     async function fetchData(props) {
       const propRes = await props;
       try {
+        minDate.current = props.minDate;
+        maxDate.current = props.maxDate;
+
         if (propRes.data) {
-          const res = await propRes.data;
-          console.log(res);
-          if (res.length > 0) {
-            //setData(res);
+          const res = propRes.data;
+          if (res.msg.length > 0) {
+            setData(res);
+            if (res.status) {
+              let result = res.msg;
+              if (result !== "") {
+                let cardRes = [];
+                result.forEach((item) => {
+                  if (item.visible) {
+                    cardRes.push(
+                      <MotionBox variants={cardVariant} key={item.id}>
+                        <VenueCard product={item} setModalData={setModalData} />
+                      </MotionBox>
+                    );
+                  }
+                });
+                setCards(cardRes);
+              }
+            }
           }
         }
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
 
       setIsLoading(false);
     }
     fetchData(props);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
-
-  var result = null;
-  var cards = [];
-  */
- 
-  /*
-  if (data) {
-    try {
-      if (data.status) {
-        result = data.msg;
-        if (result !== "") {
-          result.forEach((item) => {
-            if (item.visible) {
-              cards.push(
-                <MotionBox variants={cardVariant} key={item.id}>
-                  <VenueCard product={item} setModalData={setModalData} />
-                </MotionBox>
-              );
-            }
-          });
-        }
-        console.log(cards);
-      }
-    } catch (Error) {
-      console.log(cards);
-      cards = [];
-    }
-  }*/
 
   return (
     <>
@@ -73,7 +79,7 @@ export default function VBS(props) {
         <Auth>
           <Box>
             <MotionSimpleGrid
-              mt="4"
+              mt="3"
               minChildWidth="20vw"
               spacing="2em"
               minH="full"
@@ -81,12 +87,20 @@ export default function VBS(props) {
               initial="initial"
               animate="animate"
             >
-              
+              {cards}
             </MotionSimpleGrid>
             <VenueModal
               isOpen={modalData ? true : false}
               onClose={() => setModalData(null)}
+              dataHandler={dataFromVenueModal}
               modalData={modalData}
+              calendarMin={minDate.current}
+              calendarMax={maxDate.current}
+            />
+            <VenueModalConfirmation
+              isOpen={modalDataConfirm ? true : false}
+              onClose={() => setModalDataConfirm(null)}
+              modalData={modalDataConfirm}
             />
           </Box>
         </Auth>
@@ -99,24 +113,19 @@ export async function getServerSideProps(context) {
   return {
     props: (async function () {
       try {
-        const session = await getSession(context);
-        //console.log("Session", JSON.stringify(session, null, 2));
-
-        const data = fetchVenue(session);
-        //console.log(data);
-
-        if (!data && !session) {
-          return {
-            data: null,
-          };
-        } else {
-          return {
-            data: data,
-          };
-        }
+        const res = await fetchVenue();
+        const stringifiedData = safeJsonStringify(res);
+        const data = JSON.parse(stringifiedData);
+        return {
+          minDate: process.env.CALENDAR_MIN_DAY,
+          maxDate: process.env.CALENDAR_MAX_DAY,
+          data: data,
+        };
       } catch (error) {
         console.error(error);
         return {
+          minDate: process.env.CALENDAR_MIN_DAY,
+          maxDate: process.env.CALENDAR_MAX_DAY,
           data: null,
         };
       }

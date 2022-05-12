@@ -17,7 +17,7 @@ import { signIn } from "next-auth/react";
 export default function SignIn(props) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
-  const [url, setURL] = useState("");
+  const [url, setURL] = useState("https://vbs-kevii.vercel.app"); //default
 
   useEffect(() => {
     async function fetchData(props) {
@@ -27,7 +27,6 @@ export default function SignIn(props) {
           setURL(propRes.data);
         }
       } catch (error) {
-        setURL("https://vbs-kevii.vercel.app");
         console.log(error);
       }
     }

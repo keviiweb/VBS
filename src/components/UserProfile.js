@@ -15,16 +15,31 @@ import {
 import { FiChevronDown } from "react-icons/fi";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import React, { useState, useEffect } from "react";
 
-export default function UserProfile() {
+export default function UserProfile(props) {
   const { data: session } = useSession();
-  if (session.user.admin) {
-    var admin = "Admin";
-  } else {
-    var admin = "User";
-  }
+  const [url, setURL] = useState("https://vbs-kevii.vercel.app"); //default
+  var admin = session && session.user.admin ? "Admin" : "User";
+  var name =
+    session && session.user.username ? session.user.username : "Test User";
 
   const router = useRouter();
+
+  useEffect(() => {
+    async function fetchData(props) {
+      const propRes = await props;
+      try {
+        if (propRes.data) {
+          setURL(propRes.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData(props);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url]);
 
   return (
     <HStack spacing={{ base: "0", md: "6" }}>
@@ -48,7 +63,7 @@ export default function UserProfile() {
                 spacing="1px"
                 ml="2"
               >
-                <Text fontSize="md">{session.user.username}</Text>
+                <Text fontSize="md">{name}</Text>
                 <Text fontSize="sm" color="gray.600">
                   {admin}
                 </Text>
@@ -61,7 +76,7 @@ export default function UserProfile() {
           <MenuList fontSize="lg" bg="white" borderColor="gray.200">
             <MenuItem onClick={() => router.push("/profile")}>Profile</MenuItem>
             <MenuDivider />
-            <MenuItem onClick={() => signOut({ callbackUrl: "/signin" })}>
+            <MenuItem onClick={() => signOut({ callbackUrl: url + "/signin" })}>
               Sign out
             </MenuItem>
           </MenuList>
@@ -69,4 +84,21 @@ export default function UserProfile() {
       </Flex>
     </HStack>
   );
+}
+
+export async function getServerSideProps(_context) {
+  return {
+    props: (async function () {
+      try {
+        return {
+          data: process.env.NEXTAUTH_URL,
+        };
+      } catch (error) {
+        console.error(error);
+        return {
+          data: null,
+        };
+      }
+    })(),
+  };
 }

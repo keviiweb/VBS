@@ -1,17 +1,32 @@
 import { prisma } from "./db";
-import { timingSlotNumberToTimingMapping } from "@constants/slotNumberToTimingMapping";
+import { useSession } from "next-auth/react";
 
-const convertDateToUnix = (date) => {
-  return Math.floor(date.getTime() / 1000);
+export const currentSession = () => {
+  var session = null;
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+    session = {
+      expires: "1",
+      user: { name: "a", email: "Delta", admin: false },
+    };
+  } else {
+    const { data: session, _status } = useSession();
+    if (session) {
+      return session;
+    }
+  }
+
+  return session;
 };
 
-export const fetchVenue = async (session) => {
+export const fetchVenue = async () => {
+  const session = currentSession();
+
   if (session) {
     try {
       const locations = await prisma.venue.findMany({
-        where: { visible: true },
+        where: { visible: true, isChildVenue: false },
       });
-  
+
       if (locations != null) {
         return { status: true, error: null, msg: locations };
       } else {
@@ -21,40 +36,7 @@ export const fetchVenue = async (session) => {
       console.log(error);
       return { status: false, error: "Connection timeout", msg: "" };
     }
-   
   } else {
     return { status: false, error: "User must be authenticated", msg: "" };
-  }
-};
-
-export const retrieveTimeSlots = async (session, venueData, date) => {
-  // Sample: 0900 - 2200
-  if (session) {
-    const convertedDate = convertDateToUnix(date);
-    var slots = [];
-    const bookedTimeSlots = await prisma.venuebooking.findMany({
-      where: { venue: venueData.id, date: convertedDate },
-    });
-
-    if (bookedTimeSlots != null) {
-      timingSlotNumberToTimingMapping.map((val, i) => {
-        slots[i] = { id: i, slot: val, booked: false };
-      });
-
-      bookedTimeSlots.forEach((item) => {
-        slots[item.timingSlot] = {
-          id: item.timingSlot,
-          slot: timingSlotNumberToTimingMapping[item.timingSlot],
-          booked: true,
-        };
-      });
-    } else {
-      timingSlotNumberToTimingMapping.map((val, i) => {
-        slots[i] = { id: i, slot: val, booked: false };
-      });
-    }
-    return slots;
-  } else {
-    return [];
   }
 };

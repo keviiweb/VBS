@@ -20,13 +20,14 @@ export default function VenueCard({ product, setModalData }) {
       <Box w="full" h="full">
         <Box
           w="100%"
-          height="13vw"
+          height="200px"
           position="relative"
           overflow="hidden"
           roundedTop="lg"
         >
           <Image
             src={image}
+            priority={true}
             objectFit="cover"
             alt="picture of a venue"
             layout="fill"

@@ -26,7 +26,13 @@ export default function Card({ product }) {
             overflow="hidden"
             roundedTop="lg"
           >
-            <Image src={img} objectFit="cover" alt="image" layout="fill" />
+            <Image
+              src={img}
+              priority={true}
+              objectFit="cover"
+              alt="image"
+              layout="fill"
+            />
           </Box>
 
           <Box p="6">

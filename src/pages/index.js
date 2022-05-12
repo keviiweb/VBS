@@ -1,10 +1,10 @@
 import { cardVariant, parentVariant } from "@root/motion";
 import { motion } from "framer-motion";
-import { LinkBox, SimpleGrid, Box } from "@chakra-ui/react";
+import { Box, SimpleGrid } from "@chakra-ui/react";
 import Auth from "@components/Auth";
 import Card from "@components/Card";
 const MotionSimpleGrid = motion(SimpleGrid);
-const MotionBox = motion(LinkBox);
+const MotionBox = motion(Box);
 
 export default function Home() {
   return (
