@@ -12,7 +12,7 @@ export default function Home() {
       <Box>
         <MotionSimpleGrid
           mt="3"
-          minChildWidth="250px"
+          minChildWidth="500px"
           spacing="2em"
           minH="full"
           variants={parentVariant}
@@ -35,6 +35,16 @@ export default function Home() {
                 img: "/image/cca.png",
                 title: "CCA Attendance",
                 link: "/cca",
+              }}
+            />
+          </MotionBox>
+
+          <MotionBox variants={cardVariant} key="3">
+            <Card
+              product={{
+                img: "/image/keips.png",
+                title: "Check your KEIPS",
+                link: "/keips",
               }}
             />
           </MotionBox>

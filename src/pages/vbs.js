@@ -7,7 +7,7 @@ import VenueCard from "@components/VenueCard";
 import VenueModal from "@components/VenueModal";
 import VenueModalConfirmation from "@components/VenueModalConfirmation";
 import Loading from "@components/Loading";
-import { fetchVenue } from "@constants/helper";
+import { fetchVenue } from "@constants/venue";
 
 import safeJsonStringify from "safe-json-stringify";
 

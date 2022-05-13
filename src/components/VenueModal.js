@@ -54,6 +54,8 @@ export default function VenueModal({
   const rawSlots = useRef([]);
   const selectedTimeSlots = useRef([]);
 
+  const [error, setError] = useState(null);
+
   const reset = () => {
     changeDate(null);
     setHasChildVenue(false);
@@ -62,6 +64,7 @@ export default function VenueModal({
     setDisplayedVenue(null);
     setDisplayedSlots(null);
     setTimeSlots([]);
+    setError(null);
     selectedTimeSlots.current = [];
     rawSlots.current = [];
     selectedVenue.current = [];
@@ -75,16 +78,63 @@ export default function VenueModal({
   };
 
   const handleSubmit = () => {
-    setTimeout(() => {
+    setError(null);
+    if (
+      validateFields(
+        selectedVenue.current,
+        date.current,
+        selectedTimeSlots.current
+      )
+    ) {
       dataHandler(
         selectedVenue.current,
         displayVenue(selectedVenue.current),
         date.current,
         selectedTimeSlots.current
       );
-      reset();
-      onClose();
-    }, 200);
+
+      setTimeout(() => {
+        reset();
+        onClose();
+      }, 200);
+    }
+  };
+
+  const validateFields = (venue, date, timeSlots) => {
+    // simple validation for now
+    if (!venue) {
+      setError("Please select a venue");
+      return false;
+    }
+
+    if (!date) {
+      setError("Please select a date");
+      return false;
+    }
+
+    if (!timeSlots || !check(timeSlots)) {
+      setError("Please select your timeslot(s)");
+      return false;
+    }
+
+    setError(null);
+    return true;
+  };
+
+  const check = (timeSlots) => {
+    if (timeSlots.length == 0) {
+      return false;
+    }
+
+    for (let key in timeSlots) {
+      if (timeSlots[key]) {
+        if (timeSlots[key].id) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   };
 
   useEffect(() => {
@@ -404,6 +454,26 @@ export default function VenueModal({
                 <Stack align={"center"}>
                   <Text>Venue: {displayedVenue}</Text>
                   <Text>{displayedSlots}</Text>
+                </Stack>
+              </Flex>
+            </Box>
+          )}
+
+          {error && (
+            <Box>
+              <Flex
+                w="full"
+                h="full"
+                alignItems="center"
+                justifyContent="center"
+                bg="white"
+                rounded="xl"
+                shadow="lg"
+                borderWidth="1px"
+                m="4"
+              >
+                <Stack align={"center"}>
+                  <Text>{error}</Text>
                 </Stack>
               </Flex>
             </Box>

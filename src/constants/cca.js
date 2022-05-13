@@ -91,7 +91,6 @@ const CCAData = {
     category: "committee",
     workload: "intermediate",
   },
-
   acaKE: {
     category: "cultural",
     workload: "intermediate",

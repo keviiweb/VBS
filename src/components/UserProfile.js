@@ -1,5 +1,4 @@
 import {
-  IconButton,
   Avatar,
   Box,
   Flex,
@@ -13,12 +12,13 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import { FiChevronDown } from "react-icons/fi";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
+import { currentSession } from "@constants/helper";
 
 export default function UserProfile(props) {
-  const { data: session } = useSession();
+  const session = currentSession();
   const [url, setURL] = useState("https://vbs-kevii.vercel.app"); //default
   var admin = session && session.user.admin ? "Admin" : "User";
   var name =

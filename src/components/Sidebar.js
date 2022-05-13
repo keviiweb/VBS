@@ -1,26 +1,45 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { Box, CloseButton, Flex, Text } from "@chakra-ui/react";
-import { FiHome, FiCompass, FiStar, FiSettings } from "react-icons/fi";
+import {
+  FiHome,
+  FiCompass,
+  FiStar,
+  FiSettings,
+  FiCalendar,
+} from "react-icons/fi";
 import NavLink from "./NavLink";
 import Link from "next/link";
-
-const LinkItems = [
-  { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/vbs" },
-  { label: "CCA ATTENDANCE", icon: FiSettings, href: "/cca" },
-  { label: "KEIPs", icon: FiStar, href: "/keips" },
-  { label: "CONTACT US", icon: FiCompass, href: "/contact" },
-];
+import { currentSession } from "@constants/helper";
 
 export default function Sidebar({ onClose, ...rest }) {
   const router = useRouter();
+  const session = currentSession();
+  const LinkItems = useRef([]);
 
   useEffect(() => {
+    if (session.user.admin) {
+      LinkItems.current = [
+        { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/vbs" },
+        { label: "CCA ATTENDANCE", icon: FiSettings, href: "/cca" },
+        { label: "KEIPs", icon: FiStar, href: "/keips" },
+        { label: "CONTACT US", icon: FiCompass, href: "/contact" },
+        { label: "MANAGE BOOKINGS", icon: FiCalendar, href: "/bookings" },
+      ];
+    } else {
+      LinkItems.current = [
+        { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/vbs" },
+        { label: "CCA ATTENDANCE", icon: FiSettings, href: "/cca" },
+        { label: "KEIPs", icon: FiStar, href: "/keips" },
+        { label: "CONTACT US", icon: FiCompass, href: "/contact" },
+      ];
+    }
+
     router.events.on("routeChangeComplete", onClose);
     return () => {
       router.events.off("routeChangeComplete", onClose);
     };
-  }, [router.events, onClose]);
+  }, [router.events, onClose, session]);
 
   return (
     <Box
@@ -41,7 +60,7 @@ export default function Sidebar({ onClose, ...rest }) {
         </Link>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link, i) => (
+      {LinkItems.current.map((link, i) => (
         <NavLink key={i} link={link} />
       ))}
     </Box>

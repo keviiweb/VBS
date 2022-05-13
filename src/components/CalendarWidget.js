@@ -9,8 +9,19 @@ export default function CalendarWidget({
   calendarMax,
 }) {
   const [currentDate, setDate] = useState(new Date());
-  const [minDate, _setMinDate] = useState(addDays(currentDate, calendarMin));
-  const [maxDate, _setMaxDate] = useState(addDays(currentDate, calendarMax));
+  const [minDate, setMinDate] = useState(new Date());
+  const [maxDate, setMaxDate] = useState(new Date());
+
+  useEffect(() => {
+    async function setDates() {
+      setMinDate(addDays(currentDate, Number(calendarMin)));
+      setMaxDate(addDays(currentDate, Number(calendarMax)));
+    }
+
+    if (calendarMax && calendarMin) {
+      setDates();
+    }
+  }, [calendarMax, calendarMin, currentDate]);
 
   function addDays(date, days) {
     let result = new Date(date);

@@ -84,6 +84,7 @@ const options = {
       });
 
       if (userFromDB != null) {
+        session.user.email = userFromDB.email;
         session.user.username = userFromDB.name;
         session.user.studentID = userFromDB.studentID;
         session.user.admin = userFromDB.admin;
@@ -273,7 +274,7 @@ function html({ url, host, email }) {
                       <table style="font-family:'Cabin',sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                         <tbody>
                           <tr>
-                            <td style="overflow-wrap:break-word;word-break:break-word;padding:40px 10px 10px;font-family:'Cabin',sans-serif;" align="left">
+                            <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 10px;font-family:'Cabin',sans-serif;" align="left">
 
                               <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>

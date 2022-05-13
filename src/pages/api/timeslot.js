@@ -1,10 +1,6 @@
 import { prisma } from "@constants/db";
 import { timingSlotNumberToTimingMapping } from "@constants/slotNumberToTimingMapping";
-import { currentSession } from "@constants/helper";
-
-const convertDateToUnix = (date) => {
-  return Math.floor(date / 1000);
-};
+import { currentSession, convertDateToUnix } from "@constants/helper";
 
 const handler = async (req, res) => {
   const session = currentSession();
@@ -14,8 +10,7 @@ const handler = async (req, res) => {
 
   if (session) {
     if (venue && date) {
-      const parseDate = Date.parse(date);
-      const convertedDate = convertDateToUnix(parseDate);
+      const convertedDate = convertDateToUnix(date);
 
       try {
         const bookedTimeSlots = await prisma.VenueBooking.findMany({
