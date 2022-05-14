@@ -9,16 +9,19 @@ import {
   ButtonGroup,
   useToast,
 } from "@chakra-ui/react";
-import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
+import { CheckIcon, CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { cardVariant } from "@root/motion";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useMemo } from "react";
 import Auth from "@components/Auth";
 import BookingTable from "@components/BookingTable";
+import BookingModal from "@components/BookingModal";
 
 const MotionBox = motion(Box);
 
 export default function ManageBooking() {
+  const [modalData, setModalData] = useState(null);
+
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState([]);
@@ -126,6 +129,10 @@ export default function ManageBooking() {
     }
   };
 
+  const handleDetails = (content) => {
+    setModalData(content);
+  };
+
   const includeActionButton = async (content, action) => {
     for (let key in content) {
       if (content[key]) {
@@ -150,16 +157,38 @@ export default function ManageBooking() {
           button = (
             <ButtonGroup>
               <Button
+                size="sm"
                 leftIcon={<CheckIcon />}
                 onClick={() => handleApprove(content.id)}
               >
                 Approve
               </Button>
               <Button
+                size="sm"
                 leftIcon={<CloseIcon />}
                 onClick={() => handleReject(content.id)}
               >
                 Reject
+              </Button>
+              <Button
+                size="sm"
+                leftIcon={<InfoOutlineIcon />}
+                onClick={() => handleDetails(content)}
+              >
+                View Details
+              </Button>
+            </ButtonGroup>
+          );
+          return button;
+        } else {
+          button = (
+            <ButtonGroup>
+              <Button
+                size="sm"
+                leftIcon={<InfoOutlineIcon />}
+                onClick={() => handleDetails(content)}
+              >
+                View Details
               </Button>
             </ButtonGroup>
           );
@@ -167,10 +196,30 @@ export default function ManageBooking() {
         }
         break;
       case APPROVED:
-        button = ``;
+        button = (
+          <ButtonGroup>
+            <Button
+              size="sm"
+              leftIcon={<InfoOutlineIcon />}
+              onClick={() => handleDetails(content)}
+            >
+              View Details
+            </Button>
+          </ButtonGroup>
+        );
         return button;
       case REJECTED:
-        button = ``;
+        button = (
+          <ButtonGroup>
+            <Button
+              size="sm"
+              leftIcon={<InfoOutlineIcon />}
+              onClick={() => handleDetails(content)}
+            >
+              View Details
+            </Button>
+          </ButtonGroup>
+        );
         return button;
       case PENDING:
         if (
@@ -181,16 +230,25 @@ export default function ManageBooking() {
           button = (
             <ButtonGroup>
               <Button
+                size="sm"
                 leftIcon={<CheckIcon />}
                 onClick={() => handleApprove(content.id)}
               >
                 Approve
               </Button>
               <Button
+                size="sm"
                 leftIcon={<CloseIcon />}
                 onClick={() => handleReject(content.id)}
               >
                 Reject
+              </Button>
+              <Button
+                size="sm"
+                leftIcon={<InfoOutlineIcon />}
+                onClick={() => handleDetails(content)}
+              >
+                View Details
               </Button>
             </ButtonGroup>
           );
@@ -359,8 +417,13 @@ export default function ManageBooking() {
             {loadingData ? (
               <Text>Loading Please wait...</Text>
             ) : (
-              <BookingTable columns={columns} data={data} />
+              <BookingTable key={1} columns={columns} data={data} />
             )}
+            <BookingModal
+              isOpen={modalData ? true : false}
+              onClose={() => setModalData(null)}
+              modalData={modalData}
+            />
           </Tabs>
         </MotionBox>
       </Box>
