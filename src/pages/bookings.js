@@ -257,6 +257,7 @@ export default function Booking() {
     if (loadingData) {
       fetchPendingData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const columns = useMemo(

@@ -58,10 +58,10 @@ export default function BookingTable({ columns, data }) {
       >
         <Table {...getTableProps()}>
           <Thead>
-            {headerGroups.map((headerGroup) => (
-              <Tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <Th {...column.getHeaderProps()}>
+            {headerGroups.map((headerGroup, i) => (
+              <Tr key={i} {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column, i) => (
+                  <Th key={i} {...column.getHeaderProps()}>
                     {column.render("Header")}
                   </Th>
                 ))}
@@ -72,10 +72,10 @@ export default function BookingTable({ columns, data }) {
             {page.map((row, i) => {
               prepareRow(row);
               return (
-                <Tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
+                <Tr key={i} {...row.getRowProps()}>
+                  {row.cells.map((cell, i) => {
                     return (
-                      <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
+                      <Td key={i} {...cell.getCellProps()}>{cell.render("Cell")}</Td>
                     );
                   })}
                 </Tr>
