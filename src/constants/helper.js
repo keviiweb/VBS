@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { timingSlotNumberToTimingMapping } from "@constants/slotNumberToTimingMapping";
+import { timingSlotNumberToTimingMapping } from "@constants/timeslot";
 import { numberToWeekday } from "@constants/weekdays";
 import { monthNamesFull } from "@constants/months";
 

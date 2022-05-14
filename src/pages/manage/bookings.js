@@ -18,7 +18,7 @@ import BookingTable from "@components/BookingTable";
 
 const MotionBox = motion(Box);
 
-export default function Booking() {
+export default function ManageBooking() {
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState([]);

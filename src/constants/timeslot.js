@@ -1,4 +1,4 @@
-const timingSlotNumberToTimingMapping = {
+export const timingSlotNumberToTimingMapping = {
   1: "0700 - 0730",
   2: "0730 - 0800",
   3: "0800 - 0830",
@@ -33,4 +33,17 @@ const timingSlotNumberToTimingMapping = {
   32: "2230 - 2300",
 };
 
-export { timingSlotNumberToTimingMapping };
+export const findSlots = async (slot, isStart) => {
+  for (let i in timingSlotNumberToTimingMapping) {
+    if (timingSlotNumberToTimingMapping[i].includes(slot)) {
+      const split = timingSlotNumberToTimingMapping[i].split("-");
+      if (split[0].trim() == slot && isStart) {
+        return i;
+      }
+
+      if (split[1].trim() == slot && !isStart) {
+        return i;
+      }
+    }
+  }
+};
