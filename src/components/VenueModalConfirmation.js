@@ -123,7 +123,7 @@ export default function VenueModalConfirmation({ isOpen, onClose, modalData }) {
     purpose
   ) => {
     try {
-      const rawResponse = await fetch("/api/createbooking", {
+      const rawResponse = await fetch("/api/bookingReq/create", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -186,9 +186,13 @@ export default function VenueModalConfirmation({ isOpen, onClose, modalData }) {
       });
       const content = await rawResponse.json();
       if (content.length > 0) {
+        CCALIST.current = [];
         for (let key in content) {
           if (content[key]) {
-            CCALIST.current.push(content[key].name);
+            CCALIST.current.push({
+              id: content[key].id,
+              name: content[key].name,
+            });
             selection.push(
               <option key={content[key].id} value={content[key].id}>
                 {content[key].name}
@@ -219,7 +223,7 @@ export default function VenueModalConfirmation({ isOpen, onClose, modalData }) {
   const setTypeHelper = (event) => {
     if (event) {
       if (event == 2) {
-        typeDB.current = CCALIST.current[0];
+        typeDB.current = CCALIST.current[0].id;
         setShowCCAs(true);
       } else {
         typeDB.current = "PERSONAL";
@@ -292,7 +296,14 @@ export default function VenueModalConfirmation({ isOpen, onClose, modalData }) {
 
     if (type) {
       if (type !== "PERSONAL") {
-        if (!CCALIST.current.includes(type)) {
+        let found = false;
+        for (let i in CCALIST.current) {
+          if (type == CCALIST.current[i].id) {
+            found = true;
+          }
+        }
+
+        if (!found) {
           setError("Not valid CCA");
           return false;
         }

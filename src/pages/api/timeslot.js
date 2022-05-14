@@ -18,6 +18,8 @@ const handler = async (req, res) => {
         });
 
         if (bookedTimeSlots != null) {
+          //TODO: add in logic for booked timeslots, disable the buttons
+
           for (let key in timingSlotNumberToTimingMapping) {
             if (timingSlotNumberToTimingMapping.hasOwnProperty(key)) {
               slots[key] = {

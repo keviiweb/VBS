@@ -29,15 +29,15 @@ const Auth = ({ children, admin }) => {
     if (redirect.current) {
       router.push("/signin");
     }
-  
+
     if (loading || !hasUser) {
       return <Loading />;
     }
-  
+
     if (admin && !session.user.admin) {
       router.push("/unauthorized");
     }
-  
+
     return <Layout>{children}</Layout>;
   }
 };

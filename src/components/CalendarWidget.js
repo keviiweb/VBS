@@ -21,7 +21,8 @@ export default function CalendarWidget({
     if (calendarMax && calendarMin) {
       setDates();
     }
-  }, [calendarMax, calendarMin, currentDate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function addDays(date, days) {
     let result = new Date(date);

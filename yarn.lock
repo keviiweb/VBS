@@ -2538,6 +2538,11 @@ react-calendar@3.7.0:
     merge-class-names "^1.1.1"
     prop-types "^15.6.0"
 
+react-chakra-pagination@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-chakra-pagination/-/react-chakra-pagination-1.0.1.tgz#3bbcae50589fe8dc4aed0032f5ad565db0e55f76"
+  integrity sha512-S/ldhbvYBXpmOuurNm4s9KmOa7A2i+PInE1GVwTauS3BDkAePp1TfpWhScq/V2f3Mq57uFEFlkVMWTTsukc+6A==
+
 react-clientside-effect@^1.2.5:
   version "1.2.6"
   resolved "https://registry.yarnpkg.com/react-clientside-effect/-/react-clientside-effect-1.2.6.tgz#29f9b14e944a376b03fb650eed2a754dd128ea3a"
@@ -2612,6 +2617,11 @@ react-style-singleton@^2.1.0, react-style-singleton@^2.2.0:
     get-nonce "^1.0.0"
     invariant "^2.2.4"
     tslib "^2.0.0"
+
+react-table@7.7.0:
+  version "7.7.0"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-7.7.0.tgz#e2ce14d7fe3a559f7444e9ecfe8231ea8373f912"
+  integrity sha512-jBlj70iBwOTvvImsU9t01LjFjy4sXEtclBovl3mTiqjz23Reu0DKnRza4zlLtOPACx6j2/7MrQIthIK1Wi+LIA==
 
 react@18.1.0:
   version "18.1.0"
