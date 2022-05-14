@@ -4,19 +4,22 @@ import { numberToWeekday } from "@constants/weekdays";
 import { monthNamesFull } from "@constants/months";
 
 export const isInside = (want, check) => {
- // Check if want is inside check
- // Sample: "1,2,3"  is inside "4,5,6" ?
- const wantArr = convertSlotToArray(want, true);
- const checkArr = convertSlotToArray(check, true);
+  // Check if want is inside check
+  // Sample: "1,2,3"  is inside "4,5,6" ?
+  const wantArr = convertSlotToArray(want, true);
+  const checkArr = convertSlotToArray(check, true);
 
- for (let i in wantArr) {
-  if (checkArr.includes(i)) {
-    return true;
+  for (let obj in wantArr) {
+    let i = checkArr.length;
+    while (i--) {
+      if (Number(checkArr[i]) === Number(wantArr[obj])) {
+        return true;
+      }
+    }
   }
- }
 
- return false;
-}
+  return false;
+};
 
 export const mapSlotToTiming = (data) => {
   const result = [];

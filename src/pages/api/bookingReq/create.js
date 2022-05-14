@@ -6,7 +6,7 @@ import {
   convertSlotToArray,
   prettifyTiming,
 } from "@constants/helper";
-import { sendMail } from "@constants/inprogressemail";
+import { sendMail } from "@constants/email/progress";
 import { findCCAbyID } from "@constants/cca";
 
 const handler = async (req, res) => {
@@ -20,18 +20,20 @@ const handler = async (req, res) => {
       const slots = convertSlotToArray(timeSlots, false);
       let isSuccessful = false;
       let bookingID = null;
+      let cca = undefined;
 
-      try {
-        let cca = undefined;
-        if (type !== "PERSONAL") {
-          const dbSearch = await findCCAbyID(type);
-          if (dbSearch && dbSearch.status) {
-            cca = dbSearch.msg.name;
-          }
+      if (type !== "PERSONAL") {
+        const dbSearch = await findCCAbyID(type);
+        if (dbSearch && dbSearch.status) {
+          cca = dbSearch.msg.name;
         } else {
           cca = "PERSONAL";
         }
+      } else {
+        cca = "PERSONAL";
+      }
 
+      try {
         const bookedTimeSlots = await prisma.venueBookingRequest.create({
           data: {
             email: email,
@@ -67,7 +69,6 @@ const handler = async (req, res) => {
         res.status(200).send(result);
       }
 
-      /*
       try {
         if (isSuccessful) {
           let slotArray = convertSlotToArray(slots, true);
@@ -84,11 +85,11 @@ const handler = async (req, res) => {
             sessionEmail: session.user.email,
           };
 
-          await sendMail(email, data);
+          //await sendMail(email, data);
         }
       } catch (error) {
         console.log(error);
-      }*/
+      }
     } else {
       result = { status: false, error: "Booking request not created", msg: "" };
       res.status(200).send(result);

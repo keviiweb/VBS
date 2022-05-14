@@ -81,7 +81,6 @@ model VenueBookingRequest {
   isApproved    Boolean @default(false)
   isRejected    Boolean @default(false)
   isCancelled   Boolean @default(false)
-  bookingID     String?
   purpose   String  @db.VarChar(500)
   cca  String @default("PERSONAL")
   sessionEmail  String?

@@ -7,6 +7,7 @@ import {
   TabList,
   Tab,
   ButtonGroup,
+  useToast,
 } from "@chakra-ui/react";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { cardVariant } from "@root/motion";
@@ -18,6 +19,7 @@ import BookingTable from "@components/BookingTable";
 const MotionBox = motion(Box);
 
 export default function Booking() {
+  const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState([]);
   const allBookings = useRef([]);
@@ -27,7 +29,10 @@ export default function Booking() {
   const REJECTED = 2;
 
   const [tabIndex, setTabIndex] = useState(0);
+  const tabIndexData = useRef(0);
+
   const handleTabChange = async (index) => {
+    tabIndexData.current = index;
     setTabIndex(index);
     switch (index) {
       case PENDING:
@@ -60,6 +65,22 @@ export default function Booking() {
         });
         const content = await rawResponse.json();
         if (content.status) {
+          toast({
+            title: "Request approved.",
+            description: "An email has been sent to the requester",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          await handleTabChange(tabIndexData.current);
+        } else {
+          toast({
+            title: "Error",
+            description: content.error,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
         }
       } catch (error) {
         console.log(error);
@@ -82,6 +103,22 @@ export default function Booking() {
         });
         const content = await rawResponse.json();
         if (content.status) {
+          toast({
+            title: "Request rejected.",
+            description: "An email has been sent to the requester",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          await handleTabChange(tabIndexData.current);
+        } else {
+          toast({
+            title: "Error",
+            description: content.error,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
         }
       } catch (error) {
         console.log(error);

@@ -1,12 +1,15 @@
-import { isConflict } from "@constants/booking";
+import { isConflict, setApprove, setRejectConflicts } from "@constants/booking";
 import { prisma } from "@constants/db";
 import {
   currentSession,
   convertSlotToArray,
   mapSlotToTiming,
   prettifyTiming,
+  convertUnixToDate,
+  prettifyDate,
 } from "@constants/helper";
-//import { sendMail } from "@constants/approveemail";
+import { findVenueByID } from "@constants/venue";
+import { sendMail } from "@constants/email/approve";
 
 const handler = async (req, res) => {
   const session = currentSession();
@@ -24,7 +27,7 @@ const handler = async (req, res) => {
 
       if (bookingRequest) {
         const isThereConflict = await isConflict(bookingRequest);
-
+        const timeSlots = convertSlotToArray(bookingRequest.timeSlots, true);
         if (!isThereConflict) {
           try {
             for (let i in timeSlots) {
@@ -33,7 +36,7 @@ const handler = async (req, res) => {
                   email: bookingRequest.email,
                   venue: bookingRequest.venue,
                   date: bookingRequest.date,
-                  timingSlot: i,
+                  timingSlot: timeSlots[i],
                   cca: bookingRequest.cca,
                   purpose: bookingRequest.purpose,
                 },
@@ -68,6 +71,13 @@ const handler = async (req, res) => {
             msg: "Booking request created",
           };
           res.status(200).send(result);
+        } else {
+          result = {
+            status: false,
+            error: "Either failed to approve slot or cancel conflicting",
+            msg: "",
+          };
+          res.status(200).send(result);
         }
       } else {
         result = { status: false, error: "No booking ID found", msg: "" };
@@ -76,22 +86,27 @@ const handler = async (req, res) => {
 
       try {
         if (isSuccessful) {
-          /*
-          let slotArray = convertSlotToArray(slots, true);
+          let slotArray = convertSlotToArray(bookingRequest.timeSlots, true);
           slotArray = mapSlotToTiming(slotArray);
+          const venueReq = await findVenueByID(bookingRequest.venue);
+          let date = convertUnixToDate(bookingRequest.date);
+          date = prettifyDate(date);
 
-          const data = {
-            id: bookingID,
-            email: email,
-            venue: venueName,
-            date: date,
-            timeSlots: prettifyTiming(slotArray),
-            cca: type,
-            purpose: purpose,
-            sessionEmail: session.user.email,
-          };
+          let email = bookingRequest.email;
+          if (venueReq && venueReq.status) {
+            const data = {
+              id: bookingRequest.id,
+              email: bookingRequest.email,
+              venue: venueReq.msg.name,
+              date: date,
+              timeSlots: prettifyTiming(slotArray),
+              cca: bookingRequest.cca,
+              purpose: bookingRequest.purpose,
+              sessionEmail: session.user.email,
+            };
 
-          await sendMail(email, data);*/
+            //await sendMail(email, data);
+          }
         }
       } catch (error) {
         console.log(error);

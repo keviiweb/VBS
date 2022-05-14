@@ -75,7 +75,9 @@ export default function BookingTable({ columns, data }) {
                 <Tr key={i} {...row.getRowProps()}>
                   {row.cells.map((cell, i) => {
                     return (
-                      <Td key={i} {...cell.getCellProps()}>{cell.render("Cell")}</Td>
+                      <Td key={i} {...cell.getCellProps()}>
+                        {cell.render("Cell")}
+                      </Td>
                     );
                   })}
                 </Tr>

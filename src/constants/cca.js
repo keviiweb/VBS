@@ -368,8 +368,6 @@ export const findCCAbyID = async (id) => {
         },
       });
 
-      console.log(query);
-
       if (query) {
         return { status: true, error: null, msg: query };
       } else {

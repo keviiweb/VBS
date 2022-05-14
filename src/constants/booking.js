@@ -17,7 +17,7 @@ export const isConflict = async (bookingRequest) => {
         const anyConflicting = await prisma.venueBooking.findFirst({
           where: {
             date: bookingRequest.date,
-            timingSlot: i,
+            timingSlot: timeSlots[i],
             venue: bookingRequest.venue,
           },
         });
@@ -104,6 +104,7 @@ export const setReject = async (bookingRequest) => {
 
 export const setRejectConflicts = async (bookingRequest) => {
   const session = currentSession();
+  let success = true;
 
   if (session) {
     if (bookingRequest) {
@@ -111,25 +112,43 @@ export const setRejectConflicts = async (bookingRequest) => {
         where: {
           date: bookingRequest.date,
           venue: bookingRequest.venue,
+          id: {
+            not: bookingRequest.id,
+          },
+          isApproved: false,
+          isCancelled: false,
+          isRejected: false,
         },
       });
 
       if (sameDayVenue) {
+        console.log("SAME DAY");
+
         for (let key in sameDayVenue) {
-          if (sameDayVenue[key]) {
-            const request = sameDayVenue[key];
-            if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
-              //cancel
+          const request = sameDayVenue[key];
+          if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
+            const reject = await setReject(request);
+            if (!reject.status) {
+              console.log(reject.error);
+              success = false;
             }
           }
         }
       }
 
-      return {
-        status: true,
-        error: null,
-        msg: "Successfully updated request on approval",
-      };
+      if (success) {
+        return {
+          status: true,
+          error: null,
+          msg: "Successfully rejected conflicting timeslots",
+        };
+      } else {
+        return {
+          status: false,
+          error: "Failed to reject conflicting timeslots",
+          msg: "",
+        };
+      }
     } else {
       return { status: false, error: "No booking ID found", msg: "" };
     }
