@@ -84,6 +84,7 @@ model VenueBookingRequest {
   purpose   String  @db.VarChar(500)
   cca  String @default("PERSONAL")
   sessionEmail  String?
+  conflictRequest String?
   created_at DateTime @default(now()) @db.DateTime(0)
   updated_at DateTime @default(now()) @db.DateTime(0)
 }

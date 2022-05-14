@@ -122,11 +122,12 @@ export const setRejectConflicts = async (bookingRequest) => {
       });
 
       if (sameDayVenue) {
-        console.log("SAME DAY");
+        let conflicting = [];
 
         for (let key in sameDayVenue) {
           const request = sameDayVenue[key];
           if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
+            conflicting.push(request.id);
             const reject = await setReject(request);
             if (!reject.status) {
               console.log(reject.error);
@@ -134,6 +135,8 @@ export const setRejectConflicts = async (bookingRequest) => {
             }
           }
         }
+
+        await updateConflictingIDs(bookingRequest, conflicting);
       }
 
       if (success) {
@@ -156,3 +159,34 @@ export const setRejectConflicts = async (bookingRequest) => {
     return { status: false, error: "Unauthenticated request", msg: "" };
   }
 };
+
+export const updateConflictingIDs = async (bookingRequest, conflict) => {
+  const session = currentSession();
+
+  if (session) {
+    if (bookingRequest) {
+      const update = await prisma.venueBookingRequest.update({
+        where: {
+          id: bookingRequest.id,
+        },
+        data: {
+          conflictRequest: conflict.toString(),
+        },
+      });
+
+      if (update) {
+        return {
+          status: true,
+          error: null,
+          msg: "Successfully updated request on reject",
+        };
+      } else {
+        return { status: false, error: "Error in updating", msg: "" };
+      }
+    } else {
+      return { status: false, error: "No booking ID found", msg: "" };
+    }
+  } else {
+    return { status: false, error: "Unauthenticated request", msg: "" };
+  }
+}
