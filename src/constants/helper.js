@@ -58,12 +58,21 @@ export const prettifyDate = (date) => {
 };
 
 export const convertDateToUnix = (date) => {
-  const parseDate = Date.parse(date);
+  const prettified = prettifyDate(date);
+  const parseDate = Date.parse(prettified);
   return Math.floor(parseDate / 1000);
 };
 
 export const convertUnixToDate = (date) => {
   return new Date(date * 1000);
+};
+
+export const compareDate = (comparedDate, number) => {
+  let compared = convertUnixToDate(comparedDate);
+  let date = new Date();
+  date.setDate(date.getDate() + Number(number));
+
+  return date <= compared;
 };
 
 export const convertSlotToArray = (slots, reverse = false) => {

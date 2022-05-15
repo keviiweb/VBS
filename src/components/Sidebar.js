@@ -28,9 +28,13 @@ export default function Sidebar({ onClose, ...rest }) {
         {
           label: "MANAGE BOOKINGS",
           icon: FiCalendar,
-          href: "/manage/bookings",
+          href: "/manage/admin/bookings",
         },
-        { label: "MANAGE VENUES", icon: FiMapPin, href: "/manage/venues" },
+        {
+          label: "MANAGE VENUES",
+          icon: FiMapPin,
+          href: "/manage/admin/venues",
+        },
       ];
     } else {
       LinkItems.current = [
@@ -38,6 +42,11 @@ export default function Sidebar({ onClose, ...rest }) {
         { label: "CCA ATTENDANCE", icon: FiSettings, href: "/cca" },
         { label: "KEIPs", icon: FiStar, href: "/keips" },
         { label: "CONTACT US", icon: FiCompass, href: "/contact" },
+        {
+          label: "MANAGE BOOKINGS",
+          icon: FiCalendar,
+          href: "/manage/bookings",
+        },
       ];
     }
 

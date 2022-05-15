@@ -7,6 +7,48 @@ import {
 
 export const BOOKINGS = ["PENDING", "APPROVED", "REJECTED"];
 
+export const isApproved = async (bookingRequest) => {
+  const session = currentSession();
+
+  if (session) {
+    try {
+      return bookingRequest.isApproved;
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    return true;
+  }
+};
+
+export const isCancelled = async (bookingRequest) => {
+  const session = currentSession();
+
+  if (session) {
+    try {
+      return bookingRequest.isCancelled;
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    return true;
+  }
+};
+
+export const isRejected = async (bookingRequest) => {
+  const session = currentSession();
+
+  if (session) {
+    try {
+      return bookingRequest.isRejected;
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    return true;
+  }
+};
+
 export const isConflict = async (bookingRequest) => {
   const session = currentSession();
 
@@ -90,6 +132,39 @@ export const setReject = async (bookingRequest) => {
           status: true,
           error: null,
           msg: "Successfully updated request on reject",
+        };
+      } else {
+        return { status: false, error: "Error in updating", msg: "" };
+      }
+    } else {
+      return { status: false, error: "No booking ID found", msg: "" };
+    }
+  } else {
+    return { status: false, error: "Unauthenticated request", msg: "" };
+  }
+};
+
+export const setCancel = async (bookingRequest) => {
+  const session = currentSession();
+
+  if (session) {
+    if (bookingRequest) {
+      const update = await prisma.venueBookingRequest.update({
+        where: {
+          id: bookingRequest.id,
+        },
+        data: {
+          isApproved: false,
+          isRejected: false,
+          isCancelled: true,
+        },
+      });
+
+      if (update) {
+        return {
+          status: true,
+          error: null,
+          msg: "Successfully updated request on cancel",
         };
       } else {
         return { status: false, error: "Error in updating", msg: "" };

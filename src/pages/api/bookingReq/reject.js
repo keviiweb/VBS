@@ -1,4 +1,9 @@
-import { setReject } from "@constants/booking";
+import {
+  isApproved,
+  isCancelled,
+  isRejected,
+  setReject,
+} from "@constants/booking";
 import { prisma } from "@constants/db";
 import {
   currentSession,
@@ -26,6 +31,42 @@ const handler = async (req, res) => {
       });
 
       if (bookingRequest) {
+        const isRequestApproved = await isApproved(bookingRequest);
+        if (isRequestApproved) {
+          result = {
+            status: false,
+            error: "Request already approved!",
+            msg: "",
+          };
+          res.status(200).send(result);
+          res.end();
+          return;
+        }
+
+        const isRequestCancelled = await isCancelled(bookingRequest);
+        if (isRequestCancelled) {
+          result = {
+            status: false,
+            error: "Request already cancelled!",
+            msg: "",
+          };
+          res.status(200).send(result);
+          res.end();
+          return;
+        }
+
+        const isRequestRejected = await isRejected(bookingRequest);
+        if (isRequestRejected) {
+          result = {
+            status: false,
+            error: "Request already rejected!",
+            msg: "",
+          };
+          res.status(200).send(result);
+          res.end();
+          return;
+        }
+
         const reject = await setReject(bookingRequest);
         if (reject.status) {
           isSuccessful = true;

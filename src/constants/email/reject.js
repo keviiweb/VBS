@@ -393,5 +393,5 @@ function html({ data }) {
 }
 
 function text() {
-  return `We received your booking request\n\n`;
+  return `We rejected your booking request\n\n`;
 }

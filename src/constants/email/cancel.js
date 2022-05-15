@@ -14,7 +14,7 @@ export const sendMail = async (target, data) => {
     {
       from: process.env.EMAIL_FROM,
       to: target,
-      subject: "KEVII VBS: Request Approved",
+      subject: "KEVII VBS: Request Cancelled",
       text: text(),
       html: html({ data }),
     },
@@ -263,7 +263,7 @@ function html({ data }) {
                                   <div style="line-height: 160%; text-align: center; word-wrap: break-word;">
                                     <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 18px; line-height: 28.8px;">Reference No: ${data.id}</span></p>
                                     <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 18px; line-height: 28.8px;">Hi, ${data.email}</span></p>
-                                    <p style="font-size: 14px; line-height: 160%;">Your booking request has been <strong>approved</strong></p>
+                                    <p style="font-size: 14px; line-height: 160%;">Your booking request has been <strong>cancelled</strong></p>
                                   </div>
     
                                 </td>
@@ -393,5 +393,5 @@ function html({ data }) {
 }
 
 function text() {
-  return `We approved your booking request\n\n`;
+  return `We cancelled your booking request\n\n`;
 }

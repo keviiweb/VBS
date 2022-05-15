@@ -41,6 +41,32 @@ const handler = async (req, res) => {
                   cca = ccaReq.msg.name;
                 }
 
+                let status = null;
+
+                if (!book.isApproved && !book.isCancelled && !book.isRejected) {
+                  status = "Pending";
+                } else if (
+                  book.isApproved &&
+                  !book.isCancelled &&
+                  !book.isRejected
+                ) {
+                  status = "Approved";
+                } else if (
+                  !book.isApproved &&
+                  book.isCancelled &&
+                  !book.isRejected
+                ) {
+                  status = "Cancelled";
+                } else if (
+                  !book.isApproved &&
+                  !book.isCancelled &&
+                  book.isRejected
+                ) {
+                  status = "Rejected";
+                } else {
+                  status = "Unknown";
+                }
+
                 const data = {
                   id: book.id,
                   email: book.email,
@@ -52,6 +78,7 @@ const handler = async (req, res) => {
                   isCancelled: book.isCancelled,
                   purpose: book.purpose,
                   cca: cca,
+                  status: status,
                 };
 
                 parsedBooking.push(data);

@@ -85,34 +85,7 @@ export default function BookingModal({ isOpen, onClose, modalData }) {
       setEmail(modalData.email);
       setCCA(modalData.cca);
       setPurpose(modalData.purpose);
-
-      if (
-        !modalData.isApproved &&
-        !modalData.isCancelled &&
-        !modalData.isRejected
-      ) {
-        setStatus("Pending");
-      } else if (
-        modalData.isApproved &&
-        !modalData.isCancelled &&
-        !modalData.isRejected
-      ) {
-        setStatus("Approved");
-      } else if (
-        !modalData.isApproved &&
-        modalData.isCancelled &&
-        !modalData.isRejected
-      ) {
-        setStatus("Cancelled");
-      } else if (
-        !modalData.isApproved &&
-        !modalData.isCancelled &&
-        modalData.isRejected
-      ) {
-        setStatus("Rejected");
-      } else {
-        setStatus("Unknown");
-      }
+      setStatus(modalData.status);
 
       if (modalData.conflictRequest && modalData.conflictRequest.length > 0) {
         await processConflicts(modalData.conflictRequest);
@@ -152,6 +125,10 @@ export default function BookingModal({ isOpen, onClose, modalData }) {
       {
         Header: "Purpose",
         accessor: "purpose",
+      },
+      {
+        Header: "Status",
+        accessor: "status",
       },
     ],
     []
@@ -284,14 +261,18 @@ export default function BookingModal({ isOpen, onClose, modalData }) {
 
                         {!conflict && (
                           <>
-                            <Text
-                              fontSize={{ base: "16px", lg: "18px" }}
-                              fontWeight={"500"}
-                              textTransform={"uppercase"}
-                              mb={"4"}
-                            >
-                              No conflicting requests found
-                            </Text>
+                            {loadingData ? (
+                              <Text>Loading Please wait...</Text>
+                            ) : (
+                              <Text
+                                fontSize={{ base: "16px", lg: "18px" }}
+                                fontWeight={"500"}
+                                textTransform={"uppercase"}
+                                mb={"4"}
+                              >
+                                No conflicting requests found
+                              </Text>
+                            )}
                           </>
                         )}
                       </Box>

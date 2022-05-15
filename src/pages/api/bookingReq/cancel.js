@@ -1,10 +1,8 @@
 import {
-  isConflict,
   isApproved,
   isCancelled,
   isRejected,
-  setApprove,
-  setRejectConflicts,
+  setCancel,
 } from "@constants/booking";
 import { prisma } from "@constants/db";
 import {
@@ -16,7 +14,8 @@ import {
   prettifyDate,
 } from "@constants/helper";
 import { findVenueByID } from "@constants/venue";
-import { sendMail } from "@constants/email/approve";
+import { compareDate } from "@constants/helper";
+import { sendMail } from "@constants/email/cancel";
 
 const handler = async (req, res) => {
   const session = currentSession();
@@ -69,55 +68,32 @@ const handler = async (req, res) => {
           return;
         }
 
-        const isThereConflict = await isConflict(bookingRequest);
-        const timeSlots = convertSlotToArray(bookingRequest.timeSlots, true);
-        if (!isThereConflict) {
-          try {
-            for (let i in timeSlots) {
-              const insertRequest = await prisma.venueBooking.create({
-                data: {
-                  email: bookingRequest.email,
-                  venue: bookingRequest.venue,
-                  date: bookingRequest.date,
-                  timingSlot: timeSlots[i],
-                  cca: bookingRequest.cca,
-                  purpose: bookingRequest.purpose,
-                },
-              });
+        const minDay = process.env.CANCEL_MIN_DAY;
+        const currentDate = bookingRequest.date;
 
-              if (!insertRequest) {
-                console.log("Approve Request - Venue Booking creation failed!");
-              }
-            }
-          } catch (error) {
-            console.log(error);
+        if (compareDate(currentDate, minDay)) {
+          const reject = await setCancel(bookingRequest);
+          if (reject.status) {
+            isSuccessful = true;
+            result = {
+              status: true,
+              error: null,
+              msg: "Booking request rejected",
+            };
+            res.status(200).send(result);
+          } else {
+            result = {
+              status: false,
+              error: "Failed to reject booking",
+              msg: "",
+            };
+            res.status(200).send(result);
           }
         } else {
+          const msg = "Cancellation only possible " + minDay + " day(s) before";
           result = {
             status: false,
-            error: "Conflicts found in booking",
-            msg: "",
-          };
-          res.status(200).send(result);
-          res.end();
-          return;
-        }
-
-        const approve = await setApprove(bookingRequest);
-        const cancel = await setRejectConflicts(bookingRequest);
-
-        if (approve.status && cancel.status) {
-          isSuccessful = true;
-          result = {
-            status: true,
-            error: null,
-            msg: "Booking request created",
-          };
-          res.status(200).send(result);
-        } else {
-          result = {
-            status: false,
-            error: "Either failed to approve slot or cancel conflicting",
+            error: msg,
             msg: "",
           };
           res.status(200).send(result);
