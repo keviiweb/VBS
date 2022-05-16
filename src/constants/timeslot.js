@@ -33,6 +33,42 @@ export const timingSlotNumberToTimingMapping = {
   32: "2230 - 2300",
 };
 
+export const timeSlots = {
+  1: "0700",
+  2: "0730",
+  3: "0800",
+  4: "0830",
+  5: "0900",
+  6: "0930",
+  7: "1000",
+  8: "1030",
+  9: "1100",
+  10: "1130",
+  11: "1200",
+  12: "1230",
+  13: "1300",
+  14: "1330",
+  15: "1400",
+  16: "1430",
+  17: "1500",
+  18: "1530",
+  19: "1600",
+  20: "1630",
+  21: "1700",
+  22: "1730",
+  23: "1800",
+  24: "1830",
+  25: "1900",
+  26: "1930",
+  27: "2000",
+  28: "2030",
+  29: "2100",
+  30: "2130",
+  31: "2200",
+  32: "2230",
+  33: "2300",
+};
+
 export const findSlots = async (slot, isStart) => {
   for (let i in timingSlotNumberToTimingMapping) {
     if (timingSlotNumberToTimingMapping[i].includes(slot)) {

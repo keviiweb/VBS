@@ -1,21 +1,12 @@
 import {
+  findBookingByID,
   isApproved,
   isCancelled,
   isRejected,
   setCancel,
 } from "@constants/booking";
-import { prisma } from "@constants/db";
-import {
-  currentSession,
-  convertSlotToArray,
-  mapSlotToTiming,
-  prettifyTiming,
-  convertUnixToDate,
-  prettifyDate,
-} from "@constants/helper";
-import { findVenueByID } from "@constants/venue";
+import { currentSession } from "@constants/helper";
 import { compareDate } from "@constants/helper";
-import { sendMail } from "@constants/email/cancel";
 
 const handler = async (req, res) => {
   const session = currentSession();
@@ -25,11 +16,7 @@ const handler = async (req, res) => {
   if (session) {
     if (id) {
       let isSuccessful = false;
-      const bookingRequest = await prisma.venueBookingRequest.findFirst({
-        where: {
-          id: id,
-        },
-      });
+      const bookingRequest = await findBookingByID(id);
 
       if (bookingRequest) {
         const isRequestApproved = await isApproved(bookingRequest);
@@ -72,7 +59,7 @@ const handler = async (req, res) => {
         const currentDate = bookingRequest.date;
 
         if (compareDate(currentDate, minDay)) {
-          const reject = await setCancel(bookingRequest);
+          const reject = await setCancel(bookingRequest, session);
           if (reject.status) {
             isSuccessful = true;
             result = {
@@ -101,34 +88,6 @@ const handler = async (req, res) => {
       } else {
         result = { status: false, error: "No booking ID found", msg: "" };
         res.status(200).send(result);
-      }
-
-      try {
-        if (isSuccessful) {
-          let slotArray = convertSlotToArray(bookingRequest.timeSlots, true);
-          slotArray = mapSlotToTiming(slotArray);
-          const venueReq = await findVenueByID(bookingRequest.venue);
-          let date = convertUnixToDate(bookingRequest.date);
-          date = prettifyDate(date);
-
-          let email = bookingRequest.email;
-          if (venueReq && venueReq.status) {
-            const data = {
-              id: bookingRequest.id,
-              email: bookingRequest.email,
-              venue: venueReq.msg.name,
-              date: date,
-              timeSlots: prettifyTiming(slotArray),
-              cca: bookingRequest.cca,
-              purpose: bookingRequest.purpose,
-              sessionEmail: session.user.email,
-            };
-
-            //await sendMail(email, data);
-          }
-        }
-      } catch (error) {
-        console.log(error);
       }
     } else {
       result = { status: false, error: "No booking ID found", msg: "" };

@@ -14,7 +14,7 @@ import { cardVariant } from "@root/motion";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useMemo } from "react";
 import Auth from "@components/Auth";
-import BookingTable from "@components/BookingTable";
+import TableWidget from "@components/TableWidget";
 import BookingModal from "@components/BookingModal";
 
 const MotionBox = motion(Box);
@@ -258,7 +258,6 @@ export default function ManageBooking() {
           );
           return button;
         }
-        
     }
   };
 
@@ -356,7 +355,7 @@ export default function ManageBooking() {
       fetchPendingData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loadingData]);
 
   const columns = useMemo(
     () => [
@@ -424,9 +423,10 @@ export default function ManageBooking() {
             {loadingData ? (
               <Text>Loading Please wait...</Text>
             ) : (
-              <BookingTable key={1} columns={columns} data={data} />
+              <TableWidget key={1} columns={columns} data={data} />
             )}
             <BookingModal
+              isAdmin={true}
               isOpen={modalData ? true : false}
               onClose={() => setModalData(null)}
               modalData={modalData}

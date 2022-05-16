@@ -56,18 +56,24 @@ const handler = async (req, res) => {
         }
 
         res.status(200).send(slots);
+        res.end();
+        return;
       } catch (error) {
         console.log(error);
         res.status(200).send(slots);
+        res.end();
+        return;
       }
     } else {
       res.status(200).send(slots);
+      res.end();
+      return;
     }
   } else {
     res.status(200).send(slots);
+    res.end();
+    return;
   }
-
-  res.end();
 };
 
 export default handler;

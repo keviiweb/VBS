@@ -21,6 +21,7 @@ import {
   Text,
   Textarea,
   Switch,
+  useToast,
 } from "@chakra-ui/react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
@@ -29,7 +30,11 @@ import { cardVariant, parentVariant } from "@root/motion";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
-export default function VenueModalConfirmation({ isOpen, onClose, modalData }) {
+export default function VenueBookingModalConfirmation({
+  isOpen,
+  onClose,
+  modalData,
+}) {
   //display
   const [venue, setVenue] = useState(null);
   const [date, setDate] = useState(null);
@@ -45,6 +50,7 @@ export default function VenueModalConfirmation({ isOpen, onClose, modalData }) {
   const CCALIST = useRef([]);
 
   const [isSwitch, setIsSwitch] = useState(false);
+  const toast = useToast();
 
   //variable for db
   const emailDB = useRef(null);
@@ -146,6 +152,13 @@ export default function VenueModalConfirmation({ isOpen, onClose, modalData }) {
           handleModalCloseButton();
         }, 5000);
       } else {
+        toast({
+          title: "Error",
+          description: content.error,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
         setSuccessBooking(false);
       }
     } catch (error) {}
@@ -335,7 +348,7 @@ export default function VenueModalConfirmation({ isOpen, onClose, modalData }) {
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Timeslot Confirmation</ModalHeader>
+        <ModalHeader></ModalHeader>
         <ModalBody>
           {success && (
             <Box textAlign="center" py={10} px={6}>

@@ -14,15 +14,19 @@ const handler = async (req, res) => {
         });
       }
       res.status(200).send(result);
+      res.end();
+      return;
     } catch (error) {
       console.log(error);
       res.status(200).send(result);
+      res.end();
+      return;
     }
   } else {
     res.status(200).send(result);
+    res.end();
+    return;
   }
-
-  res.end();
 };
 
 export default handler;

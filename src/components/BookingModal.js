@@ -17,13 +17,13 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
-import BookingTable from "@components/BookingTable";
+import TableWidget from "@components/TableWidget";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
-export default function BookingModal({ isOpen, onClose, modalData }) {
+export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
   const [loadingData, setLoadingData] = useState(true);
   const [id, setID] = useState(null);
   const [venue, setVenue] = useState(null);
@@ -100,39 +100,68 @@ export default function BookingModal({ isOpen, onClose, modalData }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalData]);
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: "Venue",
-        accessor: "venue",
-      },
-      {
-        Header: "Date",
-        accessor: "date",
-      },
-      {
-        Header: "Timeslot(s)",
-        accessor: "timeSlots",
-      },
-      {
-        Header: "Email",
-        accessor: "email",
-      },
-      {
-        Header: "CCA",
-        accessor: "cca",
-      },
-      {
-        Header: "Purpose",
-        accessor: "purpose",
-      },
-      {
-        Header: "Status",
-        accessor: "status",
-      },
-    ],
-    []
-  );
+  const columns = useMemo(() => {
+    console.log(isAdmin);
+    if (isAdmin) {
+      return [
+        {
+          Header: "Venue",
+          accessor: "venue",
+        },
+        {
+          Header: "Date",
+          accessor: "date",
+        },
+        {
+          Header: "Timeslot(s)",
+          accessor: "timeSlots",
+        },
+        {
+          Header: "Email",
+          accessor: "email",
+        },
+        {
+          Header: "CCA",
+          accessor: "cca",
+        },
+        {
+          Header: "Purpose",
+          accessor: "purpose",
+        },
+        {
+          Header: "Status",
+          accessor: "status",
+        },
+      ];
+    } else {
+      return [
+        {
+          Header: "Venue",
+          accessor: "venue",
+        },
+        {
+          Header: "Date",
+          accessor: "date",
+        },
+        {
+          Header: "Timeslot(s)",
+          accessor: "timeSlots",
+        },
+        {
+          Header: "CCA",
+          accessor: "cca",
+        },
+        {
+          Header: "Purpose",
+          accessor: "purpose",
+        },
+        {
+          Header: "Status",
+          accessor: "status",
+        },
+      ];
+    }
+  }, [isAdmin]);
 
   return (
     <Modal
@@ -147,7 +176,7 @@ export default function BookingModal({ isOpen, onClose, modalData }) {
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Timeslot</ModalHeader>
+        <ModalHeader></ModalHeader>
         <ModalBody>
           <MotionSimpleGrid
             mt="3"
@@ -250,7 +279,7 @@ export default function BookingModal({ isOpen, onClose, modalData }) {
                             {loadingData ? (
                               <Text>Loading Please wait...</Text>
                             ) : (
-                              <BookingTable
+                              <TableWidget
                                 key={2}
                                 columns={columns}
                                 data={conflict}

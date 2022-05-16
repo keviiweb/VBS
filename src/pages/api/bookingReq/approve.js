@@ -1,22 +1,14 @@
 import {
+  findBookingByID,
   isConflict,
   isApproved,
   isCancelled,
   isRejected,
   setApprove,
   setRejectConflicts,
+  createVenueBooking,
 } from "@constants/booking";
-import { prisma } from "@constants/db";
-import {
-  currentSession,
-  convertSlotToArray,
-  mapSlotToTiming,
-  prettifyTiming,
-  convertUnixToDate,
-  prettifyDate,
-} from "@constants/helper";
-import { findVenueByID } from "@constants/venue";
-import { sendMail } from "@constants/email/approve";
+import { currentSession, convertSlotToArray } from "@constants/helper";
 
 const handler = async (req, res) => {
   const session = currentSession();
@@ -26,11 +18,7 @@ const handler = async (req, res) => {
   if (session) {
     if (id) {
       let isSuccessful = false;
-      const bookingRequest = await prisma.venueBookingRequest.findFirst({
-        where: {
-          id: id,
-        },
-      });
+      const bookingRequest = await findBookingByID(id);
 
       if (bookingRequest) {
         const isRequestApproved = await isApproved(bookingRequest);
@@ -72,25 +60,21 @@ const handler = async (req, res) => {
         const isThereConflict = await isConflict(bookingRequest);
         const timeSlots = convertSlotToArray(bookingRequest.timeSlots, true);
         if (!isThereConflict) {
-          try {
-            for (let i in timeSlots) {
-              const insertRequest = await prisma.venueBooking.create({
-                data: {
-                  email: bookingRequest.email,
-                  venue: bookingRequest.venue,
-                  date: bookingRequest.date,
-                  timingSlot: timeSlots[i],
-                  cca: bookingRequest.cca,
-                  purpose: bookingRequest.purpose,
-                },
-              });
+          const createBooking = await createVenueBooking(
+            bookingRequest,
+            timeSlots,
+            session
+          );
 
-              if (!insertRequest) {
-                console.log("Approve Request - Venue Booking creation failed!");
-              }
-            }
-          } catch (error) {
-            console.log(error);
+          if (!createBooking.status) {
+            result = {
+              status: false,
+              error: createBooking.error,
+              msg: "",
+            };
+            res.status(200).send(result);
+            res.end();
+            return;
           }
         } else {
           result = {
@@ -103,8 +87,8 @@ const handler = async (req, res) => {
           return;
         }
 
-        const approve = await setApprove(bookingRequest);
-        const cancel = await setRejectConflicts(bookingRequest);
+        const approve = await setApprove(bookingRequest, session);
+        const cancel = await setRejectConflicts(bookingRequest, session);
 
         if (approve.status && cancel.status) {
           isSuccessful = true;
@@ -125,34 +109,6 @@ const handler = async (req, res) => {
       } else {
         result = { status: false, error: "No booking ID found", msg: "" };
         res.status(200).send(result);
-      }
-
-      try {
-        if (isSuccessful) {
-          let slotArray = convertSlotToArray(bookingRequest.timeSlots, true);
-          slotArray = mapSlotToTiming(slotArray);
-          const venueReq = await findVenueByID(bookingRequest.venue);
-          let date = convertUnixToDate(bookingRequest.date);
-          date = prettifyDate(date);
-
-          let email = bookingRequest.email;
-          if (venueReq && venueReq.status) {
-            const data = {
-              id: bookingRequest.id,
-              email: bookingRequest.email,
-              venue: venueReq.msg.name,
-              date: date,
-              timeSlots: prettifyTiming(slotArray),
-              cca: bookingRequest.cca,
-              purpose: bookingRequest.purpose,
-              sessionEmail: session.user.email,
-            };
-
-            //await sendMail(email, data);
-          }
-        }
-      } catch (error) {
-        console.log(error);
       }
     } else {
       result = { status: false, error: "No booking ID found", msg: "" };

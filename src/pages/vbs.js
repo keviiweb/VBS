@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { SimpleGrid, Box } from "@chakra-ui/react";
 import Auth from "@components/Auth";
 import VenueCard from "@components/VenueCard";
-import VenueModal from "@components/VenueModal";
-import VenueModalConfirmation from "@components/VenueModalConfirmation";
+import VenueBookingModal from "@components/VenueBookingModal";
+import VenueBookingModalConfirmation from "@components/VenueBookingModalConfirmation";
 import Loading from "@components/Loading";
 import { fetchVenue } from "@constants/venue";
 
@@ -89,7 +89,7 @@ export default function VBS(props) {
             >
               {cards}
             </MotionSimpleGrid>
-            <VenueModal
+            <VenueBookingModal
               isOpen={modalData ? true : false}
               onClose={() => setModalData(null)}
               dataHandler={dataFromVenueModal}
@@ -97,7 +97,7 @@ export default function VBS(props) {
               calendarMin={minDate.current}
               calendarMax={maxDate.current}
             />
-            <VenueModalConfirmation
+            <VenueBookingModalConfirmation
               isOpen={modalDataConfirm ? true : false}
               onClose={() => setModalDataConfirm(null)}
               modalData={modalDataConfirm}

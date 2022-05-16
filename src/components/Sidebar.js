@@ -13,14 +13,25 @@ import NavLink from "./NavLink";
 import Link from "next/link";
 import { currentSession } from "@constants/helper";
 
+let LinkItems = [
+  { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/vbs" },
+  { label: "CCA ATTENDANCE", icon: FiSettings, href: "/cca" },
+  { label: "KEIPs", icon: FiStar, href: "/keips" },
+  { label: "CONTACT US", icon: FiCompass, href: "/contact" },
+  {
+    label: "MANAGE BOOKINGS",
+    icon: FiCalendar,
+    href: "/manage/bookings",
+  },
+];
+
 export default function Sidebar({ onClose, ...rest }) {
   const router = useRouter();
   const session = currentSession();
-  const LinkItems = useRef([]);
 
   useEffect(() => {
     if (session.user.admin) {
-      LinkItems.current = [
+      LinkItems = [
         { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/vbs" },
         { label: "CCA ATTENDANCE", icon: FiSettings, href: "/cca" },
         { label: "KEIPs", icon: FiStar, href: "/keips" },
@@ -34,18 +45,6 @@ export default function Sidebar({ onClose, ...rest }) {
           label: "MANAGE VENUES",
           icon: FiMapPin,
           href: "/manage/admin/venues",
-        },
-      ];
-    } else {
-      LinkItems.current = [
-        { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/vbs" },
-        { label: "CCA ATTENDANCE", icon: FiSettings, href: "/cca" },
-        { label: "KEIPs", icon: FiStar, href: "/keips" },
-        { label: "CONTACT US", icon: FiCompass, href: "/contact" },
-        {
-          label: "MANAGE BOOKINGS",
-          icon: FiCalendar,
-          href: "/manage/bookings",
         },
       ];
     }
@@ -75,7 +74,7 @@ export default function Sidebar({ onClose, ...rest }) {
         </Link>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
-      {LinkItems.current.map((link, i) => (
+      {LinkItems.map((link, i) => (
         <NavLink key={i} link={link} />
       ))}
     </Box>

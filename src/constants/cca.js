@@ -1,5 +1,4 @@
 import { prisma } from "@constants/db";
-import { currentSession } from "@constants/helper";
 
 export const CCAData = {
   "Block Committee AB": {
@@ -333,51 +332,39 @@ export const CCAList = [
 ];
 
 export const findCCAbyName = async (name) => {
-  const session = currentSession();
+  try {
+    const query = await prisma.CCA.findUnique({
+      where: {
+        name: name,
+      },
+    });
 
-  if (session) {
-    try {
-      const query = await prisma.CCA.findUnique({
-        where: {
-          name: name,
-        },
-      });
-
-      if (query) {
-        return { status: true, error: null, msg: query };
-      } else {
-        return { status: true, error: null, msg: "" };
-      }
-    } catch (error) {
-      console.log(error);
-      return { status: false, error: "Connection timeout", msg: "" };
+    if (query) {
+      return { status: true, error: null, msg: query };
+    } else {
+      return { status: true, error: null, msg: "" };
     }
-  } else {
-    return { status: false, error: "User must be authenticated", msg: "" };
+  } catch (error) {
+    console.log(error);
+    return { status: false, error: "Connection timeout", msg: "" };
   }
 };
 
 export const findCCAbyID = async (id) => {
-  const session = currentSession();
+  try {
+    const query = await prisma.CCA.findUnique({
+      where: {
+        id: id,
+      },
+    });
 
-  if (session) {
-    try {
-      const query = await prisma.CCA.findUnique({
-        where: {
-          id: id,
-        },
-      });
-
-      if (query) {
-        return { status: true, error: null, msg: query };
-      } else {
-        return { status: true, error: null, msg: "" };
-      }
-    } catch (error) {
-      console.log(error);
-      return { status: false, error: "Connection timeout", msg: "" };
+    if (query) {
+      return { status: true, error: null, msg: query };
+    } else {
+      return { status: true, error: null, msg: "" };
     }
-  } else {
-    return { status: false, error: "User must be authenticated", msg: "" };
+  } catch (error) {
+    console.log(error);
+    return { status: false, error: "Connection timeout", msg: "" };
   }
 };

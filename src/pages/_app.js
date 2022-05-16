@@ -11,7 +11,6 @@ export default function App({
   const theme = extendTheme({
     components: {
       Radio: {
-        // can be Radio
         baseStyle: {
           label: {
             touchAction: "none",

@@ -1,316 +1,448 @@
 import { prisma } from "@constants/db";
 import {
-  currentSession,
   convertSlotToArray,
   isInside,
+  mapSlotToTiming,
+  prettifyTiming,
+  convertUnixToDate,
+  prettifyDate,
 } from "@constants/helper";
+import { findVenueByID } from "@constants/venue";
+import { findCCAbyID } from "@constants/cca";
+import { sendApproveMail } from "@constants/email/approve";
+import { sendCancelMail } from "@constants/email/cancel";
+import { sendRejectMail } from "@constants/email/reject";
+import {
+  approvalBookingRequestMessageBuilder,
+  rejectBookingRequestMessageBuilder,
+  sendMessageToChannel,
+} from "@constants/telegram";
 
 export const BOOKINGS = ["PENDING", "APPROVED", "REJECTED"];
 
-export const isApproved = async (bookingRequest) => {
-  const session = currentSession();
+export const findBookingByID = async (id) => {
+  try {
+    const bookingRequest = await prisma.venueBookingRequest.findFirst({
+      where: {
+        id: id,
+      },
+    });
 
-  if (session) {
-    try {
-      return bookingRequest.isApproved;
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
+    return bookingRequest;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const isApproved = async (bookingRequest) => {
+  try {
+    return bookingRequest.isApproved;
+  } catch (error) {
+    console.log(error);
     return true;
   }
 };
 
 export const isCancelled = async (bookingRequest) => {
-  const session = currentSession();
-
-  if (session) {
-    try {
-      return bookingRequest.isCancelled;
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
+  try {
+    return bookingRequest.isCancelled;
+  } catch (error) {
+    console.log(error);
     return true;
   }
 };
 
 export const isRejected = async (bookingRequest) => {
-  const session = currentSession();
-
-  if (session) {
-    try {
-      return bookingRequest.isRejected;
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
+  try {
+    return bookingRequest.isRejected;
+  } catch (error) {
+    console.log(error);
     return true;
   }
 };
 
 export const isConflict = async (bookingRequest) => {
-  const session = currentSession();
+  try {
+    const timeSlots = convertSlotToArray(bookingRequest.timeSlots, true);
+    for (let i in timeSlots) {
+      const anyConflicting = await prisma.venueBooking.findFirst({
+        where: {
+          date: bookingRequest.date,
+          timingSlot: timeSlots[i],
+          venue: bookingRequest.venue,
+        },
+      });
 
-  if (session) {
-    try {
-      const timeSlots = convertSlotToArray(bookingRequest.timeSlots, true);
-      for (let i in timeSlots) {
-        const anyConflicting = await prisma.venueBooking.findFirst({
-          where: {
-            date: bookingRequest.date,
-            timingSlot: timeSlots[i],
-            venue: bookingRequest.venue,
-          },
-        });
-
-        if (anyConflicting) {
-          return true;
-        }
+      if (anyConflicting) {
+        return true;
       }
-
-      return false;
-    } catch (error) {
-      console.log(error);
     }
-  } else {
+
+    return false;
+  } catch (error) {
+    console.log(error);
     return true;
   }
 };
 
-export const setApprove = async (bookingRequest) => {
-  const session = currentSession();
+export const setApprove = async (bookingRequest, session) => {
+  if (bookingRequest) {
+    const update = await prisma.venueBookingRequest.update({
+      where: {
+        id: bookingRequest.id,
+      },
+      data: {
+        isApproved: true,
+        isRejected: false,
+        isCancelled: false,
+      },
+    });
 
-  if (session) {
-    if (bookingRequest) {
-      const update = await prisma.venueBookingRequest.update({
-        where: {
+    if (update) {
+      let slotArray = convertSlotToArray(bookingRequest.timeSlots, true);
+      slotArray = mapSlotToTiming(slotArray);
+      const venueReq = await findVenueByID(bookingRequest.venue);
+      let date = convertUnixToDate(bookingRequest.date);
+      date = prettifyDate(date);
+
+      if (venueReq && venueReq.status) {
+        let cca = undefined;
+        if (bookingRequest.cca === "PERSONAL") {
+          cca = "PERSONAL";
+        } else {
+          const ccaReq = await findCCAbyID(bookingRequest.cca);
+          cca = ccaReq.msg.name;
+        }
+
+        const data = {
           id: bookingRequest.id,
-        },
-        data: {
-          isApproved: true,
-          isRejected: false,
-          isCancelled: false,
-        },
-      });
-
-      if (update) {
-        return {
-          status: true,
-          error: null,
-          msg: "Successfully updated request on approval",
+          email: bookingRequest.email,
+          venue: venueReq.msg.name,
+          date: date,
+          timeSlots: prettifyTiming(slotArray),
+          cca: cca,
+          purpose: bookingRequest.purpose,
+          sessionEmail: session.user.email,
         };
-      } else {
-        return { status: false, error: "Error in updating", msg: "" };
+
+        try {
+          //await sendApproveMail(bookingRequest.email, data);
+        } catch (error) {
+          console.log(error);
+        }
+
+        try {
+          const teleMSG = approvalBookingRequestMessageBuilder(data);
+          await sendMessageToChannel(teleMSG);
+        } catch (error) {
+          console.log(error);
+        }
       }
+      return {
+        status: true,
+        error: null,
+        msg: "Successfully updated request on approval",
+      };
     } else {
-      return { status: false, error: "No booking ID found", msg: "" };
+      return { status: false, error: "Error in updating", msg: "" };
     }
   } else {
-    return { status: false, error: "Unauthenticated request", msg: "" };
+    return { status: false, error: "No booking ID found", msg: "" };
   }
 };
 
-export const setReject = async (bookingRequest) => {
-  const session = currentSession();
+export const setReject = async (bookingRequest, session) => {
+  if (bookingRequest) {
+    const update = await prisma.venueBookingRequest.update({
+      where: {
+        id: bookingRequest.id,
+      },
+      data: {
+        isApproved: false,
+        isRejected: true,
+        isCancelled: false,
+      },
+    });
 
-  if (session) {
-    if (bookingRequest) {
-      const update = await prisma.venueBookingRequest.update({
-        where: {
+    if (update) {
+      let slotArray = convertSlotToArray(bookingRequest.timeSlots, true);
+      slotArray = mapSlotToTiming(slotArray);
+      const venueReq = await findVenueByID(bookingRequest.venue);
+      let date = convertUnixToDate(bookingRequest.date);
+      date = prettifyDate(date);
+
+      if (venueReq && venueReq.status) {
+        let cca = undefined;
+        if (bookingRequest.cca === "PERSONAL") {
+          cca = "PERSONAL";
+        } else {
+          const ccaReq = await findCCAbyID(bookingRequest.cca);
+          cca = ccaReq.msg.name;
+        }
+
+        const data = {
           id: bookingRequest.id,
-        },
-        data: {
-          isApproved: false,
-          isRejected: true,
-          isCancelled: false,
-        },
-      });
-
-      if (update) {
-        return {
-          status: true,
-          error: null,
-          msg: "Successfully updated request on reject",
+          email: bookingRequest.email,
+          venue: venueReq.msg.name,
+          date: date,
+          timeSlots: prettifyTiming(slotArray),
+          cca: cca,
+          purpose: bookingRequest.purpose,
+          sessionEmail: session.user.email,
         };
-      } else {
-        return { status: false, error: "Error in updating", msg: "" };
+
+        try {
+          //await sendRejectMail(bookingRequest.email, data);
+        } catch (error) {
+          console.log(error);
+        }
+
+        try {
+          const teleMSG = rejectBookingRequestMessageBuilder(data);
+          await sendMessageToChannel(teleMSG);
+        } catch (error) {
+          console.log(error);
+        }
       }
+
+      return {
+        status: true,
+        error: null,
+        msg: "Successfully updated request on reject",
+      };
     } else {
-      return { status: false, error: "No booking ID found", msg: "" };
+      return { status: false, error: "Error in updating", msg: "" };
     }
   } else {
-    return { status: false, error: "Unauthenticated request", msg: "" };
+    return { status: false, error: "No booking ID found", msg: "" };
   }
 };
 
-export const setCancel = async (bookingRequest) => {
-  const session = currentSession();
+export const setCancel = async (bookingRequest, session) => {
+  if (bookingRequest) {
+    const update = await prisma.venueBookingRequest.update({
+      where: {
+        id: bookingRequest.id,
+      },
+      data: {
+        isApproved: false,
+        isRejected: false,
+        isCancelled: true,
+      },
+    });
 
-  if (session) {
-    if (bookingRequest) {
-      const update = await prisma.venueBookingRequest.update({
-        where: {
-          id: bookingRequest.id,
-        },
-        data: {
-          isApproved: false,
-          isRejected: false,
-          isCancelled: true,
-        },
-      });
+    if (update) {
+      let slotArray = convertSlotToArray(bookingRequest.timeSlots, true);
+      slotArray = mapSlotToTiming(slotArray);
+      const venueReq = await findVenueByID(bookingRequest.venue);
+      let date = convertUnixToDate(bookingRequest.date);
+      date = prettifyDate(date);
 
-      if (update) {
-        return {
-          status: true,
-          error: null,
-          msg: "Successfully updated request on cancel",
-        };
+      let cca = undefined;
+      if (bookingRequest.cca === "PERSONAL") {
+        cca = "PERSONAL";
       } else {
-        return { status: false, error: "Error in updating", msg: "" };
+        const ccaReq = await findCCAbyID(bookingRequest.cca);
+        cca = ccaReq.msg.name;
       }
+
+      if (venueReq && venueReq.status) {
+        const data = {
+          id: bookingRequest.id,
+          email: bookingRequest.email,
+          venue: venueReq.msg.name,
+          date: date,
+          timeSlots: prettifyTiming(slotArray),
+          cca: cca,
+          purpose: bookingRequest.purpose,
+          sessionEmail: session.user.email,
+        };
+        try {
+          //await sendCancelMail(bookingRequest.email, data);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      return {
+        status: true,
+        error: null,
+        msg: "Successfully updated request on cancel",
+      };
     } else {
-      return { status: false, error: "No booking ID found", msg: "" };
+      return { status: false, error: "Error in updating", msg: "" };
     }
   } else {
-    return { status: false, error: "Unauthenticated request", msg: "" };
+    return { status: false, error: "No booking ID found", msg: "" };
   }
 };
 
 export const getConflictingRequest = async (bookingRequest) => {
-  const session = currentSession();
   let success = true;
 
-  if (session) {
-    if (bookingRequest) {
-      let conflicting = [];
-      const sameDayVenue = await prisma.venueBookingRequest.findMany({
-        where: {
-          date: bookingRequest.date,
-          venue: bookingRequest.venue,
-          id: {
-            not: bookingRequest.id,
-          },
+  if (bookingRequest) {
+    let conflicting = [];
+    const sameDayVenue = await prisma.venueBookingRequest.findMany({
+      where: {
+        date: bookingRequest.date,
+        venue: bookingRequest.venue,
+        id: {
+          not: bookingRequest.id,
         },
-      });
+      },
+    });
 
-      if (sameDayVenue) {
-        for (let key in sameDayVenue) {
-          const request = sameDayVenue[key];
-          if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
-            conflicting.push(request);
-          }
+    if (sameDayVenue) {
+      for (let key in sameDayVenue) {
+        const request = sameDayVenue[key];
+        if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
+          conflicting.push(request);
         }
-      } else {
-        conflicting = [];
-      }
-
-      if (success) {
-        return {
-          status: true,
-          error: null,
-          msg: conflicting,
-        };
-      } else {
-        return {
-          status: false,
-          error: "Failed to get conflicting timeslots",
-          msg: "",
-        };
       }
     } else {
-      return { status: false, error: "No booking ID found", msg: "" };
+      conflicting = [];
+    }
+
+    if (success) {
+      return {
+        status: true,
+        error: null,
+        msg: conflicting,
+      };
+    } else {
+      return {
+        status: false,
+        error: "Failed to get conflicting timeslots",
+        msg: "",
+      };
     }
   } else {
-    return { status: false, error: "Unauthenticated request", msg: "" };
+    return { status: false, error: "No booking ID found", msg: "" };
   }
 };
 
-export const setRejectConflicts = async (bookingRequest) => {
-  const session = currentSession();
+export const setRejectConflicts = async (bookingRequest, session) => {
   let success = true;
 
-  if (session) {
-    if (bookingRequest) {
-      const sameDayVenue = await prisma.venueBookingRequest.findMany({
-        where: {
-          date: bookingRequest.date,
-          venue: bookingRequest.venue,
-          id: {
-            not: bookingRequest.id,
-          },
-          isApproved: false,
-          isCancelled: false,
-          isRejected: false,
+  if (bookingRequest) {
+    const sameDayVenue = await prisma.venueBookingRequest.findMany({
+      where: {
+        date: bookingRequest.date,
+        venue: bookingRequest.venue,
+        id: {
+          not: bookingRequest.id,
         },
-      });
+        isApproved: false,
+        isCancelled: false,
+        isRejected: false,
+      },
+    });
 
-      if (sameDayVenue) {
-        let conflicting = [];
+    if (sameDayVenue) {
+      let conflicting = [];
 
-        for (let key in sameDayVenue) {
-          const request = sameDayVenue[key];
-          if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
-            conflicting.push(request.id);
-            const reject = await setReject(request);
-            if (!reject.status) {
-              console.log(reject.error);
-              success = false;
-            }
+      for (let key in sameDayVenue) {
+        const request = sameDayVenue[key];
+        if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
+          conflicting.push(request.id);
+          const reject = await setReject(request, session);
+          if (!reject.status) {
+            console.log(reject.error);
+            success = false;
           }
         }
-
-        await updateConflictingIDs(bookingRequest, conflicting);
       }
 
-      if (success) {
-        return {
-          status: true,
-          error: null,
-          msg: "Successfully rejected conflicting timeslots",
-        };
-      } else {
-        return {
-          status: false,
-          error: "Failed to reject conflicting timeslots",
-          msg: "",
-        };
-      }
+      await updateConflictingIDs(bookingRequest, conflicting);
+    }
+
+    if (success) {
+      return {
+        status: true,
+        error: null,
+        msg: "Successfully rejected conflicting timeslots",
+      };
     } else {
-      return { status: false, error: "No booking ID found", msg: "" };
+      return {
+        status: false,
+        error: "Failed to reject conflicting timeslots",
+        msg: "",
+      };
     }
   } else {
-    return { status: false, error: "Unauthenticated request", msg: "" };
+    return { status: false, error: "No booking ID found", msg: "" };
   }
 };
 
 export const updateConflictingIDs = async (bookingRequest, conflict) => {
-  const session = currentSession();
+  if (bookingRequest) {
+    const update = await prisma.venueBookingRequest.update({
+      where: {
+        id: bookingRequest.id,
+      },
+      data: {
+        conflictRequest: conflict.toString(),
+      },
+    });
 
-  if (session) {
-    if (bookingRequest) {
-      const update = await prisma.venueBookingRequest.update({
-        where: {
-          id: bookingRequest.id,
-        },
+    if (update) {
+      return {
+        status: true,
+        error: null,
+        msg: "Successfully updated request on reject",
+      };
+    } else {
+      return { status: false, error: "Error in updating", msg: "" };
+    }
+  } else {
+    return { status: false, error: "No booking ID found", msg: "" };
+  }
+};
+
+export const createVenueBooking = async (
+  bookingRequest,
+  timeSlots,
+  session
+) => {
+  try {
+    for (let i in timeSlots) {
+      const insertRequest = await prisma.venueBooking.create({
         data: {
-          conflictRequest: conflict.toString(),
+          email: bookingRequest.email,
+          venue: bookingRequest.venue,
+          date: bookingRequest.date,
+          timingSlot: timeSlots[i],
+          cca: bookingRequest.cca,
+          purpose: bookingRequest.purpose,
+          sessionEmail: session.user.email,
         },
       });
 
-      if (update) {
+      if (!insertRequest) {
+        console.log("Approve Request - Venue Booking creation failed!");
         return {
-          status: true,
-          error: null,
-          msg: "Successfully updated request on reject",
+          status: false,
+          error: "Error in creating venue booking",
+          msg: "",
         };
-      } else {
-        return { status: false, error: "Error in updating", msg: "" };
       }
-    } else {
-      return { status: false, error: "No booking ID found", msg: "" };
     }
-  } else {
-    return { status: false, error: "Unauthenticated request", msg: "" };
+
+    return { status: true, error: "", msg: "Successfully creating bookings" };
+  } catch (error) {
+    console.log(error);
+    return { status: false, error: "Error in creating venue booking", msg: "" };
+  }
+};
+
+export const createVenueBookingRequest = async (data) => {
+  try {
+    const bookedTimeSlots = await prisma.venueBookingRequest.create({
+      data: data,
+    });
+
+    return bookedTimeSlots;
+  } catch (error) {
+    return null;
   }
 };

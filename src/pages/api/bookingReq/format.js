@@ -8,7 +8,6 @@ import {
 } from "@constants/helper";
 import { findVenueByID } from "@constants/venue";
 import { findCCAbyID } from "@constants/cca";
-import { getConflictingRequest } from "@constants/booking";
 
 const handler = async (req, res) => {
   const session = currentSession();
@@ -92,6 +91,8 @@ const handler = async (req, res) => {
             msg: parsedBooking,
           };
           res.status(200).send(result);
+          res.end();
+          return;
         } else {
           result = {
             status: false,
@@ -99,21 +100,28 @@ const handler = async (req, res) => {
             msg: "",
           };
           res.status(200).send(result);
+          res.end();
+          return;
         }
       } catch (error) {
         console.log(error);
         result = { status: false, error: error, msg: "" };
         res.status(200).send(result);
+        res.end();
+        return;
       }
     } else {
       result = { status: false, error: "Unauthorized access", msg: "" };
       res.status(200).send(result);
+      res.end();
+      return;
     }
   } else {
     result = { status: false, error: "Unauthenticated", msg: "" };
     res.status(200).send(result);
+    res.end();
+    return;
   }
-  res.end();
 };
 
 export default handler;

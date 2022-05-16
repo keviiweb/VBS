@@ -16,7 +16,7 @@ const handler = async (req, res) => {
   const session = currentSession();
   const query = req.query.q;
 
-  var result = "";
+  let result = "";
   if (session) {
     let bookings = null;
     if (query && query == "USER") {
@@ -100,6 +100,8 @@ const handler = async (req, res) => {
         console.log(error);
         result = { status: false, error: error, msg: "" };
         res.status(200).send(result);
+        res.end();
+        return;
       }
     } else {
       result = { status: false, error: "Unauthorized access", msg: "" };

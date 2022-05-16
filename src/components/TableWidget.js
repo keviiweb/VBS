@@ -25,7 +25,7 @@ import {
   ChevronLeftIcon,
 } from "@chakra-ui/icons";
 
-export default function BookingTable({ columns, data }) {
+export default function TableWidget({ columns, data }) {
   const {
     getTableProps,
     getTableBodyProps,
