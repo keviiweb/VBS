@@ -14,20 +14,24 @@ import {
 import { FiChevronDown } from "react-icons/fi";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { currentSession } from "@constants/helper";
 
 export default function UserProfile(props) {
-  const session = currentSession();
+  const [admin, setAdmin] = useState(null);
+  const [name, setName] = useState(null);
   const [url, setURL] = useState("https://vbs-kevii.vercel.app"); //default
-  var admin = session && session.user.admin ? "Admin" : "User";
-  var name =
-    session && session.user.username ? session.user.username : "Test User";
-
   const router = useRouter();
 
   useEffect(() => {
     async function fetchData(props) {
+      const session = await currentSession();
+      let admin = session && session.user.admin ? "Admin" : "User";
+      let name =
+        session && session.user.username ? session.user.username : "Test User";
+      setAdmin(admin);
+      setName(name);
+      
       const propRes = await props;
       try {
         if (propRes.data) {

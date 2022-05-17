@@ -96,7 +96,7 @@ export default function SignIn(props) {
 
           {loading && (
             <>
-              <Stack spacing={10}>
+              <Stack spacing={10} mt={5}>
                 <Stack align={"center"}>
                   <Text fontSize={"sm"} color={"gray.600"}>
                     Logging in...

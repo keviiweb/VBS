@@ -3,7 +3,7 @@ import { currentSession } from "@constants/helper";
 import { findVenueByID } from "@constants/venue";
 
 const handler = async (req, res) => {
-  const session = currentSession();
+  const session = await currentSession(req);
 
   let result = [];
   const { venue } = req.body;

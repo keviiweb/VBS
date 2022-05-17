@@ -1,3 +1,4 @@
+process.env.NTBA_FIX_319 = 1;
 import TelegramBot from "node-telegram-bot-api";
 
 const token = process.env.TELEGRAM_BOT_TOKEN;

@@ -4,7 +4,7 @@ import { currentSession, convertDateToUnix } from "@constants/helper";
 import { fetchOpeningHours } from "@constants/venue";
 
 const handler = async (req, res) => {
-  const session = currentSession();
+  const session = await currentSession(req);
 
   let slots = [];
   const { venue, date } = req.body;

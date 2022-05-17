@@ -9,7 +9,7 @@ import { currentSession } from "@constants/helper";
 import { compareDate } from "@constants/helper";
 
 const handler = async (req, res) => {
-  const session = currentSession();
+  const session = await currentSession(req);
 
   var result = "";
   const { id } = req.body;

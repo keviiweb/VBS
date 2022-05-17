@@ -20,7 +20,7 @@ import { isInstantBook, isVisible } from "@constants/venue";
 import { sendProgressMail } from "@constants/email/progress";
 
 const handler = async (req, res) => {
-  const session = currentSession();
+  const session = await currentSession(req);
 
   var result = "";
   const { email, venue, venueName, date, timeSlots, type, purpose } = req.body;

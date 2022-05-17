@@ -13,7 +13,7 @@ import { findCCAbyID } from "@constants/cca";
 import { BOOKINGS, getConflictingRequest } from "@constants/booking";
 
 const handler = async (req, res) => {
-  const session = currentSession();
+  const session = await currentSession(req);
   const query = req.query.q;
 
   let result = "";

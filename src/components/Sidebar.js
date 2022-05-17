@@ -27,33 +27,36 @@ let LinkItems = [
 
 export default function Sidebar({ onClose, ...rest }) {
   const router = useRouter();
-  const session = currentSession();
 
   useEffect(() => {
-    if (session.user.admin) {
-      LinkItems = [
-        { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/vbs" },
-        { label: "CCA ATTENDANCE", icon: FiSettings, href: "/cca" },
-        { label: "KEIPs", icon: FiStar, href: "/keips" },
-        { label: "CONTACT US", icon: FiCompass, href: "/contact" },
-        {
-          label: "MANAGE BOOKINGS",
-          icon: FiCalendar,
-          href: "/manage/admin/bookings",
-        },
-        {
-          label: "MANAGE VENUES",
-          icon: FiMapPin,
-          href: "/manage/admin/venues",
-        },
-      ];
+    async function fetchData() {
+      const session = await currentSession();
+      if (session.user.admin) {
+        LinkItems = [
+          { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/vbs" },
+          { label: "CCA ATTENDANCE", icon: FiSettings, href: "/cca" },
+          { label: "KEIPs", icon: FiStar, href: "/keips" },
+          { label: "CONTACT US", icon: FiCompass, href: "/contact" },
+          {
+            label: "MANAGE BOOKINGS",
+            icon: FiCalendar,
+            href: "/manage/admin/bookings",
+          },
+          {
+            label: "MANAGE VENUES",
+            icon: FiMapPin,
+            href: "/manage/admin/venues",
+          },
+        ];
+      }
     }
+    fetchData();
 
     router.events.on("routeChangeComplete", onClose);
     return () => {
       router.events.off("routeChangeComplete", onClose);
     };
-  }, [router.events, onClose, session]);
+  }, [router.events, onClose]);
 
   return (
     <Box

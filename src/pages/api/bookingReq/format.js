@@ -10,7 +10,7 @@ import { findVenueByID } from "@constants/venue";
 import { findCCAbyID } from "@constants/cca";
 
 const handler = async (req, res) => {
-  const session = currentSession();
+  const session = await currentSession(req);
 
   const { bookings } = req.body;
 

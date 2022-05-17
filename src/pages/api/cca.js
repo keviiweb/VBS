@@ -2,7 +2,7 @@ import { prisma } from "@constants/db";
 import { currentSession } from "@constants/helper";
 
 const handler = async (req, res) => {
-  const session = currentSession();
+  const session = await currentSession(req);
   let result = [];
 
   if (session) {
