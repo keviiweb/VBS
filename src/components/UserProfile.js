@@ -31,7 +31,7 @@ export default function UserProfile(props) {
         session && session.user.username ? session.user.username : "Test User";
       setAdmin(admin);
       setName(name);
-      
+
       const propRes = await props;
       try {
         if (propRes.data) {

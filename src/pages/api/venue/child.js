@@ -1,6 +1,5 @@
-import { prisma } from "@constants/db";
 import { currentSession } from "@constants/helper";
-import { findVenueByID } from "@constants/venue";
+import { findVenueByID, fetchChildVenue } from "@constants/venue";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
@@ -10,9 +9,7 @@ const handler = async (req, res) => {
   if (session) {
     if (venue) {
       try {
-        const childVenues = await prisma.venue.findMany({
-          where: { parentVenue: venue, isChildVenue: true },
-        });
+        const childVenues = await fetchChildVenue(venue);
         let parsedVenue = [];
 
         if (childVenues != null) {

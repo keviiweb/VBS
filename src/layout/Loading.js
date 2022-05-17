@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-export default function Loading({ message }) {
+export default function Loading() {
   return (
     <Flex
       minH={"100vh"}
@@ -25,7 +25,7 @@ export default function Loading({ message }) {
           p={8}
         >
           <Stack align={"center"}>
-            <Heading fontSize={"4xl"}>{message}</Heading>
+            <Heading fontSize={"4xl"}>KEVII VBS</Heading>
             <Text fontSize={"sm"} color={"gray.600"}>
               Loading webpage... Please give it a moment
             </Text>

@@ -15,7 +15,7 @@ const handler = async (req, res) => {
 
   var result = "";
   const { id } = req.body;
-  if (session) {
+  if (session && session.user.admin) {
     if (id) {
       let isSuccessful = false;
       const bookingRequest = await findBookingByID(id);
@@ -98,6 +98,8 @@ const handler = async (req, res) => {
             msg: "Booking request created",
           };
           res.status(200).send(result);
+          res.end();
+          return;
         } else {
           result = {
             status: false,
@@ -105,20 +107,27 @@ const handler = async (req, res) => {
             msg: "",
           };
           res.status(200).send(result);
+          res.end();
+          return;
         }
       } else {
         result = { status: false, error: "No booking ID found", msg: "" };
         res.status(200).send(result);
+        res.end();
+        return;
       }
     } else {
       result = { status: false, error: "No booking ID found", msg: "" };
       res.status(200).send(result);
+      res.end();
+      return;
     }
   } else {
     result = { status: false, error: "Unauthenticated request", msg: "" };
     res.status(200).send(result);
+    res.end();
+    return;
   }
-  res.end();
 };
 
 export default handler;

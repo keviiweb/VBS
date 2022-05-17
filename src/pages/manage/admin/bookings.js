@@ -24,7 +24,7 @@ export default function ManageBooking() {
 
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const allBookings = useRef([]);
   const ALL = 3;
   const PENDING = 0;
@@ -37,6 +37,7 @@ export default function ManageBooking() {
   const handleTabChange = async (index) => {
     tabIndexData.current = index;
     setTabIndex(index);
+    setData(null);
     switch (index) {
       case PENDING:
         await fetchPendingData();
@@ -275,6 +276,9 @@ export default function ManageBooking() {
         allBookings.current = content.msg;
         await includeActionButton(content.msg, ALL);
         setLoadingData(false);
+      } else {
+        setData(null);
+        setLoadingData(false);
       }
     } catch (error) {
       console.log(error);
@@ -296,7 +300,7 @@ export default function ManageBooking() {
         await includeActionButton(content.msg, APPROVED);
         setLoadingData(false);
       } else {
-        setData([]);
+        setData(null);
         setLoadingData(false);
       }
     } catch (error) {
@@ -319,7 +323,7 @@ export default function ManageBooking() {
         await includeActionButton(content.msg, REJECTED);
         setLoadingData(false);
       } else {
-        setData([]);
+        setData(null);
         setLoadingData(false);
       }
     } catch (error) {
@@ -342,7 +346,7 @@ export default function ManageBooking() {
         await includeActionButton(content.msg, PENDING);
         setLoadingData(false);
       } else {
-        setData([]);
+        setData(null);
         setLoadingData(false);
       }
     } catch (error) {
@@ -351,11 +355,9 @@ export default function ManageBooking() {
   };
 
   useEffect(() => {
-    if (loadingData) {
-      fetchPendingData();
-    }
+    fetchPendingData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadingData]);
+  }, []);
 
   const columns = useMemo(
     () => [
@@ -400,6 +402,7 @@ export default function ManageBooking() {
       <Box
         bg={useColorModeValue("white", "gray.700")}
         borderRadius="lg"
+        width={{ base: "full", md: "full", lg: "full" }}
         p={8}
         color={useColorModeValue("gray.700", "whiteAlpha.900")}
         shadow="base"
@@ -408,7 +411,7 @@ export default function ManageBooking() {
           <Tabs
             value={tabIndex}
             onChange={handleTabChange}
-            size="md"
+            size={{ base: "md", md: "md", lg: "md" }}
             isManual
             isLazy
             isFitted
@@ -420,7 +423,7 @@ export default function ManageBooking() {
               <Tab>Rejected</Tab>
               <Tab>All Bookings</Tab>
             </TabList>
-            {loadingData ? (
+            {loadingData && !data ? (
               <Text>Loading Please wait...</Text>
             ) : (
               <TableWidget key={1} columns={columns} data={data} />

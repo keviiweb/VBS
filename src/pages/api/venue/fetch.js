@@ -1,6 +1,5 @@
-import { prisma } from "@constants/db";
 import { currentSession } from "@constants/helper";
-import { findVenueByID } from "@constants/venue";
+import { findVenueByID, fetchAllVenue } from "@constants/venue";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
@@ -9,7 +8,7 @@ const handler = async (req, res) => {
   if (session) {
     let venues = null;
     try {
-      venues = await prisma.venue.findMany();
+      venues = await fetchAllVenue();
     } catch (error) {
       console.log(error);
       result = { status: false, error: error, msg: "" };

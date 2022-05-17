@@ -101,7 +101,6 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
   }, [modalData]);
 
   const columns = useMemo(() => {
-    console.log(isAdmin);
     if (isAdmin) {
       return [
         {

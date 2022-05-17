@@ -1,6 +1,30 @@
 import { prisma } from "@constants/db";
 import { findSlots } from "@constants/timeslot";
 
+export const fetchChildVenue = async (venue) => {
+  try {
+    const childVenues = await prisma.venue.findMany({
+      where: { parentVenue: venue, isChildVenue: true },
+    });
+
+    return childVenues;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const fetchAllVenue = async () => {
+  try {
+    const locations = await prisma.venue.findMany();
+
+    return locations;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
 export const fetchVenue = async () => {
   try {
     const locations = await prisma.venue.findMany({
@@ -88,5 +112,42 @@ export const isVisible = async (id) => {
   } catch (error) {
     console.log(error);
     return false;
+  }
+};
+
+export const createVenue = async (data) => {
+  try {
+    const venue = await prisma.venue.create({
+      data: data,
+    });
+
+    if (venue) {
+      return { status: true, error: "", msg: "Successfully created venue" };
+    } else {
+      return { status: false, error: "Failed to create venue", msg: "" };
+    }
+  } catch (error) {
+    console.log(error);
+    return { status: false, error: error, msg: "" };
+  }
+};
+
+export const editVenue = async (data) => {
+  try {
+    const venue = await prisma.venue.update({
+      where: {
+        id: data.id,
+      },
+      data: data,
+    });
+
+    if (venue) {
+      return { status: true, error: "", msg: "Successfully updated venue" };
+    } else {
+      return { status: false, error: "Failed to update venue", msg: "" };
+    }
+  } catch (error) {
+    console.log(error);
+    return { status: false, error: error, msg: "" };
   }
 };

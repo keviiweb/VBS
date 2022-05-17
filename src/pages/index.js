@@ -12,7 +12,7 @@ export default function Home() {
       <Box>
         <MotionSimpleGrid
           mt="3"
-          minChildWidth="500px"
+          minChildWidth={{ base: "full", md: "500px", lg: "500px" }}
           spacing="2em"
           minH="full"
           variants={parentVariant}

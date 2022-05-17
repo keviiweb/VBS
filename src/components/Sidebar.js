@@ -12,20 +12,12 @@ import {
 import NavLink from "./NavLink";
 import Link from "next/link";
 import { currentSession } from "@constants/helper";
+import { useState } from "react";
 
-let LinkItems = [
-  { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/vbs" },
-  { label: "CCA ATTENDANCE", icon: FiSettings, href: "/cca" },
-  { label: "KEIPs", icon: FiStar, href: "/keips" },
-  { label: "CONTACT US", icon: FiCompass, href: "/contact" },
-  {
-    label: "MANAGE BOOKINGS",
-    icon: FiCalendar,
-    href: "/manage/bookings",
-  },
-];
+let LinkItems = null;
 
 export default function Sidebar({ onClose, ...rest }) {
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -48,7 +40,21 @@ export default function Sidebar({ onClose, ...rest }) {
             href: "/manage/admin/venues",
           },
         ];
+      } else {
+        LinkItems = [
+          { label: "VENUE BOOKING SYSTEM", icon: FiHome, href: "/vbs" },
+          { label: "CCA ATTENDANCE", icon: FiSettings, href: "/cca" },
+          { label: "KEIPs", icon: FiStar, href: "/keips" },
+          { label: "CONTACT US", icon: FiCompass, href: "/contact" },
+          {
+            label: "MANAGE BOOKINGS",
+            icon: FiCalendar,
+            href: "/manage/bookings",
+          },
+        ];
       }
+
+      setLoading(true);
     }
     fetchData();
 
@@ -56,7 +62,7 @@ export default function Sidebar({ onClose, ...rest }) {
     return () => {
       router.events.off("routeChangeComplete", onClose);
     };
-  }, [router.events, onClose]);
+  }, [router.events, onClose, loading]);
 
   return (
     <Box
@@ -77,9 +83,9 @@ export default function Sidebar({ onClose, ...rest }) {
         </Link>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link, i) => (
-        <NavLink key={i} link={link} />
-      ))}
+      {loading &&
+        LinkItems &&
+        LinkItems.map((link, i) => <NavLink key={i} link={link} />)}
     </Box>
   );
 }

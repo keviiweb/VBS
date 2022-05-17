@@ -12,7 +12,7 @@ const handler = async (req, res) => {
 
   var result = "";
   const { id } = req.body;
-  if (session) {
+  if (session && session.user.admin) {
     if (id) {
       let isSuccessful = false;
       const bookingRequest = await findBookingByID(id);

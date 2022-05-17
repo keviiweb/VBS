@@ -1,6 +1,5 @@
-import { createVenue } from "@constants/venue";
+import { editVenue } from "@constants/venue";
 import { IncomingForm } from "formidable";
-import { promises as fs } from "fs";
 import { currentSession } from "@constants/helper";
 
 // first we need to disable the default body parser
@@ -24,22 +23,11 @@ const handler = async (req, res) => {
     });
 
     try {
-      const imageFile = data.files.image;
-      let venuePath = null;
-
-      if (imageFile) {
-        const imagePath = imageFile.filepath;
-
-        venuePath = "/venue/" + imageFile.originalFilename;
-        const pathToWriteImage = "public" + venuePath;
-        const image = await fs.readFile(imagePath);
-        await fs.writeFile(pathToWriteImage, image);
-      }
-
       let isChildVenue = data.fields.isChildVenue === "true";
       let parentVenue = isChildVenue ? data.fields.parentVenue : null;
 
       const venueData = {
+        id: data.fields.id,
         capacity: Number(data.fields.capacity),
         name: data.fields.name,
         description: data.fields.description,
@@ -48,15 +36,14 @@ const handler = async (req, res) => {
         isChildVenue: isChildVenue,
         parentVenue: parentVenue,
         openingHours: data.fields.openingHours,
-        image: venuePath,
       };
 
-      const createVenueRequest = await createVenue(venueData);
-      if (createVenueRequest.status) {
+      const editVenueRequest = await editVenue(venueData);
+      if (editVenueRequest.status) {
         result = {
           status: true,
           error: "",
-          msg: "Successfully created venue",
+          msg: "Successfully edited venue",
         };
         res.status(200).send(result);
         res.end();
@@ -64,7 +51,7 @@ const handler = async (req, res) => {
       } else {
         result = {
           status: false,
-          error: createVenueRequest.error,
+          error: editVenueRequest.error,
           msg: "",
         };
         res.status(200).send(result);

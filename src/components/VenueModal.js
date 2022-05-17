@@ -147,7 +147,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         <ModalBody>
           <MotionSimpleGrid
             mt="3"
-            minChildWidth="250px"
+            minChildWidth={{ base: "full", md: "full" }}
             spacing="2em"
             minH="full"
             variants={parentVariant}
@@ -161,7 +161,6 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                   h="full"
                   alignItems="center"
                   justifyContent="center"
-                  m="4"
                 >
                   <Stack spacing={{ base: 6, md: 10 }}>
                     <Stack
@@ -230,52 +229,60 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                           </ListItem>
                         </List>
                       </Box>
+                    </Stack>
+                  </Stack>
+                </Flex>
+              )}
+            </MotionBox>
+            <MotionBox variants={cardVariant} key="3">
+              <Flex
+                w="full"
+                h="full"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Box>
+                  <Text
+                    fontSize={{ base: "16px", lg: "18px" }}
+                    fontWeight={"500"}
+                    textTransform={"uppercase"}
+                    mb={"4"}
+                  >
+                    Child Venues
+                  </Text>
 
-                      <Box>
+                  {childVenues && (
+                    <>
+                      {loadingData ? (
+                        <Text>Loading Please wait...</Text>
+                      ) : (
+                        <TableWidget
+                          key={2}
+                          columns={columns}
+                          data={childVenues}
+                        />
+                      )}
+                    </>
+                  )}
+
+                  {!childVenues && (
+                    <>
+                      {loadingData ? (
+                        <Text>Loading Please wait...</Text>
+                      ) : (
                         <Text
                           fontSize={{ base: "16px", lg: "18px" }}
                           fontWeight={"500"}
                           textTransform={"uppercase"}
                           mb={"4"}
                         >
-                          Child Venues
+                          No child venues found
                         </Text>
-
-                        {childVenues && (
-                          <>
-                            {loadingData ? (
-                              <Text>Loading Please wait...</Text>
-                            ) : (
-                              <TableWidget
-                                key={2}
-                                columns={columns}
-                                data={childVenues}
-                              />
-                            )}
-                          </>
-                        )}
-
-                        {!childVenues && (
-                          <>
-                            {loadingData ? (
-                              <Text>Loading Please wait...</Text>
-                            ) : (
-                              <Text
-                                fontSize={{ base: "16px", lg: "18px" }}
-                                fontWeight={"500"}
-                                textTransform={"uppercase"}
-                                mb={"4"}
-                              >
-                                No child venues found
-                              </Text>
-                            )}
-                          </>
-                        )}
-                      </Box>
-                    </Stack>
-                  </Stack>
-                </Flex>
-              )}
+                      )}
+                    </>
+                  )}
+                </Box>
+              </Flex>
             </MotionBox>
           </MotionSimpleGrid>
         </ModalBody>

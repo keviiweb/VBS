@@ -1,4 +1,4 @@
-import { getSession } from "next-auth/react"
+import { getSession } from "next-auth/react";
 import { timingSlotNumberToTimingMapping } from "@constants/timeslot";
 import { numberToWeekday } from "@constants/weekdays";
 import { monthNamesFull } from "@constants/months";
@@ -95,7 +95,7 @@ export const convertSlotToArray = (slots, reverse = false) => {
   }
 };
 
-export const currentSession = async (req=null) => {
+export const currentSession = async (req = null) => {
   var session = null;
   if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
     session = {
@@ -108,7 +108,7 @@ export const currentSession = async (req=null) => {
       },
     };
   } else {
-    const isServer = typeof window === 'undefined';
+    const isServer = typeof window === "undefined";
     let session = null;
     if (isServer && req) {
       session = await getSession({ req });
