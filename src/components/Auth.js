@@ -6,40 +6,34 @@ import Layout from "../layout";
 import Loading from "./Loading";
 
 const Auth = ({ children, admin }) => {
-  const router = useRouter();
   const { data: session, status } = useSession();
   const loading = status === "loading";
   const hasUser = !!session?.user;
-  const redirect = useRef(false);
+  const router = useRouter();
+  const devSession = currentSession();
 
   useEffect(() => {
-    if (!loading && !hasUser) {
-      redirect.current = true;
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+      if (admin && !devSession.user.admin) {
+        router.push("/unauthorized");
+      }
+    } else {
+      if (!loading && !hasUser) {
+        router.push("/signin");
+      } else if (admin && !session.user.admin) {
+        router.push("/unauthorized");
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, hasUser]);
 
   if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-    const devSession = currentSession();
-    if (admin && !devSession.user.admin) {
-      router.push("/unauthorized");
-    }
-
     return <Layout>{children}</Layout>;
-  } else {
-    if (redirect.current) {
-      router.push("/signin");
-    }
-
-    if (loading || !hasUser) {
-      return <Loading />;
-    }
-
-    if (admin && !session.user.admin) {
-      router.push("/unauthorized");
-    }
-
-    return <Layout>{children}</Layout>;
+  } else if (loading || !hasUser) {
+    return <Loading />;
   }
+
+  return <Layout>{children}</Layout>;
 };
 
 export default Auth;
