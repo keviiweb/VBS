@@ -11,7 +11,7 @@ import {
 import { CheckIcon, CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { cardVariant } from "@root/motion";
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Auth from "@components/Auth";
 import TableWidget from "@components/TableWidget";
 import BookingModal from "@components/BookingModal";
@@ -32,219 +32,178 @@ export default function ManageBooking() {
   const [tabIndex, setTabIndex] = useState(0);
   const tabIndexData = useRef(0);
 
-  const handleTabChange = async (index) => {
-    tabIndexData.current = index;
-    setTabIndex(index);
-    switch (index) {
-      case PENDING:
-        await fetchPendingData();
-        break;
-      case APPROVED:
-        await fetchApprovedData();
-        break;
-      case REJECTED:
-        await fetchRejectedData();
-        break;
-      case ALL:
-        await fetchAllData();
-        break;
-      default:
-        break;
-    }
-  };
-
-  const handleApprove = async (id) => {
-    if (id) {
-      try {
-        const rawResponse = await fetch("/api/bookingReq/approve", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: id,
-          }),
-        });
-        const content = await rawResponse.json();
-        if (content.status) {
-          toast({
-            title: "Request approved.",
-            description: "An email has been sent to the requester",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-          });
-          await handleTabChange(tabIndexData.current);
-        } else {
-          toast({
-            title: "Error",
-            description: content.error,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
-        }
-      } catch (error) {
-        console.log(error);
+  var handleTabChange = useCallback(
+    async (index) => {
+      tabIndexData.current = index;
+      setTabIndex(index);
+      switch (index) {
+        case PENDING:
+          await fetchPendingData();
+          break;
+        case APPROVED:
+          await fetchApprovedData();
+          break;
+        case REJECTED:
+          await fetchRejectedData();
+          break;
+        case ALL:
+          await fetchAllData();
+          break;
+        default:
+          break;
       }
-    }
-  };
+    },
+    [fetchPendingData, fetchApprovedData, fetchAllData, fetchRejectedData]
+  );
 
-  const handleReject = async (id) => {
-    if (id) {
-      try {
-        const rawResponse = await fetch("/api/bookingReq/reject", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: id,
-          }),
-        });
-        const content = await rawResponse.json();
-        if (content.status) {
-          toast({
-            title: "Request rejected.",
-            description: "An email has been sent to the requester",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
+  var handleApprove = useCallback(
+    async (id) => {
+      if (id) {
+        try {
+          const rawResponse = await fetch("/api/bookingReq/approve", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: id,
+            }),
           });
-          await handleTabChange(tabIndexData.current);
-        } else {
-          toast({
-            title: "Error",
-            description: content.error,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
+          const content = await rawResponse.json();
+          if (content.status) {
+            toast({
+              title: "Request approved.",
+              description: "An email has been sent to the requester",
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+            });
+            await handleTabChange(tabIndexData.current);
+          } else {
+            toast({
+              title: "Error",
+              description: content.error,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
       }
-    }
-  };
+    },
+    [handleTabChange, toast]
+  );
 
-  const handleDetails = (content) => {
+  var handleReject = useCallback(
+    async (id) => {
+      if (id) {
+        try {
+          const rawResponse = await fetch("/api/bookingReq/reject", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: id,
+            }),
+          });
+          const content = await rawResponse.json();
+          if (content.status) {
+            toast({
+              title: "Request rejected.",
+              description: "An email has been sent to the requester",
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+            });
+            await handleTabChange(tabIndexData.current);
+          } else {
+            toast({
+              title: "Error",
+              description: content.error,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    [handleTabChange, toast]
+  );
+
+  var handleDetails = useCallback((content) => {
     setModalData(content);
-  };
+  }, []);
 
-  const includeActionButton = async (content, action) => {
-    for (let key in content) {
-      if (content[key]) {
-        const data = content[key];
-        const buttons = await generateActionButton(data, action);
-        data.action = buttons;
+  var includeActionButton = useCallback(
+    async (content, action) => {
+      for (let key in content) {
+        if (content[key]) {
+          const data = content[key];
+          const buttons = await generateActionButton(data, action);
+          data.action = buttons;
+        }
       }
-    }
-    setData(content);
-  };
+      setData(content);
+    },
+    [generateActionButton]
+  );
 
-  const generateActionButton = async (content, action) => {
-    let button = null;
+  var generateActionButton = useCallback(
+    async (content, action) => {
+      let button = null;
 
-    switch (action) {
-      case ALL:
-        if (content.status === "PENDING") {
-          button = (
-            <ButtonGroup>
-              <Button
-                size="sm"
-                leftIcon={<CheckIcon />}
-                onClick={() => handleApprove(content.id)}
-              >
-                Approve
-              </Button>
-              <Button
-                size="sm"
-                leftIcon={<CloseIcon />}
-                onClick={() => handleReject(content.id)}
-              >
-                Reject
-              </Button>
-              <Button
-                size="sm"
-                leftIcon={<InfoOutlineIcon />}
-                onClick={() => handleDetails(content)}
-              >
-                View Details
-              </Button>
-            </ButtonGroup>
-          );
-          return button;
-        } else {
-          button = (
-            <ButtonGroup>
-              <Button
-                size="sm"
-                leftIcon={<InfoOutlineIcon />}
-                onClick={() => handleDetails(content)}
-              >
-                View Details
-              </Button>
-            </ButtonGroup>
-          );
-          return button;
-        }
-      case APPROVED:
-        button = (
-          <ButtonGroup>
-            <Button
-              size="sm"
-              leftIcon={<InfoOutlineIcon />}
-              onClick={() => handleDetails(content)}
-            >
-              View Details
-            </Button>
-          </ButtonGroup>
-        );
-        return button;
-      case REJECTED:
-        button = (
-          <ButtonGroup>
-            <Button
-              size="sm"
-              leftIcon={<InfoOutlineIcon />}
-              onClick={() => handleDetails(content)}
-            >
-              View Details
-            </Button>
-          </ButtonGroup>
-        );
-        return button;
-      case PENDING:
-        if (content.status === "PENDING") {
-          button = (
-            <ButtonGroup>
-              <Button
-                size="sm"
-                leftIcon={<CheckIcon />}
-                onClick={() => handleApprove(content.id)}
-              >
-                Approve
-              </Button>
-              <Button
-                size="sm"
-                leftIcon={<CloseIcon />}
-                onClick={() => handleReject(content.id)}
-              >
-                Reject
-              </Button>
-              <Button
-                size="sm"
-                leftIcon={<InfoOutlineIcon />}
-                onClick={() => handleDetails(content)}
-              >
-                View Details
-              </Button>
-            </ButtonGroup>
-          );
-          return button;
-        } else {
+      switch (action) {
+        case ALL:
+          if (content.status === "PENDING") {
+            button = (
+              <ButtonGroup>
+                <Button
+                  size="sm"
+                  leftIcon={<CheckIcon />}
+                  onClick={() => handleApprove(content.id)}
+                >
+                  Approve
+                </Button>
+                <Button
+                  size="sm"
+                  leftIcon={<CloseIcon />}
+                  onClick={() => handleReject(content.id)}
+                >
+                  Reject
+                </Button>
+                <Button
+                  size="sm"
+                  leftIcon={<InfoOutlineIcon />}
+                  onClick={() => handleDetails(content)}
+                >
+                  View Details
+                </Button>
+              </ButtonGroup>
+            );
+            return button;
+          } else {
+            button = (
+              <ButtonGroup>
+                <Button
+                  size="sm"
+                  leftIcon={<InfoOutlineIcon />}
+                  onClick={() => handleDetails(content)}
+                >
+                  View Details
+                </Button>
+              </ButtonGroup>
+            );
+            return button;
+          }
+        case APPROVED:
           button = (
             <ButtonGroup>
               <Button
@@ -257,11 +216,67 @@ export default function ManageBooking() {
             </ButtonGroup>
           );
           return button;
-        }
-    }
-  };
+        case REJECTED:
+          button = (
+            <ButtonGroup>
+              <Button
+                size="sm"
+                leftIcon={<InfoOutlineIcon />}
+                onClick={() => handleDetails(content)}
+              >
+                View Details
+              </Button>
+            </ButtonGroup>
+          );
+          return button;
+        case PENDING:
+          if (content.status === "PENDING") {
+            button = (
+              <ButtonGroup>
+                <Button
+                  size="sm"
+                  leftIcon={<CheckIcon />}
+                  onClick={() => handleApprove(content.id)}
+                >
+                  Approve
+                </Button>
+                <Button
+                  size="sm"
+                  leftIcon={<CloseIcon />}
+                  onClick={() => handleReject(content.id)}
+                >
+                  Reject
+                </Button>
+                <Button
+                  size="sm"
+                  leftIcon={<InfoOutlineIcon />}
+                  onClick={() => handleDetails(content)}
+                >
+                  View Details
+                </Button>
+              </ButtonGroup>
+            );
+            return button;
+          } else {
+            button = (
+              <ButtonGroup>
+                <Button
+                  size="sm"
+                  leftIcon={<InfoOutlineIcon />}
+                  onClick={() => handleDetails(content)}
+                >
+                  View Details
+                </Button>
+              </ButtonGroup>
+            );
+            return button;
+          }
+      }
+    },
+    [handleApprove, handleDetails, handleReject]
+  );
 
-  const fetchAllData = async () => {
+  var fetchAllData = useCallback(async () => {
     setLoadingData(true);
     try {
       const rawResponse = await fetch("/api/bookingReq/fetch", {
@@ -281,9 +296,9 @@ export default function ManageBooking() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [includeActionButton]);
 
-  const fetchApprovedData = async () => {
+  var fetchApprovedData = useCallback(async () => {
     setLoadingData(true);
     try {
       const rawResponse = await fetch("/api/bookingReq/fetch?q=APPROVED", {
@@ -303,9 +318,9 @@ export default function ManageBooking() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [includeActionButton]);
 
-  const fetchRejectedData = async () => {
+  var fetchRejectedData = useCallback(async () => {
     setLoadingData(true);
     try {
       const rawResponse = await fetch("/api/bookingReq/fetch?q=REJECTED", {
@@ -324,9 +339,13 @@ export default function ManageBooking() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [includeActionButton]);
 
-  const fetchPendingData = async () => {
+  useEffect(() => {
+    fetchPendingData();
+  }, [fetchPendingData]);
+
+  var fetchPendingData = useCallback(async () => {
     setLoadingData(true);
     try {
       const rawResponse = await fetch("/api/bookingReq/fetch?q=PENDING", {
@@ -345,12 +364,7 @@ export default function ManageBooking() {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  useEffect(() => {
-    fetchPendingData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [includeActionButton]);
 
   const columns = useMemo(
     () => [

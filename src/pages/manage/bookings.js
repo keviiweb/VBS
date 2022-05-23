@@ -2,7 +2,7 @@ import { Button, Box, Text, ButtonGroup, useToast } from "@chakra-ui/react";
 import { CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { cardVariant } from "@root/motion";
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Auth from "@components/Auth";
 import TableWidget from "@components/TableWidget";
 import BookingModal from "@components/BookingModal";
@@ -16,124 +16,132 @@ export default function ManageBooking() {
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState([]);
 
-  const handleDetails = (content) => {
+  var handleDetails = useCallback((content) => {
     setModalData(content);
-  };
+  }, []);
 
-  const handleCancel = async (id) => {
-    if (id) {
+  var handleCancel = useCallback(
+    async (id) => {
+      if (id) {
+        try {
+          const rawResponse = await fetch("/api/bookingReq/cancel", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: id,
+            }),
+          });
+          const content = await rawResponse.json();
+          if (content.status) {
+            toast({
+              title: "Request cancelled.",
+              description: "An email has been sent to the requester",
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+            });
+            await fetchData();
+          } else {
+            toast({
+              title: "Error",
+              description: content.error,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    [toast]
+  );
+
+  var includeActionButton = useCallback(
+    async (content) => {
+      for (let key in content) {
+        if (content[key]) {
+          const data = content[key];
+          const buttons = await generateActionButton(data);
+          data.action = buttons;
+        }
+      }
+      setData(content);
+    },
+    [generateActionButton]
+  );
+
+  var generateActionButton = useCallback(
+    async (content) => {
+      let button = null;
+
+      if (content.status === "PENDING" || content.status === "APPROVED") {
+        button = (
+          <ButtonGroup>
+            <Button
+              size="sm"
+              leftIcon={<CloseIcon />}
+              onClick={() => handleCancel(content.id)}
+            >
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              leftIcon={<InfoOutlineIcon />}
+              onClick={() => handleDetails(content)}
+            >
+              View Details
+            </Button>
+          </ButtonGroup>
+        );
+        return button;
+      } else {
+        button = (
+          <ButtonGroup>
+            <Button
+              size="sm"
+              leftIcon={<InfoOutlineIcon />}
+              onClick={() => handleDetails(content)}
+            >
+              View Details
+            </Button>
+          </ButtonGroup>
+        );
+        return button;
+      }
+    },
+    [handleDetails, handleCancel]
+  );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoadingData(true);
       try {
-        const rawResponse = await fetch("/api/bookingReq/cancel", {
-          method: "POST",
+        const rawResponse = await fetch("/api/bookingReq/fetch?q=USER", {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            id: id,
-          }),
         });
         const content = await rawResponse.json();
         if (content.status) {
-          toast({
-            title: "Request cancelled.",
-            description: "An email has been sent to the requester",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-          });
-          await fetchData();
-        } else {
-          toast({
-            title: "Error",
-            description: content.error,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
+          await includeActionButton(content.msg);
         }
+
+        setLoadingData(false);
       } catch (error) {
         console.log(error);
       }
-    }
-  };
+    };
 
-  const includeActionButton = async (content) => {
-    for (let key in content) {
-      if (content[key]) {
-        const data = content[key];
-        const buttons = await generateActionButton(data);
-        data.action = buttons;
-      }
-    }
-    setData(content);
-  };
-
-  const generateActionButton = async (content) => {
-    let button = null;
-
-    if (content.status === "PENDING") {
-      button = (
-        <ButtonGroup>
-          <Button
-            size="sm"
-            leftIcon={<CloseIcon />}
-            onClick={() => handleCancel(content.id)}
-          >
-            Cancel
-          </Button>
-          <Button
-            size="sm"
-            leftIcon={<InfoOutlineIcon />}
-            onClick={() => handleDetails(content)}
-          >
-            View Details
-          </Button>
-        </ButtonGroup>
-      );
-      return button;
-    } else {
-      button = (
-        <ButtonGroup>
-          <Button
-            size="sm"
-            leftIcon={<InfoOutlineIcon />}
-            onClick={() => handleDetails(content)}
-          >
-            View Details
-          </Button>
-        </ButtonGroup>
-      );
-      return button;
-    }
-  };
-
-  const fetchData = async () => {
-    setLoadingData(true);
-    try {
-      const rawResponse = await fetch("/api/bookingReq/fetch?q=USER", {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-      const content = await rawResponse.json();
-      if (content.status) {
-        await includeActionButton(content.msg);
-      }
-
-      setLoadingData(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
     if (loadingData) {
       fetchData();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadingData]);
+  }, [includeActionButton, loadingData]);
 
   const columns = useMemo(
     () => [

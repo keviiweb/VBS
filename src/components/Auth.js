@@ -11,6 +11,7 @@ const Auth = ({ children, admin }) => {
   const hasUser = !!session?.user;
   const router = useRouter();
   const devSession = useRef(null);
+  const isAdmin = !!admin;
 
   useEffect(() => {
     async function fetchData() {
@@ -18,13 +19,13 @@ const Auth = ({ children, admin }) => {
         devSession.current = await currentSession();
 
         if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-          if (admin && !devSession.current.user.admin) {
+          if (isAdmin && !devSession.current.user.admin) {
             router.push("/unauthorized");
           }
         } else {
           if (!loading && !hasUser) {
             router.push("/signin");
-          } else if (admin && !session.user.admin) {
+          } else if (isAdmin && !session.user.admin) {
             router.push("/unauthorized");
           }
         }
@@ -34,7 +35,7 @@ const Auth = ({ children, admin }) => {
     }
 
     fetchData();
-  }, [loading, hasUser]);
+  }, [loading, hasUser, isAdmin, router, session]);
 
   if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
     return <Layout>{children}</Layout>;

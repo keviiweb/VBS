@@ -42,8 +42,7 @@ export default function UserProfile(props) {
       }
     }
     fetchData(props);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url]);
+  }, [url, props]);
 
   return (
     <HStack spacing={{ base: "0", md: "6" }}>

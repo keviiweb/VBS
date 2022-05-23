@@ -1,7 +1,7 @@
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { monthNamesFull } from "@constants/months";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function CalendarWidget({
   selectedDate,
@@ -12,19 +12,25 @@ export default function CalendarWidget({
   const [minDate, setMinDate] = useState(new Date());
   const [maxDate, setMaxDate] = useState(new Date());
 
+  const min = useRef(0);
+  const max = useRef(0);
+
   useEffect(() => {
     async function setDates() {
-      setMinDate(addDays(currentDate, Number(calendarMin)));
-      setMaxDate(addDays(currentDate, Number(calendarMax)));
+      const current = new Date();
+      setMinDate(addDays(current, Number(min.current)));
+      setMaxDate(addDays(current, Number(max.current)));
     }
 
     if (calendarMax && calendarMin) {
+      min.current = calendarMin;
+      max.current = calendarMax;
       setDates();
     }
-  }, []);
+  }, [calendarMin, calendarMax]);
 
   function addDays(date, days) {
-    let result = new Date(date);
+    let result = date;
     result.setDate(result.getDate() + days);
     return result;
   }

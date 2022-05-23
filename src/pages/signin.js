@@ -26,8 +26,7 @@ export default function SignIn(props) {
       }
     }
     fetchData(props);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url]);
+  }, [url, props]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();

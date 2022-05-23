@@ -21,7 +21,7 @@ import {
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { cardVariant, parentVariant } from "@root/motion";
 import { motion } from "framer-motion";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import Auth from "@components/Auth";
 import TableWidget from "@components/TableWidget";
 import VenueModal from "@components/VenueModal";
@@ -94,11 +94,11 @@ export default function ManageVenues() {
   const [errorEdit, setErrorEdit] = useState(null);
 
   // Creating new venue;
-  const handleDetails = (content) => {
+  var handleDetails = useCallback((content) => {
     setModalData(content);
-  };
+  }, []);
 
-  const reset = async () => {
+  var reset = useCallback(async () => {
     selectedFileDB.current = null;
     nameDB.current = "";
     descriptionDB.current = "";
@@ -119,66 +119,69 @@ export default function ManageVenues() {
     setFileName(null);
     setStartTime("");
     setEndTime("");
-  };
+  }, []);
 
-  const handleSubmit = async (event) => {
-    setError(null);
-    event.preventDefault();
-    const openingHours = startTimeDB.current + " - " + endTimeDB.current;
-    if (
-      validateFields(
-        nameDB.current,
-        descriptionDB.current,
-        capacityDB.current,
-        isChildVenueDB.current,
-        parentVenue.current,
-        startTimeDB.current,
-        endTimeDB.current,
-        openingHours
-      )
-    ) {
-      const data = new FormData();
-      data.append("image", selectedFileDB.current);
-      data.append("name", nameDB.current);
-      data.append("description", descriptionDB.current);
-      data.append("capacity", capacityDB.current);
-      data.append("isInstantBook", instantBookDB.current);
-      data.append("visible", visibleDB.current);
-      data.append("isChildVenue", isChildVenueDB.current);
-      data.append("parentVenue", parentVenue.current);
-      data.append("openingHours", openingHours);
+  const handleSubmit = useCallback(
+    async (event) => {
+      setError(null);
+      event.preventDefault();
+      const openingHours = startTimeDB.current + " - " + endTimeDB.current;
+      if (
+        validateFields(
+          nameDB.current,
+          descriptionDB.current,
+          capacityDB.current,
+          isChildVenueDB.current,
+          parentVenue.current,
+          startTimeDB.current,
+          endTimeDB.current,
+          openingHours
+        )
+      ) {
+        const data = new FormData();
+        data.append("image", selectedFileDB.current);
+        data.append("name", nameDB.current);
+        data.append("description", descriptionDB.current);
+        data.append("capacity", capacityDB.current);
+        data.append("isInstantBook", instantBookDB.current);
+        data.append("visible", visibleDB.current);
+        data.append("isChildVenue", isChildVenueDB.current);
+        data.append("parentVenue", parentVenue.current);
+        data.append("openingHours", openingHours);
 
-      try {
-        const rawResponse = await fetch("/api/venue/create", {
-          method: "POST",
-          body: data,
-        });
-        const content = await rawResponse.json();
-        if (content.status) {
-          await reset();
-          toast({
-            title: "Success",
-            description: content.msg,
-            status: "success",
-            duration: 5000,
-            isClosable: true,
+        try {
+          const rawResponse = await fetch("/api/venue/create", {
+            method: "POST",
+            body: data,
           });
+          const content = await rawResponse.json();
+          if (content.status) {
+            await reset();
+            toast({
+              title: "Success",
+              description: content.msg,
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+            });
 
-          await fetchData();
-        } else {
-          toast({
-            title: "Error",
-            description: content.error,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
+            await fetchData();
+          } else {
+            toast({
+              title: "Error",
+              description: content.error,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
       }
-    }
-  };
+    },
+    [fetchData, reset, toast]
+  );
 
   const onFileChange = async (event) => {
     const file = event.target.files[0];
@@ -209,66 +212,72 @@ export default function ManageVenues() {
     }
   };
 
-  const includeActionButton = async (content) => {
-    const selection = [];
-    const selectionEdit = [];
-    let count = 0;
-    venueData.current = [];
+  var includeActionButton = useCallback(
+    async (content) => {
+      const selection = [];
+      const selectionEdit = [];
+      let count = 0;
+      venueData.current = [];
 
-    selectionEdit.push(<option key={""} value={""}></option>);
+      selectionEdit.push(<option key={""} value={""}></option>);
 
-    for (let key in content) {
-      if (content[key]) {
-        const data = content[key];
-        if (!data.isChildVenue) {
-          selection.push(
+      for (let key in content) {
+        if (content[key]) {
+          const data = content[key];
+          if (!data.isChildVenue) {
+            selection.push(
+              <option key={data.id} value={data.id}>
+                {data.name}
+              </option>
+            );
+
+            if (count == 0) {
+              parentVenue.current = data.id;
+              count++;
+            }
+          }
+
+          selectionEdit.push(
             <option key={data.id} value={data.id}>
               {data.name}
             </option>
           );
 
-          if (count == 0) {
-            parentVenue.current = data.id;
-            count++;
-          }
+          venueData.current.push(data);
+          const buttons = await generateActionButton(data);
+          data.action = buttons;
         }
-
-        selectionEdit.push(
-          <option key={data.id} value={data.id}>
-            {data.name}
-          </option>
-        );
-
-        venueData.current.push(data);
-        const buttons = await generateActionButton(data);
-        data.action = buttons;
       }
-    }
 
-    setParentVenueDropdown(selection);
-    setVenueDropdown(selectionEdit);
-    setData(content);
-  };
+      setParentVenueDropdown(selection);
+      setVenueDropdown(selectionEdit);
+      setData(content);
+    },
+    [generateActionButton]
+  );
 
-  const generateActionButton = async (content) => {
-    let button = null;
+  var generateActionButton = useCallback(
+    async (content) => {
+      let button = null;
 
-    button = (
-      <ButtonGroup>
-        <Button
-          size="sm"
-          leftIcon={<InfoOutlineIcon />}
-          onClick={() => handleDetails(content)}
-        >
-          View Details
-        </Button>
-      </ButtonGroup>
-    );
+      button = (
+        <ButtonGroup>
+          <Button
+            size="sm"
+            leftIcon={<InfoOutlineIcon />}
+            onClick={() => handleDetails(content)}
+          >
+            View Details
+          </Button>
+        </ButtonGroup>
+      );
 
-    return button;
-  };
+      return button;
+    },
+    [handleDetails]
+  );
 
-  const fetchData = async () => {
+  var fetchData = useCallback(async () => {
     setLoadingData(true);
     setData(null);
     try {
@@ -286,9 +295,9 @@ export default function ManageVenues() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [includeActionButton]);
 
-  const generateTimeSlots = async () => {
+  var generateTimeSlots = useCallback(async () => {
     const start = [];
     const end = [];
 
@@ -314,7 +323,7 @@ export default function ManageVenues() {
 
     setStartTimeDropdown(start);
     setEndTimeDropdown(end);
-  };
+  }, []);
 
   useEffect(() => {
     async function generate() {
@@ -323,8 +332,7 @@ export default function ManageVenues() {
     }
 
     generate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchData, generateTimeSlots]);
 
   const columns = useMemo(
     () => [
@@ -481,67 +489,70 @@ export default function ManageVenues() {
     setEndTimeEdit(end);
   };
 
-  const handleSubmitEdit = async (event) => {
-    setErrorEdit(null);
-    event.preventDefault();
+  var handleSubmitEdit = useCallback(
+    async (event) => {
+      setErrorEdit(null);
+      event.preventDefault();
 
-    const openingHours =
-      startTimeDBEdit.current + " - " + endTimeDBEdit.current;
-    if (
-      validateFieldsEdit(
-        venueIDDBEdit.current,
-        nameDBEdit.current,
-        descriptionDBEdit.current,
-        capacityDBEdit.current,
-        isChildVenueDBEdit.current,
-        parentVenueEdit.current,
-        startTimeDBEdit.current,
-        endTimeDBEdit.current,
-        openingHours
-      )
-    ) {
-      const data = new FormData();
-      data.append("id", venueIDDBEdit.current);
-      data.append("name", nameDBEdit.current);
-      data.append("description", descriptionDBEdit.current);
-      data.append("capacity", capacityDBEdit.current);
-      data.append("isInstantBook", instantBookDBEdit.current);
-      data.append("visible", visibleDBEdit.current);
-      data.append("isChildVenue", isChildVenueDBEdit.current);
-      data.append("parentVenue", parentVenueEdit.current);
-      data.append("openingHours", openingHours);
+      const openingHours =
+        startTimeDBEdit.current + " - " + endTimeDBEdit.current;
+      if (
+        validateFieldsEdit(
+          venueIDDBEdit.current,
+          nameDBEdit.current,
+          descriptionDBEdit.current,
+          capacityDBEdit.current,
+          isChildVenueDBEdit.current,
+          parentVenueEdit.current,
+          startTimeDBEdit.current,
+          endTimeDBEdit.current,
+          openingHours
+        )
+      ) {
+        const data = new FormData();
+        data.append("id", venueIDDBEdit.current);
+        data.append("name", nameDBEdit.current);
+        data.append("description", descriptionDBEdit.current);
+        data.append("capacity", capacityDBEdit.current);
+        data.append("isInstantBook", instantBookDBEdit.current);
+        data.append("visible", visibleDBEdit.current);
+        data.append("isChildVenue", isChildVenueDBEdit.current);
+        data.append("parentVenue", parentVenueEdit.current);
+        data.append("openingHours", openingHours);
 
-      try {
-        const rawResponse = await fetch("/api/venue/edit", {
-          method: "POST",
-          body: data,
-        });
-        const content = await rawResponse.json();
-        if (content.status) {
-          await resetEdit();
-          toast({
-            title: "Success",
-            description: content.msg,
-            status: "success",
-            duration: 5000,
-            isClosable: true,
+        try {
+          const rawResponse = await fetch("/api/venue/edit", {
+            method: "POST",
+            body: data,
           });
+          const content = await rawResponse.json();
+          if (content.status) {
+            await resetEdit();
+            toast({
+              title: "Success",
+              description: content.msg,
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+            });
 
-          await fetchData();
-        } else {
-          toast({
-            title: "Error",
-            description: content.error,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
+            await fetchData();
+          } else {
+            toast({
+              title: "Error",
+              description: content.error,
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
       }
-    }
-  };
+    },
+    [fetchData, resetEdit, toast]
+  );
 
   const validateFieldsEdit = (
     id,
@@ -603,7 +614,7 @@ export default function ManageVenues() {
     return true;
   };
 
-  const resetEdit = async () => {
+  var resetEdit = useCallback(async () => {
     nameDBEdit.current = "";
     descriptionDBEdit.current = "";
     capacityDBEdit.current = "";
@@ -622,7 +633,7 @@ export default function ManageVenues() {
     setVisibleEdit(true);
     setStartTimeEdit("");
     setEndTimeEdit("");
-  };
+  }, []);
 
   return (
     <Auth admin>

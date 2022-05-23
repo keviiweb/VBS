@@ -97,7 +97,6 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
     if (modalData) {
       setupData();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalData]);
 
   const columns = useMemo(

@@ -67,8 +67,7 @@ export default function VBS(props) {
       }
     }
     fetchData(props);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [props]);
 
   return (
     <>

@@ -18,7 +18,7 @@ import {
 import CalendarWidget from "@components/CalendarWidget";
 import TimeSlotButton from "@components/TimeSlotButton";
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
 import { prettifyDate } from "@constants/helper";
 const MotionSimpleGrid = motion(SimpleGrid);
@@ -145,6 +145,29 @@ export default function VenueBookingModal({
     return false;
   };
 
+  const buildChildVenueDropdown = useCallback(
+    async (content) => {
+      const selection = [];
+      if (modalData) {
+        selection.push(
+          <option key={modalData.id} value={modalData.id}>
+            Whole Venue
+          </option>
+        );
+      }
+
+      for (var key in content) {
+        selection.push(
+          <option key={content[key].id} value={content[key].id}>
+            {content[key].name}
+          </option>
+        );
+      }
+      setChildVenueDrop(selection);
+    },
+    [modalData]
+  );
+
   useEffect(() => {
     async function fetchData() {
       if (!isChildVenue) {
@@ -177,30 +200,9 @@ export default function VenueBookingModal({
       setCapacity(modalData.capacity);
       fetchData();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [modalData]);
+  }, [buildChildVenueDropdown, modalData, isChildVenue]);
 
   // Child venue generation
-  const buildChildVenueDropdown = async (content) => {
-    const selection = [];
-    if (modalData) {
-      selection.push(
-        <option key={modalData.id} value={modalData.id}>
-          Whole Venue
-        </option>
-      );
-    }
-
-    for (var key in content) {
-      selection.push(
-        <option key={content[key].id} value={content[key].id}>
-          {content[key].name}
-        </option>
-      );
-    }
-    setChildVenueDrop(selection);
-  };
-
   const onChildVenueChange = (event) => {
     if (event.target.value) {
       selectedVenue.current = event.target.value;
