@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "clean": "rm -rf out; rm -rf .next",
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run clean; next build;",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "npx prettier --write .",
+    "prettier": "prettier --write .",
     "postinstall": "prisma generate"
   },
   "dependencies": {
