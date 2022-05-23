@@ -1,4 +1,3 @@
-import { getSession } from "next-auth/react";
 import { timingSlotNumberToTimingMapping } from "@constants/timeslot";
 import { numberToWeekday } from "@constants/weekdays";
 import { monthNamesFull } from "@constants/months";
@@ -55,12 +54,16 @@ export const prettifyDate = (date) => {
     const prettyDate = `${day}, ${dateObj.getDate()} ${month} ${dateObj.getFullYear()}`;
     return prettyDate;
   }
+
+  return `Unknown Date`;
 };
 
 export const convertDateToUnix = (date) => {
   const prettified = prettifyDate(date);
-  const parseDate = Date.parse(prettified);
-  return Math.floor(parseDate / 1000);
+  if (prettified) {
+    const parseDate = Date.parse(prettified);
+    return parseDate ? Math.floor(parseDate / 1000) : 0;
+  }
 };
 
 export const convertUnixToDate = (date) => {
@@ -95,29 +98,19 @@ export const convertSlotToArray = (slots, reverse = false) => {
   }
 };
 
-export const currentSession = async (req = null) => {
-  var session = null;
-  if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-    session = {
-      expires: "1",
-      user: {
-        username: "Test user",
-        email: "testing@test.com",
-        admin: true,
-        studentID: "A7654321",
-      },
-    };
-  } else {
-    const isServer = typeof window === "undefined";
-    let session = null;
-    if (isServer && req) {
-      session = await getSession({ req });
-    } else {
-      session = await getSession();
-    }
+export const findSlots = async (slot, isStart) => {
+  for (let i in timingSlotNumberToTimingMapping) {
+    if (timingSlotNumberToTimingMapping[i].includes(slot)) {
+      const split = timingSlotNumberToTimingMapping[i].split("-");
+      if (split[0].trim() == slot && isStart) {
+        return i;
+      }
 
-    return session;
+      if (split[1].trim() == slot && !isStart) {
+        return i;
+      }
+    }
   }
 
-  return session;
+  return null;
 };

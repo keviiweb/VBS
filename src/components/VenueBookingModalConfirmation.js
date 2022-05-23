@@ -25,7 +25,7 @@ import {
 } from "@chakra-ui/react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);

@@ -1,11 +1,11 @@
 import {
   mapSlotToTiming,
-  currentSession,
   convertDateToUnix,
   convertSlotToArray,
   prettifyTiming,
 } from "@constants/helper";
-import { findCCAbyID } from "@constants/cca";
+import { currentSession } from "@helper/session";
+import { findCCAbyID } from "@helper/cca";
 import {
   isConflict,
   createVenueBookingRequest,
@@ -15,9 +15,9 @@ import {
   setApprove,
   setRejectConflicts,
   createVenueBooking,
-} from "@constants/booking";
-import { isInstantBook, isVisible } from "@constants/venue";
-import { sendProgressMail } from "@constants/email/progress";
+} from "@helper/booking";
+import { isInstantBook, isVisible } from "@helper/venue";
+import { sendProgressMail } from "@helper/email/progress";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
@@ -168,6 +168,7 @@ const handler = async (req, res) => {
             msg: "Booking request created",
           };
           res.status(200).send(result);
+          res.end();
         } else {
           result = {
             status: false,
@@ -175,6 +176,8 @@ const handler = async (req, res) => {
             msg: "",
           };
           res.status(200).send(result);
+          res.end();
+          return;
         }
       } else {
         isSuccessful = true;

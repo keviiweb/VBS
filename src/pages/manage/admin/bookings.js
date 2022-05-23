@@ -2,7 +2,6 @@ import {
   Button,
   Box,
   Text,
-  useColorModeValue,
   Tabs,
   TabList,
   Tab,
@@ -24,8 +23,7 @@ export default function ManageBooking() {
 
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
-  const [data, setData] = useState(null);
-  const allBookings = useRef([]);
+  const [data, setData] = useState([]);
   const ALL = 3;
   const PENDING = 0;
   const APPROVED = 1;
@@ -37,7 +35,6 @@ export default function ManageBooking() {
   const handleTabChange = async (index) => {
     tabIndexData.current = index;
     setTabIndex(index);
-    setData(null);
     switch (index) {
       case PENDING:
         await fetchPendingData();
@@ -50,6 +47,8 @@ export default function ManageBooking() {
         break;
       case ALL:
         await fetchAllData();
+        break;
+      default:
         break;
     }
   };
@@ -273,13 +272,12 @@ export default function ManageBooking() {
       });
       const content = await rawResponse.json();
       if (content.status) {
-        allBookings.current = content.msg;
         await includeActionButton(content.msg, ALL);
-        setLoadingData(false);
       } else {
-        setData(null);
-        setLoadingData(false);
+        setData([]);
       }
+
+      setLoadingData(false);
     } catch (error) {
       console.log(error);
     }
@@ -296,13 +294,12 @@ export default function ManageBooking() {
       });
       const content = await rawResponse.json();
       if (content.status) {
-        allBookings.current = content.msg;
         await includeActionButton(content.msg, APPROVED);
-        setLoadingData(false);
       } else {
-        setData(null);
-        setLoadingData(false);
+        setData([]);
       }
+
+      setLoadingData(false);
     } catch (error) {
       console.log(error);
     }
@@ -319,13 +316,11 @@ export default function ManageBooking() {
       });
       const content = await rawResponse.json();
       if (content.status) {
-        allBookings.current = content.msg;
         await includeActionButton(content.msg, REJECTED);
-        setLoadingData(false);
       } else {
-        setData(null);
-        setLoadingData(false);
+        setData([]);
       }
+      setLoadingData(false);
     } catch (error) {
       console.log(error);
     }
@@ -342,13 +337,11 @@ export default function ManageBooking() {
       });
       const content = await rawResponse.json();
       if (content.status) {
-        allBookings.current = content.msg;
         await includeActionButton(content.msg, PENDING);
-        setLoadingData(false);
       } else {
-        setData(null);
-        setLoadingData(false);
+        setData([]);
       }
+      setLoadingData(false);
     } catch (error) {
       console.log(error);
     }
@@ -400,11 +393,11 @@ export default function ManageBooking() {
   return (
     <Auth admin>
       <Box
-        bg={useColorModeValue("white", "gray.700")}
+        bg="white"
         borderRadius="lg"
         width={{ base: "full", md: "full", lg: "full" }}
         p={8}
-        color={useColorModeValue("gray.700", "whiteAlpha.900")}
+        color="gray.700"
         shadow="base"
       >
         <MotionBox variants={cardVariant} key="1">

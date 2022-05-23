@@ -7,8 +7,9 @@ import {
   setApprove,
   setRejectConflicts,
   createVenueBooking,
-} from "@constants/booking";
-import { currentSession, convertSlotToArray } from "@constants/helper";
+} from "@helper/booking";
+import { convertSlotToArray } from "@constants/helper";
+import { currentSession } from "@helper/session";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
@@ -17,7 +18,6 @@ const handler = async (req, res) => {
   const { id } = req.body;
   if (session && session.user.admin) {
     if (id) {
-      let isSuccessful = false;
       const bookingRequest = await findBookingByID(id);
 
       if (bookingRequest) {
@@ -91,7 +91,6 @@ const handler = async (req, res) => {
         const cancel = await setRejectConflicts(bookingRequest, session);
 
         if (approve.status && cancel.status) {
-          isSuccessful = true;
           result = {
             status: true,
             error: null,

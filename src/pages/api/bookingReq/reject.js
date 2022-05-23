@@ -4,8 +4,8 @@ import {
   isCancelled,
   isRejected,
   setReject,
-} from "@constants/booking";
-import { currentSession } from "@constants/helper";
+} from "@helper/booking";
+import { currentSession } from "@helper/session";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
@@ -63,6 +63,8 @@ const handler = async (req, res) => {
             msg: "Booking request rejected",
           };
           res.status(200).send(result);
+          res.end();
+          return;
         } else {
           result = {
             status: false,

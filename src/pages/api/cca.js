@@ -1,5 +1,5 @@
-import { prisma } from "@constants/db";
-import { currentSession } from "@constants/helper";
+import { currentSession } from "@helper/session";
+import { findAllCCA } from "@helper/cca";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
@@ -7,9 +7,10 @@ const handler = async (req, res) => {
 
   if (session) {
     try {
-      const ccaList = await prisma.CCA.findMany();
-      if (ccaList != null) {
-        ccaList.forEach((item) => {
+      const ccaList = await findAllCCA();
+      if (ccaList.status) {
+        const msg = ccaList.msg;
+        msg.forEach((item) => {
           result.push(item);
         });
       }

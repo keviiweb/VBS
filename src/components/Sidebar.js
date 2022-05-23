@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { Box, CloseButton, Flex, Text } from "@chakra-ui/react";
 import {
@@ -9,15 +8,16 @@ import {
   FiCalendar,
   FiMapPin,
 } from "react-icons/fi";
-import NavLink from "./NavLink";
+import NavLink from "@components/NavLink";
 import Link from "next/link";
-import { currentSession } from "@constants/helper";
-import { useState } from "react";
+import { currentSession } from "@helper/session";
+import { useState, useEffect } from "react";
 
 let LinkItems = null;
 
 export default function Sidebar({ onClose, ...rest }) {
   const [loading, setLoading] = useState(false);
+  const [item, setItems] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -54,6 +54,7 @@ export default function Sidebar({ onClose, ...rest }) {
         ];
       }
 
+      setItems(LinkItems);
       setLoading(true);
     }
     fetchData();
@@ -78,14 +79,15 @@ export default function Sidebar({ onClose, ...rest }) {
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Link href="/">
           <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-            KEVII
+            KEVII VBS
           </Text>
         </Link>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {loading &&
-        LinkItems &&
-        LinkItems.map((link, i) => <NavLink key={i} link={link} />)}
+        item &&
+        item.map((link, i) => <NavLink key={i} link={link} />)}
+      {!loading && <Text>Loading sidebar...</Text>}
     </Box>
   );
 }

@@ -1,5 +1,5 @@
 import { prisma } from "@constants/db";
-import { findSlots } from "@constants/timeslot";
+import { findSlots } from "@constants/helper";
 
 export const fetchChildVenue = async (venue) => {
   try {
@@ -7,21 +7,20 @@ export const fetchChildVenue = async (venue) => {
       where: { parentVenue: venue, isChildVenue: true },
     });
 
-    return childVenues;
+    return { status: true, error: null, msg: childVenues };
   } catch (error) {
     console.log(error);
-    return null;
+    return { status: false, error: error, msg: "" };
   }
 };
 
 export const fetchAllVenue = async () => {
   try {
     const locations = await prisma.venue.findMany();
-
-    return locations;
+    return { status: true, error: null, msg: locations };
   } catch (error) {
     console.log(error);
-    return null;
+    return { status: false, error: error, msg: "" };
   }
 };
 
@@ -71,7 +70,11 @@ export const fetchOpeningHours = async (id) => {
       const start = await findSlots(hours[0].trim(), true);
       const end = await findSlots(hours[1].trim(), false);
 
-      return { start: Number(start), end: Number(end) };
+      if (start && end) {
+        return { start: Number(start), end: Number(end) };
+      } else {
+        return { start: null, end: null };
+      }
     } else {
       return { start: null, end: null };
     }

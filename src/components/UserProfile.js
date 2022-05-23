@@ -15,7 +15,7 @@ import { FiChevronDown } from "react-icons/fi";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { currentSession } from "@constants/helper";
+import { currentSession } from "@helper/session";
 
 export default function UserProfile(props) {
   const [admin, setAdmin] = useState(null);

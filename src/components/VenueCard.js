@@ -35,7 +35,7 @@ export default function VenueCard({ product, setModalData }) {
         </Box>
 
         <Box p="6">
-          <Box fontWeight="semibold" as="h4" lineHeight="tight" isTruncated>
+          <Box fontWeight="semibold" as="h4" lineHeight="tight">
             {name}
           </Box>
         </Box>

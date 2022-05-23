@@ -36,7 +36,7 @@ export default function Card({ product }) {
           </Box>
 
           <Box p="6">
-            <Box fontWeight="semibold" as="h4" lineHeight="tight" isTruncated>
+            <Box fontWeight="semibold" as="h4" lineHeight="tight">
               {title}
             </Box>
           </Box>

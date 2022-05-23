@@ -1,7 +1,7 @@
-import { createVenue } from "@constants/venue";
+import { createVenue } from "@helper/venue";
 import { IncomingForm } from "formidable";
 import { promises as fs } from "fs";
-import { currentSession } from "@constants/helper";
+import { currentSession } from "@helper/session";
 
 // first we need to disable the default body parser
 export const config = {
@@ -14,7 +14,7 @@ const handler = async (req, res) => {
   const session = await currentSession(req);
   let result = null;
 
-  if (session) {
+  if (session && session.user.admin) {
     const data = await new Promise((resolve, reject) => {
       const form = new IncomingForm();
       form.parse(req, (err, fields, files) => {

@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 export default function TimeSlotButton({
   disable,

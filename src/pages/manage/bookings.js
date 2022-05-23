@@ -1,11 +1,4 @@
-import {
-  Button,
-  Box,
-  Text,
-  useColorModeValue,
-  ButtonGroup,
-  useToast,
-} from "@chakra-ui/react";
+import { Button, Box, Text, ButtonGroup, useToast } from "@chakra-ui/react";
 import { CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { cardVariant } from "@root/motion";
 import { motion } from "framer-motion";
@@ -22,7 +15,6 @@ export default function ManageBooking() {
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState([]);
-  const allBookings = useRef([]);
 
   const handleDetails = (content) => {
     setModalData(content);
@@ -127,13 +119,10 @@ export default function ManageBooking() {
       });
       const content = await rawResponse.json();
       if (content.status) {
-        allBookings.current = content.msg;
         await includeActionButton(content.msg);
-        setLoadingData(false);
-      } else {
-        setData([]);
-        setLoadingData(false);
       }
+
+      setLoadingData(false);
     } catch (error) {
       console.log(error);
     }
@@ -186,13 +175,7 @@ export default function ManageBooking() {
 
   return (
     <Auth>
-      <Box
-        bg={useColorModeValue("white", "gray.700")}
-        borderRadius="lg"
-        p={8}
-        color={useColorModeValue("gray.700", "whiteAlpha.900")}
-        shadow="base"
-      >
+      <Box bg="white" borderRadius="lg" p={8} color="gray.700" shadow="base">
         <MotionBox variants={cardVariant} key="1">
           {loadingData ? (
             <Text>Loading Please wait...</Text>

@@ -1,16 +1,16 @@
 import { prisma } from "@constants/db";
 import {
   mapSlotToTiming,
-  currentSession,
   convertSlotToArray,
   convertUnixToDate,
   prettifyTiming,
   prettifyDate,
   compareDate,
 } from "@constants/helper";
-import { findVenueByID } from "@constants/venue";
-import { findCCAbyID } from "@constants/cca";
-import { BOOKINGS, getConflictingRequest } from "@constants/booking";
+import { currentSession } from "@helper/session";
+import { findVenueByID } from "@helper/venue";
+import { findCCAbyID } from "@helper/cca";
+import { BOOKINGS, getConflictingRequest } from "@helper/booking";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
@@ -143,7 +143,8 @@ const handler = async (req, res) => {
 
             if (!book.isApproved && !book.isCancelled && !book.isRejected) {
               const bookingDate = book.date;
-              if (compareDate(bookingDate, 1)) {
+              const minDay = process.env.CANCEL_MIN_DAY;
+              if (compareDate(bookingDate, minDay)) {
                 status = "PENDING";
               } else {
                 status = "EXPIRED";

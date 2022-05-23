@@ -9,7 +9,6 @@ import {
   Icon,
   Text,
   Stack,
-  useColorModeValue,
   ButtonGroup,
   Checkbox,
   Select,
@@ -35,7 +34,7 @@ export default function ManageVenues() {
   const [modalData, setModalData] = useState(null);
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -282,10 +281,8 @@ export default function ManageVenues() {
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg);
-        setLoadingData(false);
-      } else {
-        setLoadingData(false);
       }
+      setLoadingData(false);
     } catch (error) {
       console.log(error);
     }
@@ -321,15 +318,13 @@ export default function ManageVenues() {
 
   useEffect(() => {
     async function generate() {
-      if (loadingData) {
-        await fetchData();
-        await generateTimeSlots();
-      }
+      await fetchData();
+      await generateTimeSlots();
     }
 
     generate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadingData]);
+  }, []);
 
   const columns = useMemo(
     () => [
@@ -631,13 +626,7 @@ export default function ManageVenues() {
 
   return (
     <Auth admin>
-      <Box
-        bg={useColorModeValue("white", "gray.700")}
-        borderRadius="lg"
-        p={8}
-        color={useColorModeValue("gray.700", "whiteAlpha.900")}
-        shadow="base"
-      >
+      <Box bg="white" borderRadius="lg" p={8} color="gray.700" shadow="base">
         <MotionBox variants={cardVariant} key="1">
           {loadingData && !data ? (
             <Text>Loading Please wait...</Text>
@@ -666,7 +655,7 @@ export default function ManageVenues() {
             spacing={4}
             w={"full"}
             maxW={"md"}
-            bg={useColorModeValue("white", "gray.700")}
+            bg="white"
             rounded={"xl"}
             boxShadow={"lg"}
             p={6}
@@ -779,11 +768,7 @@ export default function ManageVenues() {
                 )}
 
                 <FormControl>
-                  <FormLabel
-                    fontSize="sm"
-                    fontWeight="md"
-                    color={useColorModeValue("gray.700", "gray.50")}
-                  >
+                  <FormLabel fontSize="sm" fontWeight="md" color="gray.700">
                     Venue Photo
                   </FormLabel>
                   {fileName && <Text>File uploaded: {fileName}</Text>}
@@ -794,7 +779,7 @@ export default function ManageVenues() {
                     pt={5}
                     pb={6}
                     borderWidth={2}
-                    borderColor={useColorModeValue("gray.300", "gray.500")}
+                    borderColor="gray.300"
                     borderStyle="dashed"
                     rounded="md"
                   >
@@ -802,7 +787,7 @@ export default function ManageVenues() {
                       <Icon
                         mx="auto"
                         boxSize={12}
-                        color={useColorModeValue("gray.400", "gray.500")}
+                        color="gray.400"
                         stroke="currentColor"
                         fill="none"
                         viewBox="0 0 48 48"
@@ -817,7 +802,7 @@ export default function ManageVenues() {
                       </Icon>
                       <Flex
                         fontSize="sm"
-                        color={useColorModeValue("gray.600", "gray.400")}
+                        color="gray.600"
                         alignItems="baseline"
                       >
                         <chakra.label
@@ -825,10 +810,10 @@ export default function ManageVenues() {
                           cursor="pointer"
                           rounded="md"
                           fontSize="md"
-                          color={useColorModeValue("brand.600", "brand.200")}
+                          color="brand.600"
                           pos="relative"
                           _hover={{
-                            color: useColorModeValue("brand.400", "brand.300"),
+                            color: "brand.400",
                           }}
                         >
                           <span>Upload a file</span>
@@ -843,10 +828,7 @@ export default function ManageVenues() {
                         </chakra.label>
                         <Text pl={1}>or drag and drop</Text>
                       </Flex>
-                      <Text
-                        fontSize="xs"
-                        color={useColorModeValue("gray.500", "gray.50")}
-                      >
+                      <Text fontSize="xs" color="gray.500">
                         PNG, JPG, GIF up to 10MB
                       </Text>
                     </Stack>
@@ -881,7 +863,7 @@ export default function ManageVenues() {
             spacing={4}
             w={"full"}
             maxW={"md"}
-            bg={useColorModeValue("white", "gray.700")}
+            bg="white"
             rounded={"xl"}
             boxShadow={"lg"}
             p={6}

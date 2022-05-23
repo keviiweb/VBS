@@ -1,7 +1,8 @@
-import { prisma } from "@constants/db";
 import { timingSlotNumberToTimingMapping } from "@constants/timeslot";
-import { currentSession, convertDateToUnix } from "@constants/helper";
-import { fetchOpeningHours } from "@constants/venue";
+import { convertDateToUnix } from "@constants/helper";
+import { currentSession } from "@helper/session";
+import { fetchOpeningHours } from "@helper/venue";
+import { fetchBookedTimeSlots } from "@helper/timeslot";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
@@ -16,12 +17,13 @@ const handler = async (req, res) => {
       const startHour = openingHours.start;
       const endHour = openingHours.end;
 
-      try {
-        const bookedTimeSlots = await prisma.VenueBooking.findMany({
-          where: { venue: venue, date: convertedDate },
-        });
+      if (startHour && endHour) {
+        const bookedTimeSlots = await fetchBookedTimeSlots(
+          venue,
+          convertedDate
+        );
 
-        if (bookedTimeSlots != null) {
+        if (bookedTimeSlots && bookedTimeSlots.status) {
           for (let key in timingSlotNumberToTimingMapping) {
             if (timingSlotNumberToTimingMapping.hasOwnProperty(key)) {
               if (Number(key) >= startHour && Number(key) <= endHour) {
@@ -34,7 +36,8 @@ const handler = async (req, res) => {
             }
           }
 
-          bookedTimeSlots.forEach((item) => {
+          const timeslot = bookedTimeSlots.msg;
+          timeslot.forEach((item) => {
             slots[item.timingSlot] = {
               id: Number(item.timingSlot),
               slot: timingSlotNumberToTimingMapping[item.timingSlot],
@@ -58,8 +61,17 @@ const handler = async (req, res) => {
         res.status(200).send(slots);
         res.end();
         return;
-      } catch (error) {
-        console.log(error);
+      } else {
+        for (let key in timingSlotNumberToTimingMapping) {
+          if (timingSlotNumberToTimingMapping.hasOwnProperty(key)) {
+            slots[key] = {
+              id: Number(key),
+              slot: timingSlotNumberToTimingMapping[key],
+              booked: false,
+            };
+          }
+        }
+
         res.status(200).send(slots);
         res.end();
         return;

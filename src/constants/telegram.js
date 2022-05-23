@@ -1,6 +1,6 @@
 process.env.NTBA_FIX_319 = 1;
-import TelegramBot from "node-telegram-bot-api";
 
+import TelegramBot from "node-telegram-bot-api";
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const channel_id = process.env.TELEGRAM_BOT_CHANNEL_ID;
 export const bot = global.bot || new TelegramBot(token, { polling: true });
@@ -8,9 +8,13 @@ export const bot = global.bot || new TelegramBot(token, { polling: true });
 if (process.env.NODE_ENV !== "production") global.bot = bot;
 
 export const sendMessageToChannel = async (message) => {
-  bot.sendMessage(channel_id, message).catch((err) => {
-    console.log("Channel message not sent", err);
-  });
+  try {
+    bot.sendMessage(channel_id, message).catch((err) => {
+      console.log("Channel message not sent", err);
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const approvalBookingRequestMessageBuilder = (bookingRequest) => {
@@ -24,7 +28,7 @@ export const approvalBookingRequestMessageBuilder = (bookingRequest) => {
   var r = new RegExp(".{" + hide + "}@", "g");
   const masked_email = email.replace(r, "***@");
 
-  const returnMessage = `[APPROVED]\nEmail: ${masked_email}\ncca: ${cca}\nvenueName: ${venueName}\ndate: ${date}\ntimeSlots: ${timeSlots}`;
+  const returnMessage = `[APPROVED]\nCCA: ${cca}\nVenue: ${venueName}\nDate: ${date}\nTimeslot(s): ${timeSlots}`;
 
   return returnMessage;
 };
@@ -40,7 +44,7 @@ export const rejectBookingRequestMessageBuilder = (bookingRequest) => {
   var r = new RegExp(".{" + hide + "}@", "g");
   const masked_email = email.replace(r, "***@");
 
-  const returnMessage = `[REJECTED]\nEmail: ${masked_email}\ncca: ${cca}\nvenueName: ${venueName}\ndate: ${date}\ntimeSlots: ${timeSlots}`;
+  const returnMessage = `[REJECTED]\nCCA: ${cca}\nVenue: ${venueName}\nDate: ${date}\nTimeslot(s): ${timeSlots}`;
 
   return returnMessage;
 };

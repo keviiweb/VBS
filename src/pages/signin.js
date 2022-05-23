@@ -8,10 +8,9 @@ import {
   Button,
   Heading,
   Text,
-  useColorModeValue,
   Spinner,
 } from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 
 export default function SignIn(props) {
@@ -22,12 +21,8 @@ export default function SignIn(props) {
   useEffect(() => {
     async function fetchData(props) {
       const propRes = await props;
-      try {
-        if (propRes.data) {
-          setURL(propRes.data);
-        }
-      } catch (error) {
-        console.log(error);
+      if (propRes.data) {
+        setURL(propRes.data);
       }
     }
     fetchData(props);
@@ -49,12 +44,7 @@ export default function SignIn(props) {
   };
 
   return (
-    <Flex
-      minH={"100vh"}
-      align={"center"}
-      justify={"center"}
-      bg={useColorModeValue("gray.50", "gray.800")}
-    >
+    <Flex minH={"100vh"} align={"center"} justify={"center"} bg="gray.50">
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
           <Heading fontSize={"4xl"}>KEVII VBS</Heading>
@@ -62,12 +52,7 @@ export default function SignIn(props) {
             Please enter your school email ending with @u.nus.edu
           </Text>
         </Stack>
-        <Box
-          rounded={"lg"}
-          bg={useColorModeValue("white", "gray.700")}
-          boxShadow={"lg"}
-          p={8}
-        >
+        <Box rounded={"lg"} bg="white" boxShadow={"lg"} p={8}>
           <form onSubmit={handleSubmit}>
             <Stack spacing={4}>
               <FormControl id="email">

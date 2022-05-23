@@ -1,27 +1,19 @@
-import { currentSession } from "@constants/helper";
-import { findVenueByID, fetchAllVenue } from "@constants/venue";
+import { currentSession } from "@helper/session";
+import { findVenueByID, fetchAllVenue } from "@helper/venue";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
   let result = "";
   if (session) {
-    let venues = null;
-    try {
-      venues = await fetchAllVenue();
-    } catch (error) {
-      console.log(error);
-      result = { status: false, error: error, msg: "" };
-      res.status(200).send(result);
-      res.end();
-      return;
-    }
+    const venueDB = await fetchAllVenue();
+    const parsedVenue = [];
 
-    if (venues) {
-      const parsedVenue = [];
-      for (let ven in venues) {
-        if (venues[ven]) {
-          const venue = venues[ven];
+    if (venueDB && venueDB.status) {
+      const venueData = venueDB.msg;
+      for (let ven in venueData) {
+        if (venueData[ven]) {
+          const venue = venueData[ven];
 
           let parentVenueName = null;
           if (venue.isChildVenue) {

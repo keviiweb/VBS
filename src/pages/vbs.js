@@ -7,7 +7,7 @@ import VenueCard from "@components/VenueCard";
 import VenueBookingModal from "@components/VenueBookingModal";
 import VenueBookingModalConfirmation from "@components/VenueBookingModalConfirmation";
 import Loading from "@components/Loading";
-import { fetchVenue } from "@constants/venue";
+import { fetchVenue } from "@helper/venue";
 
 import safeJsonStringify from "safe-json-stringify";
 
@@ -18,7 +18,7 @@ export default function VBS(props) {
   const [modalData, setModalData] = useState(null);
   const [modalDataConfirm, setModalDataConfirm] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState(null);
+
   const [cards, setCards] = useState([]);
   const minDate = useRef(3);
   const maxDate = useRef(30);
@@ -37,40 +37,38 @@ export default function VBS(props) {
 
   useEffect(() => {
     async function fetchData(props) {
-      const propRes = await props;
-      try {
-        minDate.current = props.minDate;
-        maxDate.current = props.maxDate;
+      setIsLoading(true);
 
-        if (propRes.data) {
-          const res = propRes.data;
-          if (res.msg.length > 0) {
-            setData(res);
-            if (res.status) {
-              let result = res.msg;
-              if (result !== "") {
-                let cardRes = [];
-                result.forEach((item) => {
-                  if (item.visible) {
-                    cardRes.push(
-                      <MotionBox variants={cardVariant} key={item.id}>
-                        <VenueCard product={item} setModalData={setModalData} />
-                      </MotionBox>
-                    );
-                  }
-                });
-                setCards(cardRes);
-              }
+      const propRes = await props;
+      minDate.current = props.minDate ? props.minDate : minDate.current;
+      maxDate.current = props.maxDate ? props.maxDate : maxDate.current;
+
+      if (propRes.data) {
+        const res = propRes.data;
+        if (res.msg.length > 0) {
+          if (res.status) {
+            let result = res.msg;
+            if (result !== "") {
+              let cardRes = [];
+              result.forEach((item) => {
+                if (item.visible) {
+                  cardRes.push(
+                    <MotionBox variants={cardVariant} key={item.id}>
+                      <VenueCard product={item} setModalData={setModalData} />
+                    </MotionBox>
+                  );
+                }
+              });
+              setCards(cardRes);
             }
+            setIsLoading(false);
           }
         }
-      } catch (error) {}
-
-      setIsLoading(false);
+      }
     }
     fetchData(props);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, []);
 
   return (
     <>

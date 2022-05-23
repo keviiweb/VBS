@@ -1,5 +1,5 @@
-import { currentSession } from "@constants/helper";
-import { findVenueByID, fetchChildVenue } from "@constants/venue";
+import { currentSession } from "@helper/session";
+import { findVenueByID, fetchChildVenue } from "@helper/venue";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
@@ -9,13 +9,14 @@ const handler = async (req, res) => {
   if (session) {
     if (venue) {
       try {
-        const childVenues = await fetchChildVenue(venue);
+        const venueDB = await fetchChildVenue(venue);
         let parsedVenue = [];
 
-        if (childVenues != null) {
-          for (let ven in childVenues) {
-            if (childVenues[ven]) {
-              const venue = childVenues[ven];
+        if (venueDB.status && venueDB.msg != null) {
+          const childVenue = venueDB.msg;
+          for (let ven in childVenue) {
+            if (childVenue[ven]) {
+              const venue = childVenue[ven];
 
               let parentVenueName = null;
               if (venue.isChildVenue) {

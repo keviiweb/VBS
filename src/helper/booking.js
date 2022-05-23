@@ -7,11 +7,12 @@ import {
   convertUnixToDate,
   prettifyDate,
 } from "@constants/helper";
-import { findVenueByID } from "@constants/venue";
-import { findCCAbyID } from "@constants/cca";
-import { sendApproveMail } from "@constants/email/approve";
-import { sendCancelMail } from "@constants/email/cancel";
-import { sendRejectMail } from "@constants/email/reject";
+import { findVenueByID } from "@helper/venue";
+import { findCCAbyID } from "@helper/cca";
+import { sendApproveMail } from "@helper/email/approve";
+import { sendCancelMail } from "@helper/email/cancel";
+import { sendRejectMail } from "@helper/email/reject";
+import { sendNotifyMail } from "@helper/email/notify";
 import {
   approvalBookingRequestMessageBuilder,
   rejectBookingRequestMessageBuilder,
@@ -428,7 +429,7 @@ export const createVenueBooking = async (
       }
     }
 
-    return { status: true, error: "", msg: "Successfully creating bookings" };
+    return { status: true, error: "", msg: "Successfully created bookings" };
   } catch (error) {
     console.log(error);
     return { status: false, error: "Error in creating venue booking", msg: "" };
@@ -444,5 +445,80 @@ export const createVenueBookingRequest = async (data) => {
     return bookedTimeSlots;
   } catch (error) {
     return null;
+  }
+};
+
+export const notifyConflicts = async (bookingRequest, session) => {
+  let success = true;
+
+  if (bookingRequest) {
+    if (bookingRequest.conflictRequest) {
+      let sameDayVenue = bookingRequest.conflictRequest.split(",");
+      for (let key in sameDayVenue) {
+        const request = sameDayVenue[key];
+        const booking = await findBookingByID(request);
+
+        const email = await notifyConflictsEmail(booking, session);
+        if (!email.status) {
+          console.log(reject.error);
+          success = false;
+        }
+      }
+    } else {
+      success = false;
+    }
+
+    if (success) {
+      return {
+        status: true,
+        error: null,
+        msg: "Successfully notified conflicting bookings",
+      };
+    } else {
+      return {
+        status: false,
+        error: "Failed to notify conflicting bookings",
+        msg: "",
+      };
+    }
+  } else {
+    return { status: false, error: "No booking ID found", msg: "" };
+  }
+};
+
+export const notifyConflictsEmail = async (bookingRequest, session) => {
+  if (bookingRequest) {
+    let slotArray = convertSlotToArray(bookingRequest.timeSlots, true);
+    slotArray = mapSlotToTiming(slotArray);
+    const venueReq = await findVenueByID(bookingRequest.venue);
+    let date = convertUnixToDate(bookingRequest.date);
+    date = prettifyDate(date);
+
+    if (venueReq && venueReq.status) {
+      let cca = undefined;
+      if (bookingRequest.cca === "PERSONAL") {
+        cca = "PERSONAL";
+      } else {
+        const ccaReq = await findCCAbyID(bookingRequest.cca);
+        cca = ccaReq.msg.name;
+      }
+
+      const data = {
+        id: bookingRequest.id,
+        email: bookingRequest.email,
+        venue: venueReq.msg.name,
+        date: date,
+        timeSlots: prettifyTiming(slotArray),
+        cca: cca,
+        purpose: bookingRequest.purpose,
+        sessionEmail: session.user.email,
+      };
+
+      try {
+        //await sendNotifyMail(bookingRequest.email, data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
 };

@@ -1,13 +1,3 @@
-const weekdayToNumber = {
-  Monday: 1,
-  Tuesday: 2,
-  Wednesday: 3,
-  Thursday: 4,
-  Friday: 5,
-  Saturday: 6,
-  Sunday: 0,
-};
-
 const numberToWeekday = {
   1: "Monday",
   2: "Tuesday",
@@ -18,4 +8,4 @@ const numberToWeekday = {
   0: "Sunday",
 };
 
-export { numberToWeekday, weekdayToNumber };
+export { numberToWeekday };

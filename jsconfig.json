@@ -6,10 +6,9 @@
       "@components/*": ["src/components/*"],
       "@constants/*": ["src/constants/*"],
       "@styles/*": ["src/styles/*"],
-      "@sections/*": ["src/sections/*"],
+      "@helper/*": ["src/helper/*"],
       "@layout/*": ["src/layout/*"],
-      "@public/*": ["public/*"],
-      "@lib/*": ["src/lib/*"]
+      "@public/*": ["public/*"]
     }
   }
 }

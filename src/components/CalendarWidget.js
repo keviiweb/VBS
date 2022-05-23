@@ -1,7 +1,7 @@
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { monthNamesFull } from "@constants/months";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function CalendarWidget({
   selectedDate,
@@ -21,7 +21,6 @@ export default function CalendarWidget({
     if (calendarMax && calendarMin) {
       setDates();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function addDays(date, days) {

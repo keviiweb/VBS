@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { currentSession } from "@constants/helper";
+import { currentSession } from "@helper/session";
 import Layout from "@layout/index";
 import Loading from "@layout/Loading";
 
@@ -34,7 +34,6 @@ const Auth = ({ children, admin }) => {
     }
 
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, hasUser]);
 
   if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {

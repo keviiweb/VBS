@@ -18,10 +18,9 @@ import {
 import CalendarWidget from "@components/CalendarWidget";
 import TimeSlotButton from "@components/TimeSlotButton";
 import { motion } from "framer-motion";
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
-import { numberToWeekday } from "@constants/weekdays";
-import { monthNamesFull } from "@constants/months";
+import { prettifyDate } from "@constants/helper";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -227,17 +226,6 @@ export default function VenueBookingModal({
     return "";
   };
 
-  // Timeslot generation
-  const prettifyDate = async (date) => {
-    if (date) {
-      const dateObj = new Date(date);
-      const day = numberToWeekday[dateObj.getDay()];
-      const month = monthNamesFull[dateObj.getMonth()];
-      const prettyDate = `${day}, ${dateObj.getDate()} ${month} ${dateObj.getFullYear()}`;
-      return prettyDate;
-    }
-  };
-
   const handleClickTimeSlots = async (id) => {
     if (id) {
       const slots = selectedTimeSlots.current;
@@ -338,7 +326,7 @@ export default function VenueBookingModal({
     if (dateObj && dateObj !== new Date()) {
       setDisplayedSlots(null);
       selectedTimeSlots.current = [];
-      const prettified = await prettifyDate(dateObj);
+      const prettified = prettifyDate(dateObj);
       date.current = prettified;
       changeDate(prettified);
       try {

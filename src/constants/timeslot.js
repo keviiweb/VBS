@@ -68,18 +68,3 @@ export const timeSlots = {
   32: "2230",
   33: "2300",
 };
-
-export const findSlots = async (slot, isStart) => {
-  for (let i in timingSlotNumberToTimingMapping) {
-    if (timingSlotNumberToTimingMapping[i].includes(slot)) {
-      const split = timingSlotNumberToTimingMapping[i].split("-");
-      if (split[0].trim() == slot && isStart) {
-        return i;
-      }
-
-      if (split[1].trim() == slot && !isStart) {
-        return i;
-      }
-    }
-  }
-};

@@ -7,14 +7,13 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { BsPerson } from "react-icons/bs";
 import { MdOutlineEmail, MdAccountBox } from "react-icons/md";
 import Auth from "@components/Auth";
-import { currentSession } from "@constants/helper";
+import { currentSession } from "@helper/session";
 import Loading from "@components/Loading";
 
 const confetti = {
