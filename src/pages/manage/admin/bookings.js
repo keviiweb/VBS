@@ -23,7 +23,7 @@ export default function ManageBooking() {
 
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const ALL = 3;
   const PENDING = 0;
   const APPROVED = 1;
@@ -278,7 +278,7 @@ export default function ManageBooking() {
 
   var fetchAllData = useCallback(async () => {
     setLoadingData(true);
-    setData([]);
+    setData(null);
     try {
       const rawResponse = await fetch("/api/bookingReq/fetch", {
         headers: {
@@ -299,7 +299,7 @@ export default function ManageBooking() {
 
   var fetchApprovedData = useCallback(async () => {
     setLoadingData(true);
-    setData([]);
+    setData(null);
     try {
       const rawResponse = await fetch("/api/bookingReq/fetch?q=APPROVED", {
         headers: {
@@ -320,7 +320,7 @@ export default function ManageBooking() {
 
   var fetchRejectedData = useCallback(async () => {
     setLoadingData(true);
-    setData([]);
+    setData(null);
 
     try {
       const rawResponse = await fetch("/api/bookingReq/fetch?q=REJECTED", {
@@ -341,7 +341,7 @@ export default function ManageBooking() {
 
   var fetchPendingData = useCallback(async () => {
     setLoadingData(true);
-    setData([]);
+    setData(null);
     try {
       const rawResponse = await fetch("/api/bookingReq/fetch?q=PENDING", {
         headers: {
@@ -427,7 +427,7 @@ export default function ManageBooking() {
               <Tab>Rejected</Tab>
               <Tab>All Bookings</Tab>
             </TabList>
-            {loadingData && data != [] ? (
+            {loadingData && !data ? (
               <Text>Loading Please wait...</Text>
             ) : (
               <TableWidget key={1} columns={columns} data={data} />
