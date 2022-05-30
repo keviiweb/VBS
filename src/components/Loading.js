@@ -24,9 +24,8 @@ export default function Loading({ message }) {
           p={8}
         >
           <Stack align={"center"}>
-            <Heading fontSize={"4xl"}>{message}</Heading>
             <Text fontSize={"sm"} color={"gray.600"}>
-              Loading webpage... Please give it a moment
+               {message}
             </Text>
             <Spinner />
           </Stack>

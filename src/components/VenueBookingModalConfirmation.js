@@ -27,6 +27,7 @@ import { CheckCircleIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
+import Loading from "@components/Loading";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -60,6 +61,8 @@ export default function VenueBookingModalConfirmation({
   const timeSlotsDB = useRef(null);
   const typeDB = useRef("PERSONAL");
   const purposeDB = useRef(null);
+
+  const [submitting, setSubmitting] = useState(false);
 
   const reset = () => {
     setVenue(null);
@@ -128,6 +131,8 @@ export default function VenueBookingModalConfirmation({
     type,
     purpose
   ) => {
+
+    setSubmitting(true);
     try {
       const rawResponse = await fetch("/api/bookingReq/create", {
         method: "POST",
@@ -147,6 +152,7 @@ export default function VenueBookingModalConfirmation({
       });
       const content = await rawResponse.json();
       if (content.status) {
+        setSubmitting(false);
         setSuccessBooking(true);
         setTimeout(() => {
           handleModalCloseButton();
@@ -160,8 +166,14 @@ export default function VenueBookingModalConfirmation({
           isClosable: true,
         });
         setSuccessBooking(false);
+        setSubmitting(false);
       }
-    } catch (error) {}
+    } catch (error) {
+      setSubmitting(false);
+      setSuccessBooking(false);
+    }
+
+    
   };
 
   const handleModalCloseButton = () => {
@@ -349,7 +361,11 @@ export default function VenueBookingModalConfirmation({
         <ModalCloseButton />
         <ModalHeader></ModalHeader>
         <ModalBody>
-          {success && (
+          {submitting && (
+            <Loading message="Submitting request..."/>
+          )}
+
+          {success && !submitting && (
             <Box textAlign="center" py={10} px={6}>
               <CheckCircleIcon boxSize={"50px"} color={"green.500"} />
               <Heading as="h2" size="xl" mt={6} mb={2}>
@@ -363,7 +379,8 @@ export default function VenueBookingModalConfirmation({
               </Text>
             </Box>
           )}
-          {!success && venue && date && timeSlots && (
+
+          {!success && !submitting && venue && date && timeSlots && (
             <MotionSimpleGrid
               mt="3"
               minChildWidth="250px"
@@ -447,7 +464,7 @@ export default function VenueBookingModalConfirmation({
           )}
         </ModalBody>
         <ModalFooter>
-          {!success && (
+          {!success && !submitting && (
             <Button
               bg="cyan.700"
               color="white"
