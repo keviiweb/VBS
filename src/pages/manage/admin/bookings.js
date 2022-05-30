@@ -278,6 +278,7 @@ export default function ManageBooking() {
 
   var fetchAllData = useCallback(async () => {
     setLoadingData(true);
+    setData([]);
     try {
       const rawResponse = await fetch("/api/bookingReq/fetch", {
         headers: {
@@ -288,9 +289,7 @@ export default function ManageBooking() {
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, ALL);
-      } else {
-        setData([]);
-      }
+      } 
 
       setLoadingData(false);
     } catch (error) {
@@ -300,6 +299,7 @@ export default function ManageBooking() {
 
   var fetchApprovedData = useCallback(async () => {
     setLoadingData(true);
+    setData([]);
     try {
       const rawResponse = await fetch("/api/bookingReq/fetch?q=APPROVED", {
         headers: {
@@ -310,9 +310,7 @@ export default function ManageBooking() {
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, APPROVED);
-      } else {
-        setData([]);
-      }
+      } 
 
       setLoadingData(false);
     } catch (error) {
@@ -322,6 +320,8 @@ export default function ManageBooking() {
 
   var fetchRejectedData = useCallback(async () => {
     setLoadingData(true);
+    setData([]);
+
     try {
       const rawResponse = await fetch("/api/bookingReq/fetch?q=REJECTED", {
         headers: {
@@ -332,21 +332,16 @@ export default function ManageBooking() {
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, REJECTED);
-      } else {
-        setData([]);
-      }
+      } 
       setLoadingData(false);
     } catch (error) {
       console.log(error);
     }
   }, [includeActionButton]);
 
-  useEffect(() => {
-    fetchPendingData();
-  }, [fetchPendingData]);
-
   var fetchPendingData = useCallback(async () => {
     setLoadingData(true);
+    setData([]);
     try {
       const rawResponse = await fetch("/api/bookingReq/fetch?q=PENDING", {
         headers: {
@@ -357,9 +352,7 @@ export default function ManageBooking() {
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, PENDING);
-      } else {
-        setData([]);
-      }
+      } 
       setLoadingData(false);
     } catch (error) {
       console.log(error);
@@ -404,6 +397,10 @@ export default function ManageBooking() {
     []
   );
 
+  useEffect(() => {
+    fetchPendingData();
+  }, [fetchPendingData]);
+  
   return (
     <Auth admin>
       <Box

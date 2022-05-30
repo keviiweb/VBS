@@ -27,10 +27,11 @@ export default function CalendarWidget({
       max.current = calendarMax;
       setDates();
     }
+
   }, [calendarMin, calendarMax]);
 
   function addDays(date, days) {
-    let result = date;
+    let result = new Date(date.getTime());
     result.setDate(result.getDate() + days);
     return result;
   }

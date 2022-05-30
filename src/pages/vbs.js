@@ -106,7 +106,7 @@ export default function VBS(props) {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(_context) {
   return {
     props: (async function () {
       try {

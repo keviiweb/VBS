@@ -27,7 +27,7 @@ const handler = async (req, res) => {
               }
 
               const isAvailable = venue.visible ? "Yes" : "No";
-              const childVenue = venue.isChildVenue ? "Yes" : "No";
+              const cv = venue.isChildVenue ? "Yes" : "No";
               const instantBook = venue.isInstantBook ? "Yes" : "No";
 
               const data = {
@@ -42,7 +42,7 @@ const handler = async (req, res) => {
                 parentVenueName: parentVenueName,
                 visible: venue.visible,
                 isAvailable: isAvailable,
-                childVenue: childVenue,
+                childVenue: cv,
                 instantBook: instantBook,
               };
 
