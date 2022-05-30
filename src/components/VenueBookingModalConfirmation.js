@@ -362,7 +362,7 @@ export default function VenueBookingModalConfirmation({
         <ModalHeader></ModalHeader>
         <ModalBody>
           {submitting && (
-            <Loading message="Submitting request..."/>
+            <Loading message={"Submitting request..."}/>
           )}
 
           {success && !submitting && (

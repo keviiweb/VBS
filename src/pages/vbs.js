@@ -71,7 +71,7 @@ export default function VBS(props) {
 
   return (
     <>
-      {isLoading && <Loading message="Loading venues..." />}
+      {isLoading && <Loading message={"Loading venues..."} />}
       {!isLoading && (
         <Auth>
           <Box>

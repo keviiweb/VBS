@@ -2,9 +2,7 @@ import {
   Box,
   Flex,
   Stack,
-  Heading,
   Text,
-  useColorModeValue,
   Spinner,
 } from "@chakra-ui/react";
 
@@ -14,12 +12,12 @@ export default function Loading({ message }) {
       minH={"100vh"}
       align={"center"}
       justify={"center"}
-      bg={useColorModeValue("gray.50", "gray.800")}
+      bg="gray.50"
     >
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Box
           rounded={"lg"}
-          bg={useColorModeValue("white", "gray.700")}
+          bg="white"
           boxShadow={"lg"}
           p={8}
         >

@@ -6,6 +6,9 @@ export const findCCAbyName = async (name) => {
       where: {
         name: name,
       },
+      orderBy: {
+        name: "asc"
+      }
     });
 
     return { status: true, error: null, msg: query };

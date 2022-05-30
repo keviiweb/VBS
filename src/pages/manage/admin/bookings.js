@@ -427,7 +427,7 @@ export default function ManageBooking() {
               <Tab>Rejected</Tab>
               <Tab>All Bookings</Tab>
             </TabList>
-            {loadingData && !data ? (
+            {loadingData && data != [] ? (
               <Text>Loading Please wait...</Text>
             ) : (
               <TableWidget key={1} columns={columns} data={data} />

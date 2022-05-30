@@ -21,6 +21,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
 import { prettifyDate } from "@constants/helper";
+import Loading from "./Loading";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -435,13 +436,23 @@ export default function VenueBookingModal({
                   </Box>
                 )}
 
-                {!selectedDate && (
+                {!selectedDate && !timeSlots && (
                   <Box spacing={600}>
                     <Stack spacing={5} align={"center"}>
                       <Text>Please select a date</Text>
                     </Stack>
                   </Box>
                 )}
+
+                {selectedDate && timeSlots && (
+                  <Box spacing={600}>
+                    <Stack spacing={5} align={"center"}>
+                      <Text>Please select a date</Text>
+                      <Loading message={"Fetching all timeslots..."} />
+                    </Stack>
+                  </Box>
+                )}
+
               </Flex>
             </MotionBox>
           </MotionSimpleGrid>
