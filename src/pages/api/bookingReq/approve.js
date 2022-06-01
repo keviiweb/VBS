@@ -6,10 +6,10 @@ import {
   isRejected,
   setApprove,
   setRejectConflicts,
-  createVenueBooking,
-} from "@helper/booking";
+} from "@helper/bookingReq";
 import { convertSlotToArray } from "@constants/helper";
 import { currentSession } from "@helper/session";
+import { createVenueBooking } from "@helper/booking";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);

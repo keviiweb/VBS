@@ -1,9 +1,19 @@
 /**
  * @type {import('next').NextConfig}
  */
-module.exports = {
+
+const withTM = require("next-transpile-modules")([
+  "@fullcalendar/common",
+  "@fullcalendar/react",
+  "@fullcalendar/timegrid",
+  "@fullcalendar/daygrid",
+  "@fullcalendar/interaction",
+  "@fullcalendar/list",
+]);
+
+module.exports = withTM({
   reactStrictMode: true,
   images: {
     domains: ["https://vbs-kevii.vercel.app/", "https://vbs-hikoya.vercel.app"],
   },
-};
+});

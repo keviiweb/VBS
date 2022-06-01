@@ -84,6 +84,46 @@ export const fetchOpeningHours = async (id) => {
   }
 };
 
+export const splitHours = async (opening) => {
+  try {
+    if (opening) {
+      const hours = opening.split("-");
+
+      if (hours) {
+        return { start: Number(hours[0].trim()), end: Number(hours[1].trim()) };
+      } else {
+        return { start: null, end: null };
+      }
+    } else {
+      return { start: null, end: null };
+    }
+  } catch (error) {
+    console.log(error);
+    return { start: null, end: null };
+  }
+};
+
+export const splitOpeningHours = async (opening) => {
+  try {
+    if (opening) {
+      const hours = opening.split("-");
+      const start = await findSlots(hours[0].trim(), true);
+      const end = await findSlots(hours[1].trim(), false);
+
+      if (start && end) {
+        return { start: Number(start), end: Number(end) };
+      } else {
+        return { start: null, end: null };
+      }
+    } else {
+      return { start: null, end: null };
+    }
+  } catch (error) {
+    console.log(error);
+    return { start: null, end: null };
+  }
+};
+
 export const isInstantBook = async (id) => {
   try {
     const locations = await prisma.venue.findFirst({

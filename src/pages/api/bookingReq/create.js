@@ -14,10 +14,10 @@ import {
   isRejected,
   setApprove,
   setRejectConflicts,
-  createVenueBooking,
-} from "@helper/booking";
+} from "@helper/bookingReq";
 import { isInstantBook, isVisible } from "@helper/venue";
 import { sendProgressMail } from "@helper/email/progress";
+import { createVenueBooking } from "@helper/booking";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);

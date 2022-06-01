@@ -1,4 +1,7 @@
-import { timingSlotNumberToTimingMapping } from "@constants/timeslot";
+import {
+  timingSlotNumberToTimingMapping,
+  timeSlots,
+} from "@constants/timeslot";
 import { numberToWeekday } from "@constants/weekdays";
 import { monthNamesFull } from "@constants/months";
 
@@ -21,13 +24,18 @@ export const isInside = (want, check) => {
 };
 
 export const mapSlotToTiming = (data) => {
-  const result = [];
-  for (let key in data) {
-    let map = timingSlotNumberToTimingMapping[Number(data[key])];
-    result.push(map);
-  }
+  if (Array.isArray(data)) {
+    const result = [];
+    for (let key in data) {
+      let map = timingSlotNumberToTimingMapping[Number(data[key])];
+      result.push(map);
+    }
 
-  return result;
+    return result;
+  } else {
+    let map = timingSlotNumberToTimingMapping[Number(data)];
+    return map;
+  }
 };
 
 export const prettifyTiming = (data) => {
@@ -110,6 +118,14 @@ export const findSlots = async (slot, isStart) => {
         return i;
       }
     }
+  }
+
+  return null;
+};
+
+export const findSlotsByID = async (slot) => {
+  if (slot) {
+    return timeSlots[slot];
   }
 
   return null;

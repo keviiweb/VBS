@@ -7,16 +7,20 @@ import {
   Tab,
   ButtonGroup,
   useToast,
+  SimpleGrid,
+  Stack,
+  FormLabel,
+  Select,
 } from "@chakra-ui/react";
 import { CheckIcon, CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
-import { cardVariant } from "@root/motion";
-import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Auth from "@components/Auth";
 import TableWidget from "@components/TableWidget";
 import BookingModal from "@components/BookingModal";
-
-const MotionBox = motion(Box);
+import BookingCalendar from "@components/BookingCalendar";
+import { parentVariant } from "@root/motion";
+import { motion } from "framer-motion";
+const MotionSimpleGrid = motion(SimpleGrid);
 
 export default function ManageBooking() {
   const [modalData, setModalData] = useState(null);
@@ -31,6 +35,11 @@ export default function ManageBooking() {
 
   const [tabIndex, setTabIndex] = useState(0);
   const tabIndexData = useRef(0);
+
+  const venueData = useRef([]);
+  const [venueDropdown, setVenueDropdown] = useState([]);
+  const [venueID, setVenueID] = useState("");
+  const venueIDDB = useRef("");
 
   var handleTabChange = useCallback(
     async (index) => {
@@ -359,6 +368,74 @@ export default function ManageBooking() {
     }
   }, [includeActionButton]);
 
+  var fetchVenue = useCallback(async () => {
+    try {
+      const rawResponse = await fetch("/api/venue/fetch", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      const content = await rawResponse.json();
+      if (content.status) {
+        generateVenueDropdown(content.msg);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [generateVenueDropdown]);
+
+  var generateVenueDropdown = useCallback(async (content) => {
+    const selection = [];
+    venueData.current = [];
+
+    selection.push(<option key={""} value={""}></option>);
+
+    for (let key in content) {
+      if (content[key]) {
+        const data = content[key];
+        selection.push(
+          <option key={data.id} value={data.id}>
+            {data.name}
+          </option>
+        );
+
+        venueData.current.push(data);
+      }
+    }
+
+    setVenueDropdown(selection);
+  }, []);
+
+  const onVenueIDChange = async (event) => {
+    if (event.target.value) {
+      const value = event.target.value;
+      venueIDDB.current = value;
+      setVenueID(value);
+      await fetchBookings(value);
+    }
+  };
+
+  const fetchBookings = async (id) => {
+    try {
+      const rawResponse = await fetch("/api/booking/fetch", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+        }),
+      });
+      const content = await rawResponse.json();
+      if (content.status) {
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -399,19 +476,49 @@ export default function ManageBooking() {
 
   useEffect(() => {
     fetchPendingData();
-  }, [fetchPendingData]);
+    fetchVenue();
+  }, [fetchPendingData, fetchVenue]);
 
   return (
     <Auth admin>
-      <Box
-        bg="white"
-        borderRadius="lg"
-        width={{ base: "full", md: "full", lg: "full" }}
-        p={8}
-        color="gray.700"
-        shadow="base"
+      <MotionSimpleGrid
+        mt="3"
+        minChildWidth={{ base: "full", md: "500px", lg: "500px" }}
+        spacing="2em"
+        minH="600px"
+        variants={parentVariant}
+        initial="initial"
+        animate="animate"
       >
-        <MotionBox variants={cardVariant} key="1">
+        <Box
+          bg="white"
+          borderRadius="lg"
+          width={{ base: "full", md: "full", lg: "full" }}
+          p={8}
+          color="gray.700"
+          shadow="base"
+          overflow="scroll"
+        >
+          {venueDropdown && (
+            <Stack spacing={2} w="full" mb="10">
+              <FormLabel>Select Venue</FormLabel>
+              <Select value={venueID} onChange={onVenueIDChange} size="sm">
+                {venueDropdown}
+              </Select>
+            </Stack>
+          )}
+          <BookingCalendar slotMax={"24:00:00"} slotMin={"08:00:00"} />
+        </Box>
+
+        <Box
+          bg="white"
+          borderRadius="lg"
+          width={{ base: "full", md: "full", lg: "full" }}
+          p={8}
+          color="gray.700"
+          shadow="base"
+          overflow="scroll"
+        >
           <Tabs
             value={tabIndex}
             onChange={handleTabChange}
@@ -432,7 +539,7 @@ export default function ManageBooking() {
                 <Text>Loading Please wait...</Text>
               </Box>
             ) : !loadingData && data.length == 0 ? (
-              <Box align="center" justify="center" mt={30}>
+              <Box align="center" justify="center" minWidth={"full"} mt={30}>
                 <Text>No bookings found</Text>
               </Box>
             ) : (
@@ -445,8 +552,8 @@ export default function ManageBooking() {
               modalData={modalData}
             />
           </Tabs>
-        </MotionBox>
-      </Box>
+        </Box>
+      </MotionSimpleGrid>
     </Auth>
   );
 }

@@ -1,4 +1,3 @@
-import { prisma } from "@constants/db";
 import {
   mapSlotToTiming,
   convertSlotToArray,
@@ -10,7 +9,15 @@ import {
 import { currentSession } from "@helper/session";
 import { findVenueByID } from "@helper/venue";
 import { findCCAbyID } from "@helper/cca";
-import { BOOKINGS, getConflictingRequest } from "@helper/booking";
+import {
+  BOOKINGS,
+  getConflictingRequest,
+  findBookingByUser,
+  findApprovedBooking,
+  findRejectedBooking,
+  findPendingBooking,
+  findAllBooking,
+} from "@helper/bookingReq";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
@@ -20,81 +27,25 @@ const handler = async (req, res) => {
   if (session) {
     let bookings = null;
     if (query && query == "USER") {
-      try {
-        bookings = await prisma.venueBookingRequest.findMany({
-          orderBy: [
-            {
-              created_at: "desc",
-            },
-          ],
-          where: {
-            sessionEmail: session.user.email,
-          },
-        });
-      } catch (error) {
-        console.log(error);
-        result = { status: false, error: error, msg: "" };
-        res.status(200).send(result);
-        res.end();
-        return;
-      }
+      bookings = await findBookingByUser(session);
     } else if (session.user.admin) {
       try {
         if (query) {
           if (BOOKINGS.includes(query)) {
             switch (query) {
               case "APPROVED":
-                bookings = await prisma.venueBookingRequest.findMany({
-                  orderBy: [
-                    {
-                      created_at: "desc",
-                    },
-                  ],
-                  where: {
-                    isApproved: true,
-                    isCancelled: false,
-                    isRejected: false,
-                  },
-                });
+                bookings = await findApprovedBooking();
                 break;
               case "PENDING":
-                bookings = await prisma.venueBookingRequest.findMany({
-                  orderBy: [
-                    {
-                      created_at: "desc",
-                    },
-                  ],
-                  where: {
-                    isApproved: false,
-                    isCancelled: false,
-                    isRejected: false,
-                  },
-                });
+                bookings = await findPendingBooking();
                 break;
               case "REJECTED":
-                bookings = await prisma.venueBookingRequest.findMany({
-                  orderBy: [
-                    {
-                      created_at: "desc",
-                    },
-                  ],
-                  where: {
-                    isApproved: false,
-                    isCancelled: false,
-                    isRejected: true,
-                  },
-                });
+                bookings = await findRejectedBooking();
                 break;
             }
           }
         } else {
-          bookings = await prisma.venueBookingRequest.findMany({
-            orderBy: [
-              {
-                created_at: "desc",
-              },
-            ],
-          });
+          bookings = await findAllBooking();
         }
       } catch (error) {
         console.log(error);

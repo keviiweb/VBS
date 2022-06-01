@@ -4,7 +4,7 @@ import {
   isCancelled,
   isRejected,
   setReject,
-} from "@helper/booking";
+} from "@helper/bookingReq";
 import { currentSession } from "@helper/session";
 
 const handler = async (req, res) => {

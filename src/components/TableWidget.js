@@ -53,7 +53,8 @@ export default function TableWidget({ columns, data }) {
     <>
       <Box
         style={{
-          overflow: "auto",
+          maxHeight: "600px",
+          overflow: "scroll",
         }}
       >
         <Table {...getTableProps()}>
