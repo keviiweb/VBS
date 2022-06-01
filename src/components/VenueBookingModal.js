@@ -205,6 +205,8 @@ export default function VenueBookingModal({
 
   // Child venue generation
   const onChildVenueChange = (event) => {
+    setError(null);
+
     if (event.target.value) {
       selectedVenue.current = event.target.value;
       handleDate(rawDate.current);
@@ -230,6 +232,8 @@ export default function VenueBookingModal({
   };
 
   const handleClickTimeSlots = async (id) => {
+    setError(null);
+
     if (id) {
       const slots = selectedTimeSlots.current;
       if (rawSlots.current) {
@@ -325,6 +329,7 @@ export default function VenueBookingModal({
   };
 
   const handleDate = async (dateObj) => {
+    setError(null);
     rawDate.current = dateObj;
     if (dateObj && dateObj !== new Date()) {
       setDisplayedSlots(null);
@@ -416,7 +421,7 @@ export default function VenueBookingModal({
                 shadow="lg"
                 borderWidth="1px"
               >
-                {selectedDate && timeSlots && (
+                {selectedDate && timeSlots ? (
                   <Box
                     w="100%"
                     h="full"
@@ -434,25 +439,29 @@ export default function VenueBookingModal({
                       </Stack>
                     </Box>
                   </Box>
-                )}
-
-                {!selectedDate && !timeSlots && (
+                ) : !selectedDate && !timeSlots ? (
                   <Box spacing={600}>
                     <Stack spacing={5} align={"center"}>
                       <Text>Please select a date</Text>
                     </Stack>
                   </Box>
-                )}
-
-                {selectedDate && timeSlots && (
-                  <Box spacing={600}>
-                    <Stack spacing={5} align={"center"}>
-                      <Text>Please select a date</Text>
+                ) : selectedDate && !timeSlots ? (
+                  <Box
+                    w="100%"
+                    h="full"
+                    position="relative"
+                    overflow="hidden"
+                    roundedTop="lg"
+                  >
+                    <Box align={"center"}>
+                      <Box>{selectedDate}</Box>
+                      <Box mb={5}>Select Timeslot(s)</Box>
                       <Loading message={"Fetching all timeslots..."} />
-                    </Stack>
+                    </Box>
                   </Box>
+                ) : (
+                  <></>
                 )}
-
               </Flex>
             </MotionBox>
           </MotionSimpleGrid>

@@ -207,7 +207,7 @@ const handler = async (req, res) => {
         };
 
         try {
-          //await sendProgressMail(email, data);
+          await sendProgressMail(email, data);
         } catch (error) {
           console.log(error);
         }

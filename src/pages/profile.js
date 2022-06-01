@@ -143,7 +143,7 @@ export default function Profile() {
           </Box>
         </Flex>
       )}
-      {!loading && <Loading message={"Loading profile..."}/>}
+      {!loading && <Loading message={"Loading profile..."} />}
     </Auth>
   );
 }

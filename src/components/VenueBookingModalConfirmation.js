@@ -131,7 +131,6 @@ export default function VenueBookingModalConfirmation({
     type,
     purpose
   ) => {
-
     setSubmitting(true);
     try {
       const rawResponse = await fetch("/api/bookingReq/create", {
@@ -172,8 +171,6 @@ export default function VenueBookingModalConfirmation({
       setSubmitting(false);
       setSuccessBooking(false);
     }
-
-    
   };
 
   const handleModalCloseButton = () => {
@@ -361,9 +358,7 @@ export default function VenueBookingModalConfirmation({
         <ModalCloseButton />
         <ModalHeader></ModalHeader>
         <ModalBody>
-          {submitting && (
-            <Loading message={"Submitting request..."}/>
-          )}
+          {submitting && <Loading message={"Submitting request..."} />}
 
           {success && !submitting && (
             <Box textAlign="center" py={10} px={6}>

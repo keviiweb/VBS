@@ -27,7 +27,6 @@ export default function CalendarWidget({
       max.current = calendarMax;
       setDates();
     }
-
   }, [calendarMin, calendarMax]);
 
   function addDays(date, days) {

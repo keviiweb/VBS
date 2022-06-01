@@ -1,29 +1,34 @@
 import nodemailer from "nodemailer";
 
 export const sendRejectMail = async (target, data) => {
-  let transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_SERVER_HOST,
-    port: process.env.EMAIL_SERVER_PORT,
-    auth: {
-      user: process.env.EMAIL_SERVER_USER,
-      pass: process.env.EMAIL_SERVER_PASSWORD,
-    },
-  });
+  if (
+    process.env.SEND_EMAIL &&
+    (process.env.SEND_EMAIL == "1" || Number(process.env.SEND_EMAIL) == 1)
+  ) {
+    let transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_SERVER_HOST,
+      port: process.env.EMAIL_SERVER_PORT,
+      auth: {
+        user: process.env.EMAIL_SERVER_USER,
+        pass: process.env.EMAIL_SERVER_PASSWORD,
+      },
+    });
 
-  transporter.sendMail(
-    {
-      from: process.env.EMAIL_FROM,
-      to: target,
-      subject: "KEVII VBS: Request Rejected",
-      text: text(),
-      html: html({ data }),
-    },
-    function (err) {
-      if (err) {
-        console.log("Error " + err);
+    transporter.sendMail(
+      {
+        from: process.env.EMAIL_FROM,
+        to: target,
+        subject: "KEVII VBS: Request Rejected",
+        text: text(),
+        html: html({ data }),
+      },
+      function (err) {
+        if (err) {
+          console.log("Error " + err);
+        }
       }
-    }
-  );
+    );
+  }
 };
 
 function html({ data }) {

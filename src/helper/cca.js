@@ -6,9 +6,6 @@ export const findCCAbyName = async (name) => {
       where: {
         name: name,
       },
-      orderBy: {
-        name: "asc"
-      }
     });
 
     return { status: true, error: null, msg: query };
@@ -35,7 +32,11 @@ export const findCCAbyID = async (id) => {
 
 export const findAllCCA = async () => {
   try {
-    const ccaList = await prisma.CCA.findMany();
+    const ccaList = await prisma.CCA.findMany({
+      orderBy: {
+        name: "asc",
+      },
+    });
     return { status: true, error: null, msg: ccaList };
   } catch (error) {
     console.log(error);

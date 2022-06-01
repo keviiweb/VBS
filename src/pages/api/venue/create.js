@@ -56,7 +56,7 @@ const handler = async (req, res) => {
         result = {
           status: true,
           error: "",
-          msg: "Successfully created venue",
+          msg: `Successfully created ${data.fields.name}`,
         };
         res.status(200).send(result);
         res.end();
@@ -73,7 +73,11 @@ const handler = async (req, res) => {
       }
     } catch (error) {
       console.log(error);
-      result = { status: false, error: "Failed to create venue", msg: "" };
+      result = {
+        status: false,
+        error: `Failed to create ${data.fields.name}`,
+        msg: "",
+      };
       res.status(200).send(result);
       res.end();
       return;

@@ -8,12 +8,17 @@ export const bot = global.bot || new TelegramBot(token, { polling: true });
 if (process.env.NODE_ENV !== "production") global.bot = bot;
 
 export const sendMessageToChannel = async (message) => {
-  try {
-    bot.sendMessage(channel_id, message).catch((err) => {
-      console.log("Channel message not sent", err);
-    });
-  } catch (error) {
-    console.log(error);
+  if (
+    process.env.SEND_TELEGRAM &&
+    (process.env.SEND_TELEGRAM == "1" || Number(process.env.SEND_TELEGRAM) == 1)
+  ) {
+    try {
+      bot.sendMessage(channel_id, message).catch((err) => {
+        console.log("Channel message not sent", err);
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
 

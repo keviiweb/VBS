@@ -615,6 +615,7 @@ export default function ManageVenues() {
   };
 
   var resetEdit = useCallback(async () => {
+    venueIDDBEdit.current = "";
     nameDBEdit.current = "";
     descriptionDBEdit.current = "";
     capacityDBEdit.current = "";
@@ -625,6 +626,7 @@ export default function ManageVenues() {
     startTimeDBEdit.current = null;
     endTimeDBEdit.current = null;
 
+    setVenueIDEdit("");
     setNameEdit("");
     setDescriptionEdit("");
     setCapacityEdit("");

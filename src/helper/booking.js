@@ -17,7 +17,7 @@ import {
   approvalBookingRequestMessageBuilder,
   rejectBookingRequestMessageBuilder,
   sendMessageToChannel,
-} from "@constants/telegram";
+} from "@helper/telegram";
 
 export const BOOKINGS = ["PENDING", "APPROVED", "REJECTED"];
 
@@ -127,7 +127,7 @@ export const setApprove = async (bookingRequest, session) => {
         };
 
         try {
-          //await sendApproveMail(bookingRequest.email, data);
+          await sendApproveMail(bookingRequest.email, data);
         } catch (error) {
           console.log(error);
         }
@@ -193,7 +193,7 @@ export const setReject = async (bookingRequest, session) => {
         };
 
         try {
-          //await sendRejectMail(bookingRequest.email, data);
+          await sendRejectMail(bookingRequest.email, data);
         } catch (error) {
           console.log(error);
         }
@@ -259,7 +259,7 @@ export const setCancel = async (bookingRequest, session) => {
           sessionEmail: session.user.email,
         };
         try {
-          //await sendCancelMail(bookingRequest.email, data);
+          await sendCancelMail(bookingRequest.email, data);
         } catch (error) {
           console.log(error);
         }
@@ -515,7 +515,7 @@ export const notifyConflictsEmail = async (bookingRequest, session) => {
       };
 
       try {
-        //await sendNotifyMail(bookingRequest.email, data);
+        await sendNotifyMail(bookingRequest.email, data);
       } catch (error) {
         console.log(error);
       }

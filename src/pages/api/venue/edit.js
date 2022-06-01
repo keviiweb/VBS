@@ -43,7 +43,7 @@ const handler = async (req, res) => {
         result = {
           status: true,
           error: "",
-          msg: "Successfully edited venue",
+          msg: `Successfully edited ${data.fields.name}`,
         };
         res.status(200).send(result);
         res.end();

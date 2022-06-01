@@ -14,7 +14,7 @@ export default function ManageBooking() {
 
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
 
   var handleDetails = useCallback((content) => {
     setModalData(content);
@@ -120,6 +120,7 @@ export default function ManageBooking() {
   useEffect(() => {
     const fetchData = async () => {
       setLoadingData(true);
+      setData(null);
       try {
         const rawResponse = await fetch("/api/bookingReq/fetch?q=USER", {
           headers: {
@@ -185,8 +186,14 @@ export default function ManageBooking() {
     <Auth>
       <Box bg="white" borderRadius="lg" p={8} color="gray.700" shadow="base">
         <MotionBox variants={cardVariant} key="1">
-          {loadingData ? (
-            <Text>Loading Please wait...</Text>
+          {loadingData && !data ? (
+            <Box align="center" justify="center" mt={30}>
+              <Text>Loading Please wait...</Text>
+            </Box>
+          ) : !loadingData && data.length == 0 ? (
+            <Box align="center" justify="center" mt={30}>
+              <Text>No bookings found</Text>
+            </Box>
           ) : (
             <TableWidget key={1} columns={columns} data={data} />
           )}

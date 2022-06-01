@@ -141,14 +141,20 @@ const handler = async (req, res) => {
 
             let status = null;
             const bookingDate = book.date;
-            const minDay = process.env.CANCEL_MIN_DAY;
-
-            if (!compareDate(bookingDate, minDay)) {
-              continue;
-            }
+            const minDay = process.env.CANCEL_MIN_DAY
+              ? process.env.CANCEL_MIN_DAY
+              : 3;
 
             if (!book.isApproved && !book.isCancelled && !book.isRejected) {
               status = "PENDING";
+
+              if (!compareDate(bookingDate, minDay)) {
+                if (query && query != "USER") {
+                  continue;
+                } else {
+                  status = "EXPIRED";
+                }
+              }
             } else if (
               book.isApproved &&
               !book.isCancelled &&

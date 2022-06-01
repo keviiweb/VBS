@@ -289,7 +289,7 @@ export default function ManageBooking() {
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, ALL);
-      } 
+      }
 
       setLoadingData(false);
     } catch (error) {
@@ -310,7 +310,7 @@ export default function ManageBooking() {
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, APPROVED);
-      } 
+      }
 
       setLoadingData(false);
     } catch (error) {
@@ -332,7 +332,7 @@ export default function ManageBooking() {
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, REJECTED);
-      } 
+      }
       setLoadingData(false);
     } catch (error) {
       console.log(error);
@@ -352,7 +352,7 @@ export default function ManageBooking() {
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, PENDING);
-      } 
+      }
       setLoadingData(false);
     } catch (error) {
       console.log(error);
@@ -400,7 +400,7 @@ export default function ManageBooking() {
   useEffect(() => {
     fetchPendingData();
   }, [fetchPendingData]);
-  
+
   return (
     <Auth admin>
       <Box
@@ -428,7 +428,13 @@ export default function ManageBooking() {
               <Tab>All Bookings</Tab>
             </TabList>
             {loadingData && !data ? (
-              <Text>Loading Please wait...</Text>
+              <Box align="center" justify="center" mt={30}>
+                <Text>Loading Please wait...</Text>
+              </Box>
+            ) : !loadingData && data.length == 0 ? (
+              <Box align="center" justify="center" mt={30}>
+                <Text>No bookings found</Text>
+              </Box>
             ) : (
               <TableWidget key={1} columns={columns} data={data} />
             )}
