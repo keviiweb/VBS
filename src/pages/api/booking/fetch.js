@@ -162,8 +162,6 @@ const handler = async (req, res) => {
           }
         }
 
-        console.log(parsedBooking);
-
         result = {
           status: true,
           error: null,
