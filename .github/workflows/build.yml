@@ -1,0 +1,68 @@
+name: Build, Danger
+
+on: 
+  pull_request:
+    branches:
+    - main
+    
+permissions:
+  actions: write
+  checks: write
+  contents: write
+  issues: write
+  pull-requests: write
+  statuses: write
+
+jobs:
+  danger:
+    name: Danger JS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Danger
+        uses: danger/danger-js@9.1.6
+        with:
+          args: "--dangerfile ./.github/workflows/dangerfile.js"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DANGER_DISABLE_TRANSPILATION: true
+          
+  lint:
+    runs-on: ubuntu-latest
+    needs: danger
+
+    steps:
+    - name: Restore cached artifacts
+      uses: actions/cache@v1
+      id: restore-build
+      with:
+        path: '.'
+        key: ${{ github.sha }}
+    - name: Eslint
+      run: npm run lint
+      
+              
+  build:
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:    
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build using Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install Dependencies
+      run: npm ci
+    - name: Build project
+      run: npm run build
+    - name: Cache artifacts
+      uses: actions/cache@v1
+      id: cache-build
+      with:
+        path: '.'
+        key: ${{ github.sha }}
