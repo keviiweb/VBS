@@ -1,6 +1,6 @@
 ## Overview
 
-This repo holds sourcecode for King Edward VII's Venue Booking System and CCA Attendance tracking. Project is built on top of https://nextjs.org and Chakra-UI to allow easy contributions be it to code or other areas of the website.
+This repo holds source code for King Edward VII's Venue Booking System and CCA Attendance tracking. Project is built on top of https://nextjs.org and Chakra-UI to allow easy contributions be it to code or other areas of the website.
 
 ## Getting Started
 
@@ -24,6 +24,8 @@ Run npm run dev and start building awesome things!
 * src/pages - Individual website pages. \_app is a special file for editing global settings
 * src/layout - Main layout of the page, with sidebar and drawers
 * src/constants - Any constants that are not stored in the database
+* src/helper - Helper functions such as calls to database, prettify strings etc.
+* src/styles - Certain styling files such as the one used for calendars
 
 ## Tech Stack
 
