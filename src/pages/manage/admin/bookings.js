@@ -12,6 +12,9 @@ import {
   FormLabel,
   Select,
   Tooltip,
+  Input,
+  InputGroup,
+  InputLeftAddon,
 } from "@chakra-ui/react";
 import { CheckIcon, CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
@@ -29,6 +32,7 @@ export default function ManageBooking() {
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState(null);
+  const [filteredData, setFilteredData] = useState(null);
   const ALL = 3;
   const PENDING = 0;
   const APPROVED = 1;
@@ -46,6 +50,8 @@ export default function ManageBooking() {
   const [startTime, setStartTime] = useState("08:00:00");
   const [endTime, setEndTime] = useState("23:00:00");
 
+  const [search, setSearch] = useState('');
+ 
   var handleTabChange = useCallback(
     async (index) => {
       tabIndexData.current = index;
@@ -475,16 +481,6 @@ export default function ManageBooking() {
     setEvents(event);
   };
 
-  const ss = (info) => {
-    if (info.event.extendedProps.description) {
-      return (
-        <Tooltip label="messes up border radius" shouldWrapChildren>
-          <Button isDisabled>2</Button>
-        </Tooltip>
-      );
-    }
-  };
-
   const handleMouseEnter = (info) => {
     if (info.event.extendedProps.description) {
       toast({
@@ -497,8 +493,32 @@ export default function ManageBooking() {
     }
   };
 
-  const handleMouseLeave = (info) => {
+  const handleMouseLeave = (_info) => {
     toast.closeAll();
+  };
+
+  const handleSearch = (event) => {
+    const searchInput = event.target.value;
+    setSearch(searchInput);
+
+    if (searchInput && searchInput != '') {
+      let filteredData = data.filter(value => {
+        return (
+            value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
+            value.cca.toLowerCase().includes(searchInput.toLowerCase()) ||
+            value.venue.toLowerCase().includes(searchInput.toLowerCase()) ||
+            value.date.toLowerCase().includes(searchInput.toLowerCase()) ||
+            value.timeSlots.toLowerCase().includes(searchInput.toLowerCase()) ||
+            value.email.toLowerCase().includes(searchInput.toLowerCase()) ||
+            value.status.toLowerCase().includes(searchInput.toLowerCase())
+          );
+        });
+  
+      setFilteredData(filteredData);
+    } else {
+      setFilteredData(null);
+    }
+
   };
 
   const columns = useMemo(
@@ -615,7 +635,18 @@ export default function ManageBooking() {
                 <Text>No bookings found</Text>
               </Box>
             ) : (
-              <TableWidget key={1} columns={columns} data={data} />
+              <Box align="center" justify="center" minWidth={"full"} mt={30}>
+                <Stack spacing={30}>
+                <InputGroup>
+                    <InputLeftAddon children='Search:' />
+                    <Input type='text' placeholder='' onChange={handleSearch}/>
+                  </InputGroup>
+
+                <TableWidget key={1} columns={columns} data={filteredData && filteredData.length ? filteredData : data} />
+                </Stack>
+              </Box>
+
+            
             )}
             <BookingModal
               isAdmin={true}
