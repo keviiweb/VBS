@@ -234,7 +234,7 @@ export default function ManageBooking() {
             <Box align="center" justify="center" minWidth={"full"} mt={30}>
               <Stack spacing={30}>
                 <InputGroup>
-                  <InputLeftAddon children="Search:" />
+                  <InputLeftAddon>Search:</InputLeftAddon>
                   <Input
                     type="text"
                     placeholder=""

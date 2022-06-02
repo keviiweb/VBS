@@ -111,7 +111,7 @@ export default function VBS(props) {
               shadow="base"
             >
               <InputGroup>
-                <InputLeftAddon children="Search:" />
+                <InputLeftAddon>Search:</InputLeftAddon>
                 <Input
                   type="text"
                   placeholder=""
