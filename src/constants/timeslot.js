@@ -31,6 +31,8 @@ export const timingSlotNumberToTimingMapping = {
   30: "2130 - 2200",
   31: "2200 - 2230",
   32: "2230 - 2300",
+  33: "2300 - 2330",
+  34: "2330 - 0000",
 };
 
 export const timeSlots = {

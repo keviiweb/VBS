@@ -66,6 +66,18 @@ export const prettifyDate = (date) => {
   return `Unknown Date`;
 };
 
+export const dateISO = (date) => {
+  if (date) {
+    const dateObj = new Date(date);
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+    const day = dateObj.getDate().toString().padStart(2, "0");
+    const prettyDate = `${dateObj.getFullYear()}-${month}-${day}`;
+    return prettyDate;
+  }
+
+  return `Unknown Date`;
+};
+
 export const convertDateToUnix = (date) => {
   const prettified = prettifyDate(date);
   if (prettified) {

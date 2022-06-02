@@ -11,6 +11,7 @@ import {
   Stack,
   FormLabel,
   Select,
+  Tooltip,
 } from "@chakra-ui/react";
 import { CheckIcon, CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
@@ -40,6 +41,10 @@ export default function ManageBooking() {
   const [venueDropdown, setVenueDropdown] = useState([]);
   const [venueID, setVenueID] = useState("");
   const venueIDDB = useRef("");
+
+  const [events, setEvents] = useState(null);
+  const [startTime, setStartTime] = useState("08:00:00");
+  const [endTime, setEndTime] = useState("23:00:00");
 
   var handleTabChange = useCallback(
     async (index) => {
@@ -430,10 +435,70 @@ export default function ManageBooking() {
       });
       const content = await rawResponse.json();
       if (content.status) {
+        await populateCalendar(content.msg);
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const populateCalendar = async (content) => {
+    const event = [];
+    let count = 0;
+
+    for (let key in content) {
+      if (content[key]) {
+        const data = content[key];
+
+        const description = "CCA: " + data.cca + " EMAIL: " + data.email;
+
+        const e = {
+          id: data.id,
+          title: data.title,
+          start: data.start,
+          end: data.end,
+          extendedProps: {
+            description: description,
+          },
+        };
+
+        event.push(e);
+
+        if (count == 0) {
+          setStartTime(data.startHour);
+          setEndTime(data.endHour);
+          count++;
+        }
+      }
+    }
+
+    setEvents(event);
+  };
+
+  const ss = (info) => {
+    if (info.event.extendedProps.description) {
+      return (
+        <Tooltip label="messes up border radius" shouldWrapChildren>
+          <Button isDisabled>2</Button>
+        </Tooltip>
+      );
+    }
+  };
+
+  const handleMouseEnter = (info) => {
+    if (info.event.extendedProps.description) {
+      toast({
+        title: info.event.title,
+        description: info.event.extendedProps.description,
+        status: "info",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleMouseLeave = (info) => {
+    toast.closeAll();
   };
 
   const columns = useMemo(
@@ -507,7 +572,14 @@ export default function ManageBooking() {
               </Select>
             </Stack>
           )}
-          <BookingCalendar slotMax={"24:00:00"} slotMin={"08:00:00"} />
+
+          <BookingCalendar
+            slotMax={endTime}
+            slotMin={startTime}
+            events={events}
+            eventMouseEnter={handleMouseEnter}
+            eventMouseLeave={handleMouseLeave}
+          />
         </Box>
 
         <Box

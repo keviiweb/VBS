@@ -7,6 +7,9 @@ export const findAllBookingByVenueID = async (id) => {
         {
           date: "desc",
         },
+        {
+          timingSlot: "asc",
+        },
       ],
       where: {
         venue: id,

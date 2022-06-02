@@ -5,7 +5,12 @@ import {
   findSlotsByID,
 } from "@constants/helper";
 import { currentSession } from "@helper/session";
-import { findVenueByID, splitHours, splitOpeningHours } from "@helper/venue";
+import {
+  findVenueByID,
+  splitHours,
+  splitOpeningHours,
+  splitHoursISO,
+} from "@helper/venue";
 import { findCCAbyID } from "@helper/cca";
 import { findAllBookingByVenueID } from "@helper/booking";
 
@@ -75,12 +80,32 @@ const handler = async (req, res) => {
                       parsedtimeSlotsSplit.start.toString().padStart(4, "0") +
                       " - " +
                       timeSplit.end.toString().padStart(4, "0");
+
+                    const bookedTimeSlotsISO = await splitHoursISO(
+                      date,
+                      parsed.timingSlot
+                    );
+                    const start = bookedTimeSlotsISO.start;
+                    const end = bookedTimeSlotsISO.end;
+
+                    parsed.start = start;
+                    parsed.end = end;
                   } else if (timeSplit.end == parsedtimeSlotsSplit.start) {
                     duplicate = true;
                     parsed.timingSlot =
                       timeSplit.start.toString().padStart(4, "0") +
                       " - " +
                       parsedtimeSlotsSplit.end.toString().padStart(4, "0");
+
+                    const bookedTimeSlotsISO = await splitHoursISO(
+                      date,
+                      parsed.timingSlot
+                    );
+                    const start = bookedTimeSlotsISO.start;
+                    const end = bookedTimeSlotsISO.end;
+
+                    parsed.start = start;
+                    parsed.end = end;
                   }
                 }
               }
@@ -97,7 +122,24 @@ const handler = async (req, res) => {
                 const startHour = await findSlotsByID(openingHours.start);
                 const endHour = await findSlotsByID(openingHours.end);
 
+                const startH =
+                  startHour.toString().slice(0, 2) +
+                  ":" +
+                  startHour.slice(2) +
+                  ":00";
+                const endH =
+                  endHour.toString().slice(0, 2) +
+                  ":" +
+                  endHour.slice(2) +
+                  ":00";
+
                 const bookedTimeSlots = mapSlotToTiming(book.timingSlot);
+                const bookedTimeSlotsISO = await splitHoursISO(
+                  date,
+                  bookedTimeSlots
+                );
+                const start = bookedTimeSlotsISO.start;
+                const end = bookedTimeSlotsISO.end;
 
                 const data = {
                   id: book.id,
@@ -107,19 +149,20 @@ const handler = async (req, res) => {
                   timingSlot: bookedTimeSlots,
                   purpose: book.purpose,
                   cca: cca,
-                  startHour: startHour,
-                  endHour: endHour,
+                  startHour: startH,
+                  endHour: endH,
+                  title: book.purpose,
+                  start: start,
+                  end: end,
                 };
 
                 parsedBooking.push(data);
               }
-            } else {
-              continue;
             }
           }
         }
 
-        //console.log(parsedBooking);
+        console.log(parsedBooking);
 
         result = {
           status: true,

@@ -1,5 +1,5 @@
 import { prisma } from "@constants/db";
-import { findSlots } from "@constants/helper";
+import { findSlots, dateISO } from "@constants/helper";
 
 export const fetchChildVenue = async (venue) => {
   try {
@@ -103,6 +103,42 @@ export const splitHours = async (opening) => {
   }
 };
 
+export const splitHoursISO = async (date, timeSlot) => {
+  try {
+    if (timeSlot) {
+      const hours = timeSlot.split("-");
+
+      if (hours) {
+        const startHour = hours[0].trim();
+        const endHour = hours[1].trim();
+
+        const start =
+          dateISO(date) +
+          "T" +
+          startHour.toString().slice(0, 2) +
+          ":" +
+          startHour.slice(2) +
+          ":00";
+        const end =
+          dateISO(date) +
+          "T" +
+          endHour.toString().slice(0, 2) +
+          ":" +
+          endHour.slice(2) +
+          ":00";
+
+        return { start: start, end: end };
+      } else {
+        return { start: null, end: null };
+      }
+    } else {
+      return { start: null, end: null };
+    }
+  } catch (error) {
+    console.log(error);
+    return { start: null, end: null };
+  }
+};
 export const splitOpeningHours = async (opening) => {
   try {
     if (opening) {
