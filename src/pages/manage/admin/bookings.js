@@ -11,7 +11,6 @@ import {
   Stack,
   FormLabel,
   Select,
-  Tooltip,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -639,7 +638,7 @@ export default function ManageBooking() {
                 <Stack spacing={30}>
                 <InputGroup>
                     <InputLeftAddon children='Search:' />
-                    <Input type='text' placeholder='' onChange={handleSearch}/>
+                    <Input type='text' placeholder='' value={search} onChange={handleSearch}/>
                   </InputGroup>
 
                 <TableWidget key={1} columns={columns} data={filteredData && filteredData.length ? filteredData : data} />

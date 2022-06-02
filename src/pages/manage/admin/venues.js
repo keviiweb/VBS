@@ -16,6 +16,8 @@ import {
   chakra,
   VisuallyHidden,
   SimpleGrid,
+  InputGroup,
+  InputLeftAddon,
 } from "@chakra-ui/react";
 
 import { InfoOutlineIcon } from "@chakra-ui/icons";
@@ -35,6 +37,9 @@ export default function ManageVenues() {
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState([]);
+
+  const [filteredData, setFilteredData] = useState(null);
+  const [search, setSearch] = useState('');
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -637,6 +642,27 @@ export default function ManageVenues() {
     setEndTimeEdit("");
   }, []);
 
+  const handleSearch = (event) => {
+    const searchInput = event.target.value;
+    setSearch(searchInput);
+
+    if (searchInput && searchInput != '') {
+      let filteredData = data.filter(value => {
+        return (
+            value.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+            value.description.toLowerCase().includes(searchInput.toLowerCase()) ||
+            value.openingHours.toLowerCase().includes(searchInput.toLowerCase()) ||
+            value.capacity.toString().toLowerCase().includes(searchInput.toLowerCase()) 
+          );
+        });
+  
+      setFilteredData(filteredData);
+    } else {
+      setFilteredData(null);
+    }
+
+  };
+
   return (
     <Auth admin>
       <Box bg="white" borderRadius="lg" p={8} color="gray.700" shadow="base">
@@ -644,7 +670,16 @@ export default function ManageVenues() {
           {loadingData && !data ? (
             <Text>Loading Please wait...</Text>
           ) : (
-            <TableWidget key={1} columns={columns} data={data} />
+            <Box align="center" justify="center" minWidth={"full"} mt={30}>
+                <Stack spacing={30}>
+                <InputGroup>
+                    <InputLeftAddon children='Search:' />
+                    <Input type='text' placeholder='' value={search} onChange={handleSearch}/>
+                  </InputGroup>
+
+                <TableWidget key={1} columns={columns} data={filteredData && filteredData.length ? filteredData : data} />
+                </Stack>
+              </Box>
           )}
           <VenueModal
             isOpen={modalData ? true : false}
