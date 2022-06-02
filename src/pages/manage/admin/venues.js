@@ -39,7 +39,7 @@ export default function ManageVenues() {
   const [data, setData] = useState([]);
 
   const [filteredData, setFilteredData] = useState(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -646,21 +646,25 @@ export default function ManageVenues() {
     const searchInput = event.target.value;
     setSearch(searchInput);
 
-    if (searchInput && searchInput != '') {
-      let filteredData = data.filter(value => {
+    if (searchInput && searchInput != "") {
+      let filteredData = data.filter((value) => {
         return (
-            value.name.toLowerCase().includes(searchInput.toLowerCase()) ||
-            value.description.toLowerCase().includes(searchInput.toLowerCase()) ||
-            value.openingHours.toLowerCase().includes(searchInput.toLowerCase()) ||
-            value.capacity.toString().toLowerCase().includes(searchInput.toLowerCase()) 
-          );
-        });
-  
+          value.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+          value.description.toLowerCase().includes(searchInput.toLowerCase()) ||
+          value.openingHours
+            .toLowerCase()
+            .includes(searchInput.toLowerCase()) ||
+          value.capacity
+            .toString()
+            .toLowerCase()
+            .includes(searchInput.toLowerCase())
+        );
+      });
+
       setFilteredData(filteredData);
     } else {
       setFilteredData(null);
     }
-
   };
 
   return (
@@ -671,15 +675,26 @@ export default function ManageVenues() {
             <Text>Loading Please wait...</Text>
           ) : (
             <Box align="center" justify="center" minWidth={"full"} mt={30}>
-                <Stack spacing={30}>
+              <Stack spacing={30}>
                 <InputGroup>
-                    <InputLeftAddon children='Search:' />
-                    <Input type='text' placeholder='' value={search} onChange={handleSearch}/>
-                  </InputGroup>
+                  <InputLeftAddon children="Search:" />
+                  <Input
+                    type="text"
+                    placeholder=""
+                    value={search}
+                    onChange={handleSearch}
+                  />
+                </InputGroup>
 
-                <TableWidget key={1} columns={columns} data={filteredData && filteredData.length ? filteredData : data} />
-                </Stack>
-              </Box>
+                <TableWidget
+                  key={1}
+                  columns={columns}
+                  data={
+                    filteredData && filteredData.length ? filteredData : data
+                  }
+                />
+              </Stack>
+            </Box>
           )}
           <VenueModal
             isOpen={modalData ? true : false}

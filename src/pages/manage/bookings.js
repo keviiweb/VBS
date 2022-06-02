@@ -1,7 +1,14 @@
-import { Button, Box, Text, ButtonGroup, useToast, 
+import {
+  Button,
+  Box,
+  Text,
+  ButtonGroup,
+  useToast,
   Input,
   InputGroup,
-  InputLeftAddon, Stack, } from "@chakra-ui/react";
+  InputLeftAddon,
+  Stack,
+} from "@chakra-ui/react";
 import { CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { cardVariant } from "@root/motion";
 import { motion } from "framer-motion";
@@ -19,7 +26,7 @@ export default function ManageBooking() {
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState(null);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState(null);
 
   var handleDetails = useCallback((content) => {
@@ -154,26 +161,25 @@ export default function ManageBooking() {
     const searchInput = event.target.value;
     setSearch(searchInput);
 
-    if (searchInput && searchInput != '') {
-      let filteredData = data.filter(value => {
+    if (searchInput && searchInput != "") {
+      let filteredData = data.filter((value) => {
         return (
-            value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
-            value.cca.toLowerCase().includes(searchInput.toLowerCase()) ||
-            value.venue.toLowerCase().includes(searchInput.toLowerCase()) ||
-            value.date.toLowerCase().includes(searchInput.toLowerCase()) ||
-            value.timeSlots.toLowerCase().includes(searchInput.toLowerCase()) ||
-            value.email.toLowerCase().includes(searchInput.toLowerCase()) ||
-            value.status.toLowerCase().includes(searchInput.toLowerCase())
-          );
-        });
-  
+          value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
+          value.cca.toLowerCase().includes(searchInput.toLowerCase()) ||
+          value.venue.toLowerCase().includes(searchInput.toLowerCase()) ||
+          value.date.toLowerCase().includes(searchInput.toLowerCase()) ||
+          value.timeSlots.toLowerCase().includes(searchInput.toLowerCase()) ||
+          value.email.toLowerCase().includes(searchInput.toLowerCase()) ||
+          value.status.toLowerCase().includes(searchInput.toLowerCase())
+        );
+      });
+
       setFilteredData(filteredData);
     } else {
       setFilteredData(null);
     }
-
   };
-  
+
   const columns = useMemo(
     () => [
       {
@@ -226,15 +232,26 @@ export default function ManageBooking() {
             </Box>
           ) : (
             <Box align="center" justify="center" minWidth={"full"} mt={30}>
-                <Stack spacing={30}>
+              <Stack spacing={30}>
                 <InputGroup>
-                    <InputLeftAddon children='Search:' />
-                    <Input type='text' placeholder='' value={search} onChange={handleSearch}/>
-                  </InputGroup>
+                  <InputLeftAddon children="Search:" />
+                  <Input
+                    type="text"
+                    placeholder=""
+                    value={search}
+                    onChange={handleSearch}
+                  />
+                </InputGroup>
 
-                <TableWidget key={1} columns={columns} data={filteredData && filteredData.length ? filteredData : data} />
-                </Stack>
-              </Box>
+                <TableWidget
+                  key={1}
+                  columns={columns}
+                  data={
+                    filteredData && filteredData.length ? filteredData : data
+                  }
+                />
+              </Stack>
+            </Box>
           )}
           <BookingModal
             isAdmin={false}

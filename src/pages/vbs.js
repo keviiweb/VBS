@@ -1,7 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
 import { motion } from "framer-motion";
-import { SimpleGrid, Box } from "@chakra-ui/react";
+import {
+  SimpleGrid,
+  Box,
+  Input,
+  InputGroup,
+  InputLeftAddon,
+} from "@chakra-ui/react";
 import Auth from "@components/Auth";
 import VenueCard from "@components/VenueCard";
 import VenueBookingModal from "@components/VenueBookingModal";
@@ -22,6 +28,9 @@ export default function VBS(props) {
   const [cards, setCards] = useState([]);
   const minDate = useRef(3);
   const maxDate = useRef(30);
+
+  const [search, setSearch] = useState("");
+  const [filteredData, setFilteredData] = useState(null);
 
   const dataFromVenueModal = (venue, venueName, date, timeSlots) => {
     if (venue && date && timeSlots && venueName) {
@@ -53,7 +62,11 @@ export default function VBS(props) {
               result.forEach((item) => {
                 if (item.visible) {
                   cardRes.push(
-                    <MotionBox variants={cardVariant} key={item.id}>
+                    <MotionBox
+                      id={item.name}
+                      variants={cardVariant}
+                      key={item.id}
+                    >
                       <VenueCard product={item} setModalData={setModalData} />
                     </MotionBox>
                   );
@@ -69,12 +82,44 @@ export default function VBS(props) {
     fetchData(props);
   }, [props]);
 
+  const handleSearch = (event) => {
+    const searchInput = event.target.value;
+    setSearch(searchInput);
+
+    if (searchInput && searchInput != "") {
+      let filteredData = cards.filter((value) => {
+        return value.props.id.toLowerCase().includes(searchInput.toLowerCase());
+      });
+
+      setFilteredData(filteredData);
+    } else {
+      setFilteredData(null);
+    }
+  };
+
   return (
     <>
       {isLoading && <Loading message={"Loading venues..."} />}
       {!isLoading && (
         <Auth>
           <Box>
+            <Box
+              bg="white"
+              borderRadius="lg"
+              width={{ base: "full", md: "full", lg: "full" }}
+              color="gray.700"
+              shadow="base"
+            >
+              <InputGroup>
+                <InputLeftAddon children="Search:" />
+                <Input
+                  type="text"
+                  placeholder=""
+                  value={search}
+                  onChange={handleSearch}
+                />
+              </InputGroup>
+            </Box>
             <MotionSimpleGrid
               mt="3"
               minChildWidth={{ base: "full", md: "30vh", lg: "50vh" }}
@@ -84,7 +129,7 @@ export default function VBS(props) {
               initial="initial"
               animate="animate"
             >
-              {cards}
+              {filteredData && filteredData.length ? filteredData : cards}
             </MotionSimpleGrid>
             <VenueBookingModal
               isOpen={modalData ? true : false}
