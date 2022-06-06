@@ -1,6 +1,6 @@
-import { editVenue } from "@helper/venue";
+import { editVenue } from "@helper/sys/venue";
 import { IncomingForm } from "formidable";
-import { currentSession } from "@helper/session";
+import { currentSession } from "@helper/sys/session";
 
 // first we need to disable the default body parser
 export const config = {

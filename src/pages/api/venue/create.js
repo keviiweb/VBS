@@ -1,7 +1,7 @@
-import { createVenue } from "@helper/venue";
+import { createVenue } from "@helper/sys/venue";
 import { IncomingForm } from "formidable";
 import { promises as fs } from "fs";
-import { currentSession } from "@helper/session";
+import { currentSession } from "@helper/sys/session";
 
 // first we need to disable the default body parser
 export const config = {
@@ -30,7 +30,7 @@ const handler = async (req, res) => {
       if (imageFile) {
         const imagePath = imageFile.filepath;
 
-        venuePath = "/venue/" + imageFile.originalFilename;
+        venuePath = "/sys/venue/" + imageFile.originalFilename;
         const pathToWriteImage = "public" + venuePath;
         const image = await fs.readFile(imagePath);
         await fs.writeFile(pathToWriteImage, image);

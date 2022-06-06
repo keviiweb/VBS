@@ -3,9 +3,9 @@ import {
   convertDateToUnix,
   convertSlotToArray,
   prettifyTiming,
-} from "@constants/helper";
-import { currentSession } from "@helper/session";
-import { findCCAbyID } from "@helper/cca";
+} from "@constants/sys/helper";
+import { currentSession } from "@helper/sys/session";
+import { findCCAbyID, isLeader } from "@helper/sys/cca";
 import {
   isConflict,
   createVenueBookingRequest,
@@ -14,10 +14,10 @@ import {
   isRejected,
   setApprove,
   setRejectConflicts,
-} from "@helper/bookingReq";
-import { isInstantBook, isVisible } from "@helper/venue";
-import { sendProgressMail } from "@helper/email/progress";
-import { createVenueBooking } from "@helper/booking";
+} from "@helper/sys/bookingReq";
+import { isInstantBook, isVisible } from "@helper/sys/venue";
+import { sendProgressMail } from "@helper/sys/email/progress";
+import { createVenueBooking } from "@helper/sys/booking";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
@@ -34,10 +34,22 @@ const handler = async (req, res) => {
 
       if (type !== "PERSONAL") {
         const dbSearch = await findCCAbyID(type);
-        if (dbSearch && dbSearch.status) {
-          cca = dbSearch.msg.name;
+        const checkLdr = await isLeader(type, session);
+        if (checkLdr.status && checkLdr.msg) {
+          if (dbSearch && dbSearch.status) {
+            cca = dbSearch.msg.name;
+          } else {
+            cca = "PERSONAL";
+          }
         } else {
-          cca = "PERSONAL";
+          result = {
+            status: false,
+            error: `You are not a leader for ${dbSearch.msg.name}`,
+            msg: "",
+          };
+          res.status(200).send(result);
+          res.end();
+          return;
         }
       } else {
         cca = "PERSONAL";

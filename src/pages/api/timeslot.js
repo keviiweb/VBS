@@ -1,8 +1,8 @@
-import { timingSlotNumberToTimingMapping } from "@constants/timeslot";
-import { convertDateToUnix } from "@constants/helper";
-import { currentSession } from "@helper/session";
-import { fetchOpeningHours } from "@helper/venue";
-import { fetchBookedTimeSlots } from "@helper/timeslot";
+import { timingSlotNumberToTimingMapping } from "@constants/sys/timeslot";
+import { convertDateToUnix } from "@constants/sys/helper";
+import { currentSession } from "@helper/sys/session";
+import { fetchOpeningHours } from "@helper/sys/venue";
+import { fetchBookedTimeSlots } from "@helper/sys/timeslot";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);

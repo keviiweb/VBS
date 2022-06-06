@@ -1,5 +1,5 @@
-import { currentSession } from "@helper/session";
-import { findVenueByID, fetchAllVenue } from "@helper/venue";
+import { currentSession } from "@helper/sys/session";
+import { findVenueByID, fetchAllVenue } from "@helper/sys/venue";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);

@@ -1,5 +1,5 @@
-import { currentSession } from "@helper/session";
-import { findAllCCA } from "@helper/cca";
+import { currentSession } from "@helper/sys/session";
+import { findAllCCA } from "@helper/sys/cca";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
