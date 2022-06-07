@@ -360,7 +360,11 @@ export default function VenueBookingModalConfirmation({
         <ModalCloseButton />
         <ModalHeader></ModalHeader>
         <ModalBody>
-          {submitting && <Box><Loading message={"Submitting request..."} /></Box>}
+          {submitting && (
+            <Box>
+              <Loading message={"Submitting request..."} />
+            </Box>
+          )}
 
           {success && !submitting && (
             <Box textAlign="center" py={10} px={6}>
@@ -411,7 +415,11 @@ export default function VenueBookingModalConfirmation({
                         </RadioGroup>
 
                         {showCCAs && ccaList && (
-                          <Select onChange={onCCASelectionChange} value={ccaSelection} size="sm">
+                          <Select
+                            onChange={onCCASelectionChange}
+                            value={ccaSelection}
+                            size="sm"
+                          >
                             {ccaList}
                           </Select>
                         )}

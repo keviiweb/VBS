@@ -99,7 +99,11 @@ export default function VBS(props) {
 
   return (
     <>
-      {isLoading && <Box><Loading message={"Loading venues..."} /></Box>}
+      {isLoading && (
+        <Box>
+          <Loading message={"Loading venues..."} />
+        </Box>
+      )}
       {!isLoading && (
         <Auth>
           <Box>

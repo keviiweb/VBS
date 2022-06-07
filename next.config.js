@@ -12,8 +12,12 @@ const withTM = require("next-transpile-modules")([
 ]);
 
 module.exports = withTM({
-  reactStrictMode: true,
+  reactStrictMode: false,
   images: {
-    domains: ["https://vbs-kevii.vercel.app/", "https://vbs-hikoya.vercel.app"],
+    domains: [
+      "https://vbs-kevii.vercel.app/",
+      "https://vbs-hikoya.vercel.app",
+      "https://kevii-vbs.herokuapp.com/",
+    ],
   },
 });

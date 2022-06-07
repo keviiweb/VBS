@@ -77,9 +77,13 @@ export default function UserProfile(props) {
             </HStack>
           </MenuButton>
           <MenuList fontSize="lg" bg="white" borderColor="gray.200">
-            <MenuItem onClick={() => router.push("/sys/profile")}>Profile</MenuItem>
+            <MenuItem onClick={() => router.push("/sys/profile")}>
+              Profile
+            </MenuItem>
             <MenuDivider />
-            <MenuItem onClick={() => signOut({ callbackUrl: url + "/sys/signin" })}>
+            <MenuItem
+              onClick={() => signOut({ callbackUrl: url + "/sys/signin" })}
+            >
               Sign out
             </MenuItem>
           </MenuList>

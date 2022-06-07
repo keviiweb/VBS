@@ -459,7 +459,6 @@ export default function VenueBookingModal({
                       <Box>
                         <Loading message={"Fetching all timeslots..."} />
                       </Box>
-                      
                     </Box>
                   </Box>
                 ) : (
