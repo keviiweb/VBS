@@ -167,6 +167,7 @@ export default function VenueBookingModalConfirmation({
         });
         setSuccessBooking(false);
         setSubmitting(false);
+        setIsSwitch(false);
       }
     } catch (error) {
       setSubmitting(false);

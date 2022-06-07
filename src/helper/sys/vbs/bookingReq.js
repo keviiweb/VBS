@@ -200,6 +200,7 @@ export const setApprove = async (bookingRequest, session) => {
         isApproved: true,
         isRejected: false,
         isCancelled: false,
+        updated_at: new Date(),
       },
     });
 
@@ -266,6 +267,7 @@ export const setReject = async (bookingRequest, session) => {
         isApproved: false,
         isRejected: true,
         isCancelled: false,
+        updated_at: new Date(),
       },
     });
 
@@ -333,6 +335,7 @@ export const setCancel = async (bookingRequest, session) => {
         isApproved: false,
         isRejected: false,
         isCancelled: true,
+        updated_at: new Date(),
       },
     });
 
@@ -487,6 +490,7 @@ export const updateConflictingIDs = async (bookingRequest, conflict) => {
       },
       data: {
         conflictRequest: conflict.toString(),
+        updated_at: new Date(),
       },
     });
 

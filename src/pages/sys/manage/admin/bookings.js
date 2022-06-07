@@ -565,8 +565,8 @@ export default function ManageBooking() {
   return (
     <Auth admin>
       <MotionSimpleGrid
+        columns={{ base: 1, md: 1, lg: 1 }}
         mt="3"
-        minChildWidth={{ base: "full", md: "500px", lg: "500px" }}
         spacing="2em"
         minH="600px"
         variants={parentVariant}

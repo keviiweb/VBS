@@ -4,8 +4,8 @@ import Map from "@components/landing/Map";
 export default function Feature() {
   const location = {
     address: "1A Kent Ridge Rd, Singapore 119224",
-    lat: 1.2913725,
-    lng: 103.7792766,
+    lat: 1.2925423384337875,
+    lng: 103.78102165309795,
   };
 
   return (

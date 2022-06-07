@@ -36,6 +36,7 @@ const handler = async (req, res) => {
         isChildVenue: isChildVenue,
         parentVenue: parentVenue,
         openingHours: data.fields.openingHours,
+        updated_at: new Date(),
       };
 
       const editVenueRequest = await editVenue(venueData);

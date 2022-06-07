@@ -2,7 +2,7 @@ import { prisma } from "@constants/sys/db";
 
 export const findCCAbyName = async (name) => {
   try {
-    const query = await prisma.CCA.findUnique({
+    const query = await prisma.cCA.findFirst({
       where: {
         name: name,
       },
@@ -17,7 +17,7 @@ export const findCCAbyName = async (name) => {
 
 export const findCCAbyID = async (id) => {
   try {
-    const query = await prisma.CCA.findUnique({
+    const query = await prisma.cCA.findUnique({
       where: {
         id: id,
       },
@@ -32,7 +32,7 @@ export const findCCAbyID = async (id) => {
 
 export const findAllCCA = async () => {
   try {
-    const ccaList = await prisma.CCA.findMany({
+    const ccaList = await prisma.cCA.findMany({
       orderBy: {
         name: "asc",
       },
@@ -46,7 +46,7 @@ export const findAllCCA = async () => {
 
 export const isLeader = async (ccaID, session) => {
   try {
-    const ldr = await prisma.CCALeader.findUnique({
+    const ldr = await prisma.cCALeader.findFirst({
       where: {
         ccaID: ccaID,
         sessionEmail: session.user.email,
