@@ -25,8 +25,8 @@ import { cardVariant, parentVariant } from "@root/motion";
 import { motion } from "framer-motion";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import Auth from "@components/sys/Auth";
-import TableWidget from "@components/sys/TableWidget";
-import VenueModal from "@components/sys/VenueModal";
+import TableWidget from "@components/sys/vbs/TableWidget";
+import VenueModal from "@components/sys/vbs/VenueModal";
 import { timeSlots } from "@constants/sys/timeslot";
 
 const MotionSimpleGrid = motion(SimpleGrid);

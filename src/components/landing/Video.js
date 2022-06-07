@@ -13,7 +13,10 @@ export default function Video() {
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={0}>
         <Flex>
           <video width={"full"} height={"110vh"} controls>
-            <source src="https://nus.edu.sg/osa/videos/default-source/kevii-videos/qna-final.mp4?sfvrsn=ccaa662d_2" type="video/mp4" />
+            <source
+              src="https://nus.edu.sg/osa/videos/default-source/kevii-videos/qna-final.mp4?sfvrsn=ccaa662d_2"
+              type="video/mp4"
+            />
             Any alternate text.
           </video>
         </Flex>

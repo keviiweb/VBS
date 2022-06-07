@@ -5,7 +5,7 @@ import {
   isRejected,
   setCancel,
   notifyConflicts,
-} from "@helper/sys/bookingReq";
+} from "@helper/sys/vbs/bookingReq";
 import { currentSession } from "@helper/sys/session";
 import { compareDate } from "@constants/sys/helper";
 

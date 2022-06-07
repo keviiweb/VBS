@@ -9,11 +9,11 @@ import {
   InputLeftAddon,
 } from "@chakra-ui/react";
 import Auth from "@components/sys/Auth";
-import VenueCard from "@components/sys/VenueCard";
-import VenueBookingModal from "@components/sys/VenueBookingModal";
-import VenueBookingModalConfirmation from "@components/sys/VenueBookingModalConfirmation";
-import Loading from "@components/sys/Loading";
-import { fetchVenue } from "@helper/sys/venue";
+import VenueCard from "@components/sys/vbs/VenueCard";
+import VenueBookingModal from "@components/sys/vbs/VenueBookingModal";
+import VenueBookingModalConfirmation from "@components/sys/vbs/VenueBookingModalConfirmation";
+import Loading from "@components/sys/vbs/Loading";
+import { fetchVenue } from "@helper/sys/vbs/venue";
 
 import safeJsonStringify from "safe-json-stringify";
 

@@ -17,34 +17,35 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
-import TableWidget from "@components/sys/TableWidget";
+import TableWidget from "@components/sys/vbs/TableWidget";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
-export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
+export default function VenueModal({ isOpen, onClose, modalData }) {
   const [loadingData, setLoadingData] = useState(true);
+
   const [id, setID] = useState(null);
-  const [venue, setVenue] = useState(null);
-  const [date, setDate] = useState(null);
-  const [timeSlots, setTimeSlots] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [cca, setCCA] = useState(null);
-  const [purpose, setPurpose] = useState(null);
-  const [conflict, setConflict] = useState(null);
-  const [status, setStatus] = useState(null);
+  const [name, setName] = useState(null);
+  const [description, setDescription] = useState(null);
+  const [openingHours, setOpeningHours] = useState(null);
+  const [childVenue, setChildVenue] = useState(null);
+  const [capacity, setCapacity] = useState(null);
+  const [isAvailable, setIsAvailable] = useState(null);
+  const [instantBook, setInstantBook] = useState(null);
+  const [childVenues, setChildVenues] = useState(null);
 
   const reset = () => {
     setID(null);
-    setVenue(null);
-    setDate(null);
-    setTimeSlots(null);
-    setEmail(null);
-    setCCA(null);
-    setPurpose(null);
-    setConflict(null);
-    setStatus(null);
+    setName(null);
+    setDescription(null);
+    setOpeningHours(null);
+    setChildVenue(null);
+    setCapacity(null);
+    setIsAvailable(null);
+    setInstantBook(null);
+    setChildVenues(null);
   };
 
   const handleModalCloseButton = () => {
@@ -54,22 +55,21 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
     }, 200);
   };
 
-  const processConflicts = async (conflicts) => {
+  const processChildVenue = async (parentVenueID) => {
     try {
-      const rawResponse = await fetch("/api/bookingReq/format", {
+      const rawResponse = await fetch("/api/venue/child", {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          bookings: conflicts,
+          venue: parentVenueID,
         }),
       });
       const content = await rawResponse.json();
-      if (content.status) {
-        setConflict(content.msg);
-      } else {
+      if (content.length > 0) {
+        setChildVenues(content);
       }
     } catch (error) {
       console.log(error);
@@ -79,16 +79,16 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
   useEffect(() => {
     async function setupData() {
       setID(modalData.id);
-      setVenue(modalData.venue);
-      setDate(modalData.date);
-      setTimeSlots(modalData.timeSlots);
-      setEmail(modalData.email);
-      setCCA(modalData.cca);
-      setPurpose(modalData.purpose);
-      setStatus(modalData.status);
+      setName(modalData.name);
+      setDescription(modalData.description);
+      setOpeningHours(modalData.openingHours);
+      setCapacity(modalData.capacity);
+      setChildVenue(modalData.childVenue);
+      setIsAvailable(modalData.isAvailable);
+      setInstantBook(modalData.instantBook);
 
-      if (modalData.conflictRequest && modalData.conflictRequest.length > 0) {
-        await processConflicts(modalData.conflictRequest);
+      if (!modalData.isChildVenue && modalData.id) {
+        await processChildVenue(modalData.id);
       }
 
       setLoadingData(false);
@@ -99,67 +99,35 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
     }
   }, [modalData]);
 
-  const columns = useMemo(() => {
-    if (isAdmin) {
-      return [
-        {
-          Header: "Venue",
-          accessor: "venue",
-        },
-        {
-          Header: "Date",
-          accessor: "date",
-        },
-        {
-          Header: "Timeslot(s)",
-          accessor: "timeSlots",
-        },
-        {
-          Header: "Email",
-          accessor: "email",
-        },
-        {
-          Header: "CCA",
-          accessor: "cca",
-        },
-        {
-          Header: "Purpose",
-          accessor: "purpose",
-        },
-        {
-          Header: "Status",
-          accessor: "status",
-        },
-      ];
-    } else {
-      return [
-        {
-          Header: "Venue",
-          accessor: "venue",
-        },
-        {
-          Header: "Date",
-          accessor: "date",
-        },
-        {
-          Header: "Timeslot(s)",
-          accessor: "timeSlots",
-        },
-        {
-          Header: "CCA",
-          accessor: "cca",
-        },
-        {
-          Header: "Purpose",
-          accessor: "purpose",
-        },
-        {
-          Header: "Status",
-          accessor: "status",
-        },
-      ];
-    }
-  }, [isAdmin]);
+  const columns = useMemo(
+    () => [
+      {
+        Header: "Name",
+        accessor: "name",
+      },
+      {
+        Header: "Description",
+        accessor: "description",
+      },
+      {
+        Header: "Opening Hours",
+        accessor: "openingHours",
+      },
+      {
+        Header: "Capacity",
+        accessor: "capacity",
+      },
+      {
+        Header: "Instant Book",
+        accessor: "instantBook",
+      },
+      {
+        Header: "Available for Booking",
+        accessor: "isAvailable",
+      },
+    ],
+    []
+  );
 
   return (
     <Modal
@@ -178,7 +146,7 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
         <ModalBody>
           <MotionSimpleGrid
             mt="3"
-            minChildWidth="250px"
+            minChildWidth={{ base: "full", md: "full" }}
             spacing="2em"
             minH="full"
             variants={parentVariant}
@@ -192,7 +160,6 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                   h="full"
                   alignItems="center"
                   justifyContent="center"
-                  m="4"
                 >
                   <Stack spacing={{ base: 6, md: 10 }}>
                     <Stack
@@ -207,106 +174,114 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                           textTransform={"uppercase"}
                           mb={"4"}
                         >
-                          Booking Request Details
+                          Venue Details
                         </Text>
 
                         <List spacing={5}>
                           <ListItem>
                             <Text as={"span"} fontWeight={"bold"}>
-                              Reference No:
+                              Venue ID:
                             </Text>{" "}
                             {id}
                           </ListItem>
                           <ListItem>
                             <Text as={"span"} fontWeight={"bold"}>
-                              Venue:
+                              Name:
                             </Text>{" "}
-                            {venue}
+                            {name}
                           </ListItem>
                           <ListItem>
                             <Text as={"span"} fontWeight={"bold"}>
-                              Date:
+                              Description:
                             </Text>{" "}
-                            {date}
+                            {description}
                           </ListItem>
                           <ListItem>
                             <Text as={"span"} fontWeight={"bold"}>
-                              Timeslot(s):
+                              Opening Hours:
                             </Text>{" "}
-                            {timeSlots}
+                            {openingHours}
                           </ListItem>
                           <ListItem>
                             <Text as={"span"} fontWeight={"bold"}>
-                              Contact Email:
+                              Capacity:
                             </Text>{" "}
-                            {email}
+                            {capacity}
                           </ListItem>
                           <ListItem>
                             <Text as={"span"} fontWeight={"bold"}>
-                              CCA:
+                              Child Venue:
                             </Text>{" "}
-                            {cca}
+                            {childVenue}
                           </ListItem>
                           <ListItem>
                             <Text as={"span"} fontWeight={"bold"}>
-                              Purpose:
+                              Instant Book:
                             </Text>{" "}
-                            {purpose}
+                            {instantBook}
                           </ListItem>
                           <ListItem>
                             <Text as={"span"} fontWeight={"bold"}>
-                              Status:
+                              Available for Booking:
                             </Text>{" "}
-                            {status}
+                            {isAvailable}
                           </ListItem>
                         </List>
                       </Box>
+                    </Stack>
+                  </Stack>
+                </Flex>
+              )}
+            </MotionBox>
+            <MotionBox variants={cardVariant} key="3">
+              <Flex
+                w="full"
+                h="full"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Box>
+                  <Text
+                    fontSize={{ base: "16px", lg: "18px" }}
+                    fontWeight={"500"}
+                    textTransform={"uppercase"}
+                    mb={"4"}
+                  >
+                    Child Venues
+                  </Text>
 
-                      <Box>
+                  {childVenues && (
+                    <>
+                      {loadingData ? (
+                        <Text>Loading Please wait...</Text>
+                      ) : (
+                        <TableWidget
+                          key={2}
+                          columns={columns}
+                          data={childVenues}
+                        />
+                      )}
+                    </>
+                  )}
+
+                  {!childVenues && (
+                    <>
+                      {loadingData ? (
+                        <Text>Loading Please wait...</Text>
+                      ) : (
                         <Text
                           fontSize={{ base: "16px", lg: "18px" }}
                           fontWeight={"500"}
                           textTransform={"uppercase"}
                           mb={"4"}
                         >
-                          Conflicting Requests
+                          No child venues found
                         </Text>
-
-                        {conflict && (
-                          <>
-                            {loadingData ? (
-                              <Text>Loading Please wait...</Text>
-                            ) : (
-                              <TableWidget
-                                key={2}
-                                columns={columns}
-                                data={conflict}
-                              />
-                            )}
-                          </>
-                        )}
-
-                        {!conflict && (
-                          <>
-                            {loadingData ? (
-                              <Text>Loading Please wait...</Text>
-                            ) : (
-                              <Text
-                                fontSize={{ base: "16px", lg: "18px" }}
-                                fontWeight={"500"}
-                                textTransform={"uppercase"}
-                                mb={"4"}
-                              >
-                                No conflicting requests found
-                              </Text>
-                            )}
-                          </>
-                        )}
-                      </Box>
-                    </Stack>
-                  </Stack>
-                </Flex>
-              )}
+                      )}
+                    </>
+                  )}
+                </Box>
+              </Flex>
             </MotionBox>
           </MotionSimpleGrid>
         </ModalBody>

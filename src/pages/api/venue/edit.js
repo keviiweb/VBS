@@ -1,4 +1,4 @@
-import { editVenue } from "@helper/sys/venue";
+import { editVenue } from "@helper/sys/vbs/venue";
 import { IncomingForm } from "formidable";
 import { currentSession } from "@helper/sys/session";
 

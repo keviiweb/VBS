@@ -18,9 +18,9 @@ import {
 import { CheckIcon, CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Auth from "@components/sys/Auth";
-import TableWidget from "@components/sys/TableWidget";
-import BookingModal from "@components/sys/BookingModal";
-import BookingCalendar from "@components/sys/BookingCalendar";
+import TableWidget from "@components/sys/vbs/TableWidget";
+import BookingModal from "@components/sys/vbs/BookingModal";
+import BookingCalendar from "@components/sys/vbs/BookingCalendar";
 import { parentVariant } from "@root/motion";
 import { motion } from "framer-motion";
 const MotionSimpleGrid = motion(SimpleGrid);

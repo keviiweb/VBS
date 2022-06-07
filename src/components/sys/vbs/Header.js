@@ -1,6 +1,6 @@
 import { IconButton, Flex, Text } from "@chakra-ui/react";
 import { FiMenu } from "react-icons/fi";
-import UserProfile from "@components/sys/UserProfile";
+import UserProfile from "@components/sys/vbs/UserProfile";
 import Link from "next/link";
 
 export default function Header({ onOpen, ...rest }) {

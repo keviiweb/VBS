@@ -1,5 +1,5 @@
-import Header from "@components/sys/Header";
-import Sidebar from "@components/sys/Sidebar";
+import Header from "@components/sys/vbs/Header";
+import Sidebar from "@components/sys/vbs/Sidebar";
 
 import { Box, Drawer, DrawerContent, useDisclosure } from "@chakra-ui/react";
 

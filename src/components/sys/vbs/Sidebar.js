@@ -8,7 +8,7 @@ import {
   FiCalendar,
   FiMapPin,
 } from "react-icons/fi";
-import NavLink from "@components/sys/NavLink";
+import NavLink from "@components/sys/vbs/NavLink";
 import Link from "next/link";
 import { currentSession } from "@helper/sys/session";
 import { useEffect } from "react";

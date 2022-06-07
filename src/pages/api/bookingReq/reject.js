@@ -4,7 +4,7 @@ import {
   isCancelled,
   isRejected,
   setReject,
-} from "@helper/sys/bookingReq";
+} from "@helper/sys/vbs/bookingReq";
 import { currentSession } from "@helper/sys/session";
 
 const handler = async (req, res) => {

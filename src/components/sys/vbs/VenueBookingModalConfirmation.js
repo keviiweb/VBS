@@ -27,7 +27,7 @@ import { CheckCircleIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { cardVariant, parentVariant } from "@root/motion";
-import Loading from "@components/sys/Loading";
+import Loading from "@components/sys/vbs/Loading";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 

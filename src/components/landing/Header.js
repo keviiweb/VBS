@@ -24,28 +24,40 @@ import NextLink from "next/link";
 export default function Header() {
   const bg = "white";
   const mobileNav = useDisclosure();
-  const cl = "gray.800";
 
   const sections = [
     {
       title: "Sports",
       icon: null,
       description: "Learn a new sport!",
+      link: "/sports",
     },
     {
       title: "Cultural",
       icon: null,
       description: "Showcase your inner talents!",
+      link: "/cultural",
     },
     {
       title: "Production",
       icon: null,
       description: "Be part of a large family!",
+      link: "/production",
     },
     {
       title: "Committee",
       icon: null,
       description: "Take charge and be your own leader!",
+      link: "/committee",
+    },
+  ];
+
+  const system = [
+    {
+      title: "VBS",
+      icon: null,
+      description: "Venue Booking System for KEVII",
+      link: "/sys",
     },
   ];
 
@@ -55,42 +67,48 @@ export default function Header() {
     const tcl = "gray.900";
     const dcl = "gray.500";
     return (
-      <Link
-        m={-3}
-        p={3}
-        display="flex"
-        alignItems="start"
-        rounded="lg"
-        _hover={{ bg: hbg }}
-      >
-        {props.icon && (
-          <Icon
-            flexShrink={0}
-            h={6}
-            w={6}
-            mt={2}
-            color={ic}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-          >
-            <path d={props.icon} />
-          </Icon>
-        )}
+      <>
+        {props.link && (
+          <NextLink passHref href={props.link}>
+            <Link
+              m={-3}
+              p={3}
+              display="flex"
+              alignItems="start"
+              rounded="lg"
+              _hover={{ bg: hbg }}
+            >
+              {props.icon && (
+                <Icon
+                  flexShrink={0}
+                  h={6}
+                  w={6}
+                  mt={2}
+                  color={ic}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                >
+                  <path d={props.icon} />
+                </Icon>
+              )}
 
-        <Box ml={4}>
-          <chakra.p fontSize="sm" fontWeight="700" color={tcl}>
-            {props.title}
-          </chakra.p>
-          <chakra.p mt={1} fontSize="sm" color={dcl}>
-            {props.children}
-          </chakra.p>
-        </Box>
-      </Link>
+              <Box ml={4}>
+                <chakra.p fontSize="sm" fontWeight="700" color={tcl}>
+                  {props.title}
+                </chakra.p>
+                <chakra.p mt={1} fontSize="sm" color={dcl}>
+                  {props.children}
+                </chakra.p>
+              </Box>
+            </Link>
+          </NextLink>
+        )}
+      </>
     );
   };
 
@@ -105,8 +123,29 @@ export default function Header() {
           py={6}
           p={{ sm: 8 }}
         >
-          {sections.map(({ title, icon, description }, sid) => (
-            <Section title={title} icon={icon} key={sid}>
+          {sections.map(({ title, icon, description, link}, sid) => (
+            <Section title={title} icon={icon} key={sid} link={link}>
+              {description}
+            </Section>
+          ))}
+        </SimpleGrid>
+      </React.Fragment>
+    );
+  };
+
+  const System = (props) => {
+    return (
+      <React.Fragment>
+        <SimpleGrid
+          columns={props.h ? { base: 1, md: 3, lg: 5 } : 1}
+          pos="relative"
+          gap={{ base: 6, sm: 8 }}
+          px={5}
+          py={6}
+          p={{ sm: 8 }}
+        >
+          {system.map(({ title, icon, description, link }, sid) => (
+            <Section title={title} icon={icon} key={sid} link={link}>
               {description}
             </Section>
           ))}
@@ -131,7 +170,7 @@ export default function Header() {
           </NextLink>
           <HStack display="flex" alignItems="center" spacing={1}>
             <HStack
-              spacing={1}
+              spacing={3}
               mr={1}
               color="brand.500"
               display={{ base: "none", md: "inline-flex" }}
@@ -148,13 +187,31 @@ export default function Header() {
                   <CCA />
                 </PopoverContent>
               </Popover>
-              <Button variant="ghost">Events</Button>
-              <Button variant="ghost">FAQ</Button>
-              <Button variant="ghost">Contact Us</Button>
 
-              <NextLink href={"/sys"}>
-                <Button variant="solid">Access VBS</Button>
+              <NextLink href="/event">
+                <Button variant="ghost">Events</Button>
               </NextLink>
+
+              <NextLink href="/">
+                <Button variant="ghost">FAQ</Button>
+              </NextLink>
+
+              <NextLink href="/">
+                <Button variant="ghost">Contact Us</Button>
+              </NextLink>
+
+              <Popover>
+                <PopoverTrigger>
+                  <Button variant="ghost">Systems</Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  w="100vw"
+                  maxW="md"
+                  _focus={{ boxShadow: "md" }}
+                >
+                  <System />
+                </PopoverContent>
+              </Popover>
             </HStack>
             <Button colorScheme="brand" size="sm">
               Get Started
@@ -190,21 +247,23 @@ export default function Header() {
                   onClick={mobileNav.onClose}
                 />
 
-                <Button w="full" variant="ghost">
-                  Features
-                </Button>
-                <Button w="full" variant="ghost">
-                  Pricing
-                </Button>
-                <Button w="full" variant="ghost">
-                  Blog
-                </Button>
-                <Button w="full" variant="ghost">
-                  Company
-                </Button>
-                <Button w="full" variant="ghost">
-                  Sign in
-                </Button>
+                <NextLink href="/event">
+                  <Button w="full" variant="ghost">
+                    Events
+                  </Button>
+                </NextLink>
+
+                <NextLink href="/">
+                  <Button w="full" variant="ghost">
+                    FAQ
+                  </Button>
+                </NextLink>
+
+                <NextLink href="/">
+                  <Button w="full" variant="ghost">
+                    Contact Us
+                  </Button>
+                </NextLink>
               </VStack>
             </Box>
           </HStack>

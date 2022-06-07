@@ -1,5 +1,5 @@
 import { currentSession } from "@helper/sys/session";
-import { findAllCCA } from "@helper/sys/cca";
+import { findAllCCA } from "@helper/sys/vbs/cca";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);

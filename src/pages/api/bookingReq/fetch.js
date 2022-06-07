@@ -7,8 +7,8 @@ import {
   compareDate,
 } from "@constants/sys/helper";
 import { currentSession } from "@helper/sys/session";
-import { findVenueByID } from "@helper/sys/venue";
-import { findCCAbyID } from "@helper/sys/cca";
+import { findVenueByID } from "@helper/sys/vbs/venue";
+import { findCCAbyID } from "@helper/sys/vbs/cca";
 import {
   BOOKINGS,
   getConflictingRequest,
@@ -17,7 +17,7 @@ import {
   findRejectedBooking,
   findPendingBooking,
   findAllBooking,
-} from "@helper/sys/bookingReq";
+} from "@helper/sys/vbs/bookingReq";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);

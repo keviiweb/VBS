@@ -6,8 +6,8 @@ import {
   prettifyDate,
 } from "@constants/sys/helper";
 import { currentSession } from "@helper/sys/session";
-import { findVenueByID } from "@helper/sys/venue";
-import { findCCAbyID } from "@helper/sys/cca";
+import { findVenueByID } from "@helper/sys/vbs/venue";
+import { findCCAbyID } from "@helper/sys/vbs/cca";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);

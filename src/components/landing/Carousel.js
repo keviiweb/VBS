@@ -85,7 +85,7 @@ export default function Carousel() {
           </Text>
         </Box>
 
-        <Flex w="600px" pos="relative" overflow="hidden">
+        <Flex w="800px" pos="relative" overflow="hidden">
           <Flex h="400px" w="full" {...carouselStyle}>
             {slides.map((slide, sid) => (
               <Box key={`slide-${sid}`} boxSize="full" shadow="md" flex="none">

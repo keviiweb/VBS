@@ -2,7 +2,6 @@ import {
   Box,
   Stack,
   Flex,
-  Button,
   Text,
   VStack,
   useBreakpointValue,
@@ -13,7 +12,10 @@ export default function Hero() {
     <Flex w={"full"} h={"110vh"}>
       <Box>
         <video autoPlay muted loop id="myVideo">
-          <source src="https://nus.edu.sg/osa/videos/default-source/kevii-videos/promo-final-2.mp4?sfvrsn=2ad1ed6f_0" type="video/mp4" />
+          <source
+            src="https://nus.edu.sg/osa/videos/default-source/kevii-videos/promo-final-2.mp4?sfvrsn=2ad1ed6f_0"
+            type="video/mp4"
+          />
           Any alternate text.
         </video>
       </Box>

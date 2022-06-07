@@ -15,8 +15,8 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import CalendarWidget from "@components/sys/CalendarWidget";
-import TimeSlotButton from "@components/sys/TimeSlotButton";
+import CalendarWidget from "@components/sys/vbs/CalendarWidget";
+import TimeSlotButton from "@components/sys/vbs/TimeSlotButton";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { cardVariant, parentVariant } from "@root/motion";

@@ -14,8 +14,8 @@ import { cardVariant } from "@root/motion";
 import { motion } from "framer-motion";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Auth from "@components/sys/Auth";
-import TableWidget from "@components/sys/TableWidget";
-import BookingModal from "@components/sys/BookingModal";
+import TableWidget from "@components/sys/vbs/TableWidget";
+import BookingModal from "@components/sys/vbs/BookingModal";
 
 const MotionBox = motion(Box);
 

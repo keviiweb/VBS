@@ -10,9 +10,9 @@ import {
   splitHours,
   splitOpeningHours,
   splitHoursISO,
-} from "@helper/sys/venue";
-import { findCCAbyID } from "@helper/sys/cca";
-import { findAllBookingByVenueID } from "@helper/sys/booking";
+} from "@helper/sys/vbs/venue";
+import { findCCAbyID } from "@helper/sys/vbs/cca";
+import { findAllBookingByVenueID } from "@helper/sys/vbs/booking";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);

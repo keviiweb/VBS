@@ -19,7 +19,7 @@ export default function Map({ location, zoomLevel, apiKey }) {
   const LocationPin = ({ text }) => (
     <Popover placement="top-start">
       <PopoverTrigger>
-        <Icon as={MdOutlineLocationOn} width={20} height={24} />
+        <Icon as={MdOutlineLocationOn} w={20} h={24} />
       </PopoverTrigger>
       <PopoverContent>
         <PopoverArrow />

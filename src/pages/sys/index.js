@@ -2,7 +2,7 @@ import { cardVariant, parentVariant } from "@root/motion";
 import { motion } from "framer-motion";
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import Auth from "@components/sys/Auth";
-import Card from "@components/sys/Card";
+import Card from "@components/sys/vbs/Card";
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 

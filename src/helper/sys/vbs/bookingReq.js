@@ -7,17 +7,17 @@ import {
   convertUnixToDate,
   prettifyDate,
 } from "@constants/sys/helper";
-import { findVenueByID } from "@helper/sys/venue";
-import { findCCAbyID } from "@helper/sys/cca";
-import { sendApproveMail } from "@helper/sys/email/approve";
-import { sendCancelMail } from "@helper/sys/email/cancel";
-import { sendRejectMail } from "@helper/sys/email/reject";
-import { sendNotifyMail } from "@helper/sys/email/notify";
+import { findVenueByID } from "@helper/sys/vbs/venue";
+import { findCCAbyID } from "@helper/sys/vbs/cca";
+import { sendApproveMail } from "@helper/sys/vbs/email/approve";
+import { sendCancelMail } from "@helper/sys/vbs/email/cancel";
+import { sendRejectMail } from "@helper/sys/vbs/email/reject";
+import { sendNotifyMail } from "@helper/sys/vbs/email/notify";
 import {
   approvalBookingRequestMessageBuilder,
   rejectBookingRequestMessageBuilder,
   sendMessageToChannel,
-} from "@helper/sys/telegram";
+} from "@helper/sys/vbs/telegram";
 
 export const BOOKINGS = ["PENDING", "APPROVED", "REJECTED"];
 

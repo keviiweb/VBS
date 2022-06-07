@@ -1,4 +1,4 @@
-import { createVenue } from "@helper/sys/venue";
+import { createVenue } from "@helper/sys/vbs/venue";
 import { IncomingForm } from "formidable";
 import { promises as fs } from "fs";
 import { currentSession } from "@helper/sys/session";

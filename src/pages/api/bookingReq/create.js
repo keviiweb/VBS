@@ -5,7 +5,7 @@ import {
   prettifyTiming,
 } from "@constants/sys/helper";
 import { currentSession } from "@helper/sys/session";
-import { findCCAbyID, isLeader } from "@helper/sys/cca";
+import { findCCAbyID, isLeader } from "@helper/sys/vbs/cca";
 import {
   isConflict,
   createVenueBookingRequest,
@@ -14,10 +14,10 @@ import {
   isRejected,
   setApprove,
   setRejectConflicts,
-} from "@helper/sys/bookingReq";
-import { isInstantBook, isVisible } from "@helper/sys/venue";
-import { sendProgressMail } from "@helper/sys/email/progress";
-import { createVenueBooking } from "@helper/sys/booking";
+} from "@helper/sys/vbs/bookingReq";
+import { isInstantBook, isVisible } from "@helper/sys/vbs/venue";
+import { sendProgressMail } from "@helper/sys/vbs/email/progress";
+import { createVenueBooking } from "@helper/sys/vbs/booking";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
