@@ -440,8 +440,8 @@ const options = {
     encryption: true,
   },
   pages: {
-    signIn: '/signin',
-    verifyRequest: '/verify-request',
+    signIn: '/sys/signin',
+    verifyRequest: '/sys/verify-request',
   },
   callbacks: {
     async signIn({ user, email }) {
