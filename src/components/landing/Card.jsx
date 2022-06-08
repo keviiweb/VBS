@@ -22,13 +22,22 @@ export default function Card({
     () => (
       <Box
         mx='auto'
-        rounded='lg'
-        shadow='lg'
+        borderColor='#888888'
+        border='thin'
+        rounded='xl'
+        shadow='2xl'
         maxW='2xl'
         _hover={{ md: hoverStyles }}
       >
         {img && (
-          <Image w='full' fit='cover' src={img} alt='Event' loading='eager' />
+          <Image
+            borderRadius='xl'
+            w='full'
+            fit='cover'
+            src={img}
+            alt='Event'
+            loading='eager'
+          />
         )}
         <Box p={6}>
           <Box>
@@ -68,12 +77,22 @@ export default function Card({
         >
           <Box
             mx='auto'
-            rounded='lg'
-            shadow='lg'
+            borderColor='#888888'
+            border='thin'
+            rounded='xl'
+            shadow='2xl'
             maxW='2xl'
-            _hover={{ lg: hoverStyles }}
+            _hover={{ md: hoverStyles }}
           >
-            {img && <Image w='full' fit='cover' src={img} alt='Event' />}
+            {img && (
+              <Image
+                borderRadius='xl'
+                w='full'
+                fit='cover'
+                src={img}
+                alt='Event'
+              />
+            )}
             <Box p={6}>
               <Box>
                 <Text fontWeight='bold' fontSize='2xl'>

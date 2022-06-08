@@ -21,7 +21,7 @@ export default function Map({ location, zoomLevel, apiKey }) {
     scaleControl: false,
     fullscreenControl: false,
     mapTypeId: maps.MapTypeId.HYBRID,
-    zoomControl: false,
+    zoomControl: true,
     clickableIcons: false,
     mapTypeControl: true,
     mapTypeControlOptions: {

@@ -94,7 +94,7 @@ export default function Feature() {
               <Box w='full'>
                 <Map
                   location={location}
-                  zoomLevel={19}
+                  zoomLevel={21}
                   apiKey='AIzaSyCoiMvqTY6CAobxafxPCDPF5WmVh3ajlAQ'
                 />
               </Box>

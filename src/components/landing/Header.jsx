@@ -171,7 +171,19 @@ export default function Header() {
           >
             <Popover>
               <PopoverTrigger>
-                <Button variant='ghost'>CCA</Button>
+                <Button
+                  variant='ghost'
+                  bg='brand.500'
+                  _hover={{ bg: 'brand.500' }}
+                  _active={{
+                    transform: 'scale(0.92)',
+                  }}
+                  _focus={{
+                    boxShadow: '0 0',
+                  }}
+                >
+                  CCA
+                </Button>
               </PopoverTrigger>
               <PopoverContent w='100vw' maxW='md' _focus={{ boxShadow: 'md' }}>
                 <CCA />
@@ -179,20 +191,68 @@ export default function Header() {
             </Popover>
 
             <NextLink href='/event'>
-              <Button variant='ghost'>Events</Button>
+              <Button
+                variant='ghost'
+                bg='brand.500'
+                _hover={{ bg: 'brand.500' }}
+                _active={{
+                  transform: 'scale(0.92)',
+                }}
+                _focus={{
+                  boxShadow: '0 0',
+                }}
+              >
+                Events
+              </Button>
             </NextLink>
 
             <NextLink href='/community'>
-              <Button variant='ghost'>Community</Button>
+              <Button
+                variant='ghost'
+                bg='brand.500'
+                _hover={{ bg: 'brand.500' }}
+                _active={{
+                  transform: 'scale(0.92)',
+                }}
+                _focus={{
+                  boxShadow: '0 0',
+                }}
+              >
+                Community
+              </Button>
             </NextLink>
 
             <NextLink href='/contact'>
-              <Button variant='ghost'>Contact</Button>
+              <Button
+                variant='ghost'
+                bg='brand.500'
+                _hover={{ bg: 'brand.500' }}
+                _active={{
+                  transform: 'scale(0.92)',
+                }}
+                _focus={{
+                  boxShadow: '0 0',
+                }}
+              >
+                Contact
+              </Button>
             </NextLink>
 
             <Popover>
               <PopoverTrigger>
-                <Button variant='ghost'>Current Residents</Button>
+                <Button
+                  variant='ghost'
+                  bg='brand.500'
+                  _hover={{ bg: 'brand.500' }}
+                  _active={{
+                    transform: 'scale(0.92)',
+                  }}
+                  _focus={{
+                    boxShadow: '0 0',
+                  }}
+                >
+                  Current Residents
+                </Button>
               </PopoverTrigger>
               <PopoverContent w='100vw' maxW='md' _focus={{ boxShadow: 'md' }}>
                 <System />
@@ -233,20 +293,68 @@ export default function Header() {
               />
 
               <NextLink href='/event'>
-                <Button variant='ghost'>Events</Button>
+                <Button
+                  variant='ghost'
+                  bg='brand.500'
+                  _hover={{ bg: 'brand.500' }}
+                  _active={{
+                    transform: 'scale(0.92)',
+                  }}
+                  _focus={{
+                    boxShadow: '0 0',
+                  }}
+                >
+                  Events
+                </Button>
               </NextLink>
 
               <NextLink href='/community'>
-                <Button variant='ghost'>Community</Button>
+                <Button
+                  variant='ghost'
+                  bg='brand.500'
+                  _hover={{ bg: 'brand.500' }}
+                  _active={{
+                    transform: 'scale(0.92)',
+                  }}
+                  _focus={{
+                    boxShadow: '0 0',
+                  }}
+                >
+                  Community
+                </Button>
               </NextLink>
 
               <NextLink href='/contact'>
-                <Button variant='ghost'>Contact</Button>
+                <Button
+                  variant='ghost'
+                  bg='brand.500'
+                  _hover={{ bg: 'brand.500' }}
+                  _active={{
+                    transform: 'scale(0.92)',
+                  }}
+                  _focus={{
+                    boxShadow: '0 0',
+                  }}
+                >
+                  Contact
+                </Button>
               </NextLink>
 
               <Popover>
                 <PopoverTrigger>
-                  <Button variant='ghost'>Current Residents</Button>
+                  <Button
+                    variant='ghost'
+                    bg='brand.500'
+                    _hover={{ bg: 'brand.500' }}
+                    _active={{
+                      transform: 'scale(0.92)',
+                    }}
+                    _focus={{
+                      boxShadow: '0 0',
+                    }}
+                  >
+                    Current Residents
+                  </Button>
                 </PopoverTrigger>
                 <PopoverContent
                   w='100vw'
