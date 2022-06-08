@@ -61,8 +61,8 @@ export default function TableWidget({ columns, data }) {
         <Thead>
           {headerGroups.map((headerGroup, i) => (
             <Tr key={i} {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column, i) => (
-                <Th key={i} {...column.getHeaderProps()}>
+              {headerGroup.headers.map((column, id) => (
+                <Th key={id} {...column.getHeaderProps()}>
                   {column.render('Header')}
                 </Th>
               ))}
@@ -70,12 +70,12 @@ export default function TableWidget({ columns, data }) {
           ))}
         </Thead>
         <Tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
+          {page.map((row, idx) => {
             prepareRow(row);
             return (
-              <Tr key={i} {...row.getRowProps()}>
-                {row.cells.map((cell, i) => (
-                  <Td key={i} {...cell.getCellProps()}>
+              <Tr key={idx} {...row.getRowProps()}>
+                {row.cells.map((cell, idxx) => (
+                  <Td key={idxx} {...cell.getCellProps()}>
                     {cell.render('Cell')}
                   </Td>
                 ))}
@@ -123,8 +123,8 @@ export default function TableWidget({ columns, data }) {
             min={1}
             max={pageOptions.length}
             onChange={(value) => {
-              const page = value ? value - 1 : 0;
-              gotoPage(page);
+              const pageID = value ? value - 1 : 0;
+              gotoPage(pageID);
             }}
             defaultValue={pageIndex + 1}
           >
@@ -141,9 +141,9 @@ export default function TableWidget({ columns, data }) {
               setPageSize(Number(e.target.value));
             }}
           >
-            {[10, 20, 30, 40, 50].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
+            {[10, 20, 30, 40, 50].map((pageSizeID) => (
+              <option key={pageSizeID} value={pageSizeID}>
+                Show {pageSizeID}
               </option>
             ))}
           </Select>

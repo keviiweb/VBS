@@ -70,10 +70,11 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
       const content = await rawResponse.json();
       if (content.status) {
         setConflict(content.msg);
-      } else {
       }
+
+      return true;
     } catch (error) {
-      console.log(error);
+      return false;
     }
   };
 
@@ -272,35 +273,31 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                           Conflicting Requests
                         </Text>
 
-                        {conflict && (
-                          <>
-                            {loadingData ? (
-                              <Text>Loading Please wait...</Text>
-                            ) : (
-                              <TableWidget
-                                key={2}
-                                columns={columns}
-                                data={conflict}
-                              />
-                            )}
-                          </>
+                        {conflict && loadingData && (
+                          <Text>Loading Please wait...</Text>
                         )}
 
-                        {!conflict && (
-                          <>
-                            {loadingData ? (
-                              <Text>Loading Please wait...</Text>
-                            ) : (
-                              <Text
-                                fontSize={{ base: '16px', lg: '18px' }}
-                                fontWeight='500'
-                                textTransform='uppercase'
-                                mb='4'
-                              >
-                                No conflicting requests found
-                              </Text>
-                            )}
-                          </>
+                        {conflict && !loadingData && (
+                          <TableWidget
+                            key={2}
+                            columns={columns}
+                            data={conflict}
+                          />
+                        )}
+
+                        {!conflict && loadingData && (
+                          <Text>Loading Please wait...</Text>
+                        )}
+
+                        {!conflict && !loadingData && (
+                          <Text
+                            fontSize={{ base: '16px', lg: '18px' }}
+                            fontWeight='500'
+                            textTransform='uppercase'
+                            mb='4'
+                          >
+                            No conflicting requests found
+                          </Text>
                         )}
                       </Box>
                     </Stack>

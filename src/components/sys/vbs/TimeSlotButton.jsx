@@ -25,7 +25,7 @@ export default function TimeSlotButton({
       size='sm'
       margin='8px'
       key={newKey}
-      onClick={async () => await click()}
+      onClick={() => click()}
     >
       {slot}
     </Button>

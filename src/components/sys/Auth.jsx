@@ -5,7 +5,7 @@ import { currentSession } from '@helper/sys/session';
 import Layout from '@layout/sys/index';
 import Loading from '@layout/sys/Loading';
 
-const Auth = ({ children, admin }) => {
+function Auth({ children, admin }) {
   const { data: session, status } = useSession();
   const loading = status === 'loading';
   const hasUser = !!session?.user;
@@ -22,12 +22,10 @@ const Auth = ({ children, admin }) => {
           if (isAdmin && !devSession.current.user.admin) {
             router.push('/unauthorized');
           }
-        } else {
-          if (!loading && !hasUser) {
-            router.push('/sys/signin');
-          } else if (isAdmin && !session.user.admin) {
-            router.push('/unauthorized');
-          }
+        } else if (!loading && !hasUser) {
+          router.push('/sys/signin');
+        } else if (isAdmin && !session.user.admin) {
+          router.push('/unauthorized');
         }
       } catch (error) {
         console.log(error);
@@ -39,11 +37,12 @@ const Auth = ({ children, admin }) => {
 
   if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     return <Layout>{children}</Layout>;
-  } else if (loading || !hasUser) {
+  }
+  if (loading || !hasUser) {
     return <Loading />;
   }
 
   return <Layout>{children}</Layout>;
-};
+}
 
 export default Auth;

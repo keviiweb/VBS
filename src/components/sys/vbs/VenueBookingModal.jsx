@@ -58,7 +58,44 @@ export default function VenueBookingModal({
   const rawSlots = useRef([]);
   const selectedTimeSlots = useRef([]);
 
-  const [error, setError] = useState(null);
+  const [errorMsg, setError] = useState(null);
+
+  const check = (timeSlotsField) => {
+    if (timeSlotsField.length === 0) {
+      return false;
+    }
+
+    for (let key = 0; key < timeSlotsField.length; key += 1) {
+      if (timeSlotsField[key]) {
+        if (timeSlotsField[key].id) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
+
+  const validateFields = (venueField, dateField, timeSlotsField) => {
+    // simple validation for now
+    if (!venueField) {
+      setError('Please select a venue');
+      return false;
+    }
+
+    if (!dateField) {
+      setError('Please select a date');
+      return false;
+    }
+
+    if (!timeSlotsField || !check(timeSlotsField)) {
+      setError('Please select your timeslot(s)');
+      return false;
+    }
+
+    setError(null);
+    return true;
+  };
 
   const reset = () => {
     changeDate(null);
@@ -87,6 +124,21 @@ export default function VenueBookingModal({
     }, 200);
   };
 
+  const displayVenue = (venue) => {
+    if (id && venue === id) {
+      return `${name} (Whole Venue)`;
+    }
+    if (rawChildVenue) {
+      for (let key = 0; key < rawChildVenue.length; key += 1) {
+        if (rawChildVenue[key].id === venue) {
+          return rawChildVenue[key].name;
+        }
+      }
+    }
+
+    return '';
+  };
+
   const handleSubmit = () => {
     setError(null);
     if (
@@ -108,43 +160,6 @@ export default function VenueBookingModal({
         onClose();
       }, 200);
     }
-  };
-
-  const validateFields = (venue, date, timeSlots) => {
-    // simple validation for now
-    if (!venue) {
-      setError('Please select a venue');
-      return false;
-    }
-
-    if (!date) {
-      setError('Please select a date');
-      return false;
-    }
-
-    if (!timeSlots || !check(timeSlots)) {
-      setError('Please select your timeslot(s)');
-      return false;
-    }
-
-    setError(null);
-    return true;
-  };
-
-  const check = (timeSlots) => {
-    if (timeSlots.length == 0) {
-      return false;
-    }
-
-    for (const key in timeSlots) {
-      if (timeSlots[key]) {
-        if (timeSlots[key].id) {
-          return true;
-        }
-      }
-    }
-
-    return false;
   };
 
   const buildChildVenueDropdown = useCallback(
@@ -188,8 +203,14 @@ export default function VenueBookingModal({
             await buildChildVenueDropdown(content.msg);
             setHasChildVenue(true);
           }
-        } catch (error) {}
+
+          return true;
+        } catch (error) {
+          return false;
+        }
       }
+
+      return true;
     }
 
     if (modalData) {
@@ -203,54 +224,10 @@ export default function VenueBookingModal({
     }
   }, [buildChildVenueDropdown, modalData, isChildVenue]);
 
-  // Child venue generation
-  const onChildVenueChange = (event) => {
-    setError(null);
-
-    if (event.target.value) {
-      selectedVenue.current = event.target.value;
-      handleDate(rawDate.current);
-      selectedTimeSlots.current = [];
-      displaySlots(null);
-    }
-  };
-
-  const displayVenue = (venue) => {
-    if (id && venue == id) {
-      return `${name} (Whole Venue)`;
-    }
-    if (rawChildVenue) {
-      for (const key in rawChildVenue) {
-        if (rawChildVenue[key].id == venue) {
-          return rawChildVenue[key].name;
-        }
-      }
-    }
-
-    return '';
-  };
-
-  const handleClickTimeSlots = async (id) => {
-    setError(null);
-
-    if (id) {
-      const slots = selectedTimeSlots.current;
-      if (rawSlots.current) {
-        if (slots[id]) {
-          slots[id] = null;
-        } else {
-          slots[id] = rawSlots.current[id];
-        }
-      }
-      selectedTimeSlots.current = slots;
-      displaySlots(slots);
-    }
-  };
-
   const countSlots = (slots) => {
     let counter = 0;
-    for (const key in slots) {
-      if (slots.hasOwnProperty(key)) {
+    for (let key = 0; key < slots.length; key += 1) {
+      if (Object.prototype.hasOwnProperty.call(slots, key)) {
         if (slots[key]) {
           counter += 1;
         }
@@ -266,11 +243,11 @@ export default function VenueBookingModal({
       let counter = 0;
       const total = countSlots(slots);
       if (slots) {
-        for (const key in slots) {
-          if (slots.hasOwnProperty(key)) {
+        for (let key = 0; key < slots.length; key += 1) {
+          if (Object.prototype.hasOwnProperty.call(slots, key)) {
             if (slots[key]) {
               counter += 1;
-              if (counter != total) {
+              if (counter !== total) {
                 text += ` ${slots[key].slot} ,`;
               } else {
                 text += ` ${slots[key].slot} `;
@@ -288,12 +265,29 @@ export default function VenueBookingModal({
     }
   };
 
+  const handleClickTimeSlots = async (idField) => {
+    setError(null);
+
+    if (idField) {
+      const slots = selectedTimeSlots.current;
+      if (rawSlots.current) {
+        if (slots[idField]) {
+          slots[idField] = null;
+        } else {
+          slots[idField] = rawSlots.current[idField];
+        }
+      }
+      selectedTimeSlots.current = slots;
+      displaySlots(slots);
+    }
+  };
+
   const buildTimeSlot = (content) => {
     const buttons = [];
     if (content) {
       try {
-        for (const key in content) {
-          if (content.hasOwnProperty(key)) {
+        for (let key = 0; key < content.length; key += 1) {
+          if (Object.prototype.hasOwnProperty.call(content, key)) {
             if (content[key]) {
               const newID = selectedVenue.current + date.current + key;
               if (!content[key].booked) {
@@ -321,10 +315,13 @@ export default function VenueBookingModal({
             }
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        return false;
+      }
     }
 
     setTimeSlots(buttons);
+    return true;
   };
 
   const handleDate = async (dateObj) => {
@@ -348,7 +345,25 @@ export default function VenueBookingModal({
         const content = await rawResponse.json();
         rawSlots.current = content;
         buildTimeSlot(content);
-      } catch (error) {}
+
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    return false;
+  };
+
+  // Child venue generation
+  const onChildVenueChange = (event) => {
+    setError(null);
+
+    if (event.target.value) {
+      selectedVenue.current = event.target.value;
+      handleDate(rawDate.current);
+      selectedTimeSlots.current = [];
+      displaySlots(null);
     }
   };
 
@@ -418,7 +433,7 @@ export default function VenueBookingModal({
                 shadow='lg'
                 borderWidth='1px'
               >
-                {selectedDate && timeSlots ? (
+                {selectedDate && timeSlots && (
                   <Box
                     w='100%'
                     h='full'
@@ -436,13 +451,17 @@ export default function VenueBookingModal({
                       </Stack>
                     </Box>
                   </Box>
-                ) : !selectedDate && !timeSlots ? (
+                )}
+
+                {!selectedDate && !timeSlots && (
                   <Box spacing={600}>
                     <Stack spacing={5} align='center'>
                       <Text>Please select a date</Text>
                     </Stack>
                   </Box>
-                ) : selectedDate && !timeSlots ? (
+                )}
+
+                {selectedDate && !timeSlots && (
                   <Box
                     w='100%'
                     h='full'
@@ -458,8 +477,6 @@ export default function VenueBookingModal({
                       </Box>
                     </Box>
                   </Box>
-                ) : (
-                  <></>
                 )}
               </Flex>
             </MotionBox>
@@ -486,7 +503,7 @@ export default function VenueBookingModal({
             </Box>
           )}
 
-          {error && (
+          {errorMsg && (
             <Box>
               <Flex
                 w='full'
@@ -500,7 +517,7 @@ export default function VenueBookingModal({
                 m='4'
               >
                 <Stack align='center'>
-                  <Text>{error}</Text>
+                  <Text>{errorMsg}</Text>
                 </Stack>
               </Flex>
             </Box>

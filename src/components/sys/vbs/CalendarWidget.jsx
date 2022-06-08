@@ -15,6 +15,12 @@ export default function CalendarWidget({
   const min = useRef(0);
   const max = useRef(0);
 
+  function addDays(date, days) {
+    const result = new Date(date.getTime());
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
   useEffect(() => {
     async function setDates() {
       const current = new Date();
@@ -29,18 +35,12 @@ export default function CalendarWidget({
     }
   }, [calendarMin, calendarMax]);
 
-  function addDays(date, days) {
-    const result = new Date(date.getTime());
-    result.setDate(result.getDate() + days);
-    return result;
-  }
-
   const handleChange = async (date) => {
     setDate(date);
     await selectedDate(date);
   };
 
-  const displayLabel = (date, label, locale, view) => {
+  const displayLabel = (date, view) => {
     const month = monthNamesFull[date.getMonth()];
     const year = date.getFullYear();
     if (view === 'month') {
@@ -58,7 +58,7 @@ export default function CalendarWidget({
       maxDate={maxDate}
       next2Label={null}
       prev2Label={null}
-      navigationLabel={({ date, label, locale, view }) => displayLabel(date, label, locale, view)}
+      navigationLabel={({ date, view }) => displayLabel(date, view)}
     />
   );
 }

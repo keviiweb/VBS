@@ -24,15 +24,15 @@ export default function UserProfile(props) {
   const router = useRouter();
 
   useEffect(() => {
-    async function fetchData(props) {
+    async function fetchData(propsField) {
       const session = await currentSession();
-      const admin = session && session.user.admin ? 'Admin' : 'User';
-      const name =
+      const adminField = session && session.user.admin ? 'Admin' : 'User';
+      const nameField =
         session && session.user.username ? session.user.username : 'Test User';
-      setAdmin(admin);
-      setName(name);
+      setAdmin(adminField);
+      setName(nameField);
 
-      const propRes = await props;
+      const propRes = await propsField;
       try {
         if (propRes.data) {
           setURL(propRes.data);
@@ -91,9 +91,9 @@ export default function UserProfile(props) {
   );
 }
 
-export async function getServerSideProps(_context) {
+export async function getServerSideProps() {
   return {
-    props: (async function () {
+    props: (async function Props() {
       try {
         return {
           data: process.env.NEXTAUTH_URL,
@@ -104,6 +104,6 @@ export async function getServerSideProps(_context) {
           data: null,
         };
       }
-    }()),
+    })(),
   };
 }
