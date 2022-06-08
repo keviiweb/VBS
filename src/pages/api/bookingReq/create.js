@@ -151,7 +151,10 @@ const handler = async (req, res) => {
           return;
         }
 
-        const timeSlotsField = convertSlotToArray(bookingRequest.timeSlots, true);
+        const timeSlotsField = convertSlotToArray(
+          bookingRequest.timeSlots,
+          true,
+        );
         const createBooking = await createVenueBooking(
           bookingRequest,
           timeSlotsField,

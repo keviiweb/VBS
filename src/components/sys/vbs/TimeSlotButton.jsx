@@ -1,5 +1,5 @@
+import React, { useState } from 'react';
 import { Button } from '@chakra-ui/react';
-import { useState } from 'react';
 
 export default function TimeSlotButton({
   disable,
@@ -23,7 +23,7 @@ export default function TimeSlotButton({
       colorScheme='gray'
       variant={selected ? 'solid' : 'outline'}
       size='sm'
-      margin={'8px'}
+      margin='8px'
       key={newKey}
       onClick={async () => await click()}
     >

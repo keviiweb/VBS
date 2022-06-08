@@ -1,3 +1,4 @@
+import React from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -28,7 +29,7 @@ export default function Card({ product }) {
           >
             <Image
               src={img}
-              priority={true}
+              priority
               objectFit='cover'
               alt='image'
               layout='fill'

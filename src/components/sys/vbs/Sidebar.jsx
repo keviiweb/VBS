@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Box, CloseButton, Flex, Text } from '@chakra-ui/react';
 import {
@@ -11,7 +12,6 @@ import {
 import NavLink from '@components/sys/vbs/NavLink';
 import Link from 'next/link';
 import { currentSession } from '@helper/sys/session';
-import { useEffect } from 'react';
 
 let LinkItems = [
   { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },

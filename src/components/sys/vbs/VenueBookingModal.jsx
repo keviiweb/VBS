@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   ButtonGroup,
   Button,
@@ -18,10 +19,10 @@ import {
 import CalendarWidget from '@components/sys/vbs/CalendarWidget';
 import TimeSlotButton from '@components/sys/vbs/TimeSlotButton';
 import { motion } from 'framer-motion';
-import { useState, useEffect, useRef, useCallback } from 'react';
 import { cardVariant, parentVariant } from '@root/motion';
 import { prettifyDate } from '@constants/sys/helper';
 import Loading from './Loading';
+
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -135,7 +136,7 @@ export default function VenueBookingModal({
       return false;
     }
 
-    for (let key in timeSlots) {
+    for (const key in timeSlots) {
       if (timeSlots[key]) {
         if (timeSlots[key].id) {
           return true;
@@ -157,7 +158,7 @@ export default function VenueBookingModal({
         );
       }
 
-      for (var key in content) {
+      for (let key = 0; key < content.length; key += 1) {
         selection.push(
           <option key={content[key].id} value={content[key].id}>
             {content[key].name}
@@ -182,10 +183,9 @@ export default function VenueBookingModal({
             body: JSON.stringify({ venue: selectedVenue.current }),
           });
           const content = await rawResponse.json();
-          console.log(content);
-          if (content.length > 0) {
-            setRawChildVenue(content);
-            await buildChildVenueDropdown(content);
+          if (content.status && content.msg.length > 0) {
+            setRawChildVenue(content.msg);
+            await buildChildVenueDropdown(content.msg);
             setHasChildVenue(true);
           }
         } catch (error) {}
@@ -217,13 +217,12 @@ export default function VenueBookingModal({
 
   const displayVenue = (venue) => {
     if (id && venue == id) {
-      return name + ' (Whole Venue)';
-    } else {
-      if (rawChildVenue) {
-        for (var key in rawChildVenue) {
-          if (rawChildVenue[key].id == venue) {
-            return rawChildVenue[key].name;
-          }
+      return `${name} (Whole Venue)`;
+    }
+    if (rawChildVenue) {
+      for (const key in rawChildVenue) {
+        if (rawChildVenue[key].id == venue) {
+          return rawChildVenue[key].name;
         }
       }
     }
@@ -249,8 +248,8 @@ export default function VenueBookingModal({
   };
 
   const countSlots = (slots) => {
-    var counter = 0;
-    for (var key in slots) {
+    let counter = 0;
+    for (const key in slots) {
       if (slots.hasOwnProperty(key)) {
         if (slots[key]) {
           counter += 1;
@@ -263,11 +262,11 @@ export default function VenueBookingModal({
   const displaySlots = (slots) => {
     if (slots) {
       setDisplayedVenue(displayVenue(selectedVenue.current));
-      let text = `Selected timeslot(s): `;
-      var counter = 0;
+      let text = 'Selected timeslot(s): ';
+      let counter = 0;
       const total = countSlots(slots);
       if (slots) {
-        for (var key in slots) {
+        for (const key in slots) {
           if (slots.hasOwnProperty(key)) {
             if (slots[key]) {
               counter += 1;
@@ -293,7 +292,7 @@ export default function VenueBookingModal({
     const buttons = [];
     if (content) {
       try {
-        for (var key in content) {
+        for (const key in content) {
           if (content.hasOwnProperty(key)) {
             if (content[key]) {
               const newID = selectedVenue.current + date.current + key;
@@ -311,7 +310,7 @@ export default function VenueBookingModal({
               } else {
                 buttons.push(
                   <TimeSlotButton
-                    disable={true}
+                    disable
                     key={newID}
                     newKey={newID}
                     id={key}
@@ -361,7 +360,7 @@ export default function VenueBookingModal({
       size='full'
       isCentered
       motionPreset='slideInBottom'
-      scrollBehavior={'inside'}
+      scrollBehavior='inside'
     >
       <ModalOverlay />
       <ModalContent>
@@ -372,28 +371,26 @@ export default function VenueBookingModal({
           <Text>Opening Hours: {openingHours}</Text>
           <Text>Capacity: {capacity}</Text>
           {hasChildVenue && childVenueDrop && (
-            <>
-              <Box>
-                <Flex
-                  w='full'
-                  h='full'
-                  alignItems='center'
-                  justifyContent='center'
-                  bg='white'
-                  rounded='xl'
-                  shadow='lg'
-                  borderWidth='1px'
-                  m='4'
-                >
-                  <Stack spacing={5} w='full' align={'center'}>
-                    <Text>Select Venue</Text>
-                    <Select onChange={onChildVenueChange} size='sm'>
-                      {childVenueDrop}
-                    </Select>
-                  </Stack>
-                </Flex>
-              </Box>
-            </>
+            <Box>
+              <Flex
+                w='full'
+                h='full'
+                alignItems='center'
+                justifyContent='center'
+                bg='white'
+                rounded='xl'
+                shadow='lg'
+                borderWidth='1px'
+                m='4'
+              >
+                <Stack spacing={5} w='full' align='center'>
+                  <Text>Select Venue</Text>
+                  <Select onChange={onChildVenueChange} size='sm'>
+                    {childVenueDrop}
+                  </Select>
+                </Stack>
+              </Flex>
+            </Box>
           )}
 
           <MotionSimpleGrid
@@ -429,11 +426,11 @@ export default function VenueBookingModal({
                     overflow='hidden'
                     roundedTop='lg'
                   >
-                    <Box align={'center'}>
+                    <Box align='center'>
                       <Box>{selectedDate}</Box>
                       <Box mb={5}>Select Timeslot(s)</Box>
-                      <Stack direction={['column', 'row']} align={'center'}>
-                        <ButtonGroup display={'flex'} flexWrap={'wrap'}>
+                      <Stack direction={['column', 'row']} align='center'>
+                        <ButtonGroup display='flex' flexWrap='wrap'>
                           {timeSlots}
                         </ButtonGroup>
                       </Stack>
@@ -441,7 +438,7 @@ export default function VenueBookingModal({
                   </Box>
                 ) : !selectedDate && !timeSlots ? (
                   <Box spacing={600}>
-                    <Stack spacing={5} align={'center'}>
+                    <Stack spacing={5} align='center'>
                       <Text>Please select a date</Text>
                     </Stack>
                   </Box>
@@ -453,11 +450,11 @@ export default function VenueBookingModal({
                     overflow='hidden'
                     roundedTop='lg'
                   >
-                    <Box align={'center'}>
+                    <Box align='center'>
                       <Box>{selectedDate}</Box>
                       <Box mb={5}>Select Timeslot(s)</Box>
                       <Box>
-                        <Loading message={'Fetching all timeslots...'} />
+                        <Loading message='Fetching all timeslots...' />
                       </Box>
                     </Box>
                   </Box>
@@ -481,7 +478,7 @@ export default function VenueBookingModal({
                 borderWidth='1px'
                 m='4'
               >
-                <Stack align={'center'}>
+                <Stack align='center'>
                   <Text>Venue: {displayedVenue}</Text>
                   <Text>{displayedSlots}</Text>
                 </Stack>
@@ -502,7 +499,7 @@ export default function VenueBookingModal({
                 borderWidth='1px'
                 m='4'
               >
-                <Stack align={'center'}>
+                <Stack align='center'>
                   <Text>{error}</Text>
                 </Stack>
               </Flex>

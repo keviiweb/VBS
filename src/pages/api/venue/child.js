@@ -4,7 +4,7 @@ import { findVenueByID, fetchChildVenue } from '@helper/sys/vbs/venue';
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
-  const result = [];
+  let result = '';
   const { venue } = req.body;
   if (session) {
     if (venue) {
@@ -50,19 +50,40 @@ const handler = async (req, res) => {
             }
           }
         }
-        res.status(200).send(parsedVenue);
+
+        result = {
+          status: true,
+          error: null,
+          msg: parsedVenue,
+        };
+
+        res.status(200).send(result);
         res.end();
-        return;
       } catch (error) {
-        console.log(error);
+        console.error(error);
+        result = {
+          status: false,
+          error: error.toString(),
+          msg: '',
+        };
         res.status(200).send(result);
         res.end();
       }
     } else {
+      result = {
+        status: false,
+        error: 'No parent ID provided',
+        msg: '',
+      };
       res.status(200).send(result);
       res.end();
     }
   } else {
+    result = {
+      status: false,
+      error: 'Unauthenticated',
+      msg: '',
+    };
     res.status(200).send(result);
     res.end();
   }

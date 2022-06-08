@@ -1,11 +1,12 @@
+import React, { useState, useEffect, useRef } from 'react';
 import {
+  Button,
+  Box,
+  Flex,
   Heading,
   Input,
   InputGroup,
   InputLeftAddon,
-  Button,
-  Box,
-  Flex,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -18,16 +19,16 @@ import {
   Select,
   SimpleGrid,
   Stack,
+  Switch,
   Text,
   Textarea,
-  Switch,
   useToast,
 } from '@chakra-ui/react';
 import { CheckCircleIcon } from '@chakra-ui/icons';
 import { motion } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
 import { cardVariant, parentVariant } from '@root/motion';
 import Loading from '@components/sys/vbs/Loading';
+
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -36,14 +37,14 @@ export default function VenueBookingModalConfirmation({
   onClose,
   modalData,
 }) {
-  //display
+  // display
   const [venue, setVenue] = useState(null);
   const [date, setDate] = useState(null);
   const [timeSlots, setTimeSlots] = useState(null);
   const [email, setEmail] = useState('');
   const [purpose, setPurpose] = useState('');
   const [type, setType] = useState('1');
-  const [error, setError] = useState(null);
+  const [errorMsg, setError] = useState(null);
   const [success, setSuccessBooking] = useState(false);
   const [ccaSelection, setCCASelection] = useState('');
 
@@ -52,9 +53,11 @@ export default function VenueBookingModalConfirmation({
   const CCALIST = useRef([]);
 
   const [isSwitch, setIsSwitch] = useState(false);
+  const isSwitchDB = useRef(false);
+
   const toast = useToast();
 
-  //variable for db
+  // variable for db
   const emailDB = useRef(null);
   const venueNameDB = useRef(null);
   const venueDB = useRef(null);
@@ -64,6 +67,91 @@ export default function VenueBookingModalConfirmation({
   const purposeDB = useRef(null);
 
   const [submitting, setSubmitting] = useState(false);
+
+  const check = (timeSlotsField) => {
+    if (timeSlotsField.length === 0) {
+      return false;
+    }
+
+    for (let key = 0; key < timeSlotsField.length; key += 1) {
+      if (timeSlotsField[key]) {
+        if (timeSlotsField[key].id) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
+
+  const validateFields = (
+    emailField,
+    venueField,
+    venueNameField,
+    dateField,
+    timeSlotsField,
+    typeField,
+    purposeField,
+  ) => {
+    // super basic validation here
+    if (emailField) {
+      if (!emailField.includes('@u.nus.edu')) {
+        setError('Please use your school email.');
+        return false;
+      }
+    } else {
+      setError('Please include an email.');
+      return false;
+    }
+
+    if (!dateField) {
+      setError('No date found');
+      return false;
+    }
+
+    if (!venueField) {
+      setError('No venues found');
+      return false;
+    }
+
+    if (!venueNameField) {
+      setError('No venues found');
+      return false;
+    }
+
+    if (!timeSlotsField || !check(timeSlotsField)) {
+      setError('No timeslots found');
+      return false;
+    }
+
+    if (typeField) {
+      if (typeField !== 'PERSONAL') {
+        let found = false;
+
+        for (let i = 0; i < CCALIST.current.length; i += 1) {
+          if (typeField === CCALIST.current[i].id) {
+            found = true;
+          }
+        }
+
+        if (!found) {
+          setError('Not valid CCA');
+          return false;
+        }
+      }
+    } else {
+      setError('No type found');
+      return false;
+    }
+
+    if (!purposeField) {
+      setError('Please write a purpose for the booking.');
+      return false;
+    }
+
+    setError(null);
+    return true;
+  };
 
   const reset = () => {
     setVenue(null);
@@ -85,11 +173,72 @@ export default function VenueBookingModalConfirmation({
     timeSlotsDB.current = null;
     typeDB.current = 'PERSONAL';
     purposeDB.current = null;
+    isSwitchDB.current = false;
+  };
+
+  const handleModalCloseButton = () => {
+    setTimeout(() => {
+      reset();
+      onClose();
+    }, 200);
+  };
+
+  const submitBookingRequest = async (
+    emailField,
+    venueIDField,
+    venueNameField,
+    dateField,
+    timeSlotsField,
+    typeField,
+    purposeField,
+  ) => {
+    setSubmitting(true);
+    try {
+      const rawResponse = await fetch('/api/bookingReq/create', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: emailField,
+          venue: venueIDField,
+          venueName: venueNameField,
+          date: dateField,
+          timeSlots: timeSlotsField,
+          type: typeField,
+          purpose: purposeField,
+        }),
+      });
+      const content = await rawResponse.json();
+      if (content.status) {
+        setSubmitting(false);
+        setSuccessBooking(true);
+        setTimeout(() => {
+          handleModalCloseButton();
+        }, 5000);
+      } else {
+        toast({
+          title: 'Error',
+          description: content.error,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+        setSuccessBooking(false);
+        setSubmitting(false);
+        setIsSwitch(false);
+        isSwitchDB.current = false;
+      }
+    } catch (error) {
+      setSubmitting(false);
+      setSuccessBooking(false);
+    }
   };
 
   const handleSubmit = async () => {
     setError(null);
-    if (!isSwitch) {
+    if (!isSwitchDB.current) {
       setError('Please toggle the confirmation switch.');
       return;
     }
@@ -115,70 +264,56 @@ export default function VenueBookingModalConfirmation({
         purposeDB.current,
       );
     }
-
-    /*
-    setTimeout(() => {
-      reset();
-      onClose();
-    }, 200);*/
   };
 
-  const submitBookingRequest = async (
-    email,
-    venueID,
-    venueName,
-    date,
-    timeSlots,
-    type,
-    purpose,
-  ) => {
-    setSubmitting(true);
+  const buildText = async (modalDataField) => {
+    setVenue(modalDataField.venueName);
+    setDate(modalDataField.date);
+    let str = '';
+    for (let key = 0; key < modalDataField.timeSlots.length; key += 1) {
+      if (modalDataField.timeSlots[key]) {
+        str += `\n${modalDataField.timeSlots[key].slot}`;
+      }
+    }
+
+    setTimeSlots(str);
+  };
+
+  const buildCCAList = async () => {
+    const selection = [];
     try {
-      const rawResponse = await fetch('/api/bookingReq/create', {
-        method: 'POST',
+      const rawResponse = await fetch('/api/cca', {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: email,
-          venue: venueID,
-          venueName: venueName,
-          date: date,
-          timeSlots: timeSlots,
-          type: type,
-          purpose: purpose,
-        }),
       });
       const content = await rawResponse.json();
-      if (content.status) {
-        setSubmitting(false);
-        setSuccessBooking(true);
-        setTimeout(() => {
-          handleModalCloseButton();
-        }, 5000);
-      } else {
-        toast({
-          title: 'Error',
-          description: content.error,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
-        setSuccessBooking(false);
-        setSubmitting(false);
-      }
-    } catch (error) {
-      setSubmitting(false);
-      setSuccessBooking(false);
-    }
-  };
+      if (content.status && content.msg.length > 0) {
+        CCALIST.current = [];
+        const ccaContent = content.msg;
 
-  const handleModalCloseButton = () => {
-    setTimeout(() => {
-      reset();
-      onClose();
-    }, 200);
+        for (let key = 0; key < ccaContent.length; key += 1) {
+          if (ccaContent[key]) {
+            CCALIST.current.push({
+              id: ccaContent[key].id,
+              name: ccaContent[key].name,
+            });
+            selection.push(
+              <option key={ccaContent[key].id} value={ccaContent[key].id}>
+                {ccaContent[key].name}
+              </option>,
+            );
+          }
+        }
+
+        setCCAList(selection);
+      }
+
+      return true;
+    } catch (error) {
+      return false;
+    }
   };
 
   useEffect(() => {
@@ -196,55 +331,9 @@ export default function VenueBookingModalConfirmation({
     }
   }, [modalData]);
 
-  const buildCCAList = async () => {
-    const selection = [];
-
-    try {
-      const rawResponse = await fetch('/api/cca', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-      const content = await rawResponse.json();
-      if (content.length > 0) {
-        CCALIST.current = [];
-        for (let key in content) {
-          if (content[key]) {
-            CCALIST.current.push({
-              id: content[key].id,
-              name: content[key].name,
-            });
-            selection.push(
-              <option key={content[key].id} value={content[key].id}>
-                {content[key].name}
-              </option>,
-            );
-          }
-        }
-
-        setCCAList(selection);
-      }
-    } catch (error) {}
-  };
-
-  const buildText = async (modalData) => {
-    setVenue(modalData.venueName);
-    setDate(modalData.date);
-
-    let str = ``;
-    for (let key in modalData.timeSlots) {
-      if (modalData.timeSlots[key]) {
-        str += `\n${modalData.timeSlots[key].slot}`;
-      }
-    }
-
-    setTimeSlots(str);
-  };
-
   const setTypeHelper = (event) => {
     if (event) {
-      if (event == 2) {
+      if (Number(event) === 2) {
         typeDB.current = CCALIST.current[0].id;
         setShowCCAs(true);
       } else {
@@ -261,90 +350,6 @@ export default function VenueBookingModalConfirmation({
     setCCASelection(event.target.value);
   };
 
-  const check = (timeSlots) => {
-    if (timeSlots.length == 0) {
-      return false;
-    }
-
-    for (let key in timeSlots) {
-      if (timeSlots[key]) {
-        if (timeSlots[key].id) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  };
-
-  const validateFields = (
-    email,
-    venue,
-    venueName,
-    date,
-    timeSlots,
-    type,
-    purpose,
-  ) => {
-    //super basic validation here
-    if (email) {
-      if (!email.includes('@u.nus.edu')) {
-        setError('Please use your school email.');
-        return false;
-      }
-    } else {
-      setError('Please include an email.');
-      return false;
-    }
-
-    if (!date) {
-      setError('No date found');
-      return false;
-    }
-
-    if (!venue) {
-      setError('No venues found');
-      return false;
-    }
-
-    if (!venueName) {
-      setError('No venues found');
-      return false;
-    }
-
-    if (!timeSlots || !check(timeSlots)) {
-      setError('No timeslots found');
-      return false;
-    }
-
-    if (type) {
-      if (type !== 'PERSONAL') {
-        let found = false;
-        for (let i in CCALIST.current) {
-          if (type == CCALIST.current[i].id) {
-            found = true;
-          }
-        }
-
-        if (!found) {
-          setError('Not valid CCA');
-          return false;
-        }
-      }
-    } else {
-      setError('No type found');
-      return false;
-    }
-
-    if (!purpose) {
-      setError('Please write a purpose for the booking.');
-      return false;
-    }
-
-    setError(null);
-    return true;
-  };
-
   return (
     <Modal
       closeOnOverlayClick={false}
@@ -353,29 +358,29 @@ export default function VenueBookingModalConfirmation({
       size='full'
       isCentered
       motionPreset='slideInBottom'
-      scrollBehavior={'inside'}
+      scrollBehavior='inside'
     >
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader></ModalHeader>
+        <ModalHeader />
         <ModalBody>
           {submitting && (
             <Box>
-              <Loading message={'Submitting request...'} />
+              <Loading message='Submitting request...' />
             </Box>
           )}
 
           {success && !submitting && (
             <Box textAlign='center' py={10} px={6}>
-              <CheckCircleIcon boxSize={'50px'} color={'green.500'} />
+              <CheckCircleIcon boxSize='50px' color='green.500' />
               <Heading as='h2' size='xl' mt={6} mb={2}>
                 Booking request submitted!
               </Heading>
-              <Text color={'gray.500'}>
+              <Text color='gray.500'>
                 Please wait a few days for the admin to approve your request..
               </Text>
-              <Text color={'gray.500'}>
+              <Text color='gray.500'>
                 The page will be closed after 5 seconds...
               </Text>
             </Box>
@@ -392,13 +397,13 @@ export default function VenueBookingModalConfirmation({
               animate='animate'
             >
               <MotionBox variants={cardVariant} key='2'>
-                <Flex align={'center'} justify={'center'} mt={-10}>
-                  <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-                    <Stack align={'center'}>
-                      <Heading fontSize={'3xl'}>Confirm your booking</Heading>
-                      {error && <Text>{error}</Text>}
+                <Flex align='center' justify='center' mt={-10}>
+                  <Stack spacing={8} mx='auto' maxW='lg' py={12} px={6}>
+                    <Stack align='center'>
+                      <Heading fontSize='3xl'>Confirm your booking</Heading>
+                      {errorMsg && <Text>{errorMsg}</Text>}
                     </Stack>
-                    <Box rounded={'lg'} boxShadow={'lg'} p={8}>
+                    <Box rounded='lg' boxShadow='lg' p={8}>
                       <Stack spacing={3}>
                         <Text fontSize='xl'>Venue: {venue}</Text>
                         <Text fontSize='xl'>Date: {date}</Text>
@@ -459,7 +464,10 @@ export default function VenueBookingModalConfirmation({
                       <Switch
                         isRequired
                         value={isSwitch}
-                        onChange={setIsSwitch}
+                        onChange={(event) => {
+                          setIsSwitch(event.target.checked);
+                          isSwitchDB.current = event.target.checked;
+                        }}
                       />
                     </Stack>
                   </Stack>

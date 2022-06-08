@@ -1,10 +1,10 @@
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box,
-  StackDivider,
-  List,
-  ListItem,
   Button,
   Flex,
+  List,
+  ListItem,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -14,12 +14,13 @@ import {
   ModalCloseButton,
   SimpleGrid,
   Stack,
+  StackDivider,
   Text,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { useState, useEffect, useRef, useMemo } from 'react';
 import { cardVariant, parentVariant } from '@root/motion';
 import TableWidget from '@components/sys/vbs/TableWidget';
+
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -68,8 +69,8 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         }),
       });
       const content = await rawResponse.json();
-      if (content.length > 0) {
-        setChildVenues(content);
+      if (content.status && content.msg.length > 0) {
+        setChildVenues(content.msg);
       }
     } catch (error) {
       console.log(error);
@@ -137,12 +138,12 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
       size='full'
       isCentered
       motionPreset='slideInBottom'
-      scrollBehavior={'inside'}
+      scrollBehavior='inside'
     >
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader></ModalHeader>
+        <ModalHeader />
         <ModalBody>
           <MotionSimpleGrid
             mt='3'
@@ -164,64 +165,64 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                   <Stack spacing={{ base: 6, md: 10 }}>
                     <Stack
                       spacing={{ base: 4, sm: 6 }}
-                      direction={'column'}
-                      divider={<StackDivider borderColor={'gray.200'} />}
+                      direction='column'
+                      divider={<StackDivider borderColor='gray.200' />}
                     >
                       <Box>
                         <Text
                           fontSize={{ base: '16px', lg: '18px' }}
-                          fontWeight={'500'}
-                          textTransform={'uppercase'}
-                          mb={'4'}
+                          fontWeight='500'
+                          textTransform='uppercase'
+                          mb='4'
                         >
                           Venue Details
                         </Text>
 
                         <List spacing={5}>
                           <ListItem>
-                            <Text as={'span'} fontWeight={'bold'}>
+                            <Text as='span' fontWeight='bold'>
                               Venue ID:
                             </Text>{' '}
                             {id}
                           </ListItem>
                           <ListItem>
-                            <Text as={'span'} fontWeight={'bold'}>
+                            <Text as='span' fontWeight='bold'>
                               Name:
                             </Text>{' '}
                             {name}
                           </ListItem>
                           <ListItem>
-                            <Text as={'span'} fontWeight={'bold'}>
+                            <Text as='span' fontWeight='bold'>
                               Description:
                             </Text>{' '}
                             {description}
                           </ListItem>
                           <ListItem>
-                            <Text as={'span'} fontWeight={'bold'}>
+                            <Text as='span' fontWeight='bold'>
                               Opening Hours:
                             </Text>{' '}
                             {openingHours}
                           </ListItem>
                           <ListItem>
-                            <Text as={'span'} fontWeight={'bold'}>
+                            <Text as='span' fontWeight='bold'>
                               Capacity:
                             </Text>{' '}
                             {capacity}
                           </ListItem>
                           <ListItem>
-                            <Text as={'span'} fontWeight={'bold'}>
+                            <Text as='span' fontWeight='bold'>
                               Child Venue:
                             </Text>{' '}
                             {childVenue}
                           </ListItem>
                           <ListItem>
-                            <Text as={'span'} fontWeight={'bold'}>
+                            <Text as='span' fontWeight='bold'>
                               Instant Book:
                             </Text>{' '}
                             {instantBook}
                           </ListItem>
                           <ListItem>
-                            <Text as={'span'} fontWeight={'bold'}>
+                            <Text as='span' fontWeight='bold'>
                               Available for Booking:
                             </Text>{' '}
                             {isAvailable}
@@ -243,42 +244,34 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                 <Box>
                   <Text
                     fontSize={{ base: '16px', lg: '18px' }}
-                    fontWeight={'500'}
-                    textTransform={'uppercase'}
-                    mb={'4'}
+                    fontWeight='500'
+                    textTransform='uppercase'
+                    mb='4'
                   >
                     Child Venues
                   </Text>
 
-                  {childVenues && (
-                    <>
-                      {loadingData ? (
-                        <Text>Loading Please wait...</Text>
-                      ) : (
-                        <TableWidget
-                          key={2}
-                          columns={columns}
-                          data={childVenues}
-                        />
-                      )}
-                    </>
+                  {childVenues && loadingData && (
+                    <Text>Loading Please wait...</Text>
                   )}
 
-                  {!childVenues && (
-                    <>
-                      {loadingData ? (
-                        <Text>Loading Please wait...</Text>
-                      ) : (
-                        <Text
-                          fontSize={{ base: '16px', lg: '18px' }}
-                          fontWeight={'500'}
-                          textTransform={'uppercase'}
-                          mb={'4'}
-                        >
-                          No child venues found
-                        </Text>
-                      )}
-                    </>
+                  {childVenues && !loadingData && (
+                    <TableWidget key={2} columns={columns} data={childVenues} />
+                  )}
+
+                  {!childVenues && loadingData && (
+                    <Text>Loading Please wait...</Text>
+                  )}
+
+                  {!childVenues && !loadingData && (
+                    <Text
+                      fontSize={{ base: '16px', lg: '18px' }}
+                      fontWeight='500'
+                      textTransform='uppercase'
+                      mb='4'
+                    >
+                      No child venues found
+                    </Text>
                   )}
                 </Box>
               </Flex>

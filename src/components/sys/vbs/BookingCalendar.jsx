@@ -15,7 +15,7 @@ export default function BookingCalendar({
     <FullCalendar
       plugins={[interactionPlugin, timeGridPlugin, listPlugin]}
       initialView='timeGridWeek'
-      nowIndicator={true}
+      nowIndicator
       editable={false}
       slotMinTime={slotMin}
       slotMaxTime={slotMax}

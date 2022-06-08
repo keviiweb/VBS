@@ -24,7 +24,11 @@ const handler = async (req, res) => {
         );
 
         if (bookedTimeSlots && bookedTimeSlots.status) {
-          for (let key = 0; key < Object.keys(timingSlotNumberToTimingMapping).length; key += 1) {
+          for (
+            let key = 0;
+            key < Object.keys(timingSlotNumberToTimingMapping).length;
+            key += 1
+          ) {
             if (
               Object.prototype.hasOwnProperty.call(
                 timingSlotNumberToTimingMapping,
@@ -50,7 +54,11 @@ const handler = async (req, res) => {
             };
           });
         } else {
-          for (let key = 0; key < Object.keys(timingSlotNumberToTimingMapping).length; key += 1) {
+          for (
+            let key = 0;
+            key < Object.keys(timingSlotNumberToTimingMapping).length;
+            key += 1
+          ) {
             if (
               Object.prototype.hasOwnProperty.call(
                 timingSlotNumberToTimingMapping,
@@ -71,7 +79,11 @@ const handler = async (req, res) => {
         res.status(200).send(slots);
         res.end();
       } else {
-        for (let key = 0; key < Object.keys(timingSlotNumberToTimingMapping).length; key += 1) {
+        for (
+          let key = 0;
+          key < Object.keys(timingSlotNumberToTimingMapping).length;
+          key += 1
+        ) {
           if (
             Object.prototype.hasOwnProperty.call(
               timingSlotNumberToTimingMapping,

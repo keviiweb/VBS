@@ -165,7 +165,8 @@ export default function ManageBooking() {
 
     if (searchInput && searchInput !== '') {
       const filteredDataField = data.filter(
-        (value) => value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
+        (value) =>
+          value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.cca.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.venue.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.date.toLowerCase().includes(searchInput.toLowerCase()) ||

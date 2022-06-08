@@ -1,3 +1,4 @@
+import React from 'react';
 import { IconButton, Flex, Text } from '@chakra-ui/react';
 import { FiMenu } from 'react-icons/fi';
 import UserProfile from '@components/sys/vbs/UserProfile';

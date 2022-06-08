@@ -1,3 +1,4 @@
+import React from 'react';
 import Image from 'next/image';
 import { Box, Flex } from '@chakra-ui/react';
 
@@ -27,7 +28,7 @@ export default function VenueCard({ product, setModalData }) {
         >
           <Image
             src={image}
-            priority={true}
+            priority
             objectFit='cover'
             alt='picture of a venue'
             layout='fill'
