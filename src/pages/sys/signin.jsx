@@ -34,7 +34,7 @@ export default function SignIn(props) {
       setLoading(true);
       await signIn('email', {
         email: email,
-        callbackUrl: `${url}/`,
+        callbackUrl: `${url}/sys`,
       });
     } catch (error) {
       console.log(error);

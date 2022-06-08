@@ -441,6 +441,7 @@ const options = {
   },
   pages: {
     signIn: '/signin',
+    verifyRequest: '/verify-request',
   },
   callbacks: {
     async signIn({ user, email }) {
@@ -463,7 +464,8 @@ const options = {
       if (isAllowedToSignIn) {
         return true;
       }
-      return false;
+
+      return '/sys/unauthorized';
     },
     async session({ session, user }) {
       const userFromDB = await prisma.users.findUnique({
@@ -487,5 +489,11 @@ const options = {
   },
 };
 
-const authHandler = (req, res) => NextAuth(req, res, options);
-export default authHandler;
+export default async function auth(req, res) {
+  if (req.method === 'HEAD') {
+    return res.status(200);
+  }
+
+  const au = NextAuth(req, res, options);
+  return au;
+}
