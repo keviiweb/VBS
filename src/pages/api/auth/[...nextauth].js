@@ -1,101 +1,12 @@
-import NextAuth from "next-auth";
-import EmailProvider from "next-auth/providers/email";
-import nodemailer from "nodemailer";
+import NextAuth from 'next-auth';
+import EmailProvider from 'next-auth/providers/email';
+import nodemailer from 'nodemailer';
 
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "@constants/sys/db";
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { prisma } from '@constants/sys/db';
 
-const authHandler = (req, res) => NextAuth(req, res, options);
-export default authHandler;
-
-const options = {
-  providers: [
-    EmailProvider({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
-      },
-      from: process.env.EMAIL_FROM,
-      async sendVerificationRequest({
-        identifier: email,
-        url,
-        provider: { server, from },
-      }) {
-        const { host } = new URL(url);
-        const transport = nodemailer.createTransport(server);
-        await transport.sendMail({
-          to: email,
-          from,
-          subject: `KEVII VBS: Sign in`,
-          text: text({ url, host }),
-          html: html({ url, host, email }),
-        });
-      },
-    }),
-  ],
-  adapter: PrismaAdapter(prisma),
-  secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    jwt: true,
-    maxAge: 1 * 24 * 60 * 60, // 1 day
-  },
-  jwt: {
-    secret: process.env.NEXTAUTH_JWT_SIGNING_PRIVATE_KEY,
-    encryption: true,
-  },
-  pages: {
-    signIn: "/signin",
-  },
-  callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      let isAllowedToSignIn = true;
-
-      if (email.hasOwnProperty("verificationRequest")) {
-        isAllowedToSignIn = false;
-
-        const doesUserExist = await prisma.users.findUnique({
-          where: {
-            email: user.email,
-          },
-        });
-
-        if (doesUserExist !== null) {
-          isAllowedToSignIn = true;
-        }
-      }
-
-      if (isAllowedToSignIn) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    async session({ session, token, user }) {
-      const userFromDB = await prisma.users.findUnique({
-        where: {
-          email: user.email,
-        },
-      });
-
-      if (userFromDB != null) {
-        session.user.email = userFromDB.email;
-        session.user.username = userFromDB.name;
-        session.user.studentID = userFromDB.studentID;
-        session.user.admin = userFromDB.admin;
-      } else {
-        return;
-      }
-      return session;
-    },
-  },
-};
-
-function html({ url, host, email }) {
-  const escapedEmail = `${email.replace(/\./g, "&#8203;.")}`;
+function html({ url, email }) {
+  const escapedEmail = `${email.replace(/\./g, '&#8203;.')}`;
 
   return `
   <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -488,3 +399,94 @@ function html({ url, host, email }) {
 function text({ url, host }) {
   return `Sign in to ${host}\n${url}\n\n`;
 }
+
+const options = {
+  providers: [
+    EmailProvider({
+      server: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: process.env.EMAIL_SERVER_PORT,
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      },
+      from: process.env.EMAIL_FROM,
+      async sendVerificationRequest({
+        identifier: email,
+        url,
+        provider: { server, from },
+      }) {
+        const { host } = new URL(url);
+        const transport = nodemailer.createTransport(server);
+        await transport.sendMail({
+          to: email,
+          from,
+          subject: `KEVII VBS: Sign in`,
+          text: text({ url, host }),
+          html: html({ url, email }),
+        });
+      },
+    }),
+  ],
+  adapter: PrismaAdapter(prisma),
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    jwt: true,
+    maxAge: 1 * 24 * 60 * 60, // 1 day
+  },
+  jwt: {
+    secret: process.env.NEXTAUTH_JWT_SIGNING_PRIVATE_KEY,
+    encryption: true,
+  },
+  pages: {
+    signIn: '/signin',
+  },
+  callbacks: {
+    async signIn({ user, email }) {
+      let isAllowedToSignIn = true;
+
+      if (Object.prototype.hasOwnProperty.call(email, 'verificationRequest')) {
+        isAllowedToSignIn = false;
+
+        const doesUserExist = await prisma.users.findUnique({
+          where: {
+            email: user.email,
+          },
+        });
+
+        if (doesUserExist !== null) {
+          isAllowedToSignIn = true;
+        }
+      }
+
+      if (isAllowedToSignIn) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    async session({ session, user }) {
+      const userFromDB = await prisma.users.findUnique({
+        where: {
+          email: user.email,
+        },
+      });
+
+      if (userFromDB != null) {
+        let newSession = session;
+        newSession.user.email = userFromDB.email;
+        newSession.user.username = userFromDB.name;
+        newSession.user.studentID = userFromDB.studentID;
+        newSession.user.admin = userFromDB.admin;
+
+        return newSession;
+      }
+
+      return session;
+    },
+  },
+};
+
+const authHandler = (req, res) => NextAuth(req, res, options);
+export default authHandler;

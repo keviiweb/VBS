@@ -1,4 +1,4 @@
-import { prisma } from "@constants/sys/db";
+import { prisma } from '@constants/sys/db';
 
 export const fetchBookedTimeSlots = async (venue, convertedDate) => {
   try {
@@ -9,6 +9,6 @@ export const fetchBookedTimeSlots = async (venue, convertedDate) => {
     return { status: true, error: null, msg: bookedTimeSlots };
   } catch (error) {
     console.log(error);
-    return { status: false, error: error, msg: "" };
+    return { status: false, error: error, msg: '' };
   }
 };

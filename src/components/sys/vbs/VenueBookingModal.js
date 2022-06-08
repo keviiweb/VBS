@@ -14,14 +14,14 @@ import {
   SimpleGrid,
   Stack,
   Text,
-} from "@chakra-ui/react";
-import CalendarWidget from "@components/sys/vbs/CalendarWidget";
-import TimeSlotButton from "@components/sys/vbs/TimeSlotButton";
-import { motion } from "framer-motion";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { cardVariant, parentVariant } from "@root/motion";
-import { prettifyDate } from "@constants/sys/helper";
-import Loading from "./Loading";
+} from '@chakra-ui/react';
+import CalendarWidget from '@components/sys/vbs/CalendarWidget';
+import TimeSlotButton from '@components/sys/vbs/TimeSlotButton';
+import { motion } from 'framer-motion';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { cardVariant, parentVariant } from '@root/motion';
+import { prettifyDate } from '@constants/sys/helper';
+import Loading from './Loading';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -37,11 +37,11 @@ export default function VenueBookingModal({
   const date = useRef(null);
   const rawDate = useRef(null);
 
-  const [id, setID] = useState("");
-  const [name, setName] = useState("Venue");
-  const [description, setDescription] = useState("");
-  const [openingHours, setOpeningHours] = useState("");
-  const [capacity, setCapacity] = useState("");
+  const [id, setID] = useState('');
+  const [name, setName] = useState('Venue');
+  const [description, setDescription] = useState('');
+  const [openingHours, setOpeningHours] = useState('');
+  const [capacity, setCapacity] = useState('');
   const isChildVenue =
     modalData && modalData.isChildVenue ? modalData.isChildVenue : false;
 
@@ -49,7 +49,7 @@ export default function VenueBookingModal({
   const [childVenueDrop, setChildVenueDrop] = useState(null);
   const [rawChildVenue, setRawChildVenue] = useState([]);
   const [displayedVenue, setDisplayedVenue] = useState(null);
-  const selectedVenue = useRef("");
+  const selectedVenue = useRef('');
 
   const [timeSlots, setTimeSlots] = useState([]);
   const [displayedSlots, setDisplayedSlots] = useState(null);
@@ -72,11 +72,11 @@ export default function VenueBookingModal({
     rawSlots.current = [];
     selectedVenue.current = [];
 
-    setID("");
-    setName("");
-    setDescription("");
-    setOpeningHours("");
-    setCapacity("");
+    setID('');
+    setName('');
+    setDescription('');
+    setOpeningHours('');
+    setCapacity('');
   };
 
   const handleModalCloseButton = () => {
@@ -92,14 +92,14 @@ export default function VenueBookingModal({
       validateFields(
         selectedVenue.current,
         date.current,
-        selectedTimeSlots.current
+        selectedTimeSlots.current,
       )
     ) {
       dataHandler(
         selectedVenue.current,
         displayVenue(selectedVenue.current),
         date.current,
-        selectedTimeSlots.current
+        selectedTimeSlots.current,
       );
 
       setTimeout(() => {
@@ -112,17 +112,17 @@ export default function VenueBookingModal({
   const validateFields = (venue, date, timeSlots) => {
     // simple validation for now
     if (!venue) {
-      setError("Please select a venue");
+      setError('Please select a venue');
       return false;
     }
 
     if (!date) {
-      setError("Please select a date");
+      setError('Please select a date');
       return false;
     }
 
     if (!timeSlots || !check(timeSlots)) {
-      setError("Please select your timeslot(s)");
+      setError('Please select your timeslot(s)');
       return false;
     }
 
@@ -153,7 +153,7 @@ export default function VenueBookingModal({
         selection.push(
           <option key={modalData.id} value={modalData.id}>
             Whole Venue
-          </option>
+          </option>,
         );
       }
 
@@ -161,23 +161,23 @@ export default function VenueBookingModal({
         selection.push(
           <option key={content[key].id} value={content[key].id}>
             {content[key].name}
-          </option>
+          </option>,
         );
       }
       setChildVenueDrop(selection);
     },
-    [modalData]
+    [modalData],
   );
 
   useEffect(() => {
     async function fetchData() {
       if (!isChildVenue) {
         try {
-          const rawResponse = await fetch("/api/venue/child", {
-            method: "POST",
+          const rawResponse = await fetch('/api/venue/child', {
+            method: 'POST',
             headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({ venue: selectedVenue.current }),
           });
@@ -193,7 +193,7 @@ export default function VenueBookingModal({
     }
 
     if (modalData) {
-      selectedVenue.current = modalData && modalData.id ? modalData.id : "";
+      selectedVenue.current = modalData && modalData.id ? modalData.id : '';
       setID(modalData.id);
       setName(modalData.name);
       setDescription(modalData.description);
@@ -217,7 +217,7 @@ export default function VenueBookingModal({
 
   const displayVenue = (venue) => {
     if (id && venue == id) {
-      return name + " (Whole Venue)";
+      return name + ' (Whole Venue)';
     } else {
       if (rawChildVenue) {
         for (var key in rawChildVenue) {
@@ -228,7 +228,7 @@ export default function VenueBookingModal({
       }
     }
 
-    return "";
+    return '';
   };
 
   const handleClickTimeSlots = async (id) => {
@@ -306,7 +306,7 @@ export default function VenueBookingModal({
                     newKey={newID}
                     id={key}
                     slot={content[key].slot}
-                  />
+                  />,
                 );
               } else {
                 buttons.push(
@@ -316,7 +316,7 @@ export default function VenueBookingModal({
                     newKey={newID}
                     id={key}
                     slot={content[key].slot}
-                  />
+                  />,
                 );
               }
             }
@@ -338,11 +338,11 @@ export default function VenueBookingModal({
       date.current = prettified;
       changeDate(prettified);
       try {
-        const rawResponse = await fetch("/api/timeslot", {
-          method: "POST",
+        const rawResponse = await fetch('/api/timeslot', {
+          method: 'POST',
           headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({ venue: selectedVenue.current, date: dateObj }),
         });
@@ -358,10 +358,10 @@ export default function VenueBookingModal({
       closeOnOverlayClick={false}
       isOpen={isOpen}
       onClose={handleModalCloseButton}
-      size="full"
+      size='full'
       isCentered
-      motionPreset="slideInBottom"
-      scrollBehavior={"inside"}
+      motionPreset='slideInBottom'
+      scrollBehavior={'inside'}
     >
       <ModalOverlay />
       <ModalContent>
@@ -375,19 +375,19 @@ export default function VenueBookingModal({
             <>
               <Box>
                 <Flex
-                  w="full"
-                  h="full"
-                  alignItems="center"
-                  justifyContent="center"
-                  bg="white"
-                  rounded="xl"
-                  shadow="lg"
-                  borderWidth="1px"
-                  m="4"
+                  w='full'
+                  h='full'
+                  alignItems='center'
+                  justifyContent='center'
+                  bg='white'
+                  rounded='xl'
+                  shadow='lg'
+                  borderWidth='1px'
+                  m='4'
                 >
-                  <Stack spacing={5} w="full" align={"center"}>
+                  <Stack spacing={5} w='full' align={'center'}>
                     <Text>Select Venue</Text>
-                    <Select onChange={onChildVenueChange} size="sm">
+                    <Select onChange={onChildVenueChange} size='sm'>
                       {childVenueDrop}
                     </Select>
                   </Stack>
@@ -397,43 +397,43 @@ export default function VenueBookingModal({
           )}
 
           <MotionSimpleGrid
-            mt="3"
-            minChildWidth="250px"
-            spacing="2em"
-            minH="full"
+            mt='3'
+            minChildWidth='250px'
+            spacing='2em'
+            minH='full'
             variants={parentVariant}
-            initial="initial"
-            animate="animate"
+            initial='initial'
+            animate='animate'
           >
             <CalendarWidget
               selectedDate={handleDate}
               calendarMin={calendarMin}
               calendarMax={calendarMax}
             />
-            <MotionBox variants={cardVariant} key="2">
+            <MotionBox variants={cardVariant} key='2'>
               <Flex
-                w="full"
-                h="full"
-                alignItems="center"
-                justifyContent="center"
-                bg="white"
-                rounded="xl"
-                shadow="lg"
-                borderWidth="1px"
+                w='full'
+                h='full'
+                alignItems='center'
+                justifyContent='center'
+                bg='white'
+                rounded='xl'
+                shadow='lg'
+                borderWidth='1px'
               >
                 {selectedDate && timeSlots ? (
                   <Box
-                    w="100%"
-                    h="full"
-                    position="relative"
-                    overflow="hidden"
-                    roundedTop="lg"
+                    w='100%'
+                    h='full'
+                    position='relative'
+                    overflow='hidden'
+                    roundedTop='lg'
                   >
-                    <Box align={"center"}>
+                    <Box align={'center'}>
                       <Box>{selectedDate}</Box>
                       <Box mb={5}>Select Timeslot(s)</Box>
-                      <Stack direction={["column", "row"]} align={"center"}>
-                        <ButtonGroup display={"flex"} flexWrap={"wrap"}>
+                      <Stack direction={['column', 'row']} align={'center'}>
+                        <ButtonGroup display={'flex'} flexWrap={'wrap'}>
                           {timeSlots}
                         </ButtonGroup>
                       </Stack>
@@ -441,23 +441,23 @@ export default function VenueBookingModal({
                   </Box>
                 ) : !selectedDate && !timeSlots ? (
                   <Box spacing={600}>
-                    <Stack spacing={5} align={"center"}>
+                    <Stack spacing={5} align={'center'}>
                       <Text>Please select a date</Text>
                     </Stack>
                   </Box>
                 ) : selectedDate && !timeSlots ? (
                   <Box
-                    w="100%"
-                    h="full"
-                    position="relative"
-                    overflow="hidden"
-                    roundedTop="lg"
+                    w='100%'
+                    h='full'
+                    position='relative'
+                    overflow='hidden'
+                    roundedTop='lg'
                   >
-                    <Box align={"center"}>
+                    <Box align={'center'}>
                       <Box>{selectedDate}</Box>
                       <Box mb={5}>Select Timeslot(s)</Box>
                       <Box>
-                        <Loading message={"Fetching all timeslots..."} />
+                        <Loading message={'Fetching all timeslots...'} />
                       </Box>
                     </Box>
                   </Box>
@@ -471,17 +471,17 @@ export default function VenueBookingModal({
           {displayedSlots && (
             <Box>
               <Flex
-                w="full"
-                h="full"
-                alignItems="center"
-                justifyContent="center"
-                bg="white"
-                rounded="xl"
-                shadow="lg"
-                borderWidth="1px"
-                m="4"
+                w='full'
+                h='full'
+                alignItems='center'
+                justifyContent='center'
+                bg='white'
+                rounded='xl'
+                shadow='lg'
+                borderWidth='1px'
+                m='4'
               >
-                <Stack align={"center"}>
+                <Stack align={'center'}>
                   <Text>Venue: {displayedVenue}</Text>
                   <Text>{displayedSlots}</Text>
                 </Stack>
@@ -492,17 +492,17 @@ export default function VenueBookingModal({
           {error && (
             <Box>
               <Flex
-                w="full"
-                h="full"
-                alignItems="center"
-                justifyContent="center"
-                bg="white"
-                rounded="xl"
-                shadow="lg"
-                borderWidth="1px"
-                m="4"
+                w='full'
+                h='full'
+                alignItems='center'
+                justifyContent='center'
+                bg='white'
+                rounded='xl'
+                shadow='lg'
+                borderWidth='1px'
+                m='4'
               >
-                <Stack align={"center"}>
+                <Stack align={'center'}>
                   <Text>{error}</Text>
                 </Stack>
               </Flex>
@@ -511,12 +511,12 @@ export default function VenueBookingModal({
         </ModalBody>
         <ModalFooter>
           <Button
-            bg="cyan.700"
-            color="white"
-            w="150px"
-            size="lg"
+            bg='cyan.700'
+            color='white'
+            w='150px'
+            size='lg'
             onClick={handleSubmit}
-            _hover={{ bg: "cyan.800" }}
+            _hover={{ bg: 'cyan.800' }}
           >
             Submit
           </Button>

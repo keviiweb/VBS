@@ -1,5 +1,5 @@
-import { currentSession } from "@helper/sys/session";
-import { findVenueByID, fetchChildVenue } from "@helper/sys/vbs/venue";
+import { currentSession } from '@helper/sys/session';
+import { findVenueByID, fetchChildVenue } from '@helper/sys/vbs/venue';
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
@@ -26,9 +26,9 @@ const handler = async (req, res) => {
                 }
               }
 
-              const isAvailable = venue.visible ? "Yes" : "No";
-              const cv = venue.isChildVenue ? "Yes" : "No";
-              const instantBook = venue.isInstantBook ? "Yes" : "No";
+              const isAvailable = venue.visible ? 'Yes' : 'No';
+              const cv = venue.isChildVenue ? 'Yes' : 'No';
+              const instantBook = venue.isInstantBook ? 'Yes' : 'No';
 
               const data = {
                 capacity: venue.capacity,

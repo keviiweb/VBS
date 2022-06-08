@@ -1,21 +1,21 @@
-import { useState, useEffect, useRef } from "react";
-import { cardVariant, parentVariant } from "@root/motion";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from 'react';
+import { cardVariant, parentVariant } from '@root/motion';
+import { motion } from 'framer-motion';
 import {
   SimpleGrid,
   Box,
   Input,
   InputGroup,
   InputLeftAddon,
-} from "@chakra-ui/react";
-import Auth from "@components/sys/Auth";
-import VenueCard from "@components/sys/vbs/VenueCard";
-import VenueBookingModal from "@components/sys/vbs/VenueBookingModal";
-import VenueBookingModalConfirmation from "@components/sys/vbs/VenueBookingModalConfirmation";
-import Loading from "@components/sys/vbs/Loading";
-import { fetchVenue } from "@helper/sys/vbs/venue";
+} from '@chakra-ui/react';
+import Auth from '@components/sys/Auth';
+import VenueCard from '@components/sys/vbs/VenueCard';
+import VenueBookingModal from '@components/sys/vbs/VenueBookingModal';
+import VenueBookingModalConfirmation from '@components/sys/vbs/VenueBookingModalConfirmation';
+import Loading from '@components/sys/vbs/Loading';
+import { fetchVenue } from '@helper/sys/vbs/venue';
 
-import safeJsonStringify from "safe-json-stringify";
+import safeJsonStringify from 'safe-json-stringify';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -29,7 +29,7 @@ export default function VBS(props) {
   const minDate = useRef(3);
   const maxDate = useRef(30);
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState(null);
 
   const dataFromVenueModal = (venue, venueName, date, timeSlots) => {
@@ -57,7 +57,7 @@ export default function VBS(props) {
         if (res.msg.length > 0) {
           if (res.status) {
             let result = res.msg;
-            if (result !== "") {
+            if (result !== '') {
               let cardRes = [];
               result.forEach((item) => {
                 if (item.visible) {
@@ -68,7 +68,7 @@ export default function VBS(props) {
                       key={item.id}
                     >
                       <VenueCard product={item} setModalData={setModalData} />
-                    </MotionBox>
+                    </MotionBox>,
                   );
                 }
               });
@@ -86,7 +86,7 @@ export default function VBS(props) {
     const searchInput = event.target.value;
     setSearch(searchInput);
 
-    if (searchInput && searchInput != "") {
+    if (searchInput && searchInput != '') {
       let filteredData = cards.filter((value) => {
         return value.props.id.toLowerCase().includes(searchInput.toLowerCase());
       });
@@ -101,37 +101,37 @@ export default function VBS(props) {
     <>
       {isLoading && (
         <Box>
-          <Loading message={"Loading venues..."} />
+          <Loading message={'Loading venues...'} />
         </Box>
       )}
       {!isLoading && (
         <Auth>
           <Box>
             <Box
-              bg="white"
-              borderRadius="lg"
-              width={{ base: "full", md: "full", lg: "full" }}
-              color="gray.700"
-              shadow="base"
+              bg='white'
+              borderRadius='lg'
+              width={{ base: 'full', md: 'full', lg: 'full' }}
+              color='gray.700'
+              shadow='base'
             >
               <InputGroup>
                 <InputLeftAddon>Search:</InputLeftAddon>
                 <Input
-                  type="text"
-                  placeholder=""
+                  type='text'
+                  placeholder=''
                   value={search}
                   onChange={handleSearch}
                 />
               </InputGroup>
             </Box>
             <MotionSimpleGrid
-              mt="3"
-              minChildWidth={{ base: "full", md: "30vh", lg: "50vh" }}
-              spacing="2em"
-              minH="full"
+              mt='3'
+              minChildWidth={{ base: 'full', md: '30vh', lg: '50vh' }}
+              spacing='2em'
+              minH='full'
               variants={parentVariant}
-              initial="initial"
-              animate="animate"
+              initial='initial'
+              animate='animate'
             >
               {filteredData && filteredData.length ? filteredData : cards}
             </MotionSimpleGrid>

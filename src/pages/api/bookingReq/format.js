@@ -4,17 +4,17 @@ import {
   convertUnixToDate,
   prettifyTiming,
   prettifyDate,
-} from "@constants/sys/helper";
-import { currentSession } from "@helper/sys/session";
-import { findVenueByID } from "@helper/sys/vbs/venue";
-import { findCCAbyID } from "@helper/sys/vbs/cca";
+} from '@constants/sys/helper';
+import { currentSession } from '@helper/sys/session';
+import { findVenueByID } from '@helper/sys/vbs/venue';
+import { findCCAbyID } from '@helper/sys/vbs/cca';
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
   const { bookings } = req.body;
 
-  var result = "";
+  var result = '';
   if (session && session.user.admin) {
     try {
       if (bookings) {
@@ -25,15 +25,15 @@ const handler = async (req, res) => {
             const venueReq = await findVenueByID(book.venue);
             const date = convertUnixToDate(book.date);
             const timeSlots = mapSlotToTiming(
-              convertSlotToArray(book.timeSlots, true)
+              convertSlotToArray(book.timeSlots, true),
             );
 
             if (venueReq.status) {
               const venue = venueReq.msg.name;
 
               let cca = undefined;
-              if (book.cca === "PERSONAL") {
-                cca = "PERSONAL";
+              if (book.cca === 'PERSONAL') {
+                cca = 'PERSONAL';
               } else {
                 const ccaReq = await findCCAbyID(book.cca);
                 cca = ccaReq.msg.name;
@@ -42,27 +42,27 @@ const handler = async (req, res) => {
               let status = null;
 
               if (!book.isApproved && !book.isCancelled && !book.isRejected) {
-                status = "Pending";
+                status = 'Pending';
               } else if (
                 book.isApproved &&
                 !book.isCancelled &&
                 !book.isRejected
               ) {
-                status = "Approved";
+                status = 'Approved';
               } else if (
                 !book.isApproved &&
                 book.isCancelled &&
                 !book.isRejected
               ) {
-                status = "Cancelled";
+                status = 'Cancelled';
               } else if (
                 !book.isApproved &&
                 !book.isCancelled &&
                 book.isRejected
               ) {
-                status = "Rejected";
+                status = 'Rejected';
               } else {
-                status = "Unknown";
+                status = 'Unknown';
               }
 
               const data = {
@@ -95,8 +95,8 @@ const handler = async (req, res) => {
       } else {
         result = {
           status: false,
-          error: "Cannot get all bookings",
-          msg: "",
+          error: 'Cannot get all bookings',
+          msg: '',
         };
         res.status(200).send(result);
         res.end();
@@ -104,13 +104,13 @@ const handler = async (req, res) => {
       }
     } catch (error) {
       console.log(error);
-      result = { status: false, error: error, msg: "" };
+      result = { status: false, error: error, msg: '' };
       res.status(200).send(result);
       res.end();
       return;
     }
   } else {
-    result = { status: false, error: "Unauthenticated", msg: "" };
+    result = { status: false, error: 'Unauthenticated', msg: '' };
     res.status(200).send(result);
     res.end();
     return;

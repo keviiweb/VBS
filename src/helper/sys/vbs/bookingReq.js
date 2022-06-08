@@ -1,4 +1,4 @@
-import { prisma } from "@constants/sys/db";
+import { prisma } from '@constants/sys/db';
 import {
   convertSlotToArray,
   isInside,
@@ -6,27 +6,27 @@ import {
   prettifyTiming,
   convertUnixToDate,
   prettifyDate,
-} from "@constants/sys/helper";
-import { findVenueByID } from "@helper/sys/vbs/venue";
-import { findCCAbyID } from "@helper/sys/vbs/cca";
-import { sendApproveMail } from "@helper/sys/vbs/email/approve";
-import { sendCancelMail } from "@helper/sys/vbs/email/cancel";
-import { sendRejectMail } from "@helper/sys/vbs/email/reject";
-import { sendNotifyMail } from "@helper/sys/vbs/email/notify";
+} from '@constants/sys/helper';
+import { findVenueByID } from '@helper/sys/vbs/venue';
+import { findCCAbyID } from '@helper/sys/vbs/cca';
+import { sendApproveMail } from '@helper/sys/vbs/email/approve';
+import { sendCancelMail } from '@helper/sys/vbs/email/cancel';
+import { sendRejectMail } from '@helper/sys/vbs/email/reject';
+import { sendNotifyMail } from '@helper/sys/vbs/email/notify';
 import {
   approvalBookingRequestMessageBuilder,
   rejectBookingRequestMessageBuilder,
   sendMessageToChannel,
-} from "@helper/sys/vbs/telegram";
+} from '@helper/sys/vbs/telegram';
 
-export const BOOKINGS = ["PENDING", "APPROVED", "REJECTED"];
+export const BOOKINGS = ['PENDING', 'APPROVED', 'REJECTED'];
 
 export const findBookingByUser = async (session) => {
   try {
     const bookings = await prisma.venueBookingRequest.findMany({
       orderBy: [
         {
-          created_at: "desc",
+          created_at: 'desc',
         },
       ],
       where: {
@@ -46,7 +46,7 @@ export const findApprovedBooking = async () => {
     const bookings = await prisma.venueBookingRequest.findMany({
       orderBy: [
         {
-          created_at: "desc",
+          created_at: 'desc',
         },
       ],
       where: {
@@ -68,7 +68,7 @@ export const findRejectedBooking = async () => {
     const bookings = await prisma.venueBookingRequest.findMany({
       orderBy: [
         {
-          created_at: "desc",
+          created_at: 'desc',
         },
       ],
       where: {
@@ -90,7 +90,7 @@ export const findPendingBooking = async () => {
     const bookings = await prisma.venueBookingRequest.findMany({
       orderBy: [
         {
-          created_at: "desc",
+          created_at: 'desc',
         },
       ],
       where: {
@@ -112,7 +112,7 @@ export const findAllBooking = async () => {
     const bookings = await prisma.venueBookingRequest.findMany({
       orderBy: [
         {
-          created_at: "desc",
+          created_at: 'desc',
         },
       ],
     });
@@ -212,8 +212,8 @@ export const setApprove = async (bookingRequest, session) => {
 
       if (venueReq && venueReq.status) {
         let cca = undefined;
-        if (bookingRequest.cca === "PERSONAL") {
-          cca = "PERSONAL";
+        if (bookingRequest.cca === 'PERSONAL') {
+          cca = 'PERSONAL';
         } else {
           const ccaReq = await findCCAbyID(bookingRequest.cca);
           cca = ccaReq.msg.name;
@@ -246,13 +246,13 @@ export const setApprove = async (bookingRequest, session) => {
       return {
         status: true,
         error: null,
-        msg: "Successfully updated request on approval",
+        msg: 'Successfully updated request on approval',
       };
     } else {
-      return { status: false, error: "Error in updating", msg: "" };
+      return { status: false, error: 'Error in updating', msg: '' };
     }
   } else {
-    return { status: false, error: "No booking ID found", msg: "" };
+    return { status: false, error: 'No booking ID found', msg: '' };
   }
 };
 
@@ -278,8 +278,8 @@ export const setReject = async (bookingRequest, session) => {
 
       if (venueReq && venueReq.status) {
         let cca = undefined;
-        if (bookingRequest.cca === "PERSONAL") {
-          cca = "PERSONAL";
+        if (bookingRequest.cca === 'PERSONAL') {
+          cca = 'PERSONAL';
         } else {
           const ccaReq = await findCCAbyID(bookingRequest.cca);
           cca = ccaReq.msg.name;
@@ -313,13 +313,13 @@ export const setReject = async (bookingRequest, session) => {
       return {
         status: true,
         error: null,
-        msg: "Successfully updated request on reject",
+        msg: 'Successfully updated request on reject',
       };
     } else {
-      return { status: false, error: "Error in updating", msg: "" };
+      return { status: false, error: 'Error in updating', msg: '' };
     }
   } else {
-    return { status: false, error: "No booking ID found", msg: "" };
+    return { status: false, error: 'No booking ID found', msg: '' };
   }
 };
 
@@ -344,8 +344,8 @@ export const setCancel = async (bookingRequest, session) => {
       date = prettifyDate(date);
 
       let cca = undefined;
-      if (bookingRequest.cca === "PERSONAL") {
-        cca = "PERSONAL";
+      if (bookingRequest.cca === 'PERSONAL') {
+        cca = 'PERSONAL';
       } else {
         const ccaReq = await findCCAbyID(bookingRequest.cca);
         cca = ccaReq.msg.name;
@@ -372,13 +372,13 @@ export const setCancel = async (bookingRequest, session) => {
       return {
         status: true,
         error: null,
-        msg: "Successfully updated request on cancel",
+        msg: 'Successfully updated request on cancel',
       };
     } else {
-      return { status: false, error: "Error in updating", msg: "" };
+      return { status: false, error: 'Error in updating', msg: '' };
     }
   } else {
-    return { status: false, error: "No booking ID found", msg: "" };
+    return { status: false, error: 'No booking ID found', msg: '' };
   }
 };
 
@@ -417,12 +417,12 @@ export const getConflictingRequest = async (bookingRequest) => {
     } else {
       return {
         status: false,
-        error: "Failed to get conflicting timeslots",
-        msg: "",
+        error: 'Failed to get conflicting timeslots',
+        msg: '',
       };
     }
   } else {
-    return { status: false, error: "No booking ID found", msg: "" };
+    return { status: false, error: 'No booking ID found', msg: '' };
   }
 };
 
@@ -465,17 +465,17 @@ export const setRejectConflicts = async (bookingRequest, session) => {
       return {
         status: true,
         error: null,
-        msg: "Successfully rejected conflicting timeslots",
+        msg: 'Successfully rejected conflicting timeslots',
       };
     } else {
       return {
         status: false,
-        error: "Failed to reject conflicting timeslots",
-        msg: "",
+        error: 'Failed to reject conflicting timeslots',
+        msg: '',
       };
     }
   } else {
-    return { status: false, error: "No booking ID found", msg: "" };
+    return { status: false, error: 'No booking ID found', msg: '' };
   }
 };
 
@@ -494,13 +494,13 @@ export const updateConflictingIDs = async (bookingRequest, conflict) => {
       return {
         status: true,
         error: null,
-        msg: "Successfully updated request on reject",
+        msg: 'Successfully updated request on reject',
       };
     } else {
-      return { status: false, error: "Error in updating", msg: "" };
+      return { status: false, error: 'Error in updating', msg: '' };
     }
   } else {
-    return { status: false, error: "No booking ID found", msg: "" };
+    return { status: false, error: 'No booking ID found', msg: '' };
   }
 };
 
@@ -521,7 +521,7 @@ export const notifyConflicts = async (bookingRequest, session) => {
 
   if (bookingRequest) {
     if (bookingRequest.conflictRequest) {
-      let sameDayVenue = bookingRequest.conflictRequest.split(",");
+      let sameDayVenue = bookingRequest.conflictRequest.split(',');
       for (let key in sameDayVenue) {
         const request = sameDayVenue[key];
         const booking = await findBookingByID(request);
@@ -540,17 +540,17 @@ export const notifyConflicts = async (bookingRequest, session) => {
       return {
         status: true,
         error: null,
-        msg: "Successfully notified conflicting bookings",
+        msg: 'Successfully notified conflicting bookings',
       };
     } else {
       return {
         status: false,
-        error: "Failed to notify conflicting bookings",
-        msg: "",
+        error: 'Failed to notify conflicting bookings',
+        msg: '',
       };
     }
   } else {
-    return { status: false, error: "No booking ID found", msg: "" };
+    return { status: false, error: 'No booking ID found', msg: '' };
   }
 };
 
@@ -564,8 +564,8 @@ export const notifyConflictsEmail = async (bookingRequest, session) => {
 
     if (venueReq && venueReq.status) {
       let cca = undefined;
-      if (bookingRequest.cca === "PERSONAL") {
-        cca = "PERSONAL";
+      if (bookingRequest.cca === 'PERSONAL') {
+        cca = 'PERSONAL';
       } else {
         const ccaReq = await findCCAbyID(bookingRequest.cca);
         cca = ccaReq.msg.name;

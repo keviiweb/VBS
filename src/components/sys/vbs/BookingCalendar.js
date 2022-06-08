@@ -1,7 +1,7 @@
-import FullCalendar from "@fullcalendar/react";
-import interactionPlugin from "@fullcalendar/interaction";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import listPlugin from "@fullcalendar/list";
+import FullCalendar from '@fullcalendar/react';
+import interactionPlugin from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
 
 export default function BookingCalendar({
   slotMin,
@@ -13,7 +13,7 @@ export default function BookingCalendar({
   return (
     <FullCalendar
       plugins={[interactionPlugin, timeGridPlugin, listPlugin]}
-      initialView="timeGridWeek"
+      initialView='timeGridWeek'
       nowIndicator={true}
       editable={false}
       slotMinTime={slotMin}
@@ -21,9 +21,9 @@ export default function BookingCalendar({
       allDaySlot={false}
       events={events}
       headerToolbar={{
-        left: "prev,next today",
-        center: "title",
-        right: "timeGridWeek,listWeek",
+        left: 'prev,next today',
+        center: 'title',
+        right: 'timeGridWeek,listWeek',
       }}
       eventMouseEnter={eventMouseEnter}
       eventMouseLeave={eventMouseLeave}

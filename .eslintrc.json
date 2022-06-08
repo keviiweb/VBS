@@ -8,6 +8,11 @@
     "react/no-array-index-key": "off",
     "jsx-a11y/media-has-caption": "off",
     "no-console": "off",
-    "max-len": ["error", { "code": 650 }]
+
+    "max-len": ["error", { "code": 650 }],
+    "jsx-quotes": ["error", "prefer-single"],
+    "object-curly-newline": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "operator-linebreak": "off"
   }
 }

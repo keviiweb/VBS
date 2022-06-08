@@ -1,7 +1,7 @@
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import { monthNamesFull } from "@constants/sys/months";
-import { useState, useEffect, useRef } from "react";
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import { monthNamesFull } from '@constants/sys/months';
+import { useState, useEffect, useRef } from 'react';
 
 export default function CalendarWidget({
   selectedDate,
@@ -43,7 +43,7 @@ export default function CalendarWidget({
   const displayLabel = (date, label, locale, view) => {
     let month = monthNamesFull[date.getMonth()];
     let year = date.getFullYear();
-    if (view === "month") {
+    if (view === 'month') {
       return `${month}`;
     }
     return `${year}`;
@@ -54,7 +54,7 @@ export default function CalendarWidget({
       onChange={handleChange}
       value={currentDate}
       minDate={minDate}
-      minDetail="year"
+      minDetail='year'
       maxDate={maxDate}
       next2Label={null}
       prev2Label={null}

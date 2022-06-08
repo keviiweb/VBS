@@ -33,7 +33,7 @@ export default function Video() {
               direction='column'
               alignItems='start'
               justifyContent='center'
-              px={{ base: 4, md: 8, lg: 20 }}  
+              px={{ base: 4, md: 8, lg: 20 }}
               py={24}
               zIndex={3}
             >

@@ -15,11 +15,11 @@ import {
   SimpleGrid,
   Stack,
   Text,
-} from "@chakra-ui/react";
-import { motion } from "framer-motion";
-import { useState, useEffect, useMemo } from "react";
-import { cardVariant, parentVariant } from "@root/motion";
-import TableWidget from "@components/sys/vbs/TableWidget";
+} from '@chakra-ui/react';
+import { motion } from 'framer-motion';
+import { useState, useEffect, useMemo } from 'react';
+import { cardVariant, parentVariant } from '@root/motion';
+import TableWidget from '@components/sys/vbs/TableWidget';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -56,11 +56,11 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
 
   const processConflicts = async (conflicts) => {
     try {
-      const rawResponse = await fetch("/api/bookingReq/format", {
-        method: "POST",
+      const rawResponse = await fetch('/api/bookingReq/format', {
+        method: 'POST',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           bookings: conflicts,
@@ -103,59 +103,59 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
     if (isAdmin) {
       return [
         {
-          Header: "Venue",
-          accessor: "venue",
+          Header: 'Venue',
+          accessor: 'venue',
         },
         {
-          Header: "Date",
-          accessor: "date",
+          Header: 'Date',
+          accessor: 'date',
         },
         {
-          Header: "Timeslot(s)",
-          accessor: "timeSlots",
+          Header: 'Timeslot(s)',
+          accessor: 'timeSlots',
         },
         {
-          Header: "Email",
-          accessor: "email",
+          Header: 'Email',
+          accessor: 'email',
         },
         {
-          Header: "CCA",
-          accessor: "cca",
+          Header: 'CCA',
+          accessor: 'cca',
         },
         {
-          Header: "Purpose",
-          accessor: "purpose",
+          Header: 'Purpose',
+          accessor: 'purpose',
         },
         {
-          Header: "Status",
-          accessor: "status",
+          Header: 'Status',
+          accessor: 'status',
         },
       ];
     } else {
       return [
         {
-          Header: "Venue",
-          accessor: "venue",
+          Header: 'Venue',
+          accessor: 'venue',
         },
         {
-          Header: "Date",
-          accessor: "date",
+          Header: 'Date',
+          accessor: 'date',
         },
         {
-          Header: "Timeslot(s)",
-          accessor: "timeSlots",
+          Header: 'Timeslot(s)',
+          accessor: 'timeSlots',
         },
         {
-          Header: "CCA",
-          accessor: "cca",
+          Header: 'CCA',
+          accessor: 'cca',
         },
         {
-          Header: "Purpose",
-          accessor: "purpose",
+          Header: 'Purpose',
+          accessor: 'purpose',
         },
         {
-          Header: "Status",
-          accessor: "status",
+          Header: 'Status',
+          accessor: 'status',
         },
       ];
     }
@@ -166,10 +166,10 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
       closeOnOverlayClick={false}
       isOpen={isOpen}
       onClose={handleModalCloseButton}
-      size="full"
+      size='full'
       isCentered
-      motionPreset="slideInBottom"
-      scrollBehavior={"inside"}
+      motionPreset='slideInBottom'
+      scrollBehavior={'inside'}
     >
       <ModalOverlay />
       <ModalContent>
@@ -177,86 +177,86 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
         <ModalHeader></ModalHeader>
         <ModalBody>
           <MotionSimpleGrid
-            mt="3"
-            minChildWidth="250px"
-            spacing="2em"
-            minH="full"
+            mt='3'
+            minChildWidth='250px'
+            spacing='2em'
+            minH='full'
             variants={parentVariant}
-            initial="initial"
-            animate="animate"
+            initial='initial'
+            animate='animate'
           >
-            <MotionBox variants={cardVariant} key="2">
+            <MotionBox variants={cardVariant} key='2'>
               {modalData && (
                 <Flex
-                  w="full"
-                  h="full"
-                  alignItems="center"
-                  justifyContent="center"
-                  m="4"
+                  w='full'
+                  h='full'
+                  alignItems='center'
+                  justifyContent='center'
+                  m='4'
                 >
                   <Stack spacing={{ base: 6, md: 10 }}>
                     <Stack
                       spacing={{ base: 4, sm: 6 }}
-                      direction={"column"}
-                      divider={<StackDivider borderColor={"gray.200"} />}
+                      direction={'column'}
+                      divider={<StackDivider borderColor={'gray.200'} />}
                     >
                       <Box>
                         <Text
-                          fontSize={{ base: "16px", lg: "18px" }}
-                          fontWeight={"500"}
-                          textTransform={"uppercase"}
-                          mb={"4"}
+                          fontSize={{ base: '16px', lg: '18px' }}
+                          fontWeight={'500'}
+                          textTransform={'uppercase'}
+                          mb={'4'}
                         >
                           Booking Request Details
                         </Text>
 
                         <List spacing={5}>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Reference No:
-                            </Text>{" "}
+                            </Text>{' '}
                             {id}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Venue:
-                            </Text>{" "}
+                            </Text>{' '}
                             {venue}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Date:
-                            </Text>{" "}
+                            </Text>{' '}
                             {date}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Timeslot(s):
-                            </Text>{" "}
+                            </Text>{' '}
                             {timeSlots}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Contact Email:
-                            </Text>{" "}
+                            </Text>{' '}
                             {email}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               CCA:
-                            </Text>{" "}
+                            </Text>{' '}
                             {cca}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Purpose:
-                            </Text>{" "}
+                            </Text>{' '}
                             {purpose}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Status:
-                            </Text>{" "}
+                            </Text>{' '}
                             {status}
                           </ListItem>
                         </List>
@@ -264,10 +264,10 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
 
                       <Box>
                         <Text
-                          fontSize={{ base: "16px", lg: "18px" }}
-                          fontWeight={"500"}
-                          textTransform={"uppercase"}
-                          mb={"4"}
+                          fontSize={{ base: '16px', lg: '18px' }}
+                          fontWeight={'500'}
+                          textTransform={'uppercase'}
+                          mb={'4'}
                         >
                           Conflicting Requests
                         </Text>
@@ -292,10 +292,10 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                               <Text>Loading Please wait...</Text>
                             ) : (
                               <Text
-                                fontSize={{ base: "16px", lg: "18px" }}
-                                fontWeight={"500"}
-                                textTransform={"uppercase"}
-                                mb={"4"}
+                                fontSize={{ base: '16px', lg: '18px' }}
+                                fontWeight={'500'}
+                                textTransform={'uppercase'}
+                                mb={'4'}
                               >
                                 No conflicting requests found
                               </Text>
@@ -312,12 +312,12 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
         </ModalBody>
         <ModalFooter>
           <Button
-            bg="cyan.700"
-            color="white"
-            w="150px"
-            size="lg"
+            bg='cyan.700'
+            color='white'
+            w='150px'
+            size='lg'
             onClick={handleModalCloseButton}
-            _hover={{ bg: "cyan.800" }}
+            _hover={{ bg: 'cyan.800' }}
           >
             Close
           </Button>

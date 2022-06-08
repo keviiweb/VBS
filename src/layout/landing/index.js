@@ -1,5 +1,5 @@
-import Header from "@components/landing/Header";
-import Social from "@components/landing/Social";
+import Header from '@components/landing/Header';
+import Social from '@components/landing/Social';
 
 export default function Layout({ children }) {
   return (

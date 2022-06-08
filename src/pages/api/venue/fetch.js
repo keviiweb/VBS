@@ -1,10 +1,10 @@
-import { currentSession } from "@helper/sys/session";
-import { findVenueByID, fetchAllVenue } from "@helper/sys/vbs/venue";
+import { currentSession } from '@helper/sys/session';
+import { findVenueByID, fetchAllVenue } from '@helper/sys/vbs/venue';
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
-  let result = "";
+  let result = '';
   if (session) {
     const venueDB = await fetchAllVenue();
     const parsedVenue = [];
@@ -23,9 +23,9 @@ const handler = async (req, res) => {
             }
           }
 
-          const isAvailable = venue.visible ? "Yes" : "No";
-          const childVenue = venue.isChildVenue ? "Yes" : "No";
-          const instantBook = venue.isInstantBook ? "Yes" : "No";
+          const isAvailable = venue.visible ? 'Yes' : 'No';
+          const childVenue = venue.isChildVenue ? 'Yes' : 'No';
+          const instantBook = venue.isInstantBook ? 'Yes' : 'No';
 
           const data = {
             capacity: venue.capacity,
@@ -57,15 +57,15 @@ const handler = async (req, res) => {
     } else {
       result = {
         status: false,
-        error: "Cannot get all venues",
-        msg: "",
+        error: 'Cannot get all venues',
+        msg: '',
       };
       res.status(200).send(result);
       res.end();
       return;
     }
   } else {
-    result = { status: false, error: "Unauthenticated", msg: "" };
+    result = { status: false, error: 'Unauthenticated', msg: '' };
     res.status(200).send(result);
     res.end();
     return;

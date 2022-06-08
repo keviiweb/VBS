@@ -3,22 +3,22 @@ import {
   convertUnixToDate,
   prettifyDate,
   findSlotsByID,
-} from "@constants/sys/helper";
-import { currentSession } from "@helper/sys/session";
+} from '@constants/sys/helper';
+import { currentSession } from '@helper/sys/session';
 import {
   findVenueByID,
   splitHours,
   splitOpeningHours,
   splitHoursISO,
-} from "@helper/sys/vbs/venue";
-import { findCCAbyID } from "@helper/sys/vbs/cca";
-import { findAllBookingByVenueID } from "@helper/sys/vbs/booking";
+} from '@helper/sys/vbs/venue';
+import { findCCAbyID } from '@helper/sys/vbs/cca';
+import { findAllBookingByVenueID } from '@helper/sys/vbs/booking';
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
   const { id } = req.body;
 
-  let result = "";
+  let result = '';
   if (session) {
     if (id) {
       let bookings = null;
@@ -27,13 +27,13 @@ const handler = async (req, res) => {
           bookings = await findAllBookingByVenueID(id);
         } catch (error) {
           console.log(error);
-          result = { status: false, error: error, msg: "" };
+          result = { status: false, error: error, msg: '' };
           res.status(200).send(result);
           res.end();
           return;
         }
       } else {
-        result = { status: false, error: "Unauthorized access", msg: "" };
+        result = { status: false, error: 'Unauthorized access', msg: '' };
         res.status(200).send(result);
         res.end();
         return;
@@ -48,8 +48,8 @@ const handler = async (req, res) => {
             const prettifiedDate = prettifyDate(date);
 
             let cca = undefined;
-            if (book.cca === "PERSONAL") {
-              cca = "PERSONAL";
+            if (book.cca === 'PERSONAL') {
+              cca = 'PERSONAL';
             } else {
               const ccaReq = await findCCAbyID(book.cca);
               cca = ccaReq.msg.name;
@@ -71,19 +71,19 @@ const handler = async (req, res) => {
 
                   const parsedtimeSlots = parsed.timingSlot;
                   const parsedtimeSlotsSplit = await splitHours(
-                    parsedtimeSlots
+                    parsedtimeSlots,
                   );
 
                   if (timeSplit.start == parsedtimeSlotsSplit.end) {
                     duplicate = true;
                     parsed.timingSlot =
-                      parsedtimeSlotsSplit.start.toString().padStart(4, "0") +
-                      " - " +
-                      timeSplit.end.toString().padStart(4, "0");
+                      parsedtimeSlotsSplit.start.toString().padStart(4, '0') +
+                      ' - ' +
+                      timeSplit.end.toString().padStart(4, '0');
 
                     const bookedTimeSlotsISO = await splitHoursISO(
                       date,
-                      parsed.timingSlot
+                      parsed.timingSlot,
                     );
                     const start = bookedTimeSlotsISO.start;
                     const end = bookedTimeSlotsISO.end;
@@ -93,13 +93,13 @@ const handler = async (req, res) => {
                   } else if (timeSplit.end == parsedtimeSlotsSplit.start) {
                     duplicate = true;
                     parsed.timingSlot =
-                      timeSplit.start.toString().padStart(4, "0") +
-                      " - " +
-                      parsedtimeSlotsSplit.end.toString().padStart(4, "0");
+                      timeSplit.start.toString().padStart(4, '0') +
+                      ' - ' +
+                      parsedtimeSlotsSplit.end.toString().padStart(4, '0');
 
                     const bookedTimeSlotsISO = await splitHoursISO(
                       date,
-                      parsed.timingSlot
+                      parsed.timingSlot,
                     );
                     const start = bookedTimeSlotsISO.start;
                     const end = bookedTimeSlotsISO.end;
@@ -117,26 +117,26 @@ const handler = async (req, res) => {
                 const venue = venueReq.msg.name;
 
                 const openingHours = await splitOpeningHours(
-                  venueReq.msg.openingHours
+                  venueReq.msg.openingHours,
                 );
                 const startHour = await findSlotsByID(openingHours.start);
                 const endHour = await findSlotsByID(openingHours.end);
 
                 const startH =
                   startHour.toString().slice(0, 2) +
-                  ":" +
+                  ':' +
                   startHour.slice(2) +
-                  ":00";
+                  ':00';
                 const endH =
                   endHour.toString().slice(0, 2) +
-                  ":" +
+                  ':' +
                   endHour.slice(2) +
-                  ":00";
+                  ':00';
 
                 const bookedTimeSlots = mapSlotToTiming(book.timingSlot);
                 const bookedTimeSlotsISO = await splitHoursISO(
                   date,
-                  bookedTimeSlots
+                  bookedTimeSlots,
                 );
                 const start = bookedTimeSlotsISO.start;
                 const end = bookedTimeSlotsISO.end;
@@ -173,21 +173,21 @@ const handler = async (req, res) => {
       } else {
         result = {
           status: false,
-          error: "Cannot get all bookings",
-          msg: "",
+          error: 'Cannot get all bookings',
+          msg: '',
         };
         res.status(200).send(result);
         res.end();
         return;
       }
     } else {
-      result = { status: false, error: "No booking ID found", msg: "" };
+      result = { status: false, error: 'No booking ID found', msg: '' };
       res.status(200).send(result);
       res.end();
       return;
     }
   } else {
-    result = { status: false, error: "Unauthenticated", msg: "" };
+    result = { status: false, error: 'Unauthenticated', msg: '' };
     res.status(200).send(result);
     res.end();
     return;

@@ -1,4 +1,4 @@
-import { prisma } from "@constants/sys/db";
+import { prisma } from '@constants/sys/db';
 
 export const findCCAbyName = async (name) => {
   try {
@@ -11,7 +11,7 @@ export const findCCAbyName = async (name) => {
     return { status: true, error: null, msg: query };
   } catch (error) {
     console.log(error);
-    return { status: false, error: error.toString(), msg: "" };
+    return { status: false, error: error.toString(), msg: '' };
   }
 };
 
@@ -26,7 +26,7 @@ export const findCCAbyID = async (id) => {
     return { status: true, error: null, msg: query };
   } catch (error) {
     console.log(error);
-    return { status: false, error: error.toString(), msg: "" };
+    return { status: false, error: error.toString(), msg: '' };
   }
 };
 
@@ -34,13 +34,13 @@ export const findAllCCA = async () => {
   try {
     const ccaList = await prisma.CCA.findMany({
       orderBy: {
-        name: "asc",
+        name: 'asc',
       },
     });
     return { status: true, error: null, msg: ccaList };
   } catch (error) {
     console.log(error);
-    return { status: false, error: error.toString(), msg: "" };
+    return { status: false, error: error.toString(), msg: '' };
   }
 };
 
@@ -60,6 +60,6 @@ export const isLeader = async (ccaID, session) => {
     }
   } catch (error) {
     console.log(error);
-    return { status: false, error: error.toString(), msg: "" };
+    return { status: false, error: error.toString(), msg: '' };
   }
 };

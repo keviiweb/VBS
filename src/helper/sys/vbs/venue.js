@@ -1,5 +1,5 @@
-import { prisma } from "@constants/sys/db";
-import { findSlots, dateISO } from "@constants/sys/helper";
+import { prisma } from '@constants/sys/db';
+import { findSlots, dateISO } from '@constants/sys/helper';
 
 export const fetchChildVenue = async (venue) => {
   try {
@@ -10,7 +10,7 @@ export const fetchChildVenue = async (venue) => {
     return { status: true, error: null, msg: childVenues };
   } catch (error) {
     console.log(error);
-    return { status: false, error: error, msg: "" };
+    return { status: false, error: error, msg: '' };
   }
 };
 
@@ -20,7 +20,7 @@ export const fetchAllVenue = async () => {
     return { status: true, error: null, msg: locations };
   } catch (error) {
     console.log(error);
-    return { status: false, error: error, msg: "" };
+    return { status: false, error: error, msg: '' };
   }
 };
 
@@ -33,11 +33,11 @@ export const fetchVenue = async () => {
     if (locations) {
       return { status: true, error: null, msg: locations };
     } else {
-      return { status: true, error: null, msg: "" };
+      return { status: true, error: null, msg: '' };
     }
   } catch (error) {
     console.log(error);
-    return { status: false, error: "Connection timeout", msg: "" };
+    return { status: false, error: 'Connection timeout', msg: '' };
   }
 };
 
@@ -50,11 +50,11 @@ export const findVenueByID = async (id) => {
     if (locations) {
       return { status: true, error: null, msg: locations };
     } else {
-      return { status: true, error: null, msg: "" };
+      return { status: true, error: null, msg: '' };
     }
   } catch (error) {
     console.log(error);
-    return { status: false, error: "Connection timeout", msg: "" };
+    return { status: false, error: 'Connection timeout', msg: '' };
   }
 };
 
@@ -66,7 +66,7 @@ export const fetchOpeningHours = async (id) => {
 
     if (locations) {
       const opening = locations.openingHours;
-      const hours = opening.split("-");
+      const hours = opening.split('-');
       const start = await findSlots(hours[0].trim(), true);
       const end = await findSlots(hours[1].trim(), false);
 
@@ -87,7 +87,7 @@ export const fetchOpeningHours = async (id) => {
 export const splitHours = async (opening) => {
   try {
     if (opening) {
-      const hours = opening.split("-");
+      const hours = opening.split('-');
 
       if (hours) {
         return { start: Number(hours[0].trim()), end: Number(hours[1].trim()) };
@@ -106,7 +106,7 @@ export const splitHours = async (opening) => {
 export const splitHoursISO = async (date, timeSlot) => {
   try {
     if (timeSlot) {
-      const hours = timeSlot.split("-");
+      const hours = timeSlot.split('-');
 
       if (hours) {
         const startHour = hours[0].trim();
@@ -114,18 +114,18 @@ export const splitHoursISO = async (date, timeSlot) => {
 
         const start =
           dateISO(date) +
-          "T" +
+          'T' +
           startHour.toString().slice(0, 2) +
-          ":" +
+          ':' +
           startHour.slice(2) +
-          ":00";
+          ':00';
         const end =
           dateISO(date) +
-          "T" +
+          'T' +
           endHour.toString().slice(0, 2) +
-          ":" +
+          ':' +
           endHour.slice(2) +
-          ":00";
+          ':00';
 
         return { start: start, end: end };
       } else {
@@ -142,7 +142,7 @@ export const splitHoursISO = async (date, timeSlot) => {
 export const splitOpeningHours = async (opening) => {
   try {
     if (opening) {
-      const hours = opening.split("-");
+      const hours = opening.split('-');
       const start = await findSlots(hours[0].trim(), true);
       const end = await findSlots(hours[1].trim(), false);
 
@@ -201,13 +201,13 @@ export const createVenue = async (data) => {
     });
 
     if (venue) {
-      return { status: true, error: "", msg: "Successfully created venue" };
+      return { status: true, error: '', msg: 'Successfully created venue' };
     } else {
-      return { status: false, error: "Failed to create venue", msg: "" };
+      return { status: false, error: 'Failed to create venue', msg: '' };
     }
   } catch (error) {
     console.log(error);
-    return { status: false, error: error, msg: "" };
+    return { status: false, error: error, msg: '' };
   }
 };
 
@@ -221,12 +221,12 @@ export const editVenue = async (data) => {
     });
 
     if (venue) {
-      return { status: true, error: "", msg: "Successfully updated venue" };
+      return { status: true, error: '', msg: 'Successfully updated venue' };
     } else {
-      return { status: false, error: "Failed to update venue", msg: "" };
+      return { status: false, error: 'Failed to update venue', msg: '' };
     }
   } catch (error) {
     console.log(error);
-    return { status: false, error: error, msg: "" };
+    return { status: false, error: error, msg: '' };
   }
 };

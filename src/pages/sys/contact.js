@@ -1,10 +1,10 @@
-import { Box, Flex, Text, VStack } from "@chakra-ui/react";
-import Auth from "@components/sys/Auth";
+import { Box, Flex, Text, VStack } from '@chakra-ui/react';
+import Auth from '@components/sys/Auth';
 
 const confetti = {
   light: {
-    primary: "4299E1", // blue.400
-    secondary: "BEE3F8", // blue.100
+    primary: '4299E1', // blue.400
+    secondary: 'BEE3F8', // blue.100
   },
 };
 
@@ -14,33 +14,33 @@ export default function Contact() {
   return (
     <Auth>
       <Flex
-        bg="gray.100"
-        align="center"
-        justify="center"
+        bg='gray.100'
+        align='center'
+        justify='center'
         css={{
           backgroundImage: CONFETTI_LIGHT,
-          backgroundAttachment: "fixed",
+          backgroundAttachment: 'fixed',
         }}
-        id="profile"
+        id='profile'
       >
         <Box
-          borderRadius="lg"
+          borderRadius='lg'
           m={{ base: 5, md: 16, lg: 10 }}
           p={{ base: 5, lg: 16 }}
         >
           <Box>
             <VStack spacing={{ base: 4, md: 8, lg: 20 }}>
               <Box
-                bg="white"
-                borderRadius="lg"
+                bg='white'
+                borderRadius='lg'
                 p={8}
-                color="gray.700"
-                shadow="base"
+                color='gray.700'
+                shadow='base'
               >
                 <VStack spacing={5}>
                   <Text>Please contact </Text>
-                  <Text color="blue">
-                    <a href="mailto:ke7webdev@gmail.com">ke7webdev@gmail.com</a>
+                  <Text color='blue'>
+                    <a href='mailto:ke7webdev@gmail.com'>ke7webdev@gmail.com</a>
                   </Text>
                   <Text>for any queries.</Text>
                 </VStack>

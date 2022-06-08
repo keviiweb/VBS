@@ -1,6 +1,6 @@
-import { editVenue } from "@helper/sys/vbs/venue";
-import { IncomingForm } from "formidable";
-import { currentSession } from "@helper/sys/session";
+import { editVenue } from '@helper/sys/vbs/venue';
+import { IncomingForm } from 'formidable';
+import { currentSession } from '@helper/sys/session';
 
 // first we need to disable the default body parser
 export const config = {
@@ -23,7 +23,7 @@ const handler = async (req, res) => {
     });
 
     try {
-      let isChildVenue = data.fields.isChildVenue === "true";
+      let isChildVenue = data.fields.isChildVenue === 'true';
       let parentVenue = isChildVenue ? data.fields.parentVenue : null;
 
       const venueData = {
@@ -31,8 +31,8 @@ const handler = async (req, res) => {
         capacity: Number(data.fields.capacity),
         name: data.fields.name,
         description: data.fields.description,
-        isInstantBook: data.fields.isInstantBook === "true",
-        visible: data.fields.visible === "true",
+        isInstantBook: data.fields.isInstantBook === 'true',
+        visible: data.fields.visible === 'true',
         isChildVenue: isChildVenue,
         parentVenue: parentVenue,
         openingHours: data.fields.openingHours,
@@ -42,7 +42,7 @@ const handler = async (req, res) => {
       if (editVenueRequest.status) {
         result = {
           status: true,
-          error: "",
+          error: '',
           msg: `Successfully edited ${data.fields.name}`,
         };
         res.status(200).send(result);
@@ -52,7 +52,7 @@ const handler = async (req, res) => {
         result = {
           status: false,
           error: editVenueRequest.error,
-          msg: "",
+          msg: '',
         };
         res.status(200).send(result);
         res.end();
@@ -60,13 +60,13 @@ const handler = async (req, res) => {
       }
     } catch (error) {
       console.log(error);
-      result = { status: false, error: "Failed to create venue", msg: "" };
+      result = { status: false, error: 'Failed to create venue', msg: '' };
       res.status(200).send(result);
       res.end();
       return;
     }
   } else {
-    result = { status: false, error: "Unauthenticated request", msg: "" };
+    result = { status: false, error: 'Unauthenticated request', msg: '' };
     res.status(200).send(result);
     res.end();
     return;

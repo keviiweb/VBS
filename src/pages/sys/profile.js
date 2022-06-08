@@ -8,18 +8,18 @@ import {
   InputGroup,
   InputLeftElement,
   VStack,
-} from "@chakra-ui/react";
-import { useState, useEffect } from "react";
-import { BsPerson } from "react-icons/bs";
-import { MdOutlineEmail, MdAccountBox } from "react-icons/md";
-import Auth from "@components/sys/Auth";
-import { currentSession } from "@helper/sys/session";
-import Loading from "@components/sys/vbs/Loading";
+} from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
+import { BsPerson } from 'react-icons/bs';
+import { MdOutlineEmail, MdAccountBox } from 'react-icons/md';
+import Auth from '@components/sys/Auth';
+import { currentSession } from '@helper/sys/session';
+import Loading from '@components/sys/vbs/Loading';
 
 const confetti = {
   light: {
-    primary: "4299E1", // blue.400
-    secondary: "BEE3F8", // blue.100
+    primary: '4299E1', // blue.400
+    secondary: 'BEE3F8', // blue.100
   },
 };
 
@@ -36,11 +36,11 @@ export default function Profile() {
     async function fetchData() {
       const session = await currentSession();
       let studentID =
-        session && session.user.studentID ? session.user.studentID : "A1234567";
+        session && session.user.studentID ? session.user.studentID : 'A1234567';
       let username =
-        session && session.user.username ? session.user.username : "Test User";
+        session && session.user.username ? session.user.username : 'Test User';
       let email =
-        session && session.user.email ? session.user.email : "test@test.com";
+        session && session.user.email ? session.user.email : 'test@test.com';
 
       setStudentID(studentID);
       setUsername(username);
@@ -56,17 +56,17 @@ export default function Profile() {
     <Auth>
       {loading && (
         <Flex
-          bg="gray.100"
-          align="center"
-          justify="center"
+          bg='gray.100'
+          align='center'
+          justify='center'
           css={{
             backgroundImage: CONFETTI_LIGHT,
-            backgroundAttachment: "fixed",
+            backgroundAttachment: 'fixed',
           }}
-          id="profile"
+          id='profile'
         >
           <Box
-            borderRadius="lg"
+            borderRadius='lg'
             m={{ base: 5, md: 16, lg: 10 }}
             p={{ base: 5, lg: 16 }}
           >
@@ -74,19 +74,19 @@ export default function Profile() {
               <VStack spacing={{ base: 4, md: 8, lg: 16 }}>
                 <Heading
                   fontSize={{
-                    base: "4xl",
-                    md: "5xl",
+                    base: '4xl',
+                    md: '5xl',
                   }}
                 >
                   Profile
                 </Heading>
 
                 <Box
-                  bg="white"
-                  borderRadius="lg"
+                  bg='white'
+                  borderRadius='lg'
                   p={8}
-                  color="gray.700"
-                  shadow="base"
+                  color='gray.700'
+                  shadow='base'
                 >
                   <VStack spacing={5}>
                     <FormControl isDisabled>
@@ -97,9 +97,9 @@ export default function Profile() {
                           <BsPerson />
                         </InputLeftElement>
                         <Input
-                          type="text"
-                          name="name"
-                          placeholder="Your Name"
+                          type='text'
+                          name='name'
+                          placeholder='Your Name'
                           value={username}
                         />
                       </InputGroup>
@@ -113,9 +113,9 @@ export default function Profile() {
                           <MdOutlineEmail />
                         </InputLeftElement>
                         <Input
-                          type="email"
-                          name="email"
-                          placeholder="Your Email"
+                          type='email'
+                          name='email'
+                          placeholder='Your Email'
                           value={email}
                         />
                       </InputGroup>
@@ -129,9 +129,9 @@ export default function Profile() {
                           <MdAccountBox />
                         </InputLeftElement>
                         <Input
-                          type="text"
-                          name="studentID"
-                          placeholder="Your Student ID"
+                          type='text'
+                          name='studentID'
+                          placeholder='Your Student ID'
                           value={studentID}
                         />
                       </InputGroup>
@@ -145,7 +145,7 @@ export default function Profile() {
       )}
       {!loading && (
         <Box>
-          <Loading message={"Loading profile..."} />
+          <Loading message={'Loading profile...'} />
         </Box>
       )}
     </Auth>

@@ -36,7 +36,9 @@ export default function Map({ location, zoomLevel, apiKey }) {
     ({ text }) => (
       <Popover offset={[0, 10]} placement='left'>
         <PopoverTrigger>
-          <Icon as={MdOutlineLocationOn} w={10} h={12} />
+          <Icon w={20} h={20}>
+            <MdOutlineLocationOn />
+          </Icon>
         </PopoverTrigger>
         <PopoverContent>
           <PopoverCloseButton />

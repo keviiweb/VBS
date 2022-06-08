@@ -9,14 +9,14 @@ import {
   Heading,
   Text,
   Spinner,
-} from "@chakra-ui/react";
-import { useState, useEffect } from "react";
-import { signIn } from "next-auth/react";
+} from '@chakra-ui/react';
+import { useState, useEffect } from 'react';
+import { signIn } from 'next-auth/react';
 
 export default function SignIn(props) {
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [url, setURL] = useState("https://vbs-kevii.vercel.app"); //default
+  const [email, setEmail] = useState('');
+  const [url, setURL] = useState('https://vbs-kevii.vercel.app'); //default
 
   useEffect(() => {
     async function fetchData(props) {
@@ -32,9 +32,9 @@ export default function SignIn(props) {
     event.preventDefault();
     try {
       setLoading(true);
-      await signIn("email", {
+      await signIn('email', {
         email: email,
-        callbackUrl: url + "/",
+        callbackUrl: url + '/',
       });
     } catch (error) {
       console.log(error);
@@ -43,33 +43,33 @@ export default function SignIn(props) {
   };
 
   return (
-    <Flex minH={"100vh"} align={"center"} justify={"center"} bg="gray.50">
-      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
-        <Stack align={"center"}>
-          <Heading fontSize={"4xl"}>KEVII VBS</Heading>
-          <Text fontSize={"sm"} color={"gray.600"}>
+    <Flex minH={'100vh'} align={'center'} justify={'center'} bg='gray.50'>
+      <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+        <Stack align={'center'}>
+          <Heading fontSize={'4xl'}>KEVII VBS</Heading>
+          <Text fontSize={'sm'} color={'gray.600'}>
             Please enter your school email ending with @u.nus.edu
           </Text>
         </Stack>
-        <Box rounded={"lg"} bg="white" boxShadow={"lg"} p={8}>
+        <Box rounded={'lg'} bg='white' boxShadow={'lg'} p={8}>
           <form onSubmit={handleSubmit}>
             <Stack spacing={4}>
-              <FormControl id="email">
+              <FormControl id='email'>
                 <FormLabel>Email address</FormLabel>
                 <Input
-                  type="email"
-                  placeholder="test@u.nus.edu"
-                  size="lg"
+                  type='email'
+                  placeholder='test@u.nus.edu'
+                  size='lg'
                   onChange={(event) => setEmail(event.currentTarget.value)}
                 />
               </FormControl>
               <Stack spacing={10}>
                 <Button
-                  type="submit"
-                  bg={"blue.400"}
-                  color={"white"}
+                  type='submit'
+                  bg={'blue.400'}
+                  color={'white'}
                   _hover={{
-                    bg: "blue.500",
+                    bg: 'blue.500',
                   }}
                 >
                   Sign in
@@ -81,8 +81,8 @@ export default function SignIn(props) {
           {loading && (
             <>
               <Stack spacing={10} mt={5}>
-                <Stack align={"center"}>
-                  <Text fontSize={"sm"} color={"gray.600"}>
+                <Stack align={'center'}>
+                  <Text fontSize={'sm'} color={'gray.600'}>
                     Logging in...
                   </Text>
                   <Spinner />

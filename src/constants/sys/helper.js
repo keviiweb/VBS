@@ -1,9 +1,9 @@
 import {
   timingSlotNumberToTimingMapping,
   timeSlots,
-} from "@constants/sys/timeslot";
-import { numberToWeekday } from "@constants/sys/weekdays";
-import { monthNamesFull } from "@constants/sys/months";
+} from '@constants/sys/timeslot';
+import { numberToWeekday } from '@constants/sys/weekdays';
+import { monthNamesFull } from '@constants/sys/months';
 
 export const isInside = (want, check) => {
   // Check if want is inside check
@@ -39,13 +39,13 @@ export const mapSlotToTiming = (data) => {
 };
 
 export const prettifyTiming = (data) => {
-  let str = "";
+  let str = '';
   let count = 0;
 
   for (let key in data) {
     count += 1;
     if (count != data.length) {
-      str += data[key] + ", ";
+      str += data[key] + ', ';
     } else {
       str += data[key];
     }
@@ -69,8 +69,8 @@ export const prettifyDate = (date) => {
 export const dateISO = (date) => {
   if (date) {
     const dateObj = new Date(date);
-    const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
-    const day = dateObj.getDate().toString().padStart(2, "0");
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    const day = dateObj.getDate().toString().padStart(2, '0');
     const prettyDate = `${dateObj.getFullYear()}-${month}-${day}`;
     return prettyDate;
   }
@@ -100,7 +100,7 @@ export const compareDate = (comparedDate, number) => {
 
 export const convertSlotToArray = (slots, reverse = false) => {
   if (reverse) {
-    const result = slots.split(",");
+    const result = slots.split(',');
     for (let key in result) {
       result[key] = Number(result[key]);
     }
@@ -121,7 +121,7 @@ export const convertSlotToArray = (slots, reverse = false) => {
 export const findSlots = async (slot, isStart) => {
   for (let i in timingSlotNumberToTimingMapping) {
     if (timingSlotNumberToTimingMapping[i].includes(slot)) {
-      const split = timingSlotNumberToTimingMapping[i].split("-");
+      const split = timingSlotNumberToTimingMapping[i].split('-');
       if (split[0].trim() == slot && isStart) {
         return i;
       }

@@ -1,4 +1,4 @@
-import { useTable, usePagination } from "react-table";
+import { useTable, usePagination } from 'react-table';
 import {
   Box,
   Table,
@@ -17,13 +17,13 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 import {
   ArrowRightIcon,
   ArrowLeftIcon,
   ChevronRightIcon,
   ChevronLeftIcon,
-} from "@chakra-ui/icons";
+} from '@chakra-ui/icons';
 
 export default function TableWidget({ columns, data }) {
   const {
@@ -46,15 +46,15 @@ export default function TableWidget({ columns, data }) {
       columns,
       data,
     },
-    usePagination
+    usePagination,
   );
 
   return (
     <>
       <Box
         style={{
-          maxHeight: "600px",
-          overflow: "scroll",
+          maxHeight: '600px',
+          overflow: 'scroll',
         }}
       >
         <Table {...getTableProps()}>
@@ -63,7 +63,7 @@ export default function TableWidget({ columns, data }) {
               <Tr key={i} {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column, i) => (
                   <Th key={i} {...column.getHeaderProps()}>
-                    {column.render("Header")}
+                    {column.render('Header')}
                   </Th>
                 ))}
               </Tr>
@@ -77,7 +77,7 @@ export default function TableWidget({ columns, data }) {
                   {row.cells.map((cell, i) => {
                     return (
                       <Td key={i} {...cell.getCellProps()}>
-                        {cell.render("Cell")}
+                        {cell.render('Cell')}
                       </Td>
                     );
                   })}
@@ -87,9 +87,9 @@ export default function TableWidget({ columns, data }) {
           </Tbody>
         </Table>
 
-        <Flex justifyContent="space-between" m={4} alignItems="center">
+        <Flex justifyContent='space-between' m={4} alignItems='center'>
           <Flex>
-            <Tooltip label="First Page">
+            <Tooltip label='First Page'>
               <IconButton
                 onClick={() => gotoPage(0)}
                 isDisabled={!canPreviousPage}
@@ -97,7 +97,7 @@ export default function TableWidget({ columns, data }) {
                 mr={4}
               />
             </Tooltip>
-            <Tooltip label="Previous Page">
+            <Tooltip label='Previous Page'>
               <IconButton
                 onClick={previousPage}
                 isDisabled={!canPreviousPage}
@@ -106,18 +106,18 @@ export default function TableWidget({ columns, data }) {
             </Tooltip>
           </Flex>
 
-          <Flex alignItems="center">
-            <Text flexShrink="0" mr={8}>
-              Page{" "}
-              <Text fontWeight="bold" as="span">
+          <Flex alignItems='center'>
+            <Text flexShrink='0' mr={8}>
+              Page{' '}
+              <Text fontWeight='bold' as='span'>
                 {pageIndex + 1}
-              </Text>{" "}
-              of{" "}
-              <Text fontWeight="bold" as="span">
+              </Text>{' '}
+              of{' '}
+              <Text fontWeight='bold' as='span'>
                 {pageOptions.length}
               </Text>
             </Text>
-            <Text flexShrink="0">Go to page:</Text>{" "}
+            <Text flexShrink='0'>Go to page:</Text>{' '}
             <NumberInput
               ml={2}
               mr={8}
@@ -152,14 +152,14 @@ export default function TableWidget({ columns, data }) {
           </Flex>
 
           <Flex>
-            <Tooltip label="Next Page">
+            <Tooltip label='Next Page'>
               <IconButton
                 onClick={nextPage}
                 isDisabled={!canNextPage}
                 icon={<ChevronRightIcon h={6} w={6} />}
               />
             </Tooltip>
-            <Tooltip label="Last Page">
+            <Tooltip label='Last Page'>
               <IconButton
                 onClick={() => gotoPage(pageCount - 1)}
                 isDisabled={!canNextPage}

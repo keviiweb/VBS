@@ -8,14 +8,14 @@ import {
   InputGroup,
   InputLeftAddon,
   Stack,
-} from "@chakra-ui/react";
-import { CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
-import { cardVariant } from "@root/motion";
-import { motion } from "framer-motion";
-import { useState, useEffect, useMemo, useCallback } from "react";
-import Auth from "@components/sys/Auth";
-import TableWidget from "@components/sys/vbs/TableWidget";
-import BookingModal from "@components/sys/vbs/BookingModal";
+} from '@chakra-ui/react';
+import { CloseIcon, InfoOutlineIcon } from '@chakra-ui/icons';
+import { cardVariant } from '@root/motion';
+import { motion } from 'framer-motion';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import Auth from '@components/sys/Auth';
+import TableWidget from '@components/sys/vbs/TableWidget';
+import BookingModal from '@components/sys/vbs/BookingModal';
 
 const MotionBox = motion(Box);
 
@@ -26,7 +26,7 @@ export default function ManageBooking() {
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState(null);
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState(null);
 
   var handleDetails = useCallback((content) => {
@@ -37,11 +37,11 @@ export default function ManageBooking() {
     async (id) => {
       if (id) {
         try {
-          const rawResponse = await fetch("/api/bookingReq/cancel", {
-            method: "POST",
+          const rawResponse = await fetch('/api/bookingReq/cancel', {
+            method: 'POST',
             headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               id: id,
@@ -50,18 +50,18 @@ export default function ManageBooking() {
           const content = await rawResponse.json();
           if (content.status) {
             toast({
-              title: "Request cancelled.",
-              description: "An email has been sent to the requester",
-              status: "success",
+              title: 'Request cancelled.',
+              description: 'An email has been sent to the requester',
+              status: 'success',
               duration: 5000,
               isClosable: true,
             });
             await fetchData();
           } else {
             toast({
-              title: "Error",
+              title: 'Error',
               description: content.error,
-              status: "error",
+              status: 'error',
               duration: 5000,
               isClosable: true,
             });
@@ -71,7 +71,7 @@ export default function ManageBooking() {
         }
       }
     },
-    [toast]
+    [toast],
   );
 
   var includeActionButton = useCallback(
@@ -85,25 +85,25 @@ export default function ManageBooking() {
       }
       setData(content);
     },
-    [generateActionButton]
+    [generateActionButton],
   );
 
   var generateActionButton = useCallback(
     async (content) => {
       let button = null;
 
-      if (content.status === "PENDING" || content.status === "APPROVED") {
+      if (content.status === 'PENDING' || content.status === 'APPROVED') {
         button = (
           <ButtonGroup>
             <Button
-              size="sm"
+              size='sm'
               leftIcon={<CloseIcon />}
               onClick={() => handleCancel(content.id)}
             >
               Cancel
             </Button>
             <Button
-              size="sm"
+              size='sm'
               leftIcon={<InfoOutlineIcon />}
               onClick={() => handleDetails(content)}
             >
@@ -116,7 +116,7 @@ export default function ManageBooking() {
         button = (
           <ButtonGroup>
             <Button
-              size="sm"
+              size='sm'
               leftIcon={<InfoOutlineIcon />}
               onClick={() => handleDetails(content)}
             >
@@ -127,7 +127,7 @@ export default function ManageBooking() {
         return button;
       }
     },
-    [handleDetails, handleCancel]
+    [handleDetails, handleCancel],
   );
 
   useEffect(() => {
@@ -135,10 +135,10 @@ export default function ManageBooking() {
       setLoadingData(true);
       setData(null);
       try {
-        const rawResponse = await fetch("/api/bookingReq/fetch?q=USER", {
+        const rawResponse = await fetch('/api/bookingReq/fetch?q=USER', {
           headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
           },
         });
         const content = await rawResponse.json();
@@ -161,7 +161,7 @@ export default function ManageBooking() {
     const searchInput = event.target.value;
     setSearch(searchInput);
 
-    if (searchInput && searchInput != "") {
+    if (searchInput && searchInput != '') {
       let filteredData = data.filter((value) => {
         return (
           value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -183,61 +183,61 @@ export default function ManageBooking() {
   const columns = useMemo(
     () => [
       {
-        Header: "Venue",
-        accessor: "venue",
+        Header: 'Venue',
+        accessor: 'venue',
       },
       {
-        Header: "Date",
-        accessor: "date",
+        Header: 'Date',
+        accessor: 'date',
       },
       {
-        Header: "Timeslot(s)",
-        accessor: "timeSlots",
+        Header: 'Timeslot(s)',
+        accessor: 'timeSlots',
       },
       {
-        Header: "Email",
-        accessor: "email",
+        Header: 'Email',
+        accessor: 'email',
       },
       {
-        Header: "CCA",
-        accessor: "cca",
+        Header: 'CCA',
+        accessor: 'cca',
       },
       {
-        Header: "Purpose",
-        accessor: "purpose",
+        Header: 'Purpose',
+        accessor: 'purpose',
       },
       {
-        Header: "Status",
-        accessor: "status",
+        Header: 'Status',
+        accessor: 'status',
       },
       {
-        Header: "Actions",
-        accessor: "action",
+        Header: 'Actions',
+        accessor: 'action',
       },
     ],
-    []
+    [],
   );
 
   return (
     <Auth>
-      <Box bg="white" borderRadius="lg" p={8} color="gray.700" shadow="base">
-        <MotionBox variants={cardVariant} key="1">
+      <Box bg='white' borderRadius='lg' p={8} color='gray.700' shadow='base'>
+        <MotionBox variants={cardVariant} key='1'>
           {loadingData && !data ? (
-            <Box align="center" justify="center" mt={30}>
+            <Box align='center' justify='center' mt={30}>
               <Text>Loading Please wait...</Text>
             </Box>
           ) : !loadingData && data.length == 0 ? (
-            <Box align="center" justify="center" mt={30}>
+            <Box align='center' justify='center' mt={30}>
               <Text>No bookings found</Text>
             </Box>
           ) : (
-            <Box align="center" justify="center" minWidth={"full"} mt={30}>
+            <Box align='center' justify='center' minWidth={'full'} mt={30}>
               <Stack spacing={30}>
                 <InputGroup>
                   <InputLeftAddon>Search:</InputLeftAddon>
                   <Input
-                    type="text"
-                    placeholder=""
+                    type='text'
+                    placeholder=''
                     value={search}
                     onChange={handleSearch}
                   />

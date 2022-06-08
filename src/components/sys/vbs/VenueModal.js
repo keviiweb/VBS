@@ -15,11 +15,11 @@ import {
   SimpleGrid,
   Stack,
   Text,
-} from "@chakra-ui/react";
-import { motion } from "framer-motion";
-import { useState, useEffect, useRef, useMemo } from "react";
-import { cardVariant, parentVariant } from "@root/motion";
-import TableWidget from "@components/sys/vbs/TableWidget";
+} from '@chakra-ui/react';
+import { motion } from 'framer-motion';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { cardVariant, parentVariant } from '@root/motion';
+import TableWidget from '@components/sys/vbs/TableWidget';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -57,11 +57,11 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
 
   const processChildVenue = async (parentVenueID) => {
     try {
-      const rawResponse = await fetch("/api/venue/child", {
-        method: "POST",
+      const rawResponse = await fetch('/api/venue/child', {
+        method: 'POST',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           venue: parentVenueID,
@@ -102,31 +102,31 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
   const columns = useMemo(
     () => [
       {
-        Header: "Name",
-        accessor: "name",
+        Header: 'Name',
+        accessor: 'name',
       },
       {
-        Header: "Description",
-        accessor: "description",
+        Header: 'Description',
+        accessor: 'description',
       },
       {
-        Header: "Opening Hours",
-        accessor: "openingHours",
+        Header: 'Opening Hours',
+        accessor: 'openingHours',
       },
       {
-        Header: "Capacity",
-        accessor: "capacity",
+        Header: 'Capacity',
+        accessor: 'capacity',
       },
       {
-        Header: "Instant Book",
-        accessor: "instantBook",
+        Header: 'Instant Book',
+        accessor: 'instantBook',
       },
       {
-        Header: "Available for Booking",
-        accessor: "isAvailable",
+        Header: 'Available for Booking',
+        accessor: 'isAvailable',
       },
     ],
-    []
+    [],
   );
 
   return (
@@ -134,10 +134,10 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
       closeOnOverlayClick={false}
       isOpen={isOpen}
       onClose={handleModalCloseButton}
-      size="full"
+      size='full'
       isCentered
-      motionPreset="slideInBottom"
-      scrollBehavior={"inside"}
+      motionPreset='slideInBottom'
+      scrollBehavior={'inside'}
     >
       <ModalOverlay />
       <ModalContent>
@@ -145,85 +145,85 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         <ModalHeader></ModalHeader>
         <ModalBody>
           <MotionSimpleGrid
-            mt="3"
-            minChildWidth={{ base: "full", md: "full" }}
-            spacing="2em"
-            minH="full"
+            mt='3'
+            minChildWidth={{ base: 'full', md: 'full' }}
+            spacing='2em'
+            minH='full'
             variants={parentVariant}
-            initial="initial"
-            animate="animate"
+            initial='initial'
+            animate='animate'
           >
-            <MotionBox variants={cardVariant} key="2">
+            <MotionBox variants={cardVariant} key='2'>
               {modalData && (
                 <Flex
-                  w="full"
-                  h="full"
-                  alignItems="center"
-                  justifyContent="center"
+                  w='full'
+                  h='full'
+                  alignItems='center'
+                  justifyContent='center'
                 >
                   <Stack spacing={{ base: 6, md: 10 }}>
                     <Stack
                       spacing={{ base: 4, sm: 6 }}
-                      direction={"column"}
-                      divider={<StackDivider borderColor={"gray.200"} />}
+                      direction={'column'}
+                      divider={<StackDivider borderColor={'gray.200'} />}
                     >
                       <Box>
                         <Text
-                          fontSize={{ base: "16px", lg: "18px" }}
-                          fontWeight={"500"}
-                          textTransform={"uppercase"}
-                          mb={"4"}
+                          fontSize={{ base: '16px', lg: '18px' }}
+                          fontWeight={'500'}
+                          textTransform={'uppercase'}
+                          mb={'4'}
                         >
                           Venue Details
                         </Text>
 
                         <List spacing={5}>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Venue ID:
-                            </Text>{" "}
+                            </Text>{' '}
                             {id}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Name:
-                            </Text>{" "}
+                            </Text>{' '}
                             {name}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Description:
-                            </Text>{" "}
+                            </Text>{' '}
                             {description}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Opening Hours:
-                            </Text>{" "}
+                            </Text>{' '}
                             {openingHours}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Capacity:
-                            </Text>{" "}
+                            </Text>{' '}
                             {capacity}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Child Venue:
-                            </Text>{" "}
+                            </Text>{' '}
                             {childVenue}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Instant Book:
-                            </Text>{" "}
+                            </Text>{' '}
                             {instantBook}
                           </ListItem>
                           <ListItem>
-                            <Text as={"span"} fontWeight={"bold"}>
+                            <Text as={'span'} fontWeight={'bold'}>
                               Available for Booking:
-                            </Text>{" "}
+                            </Text>{' '}
                             {isAvailable}
                           </ListItem>
                         </List>
@@ -233,19 +233,19 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                 </Flex>
               )}
             </MotionBox>
-            <MotionBox variants={cardVariant} key="3">
+            <MotionBox variants={cardVariant} key='3'>
               <Flex
-                w="full"
-                h="full"
-                alignItems="center"
-                justifyContent="center"
+                w='full'
+                h='full'
+                alignItems='center'
+                justifyContent='center'
               >
                 <Box>
                   <Text
-                    fontSize={{ base: "16px", lg: "18px" }}
-                    fontWeight={"500"}
-                    textTransform={"uppercase"}
-                    mb={"4"}
+                    fontSize={{ base: '16px', lg: '18px' }}
+                    fontWeight={'500'}
+                    textTransform={'uppercase'}
+                    mb={'4'}
                   >
                     Child Venues
                   </Text>
@@ -270,10 +270,10 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                         <Text>Loading Please wait...</Text>
                       ) : (
                         <Text
-                          fontSize={{ base: "16px", lg: "18px" }}
-                          fontWeight={"500"}
-                          textTransform={"uppercase"}
-                          mb={"4"}
+                          fontSize={{ base: '16px', lg: '18px' }}
+                          fontWeight={'500'}
+                          textTransform={'uppercase'}
+                          mb={'4'}
                         >
                           No child venues found
                         </Text>
@@ -287,12 +287,12 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         </ModalBody>
         <ModalFooter>
           <Button
-            bg="cyan.700"
-            color="white"
-            w="150px"
-            size="lg"
+            bg='cyan.700'
+            color='white'
+            w='150px'
+            size='lg'
             onClick={handleModalCloseButton}
-            _hover={{ bg: "cyan.800" }}
+            _hover={{ bg: 'cyan.800' }}
           >
             Close
           </Button>
