@@ -21,7 +21,7 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 
 export default function Header() {
-  const bg = 'white';
+  const bg = 'black';
   const mobileNav = useDisclosure();
 
   const Section = useCallback((props) => {
@@ -150,10 +150,10 @@ export default function Header() {
   }, []);
 
   return (
-    <chakra.header bg={bg} w='full' px={{ base: 2, sm: 4 }} py={4}>
+    <chakra.header id="header" w='full' px={{ base: 2, sm: 4 }} py={6}>
       <Flex alignItems='center' justifyContent='space-between' mx='auto'>
         <NextLink href='/'>
-          <Flex ml={{ base: 5, md: 8, lg: 12, xl: 20 }}>
+          <Flex mt={3} ml={{ base: 5, md: 8, lg: 12, xl: 20 }}>
             <Image
               src='/sys/image/keviilogo.png'
               width='50px'
@@ -165,7 +165,7 @@ export default function Header() {
         <HStack display='flex' alignItems='center' spacing={1}>
           <HStack
             spacing={{ base: 1, lg: 5 }}
-            mr={1}
+            mr={{ base: 2, md: 2, lg: 2, xl: 20 }}
             color='brand.500'
             display={{ base: 'none', md: 'inline-flex' }}
           >
@@ -199,9 +199,7 @@ export default function Header() {
               </PopoverContent>
             </Popover>
           </HStack>
-          <Button colorScheme='brand' size='sm'>
-            Get Started
-          </Button>
+          
           <Box display={{ base: 'inline-flex', md: 'none' }}>
             <IconButton
               display={{ base: 'flex', md: 'none' }}

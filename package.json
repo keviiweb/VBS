@@ -9,8 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "prettier": "prettier --write .",
-    "postinstall": "prisma generate",
-    "prepare": "husky install"
+    "postinstall": "prisma generate"
   },
   "engines": {
     "node": "16.13.1"
