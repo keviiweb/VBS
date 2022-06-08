@@ -1,8 +1,10 @@
-import { chakra, Box, Flex, Stack } from '@chakra-ui/react';
+import { chakra, Box, Flex, SimpleGrid } from '@chakra-ui/react';
 import Map from '@components/landing/Map';
 import { motion } from 'framer-motion';
 import { layoutVariant } from '@root/motion';
 import React from 'react';
+
+const MotionBox = motion(Box);
 
 export default function Feature() {
   const location = {
@@ -12,55 +14,54 @@ export default function Feature() {
   };
 
   return (
-    <motion.div
-      className='card-container'
+    <MotionBox
+      id='features'
       initial='offscreen'
       whileInView='onscreen'
-      viewport={{ once: true, amount: 0.8 }}
+      viewport={{ once: true, amount: 0.2 }}
     >
-      <motion.div className='card' variants={layoutVariant}>
+      <MotionBox variants={layoutVariant}>
         <Flex
-          direction={{ base: 'row', md: 'row' }}
+          bg='#F9FAFB'
+          p={{ base: 4, md: 8, lg: 12, xl: 20 }}
+          w='full'
           justifyContent='center'
           alignItems='center'
-          bg='#F9FAFB'
-          px={16}
-          py={24}
-          mx='auto'
         >
-          <Box
-            w={{ base: 'full', md: 11 / 12, xl: 9 / 12 }}
-            mx='auto'
-            pr={{ md: 20 }}
-          >
-            <chakra.h2
-              fontSize={{ base: '3xl', sm: '4xl' }}
-              fontWeight='extrabold'
-              lineHeight='shorter'
-              color='brand.600'
-              mb={6}
+          <SimpleGrid columns={{ base: 1, md: 1, lg: 1, xl: 2 }}>
+            <Flex
+              direction='column'
+              alignItems='start'
+              justifyContent='center'
+              px={{ base: 4, md: 8, lg: 12, xl: 20 }}
+              py={24}
+              zIndex={1}
             >
-              <chakra.span display='block'>
-                Experience the life of a KEVIIAN
-              </chakra.span>
-            </chakra.h2>
-            <chakra.p
-              pr={{ base: 0, lg: 16 }}
-              mb={4}
-              fontSize='lg'
-              color='brand.600'
-              letterSpacing='wider'
-            >
-              Applications will be open on 16 May 2022 until 6 June 2022. Do
-              visit the NUS OSA website for more details on the application
-              process. Do also follow us on our socials to receive timely
-              updates about the Hall, reminders and other important information!
-            </chakra.p>
-            <Stack
-              direction={{ base: 'column', sm: 'row' }}
-              mb={{ base: 4, md: 8 }}
-              spacing={2}
-            >
+              <chakra.h2
+                fontSize={{ base: '3xl', sm: '4xl' }}
+                fontWeight='extrabold'
+                lineHeight='shorter'
+                color='brand.600'
+                mb={6}
+              >
+                <chakra.span display='block'>
+                  Experience the life of a KEVIIAN
+                </chakra.span>
+              </chakra.h2>
+              <chakra.p
+                pr={{ base: 0, lg: 16 }}
+                mb={4}
+                fontSize='lg'
+                color='brand.600'
+                letterSpacing='wider'
+              >
+                Applications will be open on 16 May 2022 until 6 June 2022. Do
+                visit the NUS OSA website for more details on the application
+                process. Do also follow us on our socials to receive timely
+                updates about the Hall, reminders and other important
+                information!
+              </chakra.p>
+
               <Box display='inline-flex' rounded='md' shadow='md'>
                 <chakra.a
                   display='inline-flex'
@@ -82,19 +83,25 @@ export default function Feature() {
                   Hall Application
                 </chakra.a>
               </Box>
-            </Stack>
-          </Box>
-          <Box w={{ base: 'full', md: 7 / 12 }} mx='auto' textAlign='center'>
-            <Box>
-              <Map
-                location={location}
-                zoomLevel={18}
-                apiKey='AIzaSyCoiMvqTY6CAobxafxPCDPF5WmVh3ajlAQ'
-              />
-            </Box>
-          </Box>
+            </Flex>
+            <Flex
+              bg='#F9FAFB'
+              p={{ base: 4, md: 8, lg: 12, xl: 20 }}
+              w='auto'
+              justifyContent='center'
+              alignItems='center'
+            >
+              <Box w='full'>
+                <Map
+                  location={location}
+                  zoomLevel={19}
+                  apiKey='AIzaSyCoiMvqTY6CAobxafxPCDPF5WmVh3ajlAQ'
+                />
+              </Box>
+            </Flex>
+          </SimpleGrid>
         </Flex>
-      </motion.div>
-    </motion.div>
+      </MotionBox>
+    </MotionBox>
   );
 }

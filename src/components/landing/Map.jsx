@@ -1,6 +1,6 @@
 import GoogleMapReact from 'google-map-react';
 import {
-  Icon,
+  Image,
   Box,
   Popover,
   PopoverTrigger,
@@ -10,7 +10,6 @@ import {
   Stack,
   Link,
 } from '@chakra-ui/react';
-import { MdOutlineLocationOn } from 'react-icons/md';
 import React, { useCallback } from 'react';
 
 export default function Map({ location, zoomLevel, apiKey }) {
@@ -18,11 +17,11 @@ export default function Map({ location, zoomLevel, apiKey }) {
     'https://www.google.com/maps/place/King+Edward+VII+Hall/@1.2917278,103.7793973,17.78z/data=!4m13!1m7!3m6!1s0x31da1a537ee6f6a1:0xee8dab3ba6145082!2s1A+Kent+Ridge+Rd,+Singapore+119224!3b1!8m2!3d1.2913725!4d103.7814653!3m4!1s0x31da1a547778d745:0xdaf702fb4bb699f0!8m2!3d1.2923789!4d103.7810051';
 
   const getMapOptions = (maps) => ({
-    streetViewControl: true,
-    scaleControl: true,
+    streetViewControl: false,
+    scaleControl: false,
     fullscreenControl: false,
     mapTypeId: maps.MapTypeId.HYBRID,
-    zoomControl: true,
+    zoomControl: false,
     clickableIcons: false,
     mapTypeControl: true,
     mapTypeControlOptions: {
@@ -34,11 +33,9 @@ export default function Map({ location, zoomLevel, apiKey }) {
 
   const LocationPin = useCallback(
     ({ text }) => (
-      <Popover offset={[0, 10]} placement='left'>
+      <Popover offset={[0, 10]} placement='top'>
         <PopoverTrigger>
-          <Icon w={20} h={20}>
-            <MdOutlineLocationOn />
-          </Icon>
+          <Image w={10} h={12} src='/landing/marker.png' />
         </PopoverTrigger>
         <PopoverContent>
           <PopoverCloseButton />

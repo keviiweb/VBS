@@ -26,14 +26,15 @@ export const cardVariant = {
 
 export const layoutVariant = {
   offscreen: {
-    y: 300,
+    y: 60,
+    opacity: 0,
   },
   onscreen: {
     y: 0,
+    opacity: 1,
     transition: {
-      type: 'spring',
-      bounce: 0.5,
-      duration: 1,
+      duration: 0.6,
+      ease: easing,
     },
   },
 };

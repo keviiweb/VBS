@@ -18,6 +18,7 @@
     "object-shorthand": "off",
     "implicit-arrow-linebreak": "off",
     "wrap-iife": "off",
-    "function-paren-newline": "off"
+    "function-paren-newline": "off",
+    "react/jsx-indent": "off"
   }
 }

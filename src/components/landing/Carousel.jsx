@@ -3,6 +3,8 @@ import { Text, Box, Flex, Image, HStack, Stack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { layoutVariant } from '@root/motion';
 
+const MotionBox = motion(Box);
+
 export default function Carousel() {
   const arrowStyles = {
     cursor: 'pointer',
@@ -66,13 +68,13 @@ export default function Carousel() {
   };
 
   return (
-    <motion.div
-      className='card-container'
+    <MotionBox
+      id='carousel'
       initial='offscreen'
       whileInView='onscreen'
-      viewport={{ once: true, amount: 0.8 }}
+      viewport={{ once: true, amount: 0.2 }}
     >
-      <motion.div className='card' variants={layoutVariant}>
+      <MotionBox variants={layoutVariant}>
         <Flex
           w='full'
           bg='#F9FAFB'
@@ -95,7 +97,11 @@ export default function Carousel() {
               </Text>
             </Box>
 
-            <Flex w='800px' pos='relative' overflow='hidden'>
+            <Flex
+              w={{ base: 'full', md: 'full', lg: 'full', xl: '800px' }}
+              pos='relative'
+              overflow='hidden'
+            >
               <Flex h='400px' w='full' {...carouselStyle}>
                 {slides.map((slide, sid) => (
                   <Box
@@ -162,7 +168,7 @@ export default function Carousel() {
             </Flex>
           </Stack>
         </Flex>
-      </motion.div>
-    </motion.div>
+      </MotionBox>
+    </MotionBox>
   );
 }

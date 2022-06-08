@@ -8,7 +8,8 @@ export default function VerifyRequest() {
         <Box rounded='lg' align='center' bg='white' boxShadow='lg' p={8}>
           <Heading fontSize='4xl'>Authentication</Heading>
           <Text fontSize='sm' color='gray.600' mt={10}>
-            An email has been sent to you! Please click on the link in the email to complete your authentication.
+            An email has been sent to you! Please click on the link in the email
+            to complete your authentication.
           </Text>
         </Box>
       </Stack>

@@ -62,7 +62,7 @@ export default function Sports() {
         </Stack>
       </Flex>
       <MotionSimpleGrid
-        columns={{ base: 1, md: 2, lg: 2 }}
+        columns={{ base: 1, md: 1, lg: 1, xl: 2 }}
         pos='relative'
         gap={{ base: 6, sm: 8 }}
         px={5}

@@ -1,3 +1,4 @@
+import React from 'react';
 import Header from '@components/sys/vbs/Header';
 import Sidebar from '@components/sys/vbs/Sidebar';
 

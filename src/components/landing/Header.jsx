@@ -153,7 +153,7 @@ export default function Header() {
     <chakra.header bg={bg} w='full' px={{ base: 2, sm: 4 }} py={4}>
       <Flex alignItems='center' justifyContent='space-between' mx='auto'>
         <NextLink href='/'>
-          <Flex ml={{ base: 5, lg: 20 }}>
+          <Flex ml={{ base: 5, md: 8, lg: 12, xl: 20 }}>
             <Image
               src='/sys/image/keviilogo.png'
               width='50px'
@@ -164,7 +164,7 @@ export default function Header() {
         </NextLink>
         <HStack display='flex' alignItems='center' spacing={1}>
           <HStack
-            spacing={3}
+            spacing={{ base: 1, lg: 5 }}
             mr={1}
             color='brand.500'
             display={{ base: 'none', md: 'inline-flex' }}
@@ -227,6 +227,7 @@ export default function Header() {
               spacing={3}
               rounded='sm'
               shadow='sm'
+              zIndex={2}
             >
               <CloseButton
                 aria-label='Close menu'

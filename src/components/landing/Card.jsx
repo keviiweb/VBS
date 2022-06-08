@@ -20,8 +20,16 @@ export default function Card({
 
   const SubCardWButton = useCallback(
     () => (
-      <Box mx='auto' rounded='lg' shadow='lg' maxW='2xl' _hover={hoverStyles}>
-        {img && <Image w='full' fit='cover' src={img} alt='Event' loading='eager' />}
+      <Box
+        mx='auto'
+        rounded='lg'
+        shadow='lg'
+        maxW='2xl'
+        _hover={{ md: hoverStyles }}
+      >
+        {img && (
+          <Image w='full' fit='cover' src={img} alt='Event' loading='eager' />
+        )}
         <Box p={6}>
           <Box>
             <Text fontWeight='bold' fontSize='2xl'>
@@ -63,7 +71,7 @@ export default function Card({
             rounded='lg'
             shadow='lg'
             maxW='2xl'
-            _hover={hoverStyles}
+            _hover={{ lg: hoverStyles }}
           >
             {img && <Image w='full' fit='cover' src={img} alt='Event' />}
             <Box p={6}>

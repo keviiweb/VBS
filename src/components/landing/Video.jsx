@@ -1,27 +1,33 @@
-import { chakra, Flex, SimpleGrid } from '@chakra-ui/react';
+import React from 'react';
+import { Box, chakra, Flex, SimpleGrid } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { layoutVariant } from '@root/motion';
-import React from 'react';
+
+const MotionBox = motion(Box);
 
 export default function Video() {
   return (
-    <motion.div
-      className='card-container'
+    <MotionBox
+      id='video'
       initial='offscreen'
       whileInView='onscreen'
-      viewport={{ once: true, amount: 0.8 }}
+      viewport={{ once: true, amount: 0.2 }}
     >
-      <motion.div className='card' variants={layoutVariant}>
+      <MotionBox variants={layoutVariant}>
         <Flex
           bg='#F9FAFB'
-          p={20}
+          p={{ base: 4, md: 8, lg: 12, xl: 20 }}
           w='auto'
           justifyContent='center'
           alignItems='center'
         >
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={0}>
+          <SimpleGrid columns={{ base: 1, md: 1, lg: 1, xl: 2 }}>
             <Flex>
-              <video width='full' height='110vh' controls>
+              <video
+                width='full'
+                height={{ base: '120vh', md: '140vh' }}
+                controls
+              >
                 <source
                   src='https://nus.edu.sg/osa/videos/default-source/kevii-videos/qna-final.mp4?sfvrsn=ccaa662d_2'
                   type='video/mp4'
@@ -34,7 +40,7 @@ export default function Video() {
               alignItems='start'
               justifyContent='center'
               px={{ base: 4, md: 8, lg: 20 }}
-              py={24}
+              p={{ base: 4, md: 8, lg: 12, xl: 20 }}
               zIndex={3}
             >
               <chakra.h1
@@ -62,7 +68,7 @@ export default function Video() {
             </Flex>
           </SimpleGrid>
         </Flex>
-      </motion.div>
-    </motion.div>
+      </MotionBox>
+    </MotionBox>
   );
 }

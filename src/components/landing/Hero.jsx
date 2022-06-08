@@ -1,5 +1,4 @@
 import {
-  Box,
   Stack,
   Flex,
   Text,
@@ -11,16 +10,15 @@ import React from 'react';
 
 export default function Hero() {
   return (
-    <Flex w='full' h={{ base: '60vh', md: '130vh' }}>
-      <Box>
-        <video autoPlay muted loop id='myVideo'>
-          <source
-            src='https://nus.edu.sg/osa/videos/default-source/kevii-videos/promo-final-2.mp4?sfvrsn=2ad1ed6f_0'
-            type='video/mp4'
-          />
-          Promotional Video
-        </video>
-      </Box>
+    <Flex w='full' h={{ base: '50vh', md: '130vh' }}>
+      <video autoPlay muted loop id='myVideo'>
+        <source
+          src='https://nus.edu.sg/osa/videos/default-source/kevii-videos/promo-final-2.mp4?sfvrsn=2ad1ed6f_0'
+          type='video/mp4'
+        />
+        Promotional Video
+      </video>
+
       <VStack
         w='full'
         justify='center'
@@ -33,8 +31,10 @@ export default function Hero() {
               fontWeight={700}
               lineHeight={1.2}
               fontSize={useBreakpointValue({
-                base: '2xl',
-                md: '5xl',
+                base: 'xl',
+                md: '3xl',
+                lg: '4xl',
+                xl: '5xl',
               })}
             >
               To Strive, To Seek, To Serve
