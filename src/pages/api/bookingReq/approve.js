@@ -6,15 +6,15 @@ import {
   isRejected,
   setApprove,
   setRejectConflicts,
-} from '@helper/sys/vbs/bookingReq';
-import { convertSlotToArray } from '@constants/sys/helper';
-import { currentSession } from '@helper/sys/session';
-import { createVenueBooking } from '@helper/sys/vbs/booking';
+} from "@helper/sys/vbs/bookingReq";
+import { convertSlotToArray } from "@constants/sys/helper";
+import { currentSession } from "@helper/sys/session";
+import { createVenueBooking } from "@helper/sys/vbs/booking";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
-  let result = '';
+  var result = "";
   const { id } = req.body;
   if (session && session.user.admin) {
     if (id) {
@@ -25,8 +25,8 @@ const handler = async (req, res) => {
         if (isRequestApproved) {
           result = {
             status: false,
-            error: 'Request already approved!',
-            msg: '',
+            error: "Request already approved!",
+            msg: "",
           };
           res.status(200).send(result);
           res.end();
@@ -37,8 +37,8 @@ const handler = async (req, res) => {
         if (isRequestCancelled) {
           result = {
             status: false,
-            error: 'Request already cancelled!',
-            msg: '',
+            error: "Request already cancelled!",
+            msg: "",
           };
           res.status(200).send(result);
           res.end();
@@ -49,8 +49,8 @@ const handler = async (req, res) => {
         if (isRequestRejected) {
           result = {
             status: false,
-            error: 'Request already rejected!',
-            msg: '',
+            error: "Request already rejected!",
+            msg: "",
           };
           res.status(200).send(result);
           res.end();
@@ -63,14 +63,14 @@ const handler = async (req, res) => {
           const createBooking = await createVenueBooking(
             bookingRequest,
             timeSlots,
-            session,
+            session
           );
 
           if (!createBooking.status) {
             result = {
               status: false,
               error: createBooking.error,
-              msg: '',
+              msg: "",
             };
             res.status(200).send(result);
             res.end();
@@ -79,8 +79,8 @@ const handler = async (req, res) => {
         } else {
           result = {
             status: false,
-            error: 'Conflicts found in booking',
-            msg: '',
+            error: "Conflicts found in booking",
+            msg: "",
           };
           res.status(200).send(result);
           res.end();
@@ -94,37 +94,38 @@ const handler = async (req, res) => {
           result = {
             status: true,
             error: null,
-            msg: 'Booking request created',
+            msg: "Booking request created",
           };
           res.status(200).send(result);
           res.end();
+          return;
         } else {
           result = {
             status: false,
-            error: 'Either failed to approve slot or cancel conflicting',
-            msg: '',
+            error: "Either failed to approve slot or cancel conflicting",
+            msg: "",
           };
           res.status(200).send(result);
           res.end();
+          return;
         }
       } else {
-        result = {
-          status: false,
-          error: 'No booking ID found',
-          msg: '',
-        };
+        result = { status: false, error: "No booking ID found", msg: "" };
         res.status(200).send(result);
         res.end();
+        return;
       }
     } else {
-      result = { status: false, error: 'No booking ID found', msg: '' };
+      result = { status: false, error: "No booking ID found", msg: "" };
       res.status(200).send(result);
       res.end();
+      return;
     }
   } else {
-    result = { status: false, error: 'Unauthenticated request', msg: '' };
+    result = { status: false, error: "Unauthenticated request", msg: "" };
     res.status(200).send(result);
     res.end();
+    return;
   }
 };
 

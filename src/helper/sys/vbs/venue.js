@@ -1,5 +1,5 @@
-import { prisma } from '@constants/sys/db';
-import { findSlots, dateISO } from '@constants/sys/helper';
+import { prisma } from "@constants/sys/db";
+import { findSlots, dateISO } from "@constants/sys/helper";
 
 export const fetchChildVenue = async (venue) => {
   try {
@@ -9,7 +9,8 @@ export const fetchChildVenue = async (venue) => {
 
     return { status: true, error: null, msg: childVenues };
   } catch (error) {
-    return { status: false, error: error.toString(), msg: '' };
+    console.log(error);
+    return { status: false, error: error, msg: "" };
   }
 };
 
@@ -18,7 +19,8 @@ export const fetchAllVenue = async () => {
     const locations = await prisma.venue.findMany();
     return { status: true, error: null, msg: locations };
   } catch (error) {
-    return { status: false, error: error.toString(), msg: '' };
+    console.log(error);
+    return { status: false, error: error, msg: "" };
   }
 };
 
@@ -30,47 +32,54 @@ export const fetchVenue = async () => {
 
     if (locations) {
       return { status: true, error: null, msg: locations };
+    } else {
+      return { status: true, error: null, msg: "" };
     }
-    return { status: true, error: null, msg: '' };
   } catch (error) {
-    return { status: false, error: 'Connection timeout', msg: '' };
+    console.log(error);
+    return { status: false, error: "Connection timeout", msg: "" };
   }
 };
 
 export const findVenueByID = async (id) => {
   try {
     const locations = await prisma.venue.findFirst({
-      where: { id },
+      where: { id: id },
     });
 
     if (locations) {
       return { status: true, error: null, msg: locations };
+    } else {
+      return { status: true, error: null, msg: "" };
     }
-    return { status: true, error: null, msg: '' };
   } catch (error) {
-    return { status: false, error: 'Connection timeout', msg: '' };
+    console.log(error);
+    return { status: false, error: "Connection timeout", msg: "" };
   }
 };
 
 export const fetchOpeningHours = async (id) => {
   try {
     const locations = await prisma.venue.findFirst({
-      where: { id },
+      where: { id: id },
     });
 
     if (locations) {
       const opening = locations.openingHours;
-      const hours = opening.split('-');
+      const hours = opening.split("-");
       const start = await findSlots(hours[0].trim(), true);
       const end = await findSlots(hours[1].trim(), false);
 
       if (start && end) {
         return { start: Number(start), end: Number(end) };
+      } else {
+        return { start: null, end: null };
       }
+    } else {
       return { start: null, end: null };
     }
-    return { start: null, end: null };
   } catch (error) {
+    console.log(error);
     return { start: null, end: null };
   }
 };
@@ -78,18 +87,18 @@ export const fetchOpeningHours = async (id) => {
 export const splitHours = async (opening) => {
   try {
     if (opening) {
-      const hours = opening.split('-');
+      const hours = opening.split("-");
 
       if (hours) {
-        return {
-          start: Number(hours[0].trim()),
-          end: Number(hours[1].trim()),
-        };
+        return { start: Number(hours[0].trim()), end: Number(hours[1].trim()) };
+      } else {
+        return { start: null, end: null };
       }
+    } else {
       return { start: null, end: null };
     }
-    return { start: null, end: null };
   } catch (error) {
+    console.log(error);
     return { start: null, end: null };
   }
 };
@@ -97,42 +106,56 @@ export const splitHours = async (opening) => {
 export const splitHoursISO = async (date, timeSlot) => {
   try {
     if (timeSlot) {
-      const hours = timeSlot.split('-');
+      const hours = timeSlot.split("-");
 
       if (hours) {
         const startHour = hours[0].trim();
         const endHour = hours[1].trim();
 
-        const start = `${dateISO(date)}T${startHour
-          .toString()
-          .slice(0, 2)}:${startHour.slice(2)}:00`;
-        const end = `${dateISO(date)}T${endHour
-          .toString()
-          .slice(0, 2)}:${endHour.slice(2)}:00`;
+        const start =
+          dateISO(date) +
+          "T" +
+          startHour.toString().slice(0, 2) +
+          ":" +
+          startHour.slice(2) +
+          ":00";
+        const end =
+          dateISO(date) +
+          "T" +
+          endHour.toString().slice(0, 2) +
+          ":" +
+          endHour.slice(2) +
+          ":00";
 
-        return { start, end };
+        return { start: start, end: end };
+      } else {
+        return { start: null, end: null };
       }
+    } else {
       return { start: null, end: null };
     }
-    return { start: null, end: null };
   } catch (error) {
+    console.log(error);
     return { start: null, end: null };
   }
 };
 export const splitOpeningHours = async (opening) => {
   try {
     if (opening) {
-      const hours = opening.split('-');
+      const hours = opening.split("-");
       const start = await findSlots(hours[0].trim(), true);
       const end = await findSlots(hours[1].trim(), false);
 
       if (start && end) {
         return { start: Number(start), end: Number(end) };
+      } else {
+        return { start: null, end: null };
       }
+    } else {
       return { start: null, end: null };
     }
-    return { start: null, end: null };
   } catch (error) {
+    console.log(error);
     return { start: null, end: null };
   }
 };
@@ -140,14 +163,16 @@ export const splitOpeningHours = async (opening) => {
 export const isInstantBook = async (id) => {
   try {
     const locations = await prisma.venue.findFirst({
-      where: { id },
+      where: { id: id },
     });
 
     if (locations) {
       return locations.isInstantBook;
+    } else {
+      return false;
     }
-    return false;
   } catch (error) {
+    console.log(error);
     return false;
   }
 };
@@ -155,14 +180,16 @@ export const isInstantBook = async (id) => {
 export const isVisible = async (id) => {
   try {
     const locations = await prisma.venue.findFirst({
-      where: { id },
+      where: { id: id },
     });
 
     if (locations) {
       return locations.visible;
+    } else {
+      return false;
     }
-    return false;
   } catch (error) {
+    console.log(error);
     return false;
   }
 };
@@ -170,19 +197,17 @@ export const isVisible = async (id) => {
 export const createVenue = async (data) => {
   try {
     const venue = await prisma.venue.create({
-      data,
+      data: data,
     });
 
     if (venue) {
-      return {
-        status: true,
-        error: '',
-        msg: 'Successfully created venue',
-      };
+      return { status: true, error: "", msg: "Successfully created venue" };
+    } else {
+      return { status: false, error: "Failed to create venue", msg: "" };
     }
-    return { status: false, error: 'Failed to create venue', msg: '' };
   } catch (error) {
-    return { status: false, error: error.toString(), msg: '' };
+    console.log(error);
+    return { status: false, error: error, msg: "" };
   }
 };
 
@@ -192,18 +217,16 @@ export const editVenue = async (data) => {
       where: {
         id: data.id,
       },
-      data,
+      data: data,
     });
 
     if (venue) {
-      return {
-        status: true,
-        error: '',
-        msg: 'Successfully updated venue',
-      };
+      return { status: true, error: "", msg: "Successfully updated venue" };
+    } else {
+      return { status: false, error: "Failed to update venue", msg: "" };
     }
-    return { status: false, error: 'Failed to update venue', msg: '' };
   } catch (error) {
-    return { status: false, error: error.toString(), msg: '' };
+    console.log(error);
+    return { status: false, error: error, msg: "" };
   }
 };

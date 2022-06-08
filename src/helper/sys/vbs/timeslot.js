@@ -1,15 +1,14 @@
-import { prisma } from '@constants/sys/db';
+import { prisma } from "@constants/sys/db";
 
-const fetchBookedTimeSlots = async (venue, convertedDate) => {
+export const fetchBookedTimeSlots = async (venue, convertedDate) => {
   try {
     const bookedTimeSlots = await prisma.VenueBooking.findMany({
-      where: { venue, date: convertedDate },
+      where: { venue: venue, date: convertedDate },
     });
 
     return { status: true, error: null, msg: bookedTimeSlots };
   } catch (error) {
-    return { status: false, error, msg: '' };
+    console.log(error);
+    return { status: false, error: error, msg: "" };
   }
 };
-
-export default { fetchBookedTimeSlots };

@@ -1,13 +1,13 @@
-import { timingSlotNumberToTimingMapping } from '@constants/sys/timeslot';
-import { convertDateToUnix } from '@constants/sys/helper';
-import { currentSession } from '@helper/sys/session';
-import { fetchOpeningHours } from '@helper/sys/vbs/venue';
-import { fetchBookedTimeSlots } from '@helper/sys/vbs/timeslot';
+import { timingSlotNumberToTimingMapping } from "@constants/sys/timeslot";
+import { convertDateToUnix } from "@constants/sys/helper";
+import { currentSession } from "@helper/sys/session";
+import { fetchOpeningHours } from "@helper/sys/vbs/venue";
+import { fetchBookedTimeSlots } from "@helper/sys/vbs/timeslot";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
-  const slots = [];
+  let slots = [];
   const { venue, date } = req.body;
 
   if (session) {
@@ -20,17 +20,12 @@ const handler = async (req, res) => {
       if (startHour && endHour) {
         const bookedTimeSlots = await fetchBookedTimeSlots(
           venue,
-          convertedDate,
+          convertedDate
         );
 
         if (bookedTimeSlots && bookedTimeSlots.status) {
-          Object.keys(timingSlotNumberToTimingMapping).forEach((key) => {
-            if (
-              Object.prototype.hasOwnProperty.call(
-                timingSlotNumberToTimingMapping,
-                key,
-              )
-            ) {
+          for (let key in timingSlotNumberToTimingMapping) {
+            if (timingSlotNumberToTimingMapping.hasOwnProperty(key)) {
               if (Number(key) >= startHour && Number(key) <= endHour) {
                 slots[key] = {
                   id: Number(key),
@@ -39,7 +34,7 @@ const handler = async (req, res) => {
                 };
               }
             }
-          });
+          }
 
           const timeslot = bookedTimeSlots.msg;
           timeslot.forEach((item) => {
@@ -50,13 +45,8 @@ const handler = async (req, res) => {
             };
           });
         } else {
-          Object.keys(timingSlotNumberToTimingMapping).forEach((key) => {
-            if (
-              Object.prototype.hasOwnProperty.call(
-                timingSlotNumberToTimingMapping,
-                key,
-              )
-            ) {
+          for (let key in timingSlotNumberToTimingMapping) {
+            if (timingSlotNumberToTimingMapping.hasOwnProperty(key)) {
               if (Number(key) >= startHour && Number(key) <= endHour) {
                 slots[key] = {
                   id: Number(key),
@@ -65,36 +55,36 @@ const handler = async (req, res) => {
                 };
               }
             }
-          });
+          }
         }
 
         res.status(200).send(slots);
         res.end();
+        return;
       } else {
-        Object.keys(timingSlotNumberToTimingMapping).forEach((key) => {
-          if (
-            Object.prototype.hasOwnProperty.call(
-              timingSlotNumberToTimingMapping,
-              key,
-            )
-          ) {
+        for (let key in timingSlotNumberToTimingMapping) {
+          if (timingSlotNumberToTimingMapping.hasOwnProperty(key)) {
             slots[key] = {
               id: Number(key),
               slot: timingSlotNumberToTimingMapping[key],
               booked: false,
             };
           }
-        });
+        }
+
         res.status(200).send(slots);
         res.end();
+        return;
       }
     } else {
       res.status(200).send(slots);
       res.end();
+      return;
     }
   } else {
     res.status(200).send(slots);
     res.end();
+    return;
   }
 };
 

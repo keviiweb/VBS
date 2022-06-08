@@ -1,15 +1,15 @@
-import { currentSession } from '@helper/sys/session';
-import { findAllCCA } from '@helper/sys/vbs/cca';
+import { currentSession } from "@helper/sys/session";
+import { findAllCCA } from "@helper/sys/vbs/cca";
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
-  const result = [];
+  let result = [];
 
   if (session) {
     try {
       const ccaList = await findAllCCA();
       if (ccaList.status) {
-        const { msg } = ccaList;
+        const msg = ccaList.msg;
         msg.forEach((item) => {
           result.push(item);
         });
@@ -21,10 +21,12 @@ const handler = async (req, res) => {
       console.log(error);
       res.status(200).send(result);
       res.end();
+      return;
     }
   } else {
     res.status(200).send(result);
     res.end();
+    return;
   }
 };
 

@@ -14,15 +14,15 @@ import {
   Input,
   InputGroup,
   InputLeftAddon,
-} from '@chakra-ui/react';
-import { CheckIcon, CloseIcon, InfoOutlineIcon } from '@chakra-ui/icons';
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import Auth from '@components/sys/Auth';
-import TableWidget from '@components/sys/vbs/TableWidget';
-import BookingModal from '@components/sys/vbs/BookingModal';
-import BookingCalendar from '@components/sys/vbs/BookingCalendar';
-import { parentVariant } from '@root/motion';
-import { motion } from 'framer-motion';
+} from "@chakra-ui/react";
+import { CheckIcon, CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import Auth from "@components/sys/Auth";
+import TableWidget from "@components/sys/vbs/TableWidget";
+import BookingModal from "@components/sys/vbs/BookingModal";
+import BookingCalendar from "@components/sys/vbs/BookingCalendar";
+import { parentVariant } from "@root/motion";
+import { motion } from "framer-motion";
 const MotionSimpleGrid = motion(SimpleGrid);
 
 export default function ManageBooking() {
@@ -42,14 +42,14 @@ export default function ManageBooking() {
 
   const venueData = useRef([]);
   const [venueDropdown, setVenueDropdown] = useState([]);
-  const [venueID, setVenueID] = useState('');
-  const venueIDDB = useRef('');
+  const [venueID, setVenueID] = useState("");
+  const venueIDDB = useRef("");
 
   const [events, setEvents] = useState(null);
-  const [startTime, setStartTime] = useState('08:00:00');
-  const [endTime, setEndTime] = useState('23:00:00');
+  const [startTime, setStartTime] = useState("08:00:00");
+  const [endTime, setEndTime] = useState("23:00:00");
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   var handleTabChange = useCallback(
     async (index) => {
@@ -72,18 +72,18 @@ export default function ManageBooking() {
           break;
       }
     },
-    [fetchPendingData, fetchApprovedData, fetchAllData, fetchRejectedData],
+    [fetchPendingData, fetchApprovedData, fetchAllData, fetchRejectedData]
   );
 
   var handleApprove = useCallback(
     async (id) => {
       if (id) {
         try {
-          const rawResponse = await fetch('/api/bookingReq/approve', {
-            method: 'POST',
+          const rawResponse = await fetch("/api/bookingReq/approve", {
+            method: "POST",
             headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
+              Accept: "application/json",
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
               id: id,
@@ -92,18 +92,18 @@ export default function ManageBooking() {
           const content = await rawResponse.json();
           if (content.status) {
             toast({
-              title: 'Request approved.',
-              description: 'An email has been sent to the requester',
-              status: 'success',
+              title: "Request approved.",
+              description: "An email has been sent to the requester",
+              status: "success",
               duration: 5000,
               isClosable: true,
             });
             await handleTabChange(tabIndexData.current);
           } else {
             toast({
-              title: 'Error',
+              title: "Error",
               description: content.error,
-              status: 'error',
+              status: "error",
               duration: 5000,
               isClosable: true,
             });
@@ -113,18 +113,18 @@ export default function ManageBooking() {
         }
       }
     },
-    [handleTabChange, toast],
+    [handleTabChange, toast]
   );
 
   var handleReject = useCallback(
     async (id) => {
       if (id) {
         try {
-          const rawResponse = await fetch('/api/bookingReq/reject', {
-            method: 'POST',
+          const rawResponse = await fetch("/api/bookingReq/reject", {
+            method: "POST",
             headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
+              Accept: "application/json",
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
               id: id,
@@ -133,18 +133,18 @@ export default function ManageBooking() {
           const content = await rawResponse.json();
           if (content.status) {
             toast({
-              title: 'Request rejected.',
-              description: 'An email has been sent to the requester',
-              status: 'success',
+              title: "Request rejected.",
+              description: "An email has been sent to the requester",
+              status: "success",
               duration: 5000,
               isClosable: true,
             });
             await handleTabChange(tabIndexData.current);
           } else {
             toast({
-              title: 'Error',
+              title: "Error",
               description: content.error,
-              status: 'error',
+              status: "error",
               duration: 5000,
               isClosable: true,
             });
@@ -154,7 +154,7 @@ export default function ManageBooking() {
         }
       }
     },
-    [handleTabChange, toast],
+    [handleTabChange, toast]
   );
 
   var handleDetails = useCallback((content) => {
@@ -172,7 +172,7 @@ export default function ManageBooking() {
       }
       setData(content);
     },
-    [generateActionButton],
+    [generateActionButton]
   );
 
   var generateActionButton = useCallback(
@@ -181,25 +181,25 @@ export default function ManageBooking() {
 
       switch (action) {
         case ALL:
-          if (content.status === 'PENDING') {
+          if (content.status === "PENDING") {
             button = (
               <ButtonGroup>
                 <Button
-                  size='sm'
+                  size="sm"
                   leftIcon={<CheckIcon />}
                   onClick={() => handleApprove(content.id)}
                 >
                   Approve
                 </Button>
                 <Button
-                  size='sm'
+                  size="sm"
                   leftIcon={<CloseIcon />}
                   onClick={() => handleReject(content.id)}
                 >
                   Reject
                 </Button>
                 <Button
-                  size='sm'
+                  size="sm"
                   leftIcon={<InfoOutlineIcon />}
                   onClick={() => handleDetails(content)}
                 >
@@ -212,7 +212,7 @@ export default function ManageBooking() {
             button = (
               <ButtonGroup>
                 <Button
-                  size='sm'
+                  size="sm"
                   leftIcon={<InfoOutlineIcon />}
                   onClick={() => handleDetails(content)}
                 >
@@ -226,7 +226,7 @@ export default function ManageBooking() {
           button = (
             <ButtonGroup>
               <Button
-                size='sm'
+                size="sm"
                 leftIcon={<InfoOutlineIcon />}
                 onClick={() => handleDetails(content)}
               >
@@ -239,7 +239,7 @@ export default function ManageBooking() {
           button = (
             <ButtonGroup>
               <Button
-                size='sm'
+                size="sm"
                 leftIcon={<InfoOutlineIcon />}
                 onClick={() => handleDetails(content)}
               >
@@ -249,25 +249,25 @@ export default function ManageBooking() {
           );
           return button;
         case PENDING:
-          if (content.status === 'PENDING') {
+          if (content.status === "PENDING") {
             button = (
               <ButtonGroup>
                 <Button
-                  size='sm'
+                  size="sm"
                   leftIcon={<CheckIcon />}
                   onClick={() => handleApprove(content.id)}
                 >
                   Approve
                 </Button>
                 <Button
-                  size='sm'
+                  size="sm"
                   leftIcon={<CloseIcon />}
                   onClick={() => handleReject(content.id)}
                 >
                   Reject
                 </Button>
                 <Button
-                  size='sm'
+                  size="sm"
                   leftIcon={<InfoOutlineIcon />}
                   onClick={() => handleDetails(content)}
                 >
@@ -280,7 +280,7 @@ export default function ManageBooking() {
             button = (
               <ButtonGroup>
                 <Button
-                  size='sm'
+                  size="sm"
                   leftIcon={<InfoOutlineIcon />}
                   onClick={() => handleDetails(content)}
                 >
@@ -292,17 +292,17 @@ export default function ManageBooking() {
           }
       }
     },
-    [handleApprove, handleDetails, handleReject],
+    [handleApprove, handleDetails, handleReject]
   );
 
   var fetchAllData = useCallback(async () => {
     setLoadingData(true);
     setData(null);
     try {
-      const rawResponse = await fetch('/api/bookingReq/fetch', {
+      const rawResponse = await fetch("/api/bookingReq/fetch", {
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
       const content = await rawResponse.json();
@@ -320,10 +320,10 @@ export default function ManageBooking() {
     setLoadingData(true);
     setData(null);
     try {
-      const rawResponse = await fetch('/api/bookingReq/fetch?q=APPROVED', {
+      const rawResponse = await fetch("/api/bookingReq/fetch?q=APPROVED", {
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
       const content = await rawResponse.json();
@@ -342,10 +342,10 @@ export default function ManageBooking() {
     setData(null);
 
     try {
-      const rawResponse = await fetch('/api/bookingReq/fetch?q=REJECTED', {
+      const rawResponse = await fetch("/api/bookingReq/fetch?q=REJECTED", {
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
       const content = await rawResponse.json();
@@ -362,10 +362,10 @@ export default function ManageBooking() {
     setLoadingData(true);
     setData(null);
     try {
-      const rawResponse = await fetch('/api/bookingReq/fetch?q=PENDING', {
+      const rawResponse = await fetch("/api/bookingReq/fetch?q=PENDING", {
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
       const content = await rawResponse.json();
@@ -380,10 +380,10 @@ export default function ManageBooking() {
 
   var fetchVenue = useCallback(async () => {
     try {
-      const rawResponse = await fetch('/api/venue/fetch', {
+      const rawResponse = await fetch("/api/venue/fetch", {
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
       const content = await rawResponse.json();
@@ -399,7 +399,7 @@ export default function ManageBooking() {
     const selection = [];
     venueData.current = [];
 
-    selection.push(<option key={''} value={''}></option>);
+    selection.push(<option key={""} value={""}></option>);
 
     for (let key in content) {
       if (content[key]) {
@@ -407,7 +407,7 @@ export default function ManageBooking() {
         selection.push(
           <option key={data.id} value={data.id}>
             {data.name}
-          </option>,
+          </option>
         );
 
         venueData.current.push(data);
@@ -428,11 +428,11 @@ export default function ManageBooking() {
 
   const fetchBookings = async (id) => {
     try {
-      const rawResponse = await fetch('/api/booking/fetch', {
-        method: 'POST',
+      const rawResponse = await fetch("/api/booking/fetch", {
+        method: "POST",
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           id: id,
@@ -455,7 +455,7 @@ export default function ManageBooking() {
       if (content[key]) {
         const data = content[key];
 
-        const description = 'CCA: ' + data.cca + ' EMAIL: ' + data.email;
+        const description = "CCA: " + data.cca + " EMAIL: " + data.email;
 
         const e = {
           id: data.id,
@@ -485,7 +485,7 @@ export default function ManageBooking() {
       toast({
         title: info.event.title,
         description: info.event.extendedProps.description,
-        status: 'info',
+        status: "info",
         duration: 5000,
         isClosable: true,
       });
@@ -500,7 +500,7 @@ export default function ManageBooking() {
     const searchInput = event.target.value;
     setSearch(searchInput);
 
-    if (searchInput && searchInput != '') {
+    if (searchInput && searchInput != "") {
       let filteredData = data.filter((value) => {
         return (
           value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -522,39 +522,39 @@ export default function ManageBooking() {
   const columns = useMemo(
     () => [
       {
-        Header: 'Venue',
-        accessor: 'venue',
+        Header: "Venue",
+        accessor: "venue",
       },
       {
-        Header: 'Date',
-        accessor: 'date',
+        Header: "Date",
+        accessor: "date",
       },
       {
-        Header: 'Timeslot(s)',
-        accessor: 'timeSlots',
+        Header: "Timeslot(s)",
+        accessor: "timeSlots",
       },
       {
-        Header: 'Email',
-        accessor: 'email',
+        Header: "Email",
+        accessor: "email",
       },
       {
-        Header: 'CCA',
-        accessor: 'cca',
+        Header: "CCA",
+        accessor: "cca",
       },
       {
-        Header: 'Purpose',
-        accessor: 'purpose',
+        Header: "Purpose",
+        accessor: "purpose",
       },
       {
-        Header: 'Status',
-        accessor: 'status',
+        Header: "Status",
+        accessor: "status",
       },
       {
-        Header: 'Actions',
-        accessor: 'action',
+        Header: "Actions",
+        accessor: "action",
       },
     ],
-    [],
+    []
   );
 
   useEffect(() => {
@@ -565,26 +565,26 @@ export default function ManageBooking() {
   return (
     <Auth admin>
       <MotionSimpleGrid
-        columns={{ base: 1, md: 1, lg: 1 }}
-        mt='3'
-        spacing='2em'
-        minH='600px'
+        mt="3"
+        minChildWidth={{ base: "full", md: "500px", lg: "500px" }}
+        spacing="2em"
+        minH="600px"
         variants={parentVariant}
-        initial='initial'
-        animate='animate'
+        initial="initial"
+        animate="animate"
       >
         <Box
-          bg='white'
-          borderRadius='lg'
-          width={{ base: 'full', md: 'full', lg: 'full' }}
+          bg="white"
+          borderRadius="lg"
+          width={{ base: "full", md: "full", lg: "full" }}
           p={8}
-          color='gray.700'
-          shadow='base'
+          color="gray.700"
+          shadow="base"
         >
           {venueDropdown && (
-            <Stack spacing={2} w='full' mb='10'>
+            <Stack spacing={2} w="full" mb="10">
               <FormLabel>Select Venue</FormLabel>
-              <Select value={venueID} onChange={onVenueIDChange} size='sm'>
+              <Select value={venueID} onChange={onVenueIDChange} size="sm">
                 {venueDropdown}
               </Select>
             </Stack>
@@ -600,21 +600,21 @@ export default function ManageBooking() {
         </Box>
 
         <Box
-          bg='white'
-          borderRadius='lg'
-          width={{ base: 'full', md: 'full', lg: 'full' }}
+          bg="white"
+          borderRadius="lg"
+          width={{ base: "full", md: "full", lg: "full" }}
           p={8}
-          color='gray.700'
-          shadow='base'
+          color="gray.700"
+          shadow="base"
         >
           <Tabs
             value={tabIndex}
             onChange={handleTabChange}
-            size={{ base: 'md', md: 'md', lg: 'md' }}
+            size={{ base: "md", md: "md", lg: "md" }}
             isManual
             isLazy
             isFitted
-            variant='enclosed'
+            variant="enclosed"
           >
             <TabList>
               <Tab>Pending Approval</Tab>
@@ -623,21 +623,21 @@ export default function ManageBooking() {
               <Tab>All Bookings</Tab>
             </TabList>
             {loadingData && !data ? (
-              <Box align='center' justify='center' mt={30}>
+              <Box align="center" justify="center" mt={30}>
                 <Text>Loading Please wait...</Text>
               </Box>
             ) : !loadingData && data.length == 0 ? (
-              <Box align='center' justify='center' minWidth={'full'} mt={30}>
+              <Box align="center" justify="center" minWidth={"full"} mt={30}>
                 <Text>No bookings found</Text>
               </Box>
             ) : (
-              <Box align='center' justify='center' minWidth={'full'} mt={30}>
+              <Box align="center" justify="center" minWidth={"full"} mt={30}>
                 <Stack spacing={30}>
                   <InputGroup>
                     <InputLeftAddon>Search:</InputLeftAddon>
                     <Input
-                      type='text'
-                      placeholder=''
+                      type="text"
+                      placeholder=""
                       value={search}
                       onChange={handleSearch}
                     />
