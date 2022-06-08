@@ -23,3 +23,17 @@ export const cardVariant = {
     },
   },
 };
+
+export const layoutVariant = {
+  offscreen: {
+    y: 300,
+  },
+  onscreen: {
+    y: 0,
+    transition: {
+      type: 'spring',
+      bounce: 0.5,
+      duration: 1,
+    },
+  },
+};

@@ -1,9 +1,9 @@
-import nodemailer from "nodemailer";
+import nodemailer from 'nodemailer';
 
 export const sendProgressMail = async (target, data) => {
   if (
     process.env.SEND_EMAIL &&
-    (process.env.SEND_EMAIL == "1" || Number(process.env.SEND_EMAIL) == 1)
+    (process.env.SEND_EMAIL == '1' || Number(process.env.SEND_EMAIL) == 1)
   ) {
     let transporter = nodemailer.createTransport({
       host: process.env.EMAIL_SERVER_HOST,
@@ -18,15 +18,15 @@ export const sendProgressMail = async (target, data) => {
       {
         from: process.env.EMAIL_FROM,
         to: target,
-        subject: "KEVII VBS: We have received your request",
+        subject: 'KEVII VBS: We have received your request',
         text: text(),
         html: html({ data }),
       },
       function (err) {
         if (err) {
-          console.log("Error " + err);
+          console.log('Error ' + err);
         }
-      }
+      },
     );
   }
 };

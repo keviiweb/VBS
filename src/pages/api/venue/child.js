@@ -1,20 +1,21 @@
-import { currentSession } from "@helper/sys/session";
-import { findVenueByID, fetchChildVenue } from "@helper/sys/vbs/venue";
+import { currentSession } from '@helper/sys/session';
+import { findVenueByID, fetchChildVenue } from '@helper/sys/vbs/venue';
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
-  let result = [];
+  const result = [];
   const { venue } = req.body;
   if (session) {
     if (venue) {
       try {
         const venueDB = await fetchChildVenue(venue);
-        let parsedVenue = [];
+        const parsedVenue = [];
 
         if (venueDB.status && venueDB.msg != null) {
           const childVenue = venueDB.msg;
-          for (let ven in childVenue) {
+
+          for (const ven of childVenue) {
             if (childVenue[ven]) {
               const venue = childVenue[ven];
 
@@ -26,9 +27,9 @@ const handler = async (req, res) => {
                 }
               }
 
-              const isAvailable = venue.visible ? "Yes" : "No";
-              const cv = venue.isChildVenue ? "Yes" : "No";
-              const instantBook = venue.isInstantBook ? "Yes" : "No";
+              const isAvailable = venue.visible ? 'Yes' : 'No';
+              const cv = venue.isChildVenue ? 'Yes' : 'No';
+              const instantBook = venue.isInstantBook ? 'Yes' : 'No';
 
               const data = {
                 capacity: venue.capacity,
@@ -39,11 +40,11 @@ const handler = async (req, res) => {
                 name: venue.name,
                 openingHours: venue.openingHours,
                 parentVenue: venue.parentVenue,
-                parentVenueName: parentVenueName,
+                parentVenueName,
                 visible: venue.visible,
-                isAvailable: isAvailable,
+                isAvailable,
                 childVenue: cv,
-                instantBook: instantBook,
+                instantBook,
               };
 
               parsedVenue.push(data);
@@ -58,17 +59,14 @@ const handler = async (req, res) => {
         console.log(error);
         res.status(200).send(result);
         res.end();
-        return;
       }
     } else {
       res.status(200).send(result);
       res.end();
-      return;
     }
   } else {
     res.status(200).send(result);
     res.end();
-    return;
   }
 };
 

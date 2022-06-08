@@ -123,7 +123,7 @@ export default function Header() {
           py={6}
           p={{ sm: 8 }}
         >
-          {sections.map(({ title, icon, description, link }, sid) => (
+          {sections.map(({ title, icon, description, link}, sid) => (
             <Section title={title} icon={icon} key={sid} link={link}>
               {description}
             </Section>
@@ -192,13 +192,17 @@ export default function Header() {
                 <Button variant="ghost">Events</Button>
               </NextLink>
 
-              <NextLink href="/community">
-                <Button variant="ghost">Community</Button>
+              <NextLink href="/">
+                <Button variant="ghost">FAQ</Button>
+              </NextLink>
+
+              <NextLink href="/">
+                <Button variant="ghost">Contact Us</Button>
               </NextLink>
 
               <Popover>
                 <PopoverTrigger>
-                  <Button variant="ghost">Current Residents</Button>
+                  <Button variant="ghost">Systems</Button>
                 </PopoverTrigger>
                 <PopoverContent
                   w="100vw"

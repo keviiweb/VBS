@@ -1,9 +1,30 @@
 import {
   timingSlotNumberToTimingMapping,
   timeSlots,
-} from "@constants/sys/timeslot";
-import { numberToWeekday } from "@constants/sys/weekdays";
-import { monthNamesFull } from "@constants/sys/months";
+} from '@constants/sys/timeslot';
+import { numberToWeekday } from '@constants/sys/weekdays';
+import { monthNamesFull } from '@constants/sys/months';
+
+export const convertSlotToArray = (slots, reverse = false) => {
+  if (reverse) {
+    const result = slots.split(',');
+
+    Object.keys(result).forEach((key) => {
+      result[key] = Number(result[key]);
+    });
+
+    return result;
+  }
+  const result = [];
+
+  Object.keys(slots).forEach((key) => {
+    if (slots[key]) {
+      result.push(slots[key].id);
+    }
+  });
+
+  return result.toString();
+};
 
 export const isInside = (want, check) => {
   // Check if want is inside check
@@ -11,45 +32,46 @@ export const isInside = (want, check) => {
   const wantArr = convertSlotToArray(want, true);
   const checkArr = convertSlotToArray(check, true);
 
-  for (let obj in wantArr) {
-    let i = checkArr.length;
-    while (i--) {
+  let result = false;
+  Object.keys(wantArr).forEach((obj) => {
+    const i = checkArr.length;
+    while (i >= 0) {
       if (Number(checkArr[i]) === Number(wantArr[obj])) {
-        return true;
+        result = true;
       }
     }
-  }
+  });
 
-  return false;
+  return result;
 };
 
 export const mapSlotToTiming = (data) => {
   if (Array.isArray(data)) {
     const result = [];
-    for (let key in data) {
-      let map = timingSlotNumberToTimingMapping[Number(data[key])];
+
+    Object.keys(data).forEach((key) => {
+      const map = timingSlotNumberToTimingMapping[Number(data[key])];
       result.push(map);
-    }
+    });
 
     return result;
-  } else {
-    let map = timingSlotNumberToTimingMapping[Number(data)];
-    return map;
   }
+  const map = timingSlotNumberToTimingMapping[Number(data)];
+  return map;
 };
 
 export const prettifyTiming = (data) => {
-  let str = "";
+  let str = '';
   let count = 0;
 
-  for (let key in data) {
+  Object.keys(data).forEach((key) => {
     count += 1;
-    if (count != data.length) {
-      str += data[key] + ", ";
+    if (count !== data.length) {
+      str += `${data[key]}, `;
     } else {
       str += data[key];
     }
-  }
+  });
 
   return str;
 };
@@ -63,19 +85,19 @@ export const prettifyDate = (date) => {
     return prettyDate;
   }
 
-  return `Unknown Date`;
+  return 'Unknown Date';
 };
 
 export const dateISO = (date) => {
   if (date) {
     const dateObj = new Date(date);
-    const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
-    const day = dateObj.getDate().toString().padStart(2, "0");
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    const day = dateObj.getDate().toString().padStart(2, '0');
     const prettyDate = `${dateObj.getFullYear()}-${month}-${day}`;
     return prettyDate;
   }
 
-  return `Unknown Date`;
+  return 'Unknown Date';
 };
 
 export const convertDateToUnix = (date) => {
@@ -84,55 +106,47 @@ export const convertDateToUnix = (date) => {
     const parseDate = Date.parse(prettified);
     return parseDate ? Math.floor(parseDate / 1000) : 0;
   }
+
+  return 0;
 };
 
-export const convertUnixToDate = (date) => {
-  return new Date(date * 1000);
-};
+export const convertUnixToDate = (date) => new Date(date * 1000);
 
 export const compareDate = (comparedDate, number) => {
-  let compared = convertUnixToDate(comparedDate);
-  let date = new Date();
+  const compared = convertUnixToDate(comparedDate);
+  const date = new Date();
   date.setDate(date.getDate() + Number(number));
 
   return date <= compared;
 };
 
-export const convertSlotToArray = (slots, reverse = false) => {
-  if (reverse) {
-    const result = slots.split(",");
-    for (let key in result) {
-      result[key] = Number(result[key]);
-    }
-
-    return result;
-  } else {
-    const result = [];
-    for (let key in slots) {
-      if (slots[key]) {
-        result.push(slots[key].id);
-      }
-    }
-
-    return result.toString();
-  }
-};
-
 export const findSlots = async (slot, isStart) => {
-  for (let i in timingSlotNumberToTimingMapping) {
+  let result = false;
+  let answer = null;
+
+  Object.keys(timingSlotNumberToTimingMapping).forEach((i) => {
     if (timingSlotNumberToTimingMapping[i].includes(slot)) {
-      const split = timingSlotNumberToTimingMapping[i].split("-");
-      if (split[0].trim() == slot && isStart) {
-        return i;
+      const split = timingSlotNumberToTimingMapping[i].split('-');
+      if (split[0].trim() === slot && isStart) {
+        if (!result) {
+          result = true;
+          answer = i;
+        }
       }
 
-      if (split[1].trim() == slot && !isStart) {
-        return i;
+      if (split[1].trim() === slot && !isStart) {
+        if (!result) {
+          result = true;
+          answer = i;
+        }
       }
     }
-  }
+  });
 
-  return null;
+  if (!result) {
+    return null;
+  }
+  return answer;
 };
 
 export const findSlotsByID = async (slot) => {

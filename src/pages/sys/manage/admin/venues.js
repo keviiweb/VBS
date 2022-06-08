@@ -18,16 +18,16 @@ import {
   SimpleGrid,
   InputGroup,
   InputLeftAddon,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-import { InfoOutlineIcon } from "@chakra-ui/icons";
-import { cardVariant, parentVariant } from "@root/motion";
-import { motion } from "framer-motion";
-import { useState, useEffect, useMemo, useRef, useCallback } from "react";
-import Auth from "@components/sys/Auth";
-import TableWidget from "@components/sys/vbs/TableWidget";
-import VenueModal from "@components/sys/vbs/VenueModal";
-import { timeSlots } from "@constants/sys/timeslot";
+import { InfoOutlineIcon } from '@chakra-ui/icons';
+import { cardVariant, parentVariant } from '@root/motion';
+import { motion } from 'framer-motion';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import Auth from '@components/sys/Auth';
+import TableWidget from '@components/sys/vbs/TableWidget';
+import VenueModal from '@components/sys/vbs/VenueModal';
+import { timeSlots } from '@constants/sys/timeslot';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -39,18 +39,18 @@ export default function ManageVenues() {
   const [data, setData] = useState([]);
 
   const [filteredData, setFilteredData] = useState(null);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [capacity, setCapacity] = useState("");
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [capacity, setCapacity] = useState('');
   const [instantBook, setInstantBook] = useState(false);
   const [isChildVenue, setIsChildVenue] = useState(false);
   const [visible, setVisible] = useState(true);
 
-  const nameDB = useRef("");
-  const descriptionDB = useRef("");
-  const capacityDB = useRef("");
+  const nameDB = useRef('');
+  const descriptionDB = useRef('');
+  const capacityDB = useRef('');
   const instantBookDB = useRef(false);
   const isChildVenueDB = useRef(false);
   const visibleDB = useRef(true);
@@ -60,8 +60,8 @@ export default function ManageVenues() {
 
   const startTimeDB = useRef(null);
   const endTimeDB = useRef(null);
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [startTimeDropdown, setStartTimeDropdown] = useState([]);
   const [endTimeDropdown, setEndTimeDropdown] = useState([]);
 
@@ -71,16 +71,16 @@ export default function ManageVenues() {
   const [error, setError] = useState(null);
 
   //Edits
-  const [nameEdit, setNameEdit] = useState("");
-  const [descriptionEdit, setDescriptionEdit] = useState("");
-  const [capacityEdit, setCapacityEdit] = useState("");
+  const [nameEdit, setNameEdit] = useState('');
+  const [descriptionEdit, setDescriptionEdit] = useState('');
+  const [capacityEdit, setCapacityEdit] = useState('');
   const [instantBookEdit, setInstantBookEdit] = useState(false);
   const [isChildVenueEdit, setIsChildVenueEdit] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(true);
 
-  const nameDBEdit = useRef("");
-  const descriptionDBEdit = useRef("");
-  const capacityDBEdit = useRef("");
+  const nameDBEdit = useRef('');
+  const descriptionDBEdit = useRef('');
+  const capacityDBEdit = useRef('');
   const instantBookDBEdit = useRef(false);
   const isChildVenueDBEdit = useRef(false);
   const visibleDBEdit = useRef(true);
@@ -88,12 +88,12 @@ export default function ManageVenues() {
   const parentVenueEdit = useRef(null);
   const startTimeDBEdit = useRef(null);
   const endTimeDBEdit = useRef(null);
-  const [startTimeEdit, setStartTimeEdit] = useState("");
-  const [endTimeEdit, setEndTimeEdit] = useState("");
+  const [startTimeEdit, setStartTimeEdit] = useState('');
+  const [endTimeEdit, setEndTimeEdit] = useState('');
 
   const [venueDropdown, setVenueDropdown] = useState([]);
-  const [venueIDEdit, setVenueIDEdit] = useState("");
-  const venueIDDBEdit = useRef("");
+  const [venueIDEdit, setVenueIDEdit] = useState('');
+  const venueIDDBEdit = useRef('');
   const venueData = useRef([]);
 
   const [errorEdit, setErrorEdit] = useState(null);
@@ -105,9 +105,9 @@ export default function ManageVenues() {
 
   var reset = useCallback(async () => {
     selectedFileDB.current = null;
-    nameDB.current = "";
-    descriptionDB.current = "";
-    capacityDB.current = "";
+    nameDB.current = '';
+    descriptionDB.current = '';
+    capacityDB.current = '';
     instantBookDB.current = false;
     isChildVenueDB.current = false;
     visibleDB.current = false;
@@ -115,22 +115,22 @@ export default function ManageVenues() {
     startTimeDB.current = null;
     endTimeDB.current = null;
 
-    setName("");
-    setDescription("");
-    setCapacity("");
+    setName('');
+    setDescription('');
+    setCapacity('');
     setInstantBook(false);
     setIsChildVenue(false);
     setVisible(true);
     setFileName(null);
-    setStartTime("");
-    setEndTime("");
+    setStartTime('');
+    setEndTime('');
   }, []);
 
   const handleSubmit = useCallback(
     async (event) => {
       setError(null);
       event.preventDefault();
-      const openingHours = startTimeDB.current + " - " + endTimeDB.current;
+      const openingHours = startTimeDB.current + ' - ' + endTimeDB.current;
       if (
         validateFields(
           nameDB.current,
@@ -140,32 +140,32 @@ export default function ManageVenues() {
           parentVenue.current,
           startTimeDB.current,
           endTimeDB.current,
-          openingHours
+          openingHours,
         )
       ) {
         const data = new FormData();
-        data.append("image", selectedFileDB.current);
-        data.append("name", nameDB.current);
-        data.append("description", descriptionDB.current);
-        data.append("capacity", capacityDB.current);
-        data.append("isInstantBook", instantBookDB.current);
-        data.append("visible", visibleDB.current);
-        data.append("isChildVenue", isChildVenueDB.current);
-        data.append("parentVenue", parentVenue.current);
-        data.append("openingHours", openingHours);
+        data.append('image', selectedFileDB.current);
+        data.append('name', nameDB.current);
+        data.append('description', descriptionDB.current);
+        data.append('capacity', capacityDB.current);
+        data.append('isInstantBook', instantBookDB.current);
+        data.append('visible', visibleDB.current);
+        data.append('isChildVenue', isChildVenueDB.current);
+        data.append('parentVenue', parentVenue.current);
+        data.append('openingHours', openingHours);
 
         try {
-          const rawResponse = await fetch("/api/venue/create", {
-            method: "POST",
+          const rawResponse = await fetch('/api/venue/create', {
+            method: 'POST',
             body: data,
           });
           const content = await rawResponse.json();
           if (content.status) {
             await reset();
             toast({
-              title: "Success",
+              title: 'Success',
               description: content.msg,
-              status: "success",
+              status: 'success',
               duration: 5000,
               isClosable: true,
             });
@@ -173,9 +173,9 @@ export default function ManageVenues() {
             await fetchData();
           } else {
             toast({
-              title: "Error",
+              title: 'Error',
               description: content.error,
-              status: "error",
+              status: 'error',
               duration: 5000,
               isClosable: true,
             });
@@ -185,7 +185,7 @@ export default function ManageVenues() {
         }
       }
     },
-    [fetchData, reset, toast]
+    [fetchData, reset, toast],
   );
 
   const onFileChange = async (event) => {
@@ -224,7 +224,7 @@ export default function ManageVenues() {
       let count = 0;
       venueData.current = [];
 
-      selectionEdit.push(<option key={""} value={""}></option>);
+      selectionEdit.push(<option key={''} value={''}></option>);
 
       for (let key in content) {
         if (content[key]) {
@@ -233,7 +233,7 @@ export default function ManageVenues() {
             selection.push(
               <option key={data.id} value={data.id}>
                 {data.name}
-              </option>
+              </option>,
             );
 
             if (count == 0) {
@@ -245,7 +245,7 @@ export default function ManageVenues() {
           selectionEdit.push(
             <option key={data.id} value={data.id}>
               {data.name}
-            </option>
+            </option>,
           );
 
           venueData.current.push(data);
@@ -258,7 +258,7 @@ export default function ManageVenues() {
       setVenueDropdown(selectionEdit);
       setData(content);
     },
-    [generateActionButton]
+    [generateActionButton],
   );
 
   var generateActionButton = useCallback(
@@ -268,7 +268,7 @@ export default function ManageVenues() {
       button = (
         <ButtonGroup>
           <Button
-            size="sm"
+            size='sm'
             leftIcon={<InfoOutlineIcon />}
             onClick={() => handleDetails(content)}
           >
@@ -279,17 +279,17 @@ export default function ManageVenues() {
 
       return button;
     },
-    [handleDetails]
+    [handleDetails],
   );
 
   var fetchData = useCallback(async () => {
     setLoadingData(true);
     setData(null);
     try {
-      const rawResponse = await fetch("/api/venue/fetch", {
+      const rawResponse = await fetch('/api/venue/fetch', {
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
       });
       const content = await rawResponse.json();
@@ -306,22 +306,22 @@ export default function ManageVenues() {
     const start = [];
     const end = [];
 
-    start.push(<option key={"start"} value={""}></option>);
-    end.push(<option key={"end"} value={""}></option>);
+    start.push(<option key={'start'} value={''}></option>);
+    end.push(<option key={'end'} value={''}></option>);
 
     for (let key in timeSlots) {
       if (timeSlots[key]) {
         const data = timeSlots[key];
         start.push(
-          <option key={"start" + key} value={data}>
+          <option key={'start' + key} value={data}>
             {data}
-          </option>
+          </option>,
         );
 
         end.push(
-          <option key={"end" + key} value={data}>
+          <option key={'end' + key} value={data}>
             {data}
-          </option>
+          </option>,
         );
       }
     }
@@ -342,35 +342,35 @@ export default function ManageVenues() {
   const columns = useMemo(
     () => [
       {
-        Header: "Name",
-        accessor: "name",
+        Header: 'Name',
+        accessor: 'name',
       },
       {
-        Header: "Description",
-        accessor: "description",
+        Header: 'Description',
+        accessor: 'description',
       },
       {
-        Header: "Opening Hours",
-        accessor: "openingHours",
+        Header: 'Opening Hours',
+        accessor: 'openingHours',
       },
       {
-        Header: "Capacity",
-        accessor: "capacity",
+        Header: 'Capacity',
+        accessor: 'capacity',
       },
       {
-        Header: "Child Venue",
-        accessor: "childVenue",
+        Header: 'Child Venue',
+        accessor: 'childVenue',
       },
       {
-        Header: "Available for Booking",
-        accessor: "isAvailable",
+        Header: 'Available for Booking',
+        accessor: 'isAvailable',
       },
       {
-        Header: "Actions",
-        accessor: "action",
+        Header: 'Actions',
+        accessor: 'action',
       },
     ],
-    []
+    [],
   );
 
   const validateFields = (
@@ -381,46 +381,46 @@ export default function ManageVenues() {
     parentVenue,
     startTime,
     endTime,
-    openingHours
+    openingHours,
   ) => {
     //super basic validation here
     if (!name) {
-      setError("Name must not be empty!");
+      setError('Name must not be empty!');
       return false;
     }
 
     if (!description) {
-      setError("Description must not be empty!");
+      setError('Description must not be empty!');
       return false;
     }
 
     if (!capacity) {
-      setError("Capacity must not be empty!");
+      setError('Capacity must not be empty!');
       return false;
     }
 
     if (isChildVenue && !parentVenue) {
-      setError("Please select a parent venue!");
+      setError('Please select a parent venue!');
       return false;
     }
 
     if (!openingHours) {
-      setError("Please select the opening hours!");
+      setError('Please select the opening hours!');
       return false;
     }
 
     if (!startTime) {
-      setError("Please select a start time!");
+      setError('Please select a start time!');
       return false;
     }
 
     if (!endTime) {
-      setError("Please select an end time!");
+      setError('Please select an end time!');
       return false;
     }
 
     if (Number(startTime) >= Number(endTime)) {
-      setError("Start time must be earlier than end time!");
+      setError('Start time must be earlier than end time!');
       return false;
     }
 
@@ -482,9 +482,9 @@ export default function ManageVenues() {
     instantBookDBEdit.current = data.isInstantBook;
     isChildVenueDBEdit.current = data.isChildVenue;
     visibleDBEdit.current = data.visible;
-    parentVenueEdit.current = data.parentVenue ? data.parentVenue : "";
+    parentVenueEdit.current = data.parentVenue ? data.parentVenue : '';
 
-    const split = data.openingHours.split("-");
+    const split = data.openingHours.split('-');
     const start = split[0].trim();
     const end = split[1].trim();
 
@@ -500,7 +500,7 @@ export default function ManageVenues() {
       event.preventDefault();
 
       const openingHours =
-        startTimeDBEdit.current + " - " + endTimeDBEdit.current;
+        startTimeDBEdit.current + ' - ' + endTimeDBEdit.current;
       if (
         validateFieldsEdit(
           venueIDDBEdit.current,
@@ -511,32 +511,32 @@ export default function ManageVenues() {
           parentVenueEdit.current,
           startTimeDBEdit.current,
           endTimeDBEdit.current,
-          openingHours
+          openingHours,
         )
       ) {
         const data = new FormData();
-        data.append("id", venueIDDBEdit.current);
-        data.append("name", nameDBEdit.current);
-        data.append("description", descriptionDBEdit.current);
-        data.append("capacity", capacityDBEdit.current);
-        data.append("isInstantBook", instantBookDBEdit.current);
-        data.append("visible", visibleDBEdit.current);
-        data.append("isChildVenue", isChildVenueDBEdit.current);
-        data.append("parentVenue", parentVenueEdit.current);
-        data.append("openingHours", openingHours);
+        data.append('id', venueIDDBEdit.current);
+        data.append('name', nameDBEdit.current);
+        data.append('description', descriptionDBEdit.current);
+        data.append('capacity', capacityDBEdit.current);
+        data.append('isInstantBook', instantBookDBEdit.current);
+        data.append('visible', visibleDBEdit.current);
+        data.append('isChildVenue', isChildVenueDBEdit.current);
+        data.append('parentVenue', parentVenueEdit.current);
+        data.append('openingHours', openingHours);
 
         try {
-          const rawResponse = await fetch("/api/venue/edit", {
-            method: "POST",
+          const rawResponse = await fetch('/api/venue/edit', {
+            method: 'POST',
             body: data,
           });
           const content = await rawResponse.json();
           if (content.status) {
             await resetEdit();
             toast({
-              title: "Success",
+              title: 'Success',
               description: content.msg,
-              status: "success",
+              status: 'success',
               duration: 5000,
               isClosable: true,
             });
@@ -544,9 +544,9 @@ export default function ManageVenues() {
             await fetchData();
           } else {
             toast({
-              title: "Error",
+              title: 'Error',
               description: content.error,
-              status: "error",
+              status: 'error',
               duration: 5000,
               isClosable: true,
             });
@@ -556,7 +556,7 @@ export default function ManageVenues() {
         }
       }
     },
-    [fetchData, resetEdit, toast]
+    [fetchData, resetEdit, toast],
   );
 
   const validateFieldsEdit = (
@@ -568,51 +568,51 @@ export default function ManageVenues() {
     parentVenue,
     startTime,
     endTime,
-    openingHours
+    openingHours,
   ) => {
     //super basic validation here
     if (!id) {
-      setErrorEdit("ID must not be empty!");
+      setErrorEdit('ID must not be empty!');
       return false;
     }
 
     if (!name) {
-      setErrorEdit("Name must not be empty!");
+      setErrorEdit('Name must not be empty!');
       return false;
     }
 
     if (!description) {
-      setErrorEdit("Description must not be empty!");
+      setErrorEdit('Description must not be empty!');
       return false;
     }
 
     if (!capacity) {
-      setErrorEdit("Capacity must not be empty!");
+      setErrorEdit('Capacity must not be empty!');
       return false;
     }
 
     if (isChildVenue && !parentVenue) {
-      setErrorEdit("Please select a parent venue!");
+      setErrorEdit('Please select a parent venue!');
       return false;
     }
 
     if (!openingHours) {
-      setErrorEdit("Please select the opening hours!");
+      setErrorEdit('Please select the opening hours!');
       return false;
     }
 
     if (!startTime) {
-      setErrorEdit("Please select a start time!");
+      setErrorEdit('Please select a start time!');
       return false;
     }
 
     if (!endTime) {
-      setErrorEdit("Please select an end time!");
+      setErrorEdit('Please select an end time!');
       return false;
     }
 
     if (Number(startTime) >= Number(endTime)) {
-      setErrorEdit("Start time must be earlier than end time!");
+      setErrorEdit('Start time must be earlier than end time!');
       return false;
     }
 
@@ -620,10 +620,10 @@ export default function ManageVenues() {
   };
 
   var resetEdit = useCallback(async () => {
-    venueIDDBEdit.current = "";
-    nameDBEdit.current = "";
-    descriptionDBEdit.current = "";
-    capacityDBEdit.current = "";
+    venueIDDBEdit.current = '';
+    nameDBEdit.current = '';
+    descriptionDBEdit.current = '';
+    capacityDBEdit.current = '';
     instantBookDBEdit.current = false;
     isChildVenueDBEdit.current = false;
     visibleDBEdit.current = false;
@@ -631,22 +631,22 @@ export default function ManageVenues() {
     startTimeDBEdit.current = null;
     endTimeDBEdit.current = null;
 
-    setVenueIDEdit("");
-    setNameEdit("");
-    setDescriptionEdit("");
-    setCapacityEdit("");
+    setVenueIDEdit('');
+    setNameEdit('');
+    setDescriptionEdit('');
+    setCapacityEdit('');
     setInstantBookEdit(false);
     setIsChildVenueEdit(false);
     setVisibleEdit(true);
-    setStartTimeEdit("");
-    setEndTimeEdit("");
+    setStartTimeEdit('');
+    setEndTimeEdit('');
   }, []);
 
   const handleSearch = (event) => {
     const searchInput = event.target.value;
     setSearch(searchInput);
 
-    if (searchInput && searchInput != "") {
+    if (searchInput && searchInput != '') {
       let filteredData = data.filter((value) => {
         return (
           value.name.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -669,18 +669,18 @@ export default function ManageVenues() {
 
   return (
     <Auth admin>
-      <Box bg="white" borderRadius="lg" p={8} color="gray.700" shadow="base">
-        <MotionBox variants={cardVariant} key="1">
+      <Box bg='white' borderRadius='lg' p={8} color='gray.700' shadow='base'>
+        <MotionBox variants={cardVariant} key='1'>
           {loadingData && !data ? (
             <Text>Loading Please wait...</Text>
           ) : (
-            <Box align="center" justify="center" minWidth={"full"} mt={30}>
+            <Box align='center' justify='center' minWidth={'full'} mt={30}>
               <Stack spacing={30}>
                 <InputGroup>
                   <InputLeftAddon>Search:</InputLeftAddon>
                   <Input
-                    type="text"
-                    placeholder=""
+                    type='text'
+                    placeholder=''
                     value={search}
                     onChange={handleSearch}
                   />
@@ -705,61 +705,61 @@ export default function ManageVenues() {
       </Box>
 
       <MotionSimpleGrid
-        mt="3"
-        minChildWidth={{ base: "full", md: "500px", lg: "500px" }}
-        minH="full"
+        mt='3'
+        minChildWidth={{ base: 'full', md: '500px', lg: '500px' }}
+        minH='full'
         variants={parentVariant}
-        initial="initial"
-        animate="animate"
+        initial='initial'
+        animate='animate'
       >
         <MotionBox>
-          {" "}
+          {' '}
           <Stack
             spacing={4}
-            w={"full"}
-            maxW={"md"}
-            bg="white"
-            rounded={"xl"}
-            boxShadow={"lg"}
+            w={'full'}
+            maxW={'md'}
+            bg='white'
+            rounded={'xl'}
+            boxShadow={'lg'}
             p={6}
             my={12}
           >
-            <Heading size="md">Create new venue</Heading>
+            <Heading size='md'>Create new venue</Heading>
             <form onSubmit={handleSubmit}>
               <Stack spacing={4}>
-                <FormControl id="name">
+                <FormControl id='name'>
                   <FormLabel>Name</FormLabel>
                   <Input
-                    type="text"
-                    placeholder="Name"
+                    type='text'
+                    placeholder='Name'
                     value={name}
-                    size="lg"
+                    size='lg'
                     onChange={(event) => {
                       setName(event.currentTarget.value);
                       nameDB.current = event.currentTarget.value;
                     }}
                   />
                 </FormControl>
-                <FormControl id="description">
+                <FormControl id='description'>
                   <FormLabel>Description</FormLabel>
                   <Input
-                    type="text"
-                    placeholder="Description"
+                    type='text'
+                    placeholder='Description'
                     value={description}
-                    size="lg"
+                    size='lg'
                     onChange={(event) => {
                       setDescription(event.currentTarget.value);
                       descriptionDB.current = event.currentTarget.value;
                     }}
                   />
                 </FormControl>
-                <FormControl id="capacity">
+                <FormControl id='capacity'>
                   <FormLabel>Capacity</FormLabel>
                   <Input
-                    type="number"
-                    placeholder="Capacity"
+                    type='number'
+                    placeholder='Capacity'
                     value={capacity}
-                    size="lg"
+                    size='lg'
                     onChange={(event) => {
                       setCapacity(event.currentTarget.value);
                       capacityDB.current = event.currentTarget.value;
@@ -767,12 +767,12 @@ export default function ManageVenues() {
                   />
                 </FormControl>
                 {startTimeDropdown && (
-                  <Stack w="full">
+                  <Stack w='full'>
                     <FormLabel>Start Time</FormLabel>
                     <Select
                       value={startTime}
                       onChange={onStartTimeChange}
-                      size="sm"
+                      size='sm'
                     >
                       {endTimeDropdown}
                     </Select>
@@ -780,19 +780,19 @@ export default function ManageVenues() {
                 )}
 
                 {endTimeDropdown && (
-                  <Stack w="full">
+                  <Stack w='full'>
                     <FormLabel>End Time</FormLabel>
                     <Select
                       value={endTime}
                       onChange={onEndTimeChange}
-                      size="sm"
+                      size='sm'
                     >
                       {endTimeDropdown}
                     </Select>
                   </Stack>
                 )}
 
-                <Stack spacing={5} direction="row">
+                <Stack spacing={5} direction='row'>
                   <Checkbox
                     isChecked={visible}
                     onChange={(event) => {
@@ -822,76 +822,76 @@ export default function ManageVenues() {
                   </Checkbox>
                 </Stack>
                 {isChildVenue && (
-                  <Stack spacing={5} w="full">
+                  <Stack spacing={5} w='full'>
                     <Text>Select Venue</Text>
-                    <Select onChange={onParentVenueChange} size="sm">
+                    <Select onChange={onParentVenueChange} size='sm'>
                       {parentVenueDropdown}
                     </Select>
                   </Stack>
                 )}
 
                 <FormControl>
-                  <FormLabel fontSize="sm" fontWeight="md" color="gray.700">
+                  <FormLabel fontSize='sm' fontWeight='md' color='gray.700'>
                     Venue Photo
                   </FormLabel>
                   {fileName && <Text>File uploaded: {fileName}</Text>}
                   <Flex
                     mt={1}
-                    justify="center"
+                    justify='center'
                     px={6}
                     pt={5}
                     pb={6}
                     borderWidth={2}
-                    borderColor="gray.300"
-                    borderStyle="dashed"
-                    rounded="md"
+                    borderColor='gray.300'
+                    borderStyle='dashed'
+                    rounded='md'
                   >
-                    <Stack spacing={1} textAlign="center">
+                    <Stack spacing={1} textAlign='center'>
                       <Icon
-                        mx="auto"
+                        mx='auto'
                         boxSize={12}
-                        color="gray.400"
-                        stroke="currentColor"
-                        fill="none"
-                        viewBox="0 0 48 48"
-                        aria-hidden="true"
+                        color='gray.400'
+                        stroke='currentColor'
+                        fill='none'
+                        viewBox='0 0 48 48'
+                        aria-hidden='true'
                       >
                         <path
-                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                          d='M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02'
+                          strokeWidth='2'
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
                         />
                       </Icon>
                       <Flex
-                        fontSize="sm"
-                        color="gray.600"
-                        alignItems="baseline"
+                        fontSize='sm'
+                        color='gray.600'
+                        alignItems='baseline'
                       >
                         <chakra.label
-                          htmlFor="file-upload"
-                          cursor="pointer"
-                          rounded="md"
-                          fontSize="md"
-                          color="brand.600"
-                          pos="relative"
+                          htmlFor='file-upload'
+                          cursor='pointer'
+                          rounded='md'
+                          fontSize='md'
+                          color='brand.600'
+                          pos='relative'
                           _hover={{
-                            color: "brand.400",
+                            color: 'brand.400',
                           }}
                         >
                           <span>Upload a file</span>
                           <VisuallyHidden>
                             <input
-                              id="file-upload"
-                              name="file-upload"
-                              type="file"
+                              id='file-upload'
+                              name='file-upload'
+                              type='file'
                               onChange={onFileChange}
                             />
                           </VisuallyHidden>
                         </chakra.label>
                         <Text pl={1}>or drag and drop</Text>
                       </Flex>
-                      <Text fontSize="xs" color="gray.500">
+                      <Text fontSize='xs' color='gray.500'>
                         PNG, JPG, GIF up to 10MB
                       </Text>
                     </Stack>
@@ -899,18 +899,18 @@ export default function ManageVenues() {
                 </FormControl>
 
                 {error && (
-                  <Stack align={"center"}>
+                  <Stack align={'center'}>
                     <Text>{error}</Text>
                   </Stack>
                 )}
 
                 <Stack spacing={10}>
                   <Button
-                    type="submit"
-                    bg={"blue.400"}
-                    color={"white"}
+                    type='submit'
+                    bg={'blue.400'}
+                    color={'white'}
                     _hover={{
-                      bg: "blue.500",
+                      bg: 'blue.500',
                     }}
                   >
                     Create
@@ -924,63 +924,63 @@ export default function ManageVenues() {
         <MotionBox>
           <Stack
             spacing={4}
-            w={"full"}
-            maxW={"md"}
-            bg="white"
-            rounded={"xl"}
-            boxShadow={"lg"}
+            w={'full'}
+            maxW={'md'}
+            bg='white'
+            rounded={'xl'}
+            boxShadow={'lg'}
             p={6}
             my={12}
           >
-            <Heading size="md">Edit existing venue</Heading>
+            <Heading size='md'>Edit existing venue</Heading>
             <form onSubmit={handleSubmitEdit}>
               <Stack spacing={4}>
                 {venueDropdown && (
-                  <Stack spacing={3} w="full">
+                  <Stack spacing={3} w='full'>
                     <FormLabel>Select Venue</FormLabel>
                     <Select
                       value={venueIDEdit}
                       onChange={onVenueIDChangeEdit}
-                      size="sm"
+                      size='sm'
                     >
                       {venueDropdown}
                     </Select>
                   </Stack>
                 )}
 
-                <FormControl id="name">
+                <FormControl id='name'>
                   <FormLabel>Name</FormLabel>
                   <Input
-                    type="text"
-                    placeholder="Name"
+                    type='text'
+                    placeholder='Name'
                     value={nameEdit}
-                    size="lg"
+                    size='lg'
                     onChange={(event) => {
                       setNameEdit(event.currentTarget.value);
                       nameDBEdit.current = event.currentTarget.value;
                     }}
                   />
                 </FormControl>
-                <FormControl id="description">
+                <FormControl id='description'>
                   <FormLabel>Description</FormLabel>
                   <Input
-                    type="text"
-                    placeholder="Description"
+                    type='text'
+                    placeholder='Description'
                     value={descriptionEdit}
-                    size="lg"
+                    size='lg'
                     onChange={(event) => {
                       setDescriptionEdit(event.currentTarget.value);
                       descriptionDBEdit.current = event.currentTarget.value;
                     }}
                   />
                 </FormControl>
-                <FormControl id="capacity">
+                <FormControl id='capacity'>
                   <FormLabel>Capacity</FormLabel>
                   <Input
-                    type="number"
-                    placeholder="Capacity"
+                    type='number'
+                    placeholder='Capacity'
                     value={capacityEdit}
-                    size="lg"
+                    size='lg'
                     onChange={(event) => {
                       setCapacityEdit(event.currentTarget.value);
                       capacityDBEdit.current = event.currentTarget.value;
@@ -988,12 +988,12 @@ export default function ManageVenues() {
                   />
                 </FormControl>
                 {startTimeDropdown && (
-                  <Stack w="full">
+                  <Stack w='full'>
                     <FormLabel>Start Time</FormLabel>
                     <Select
                       value={startTimeEdit}
                       onChange={onStartTimeChangeEdit}
-                      size="sm"
+                      size='sm'
                     >
                       {endTimeDropdown}
                     </Select>
@@ -1001,19 +1001,19 @@ export default function ManageVenues() {
                 )}
 
                 {endTimeDropdown && (
-                  <Stack w="full">
+                  <Stack w='full'>
                     <FormLabel>End Time</FormLabel>
                     <Select
                       value={endTimeEdit}
                       onChange={onEndTimeChangeEdit}
-                      size="sm"
+                      size='sm'
                     >
                       {endTimeDropdown}
                     </Select>
                   </Stack>
                 )}
 
-                <Stack spacing={5} direction="row">
+                <Stack spacing={5} direction='row'>
                   <Checkbox
                     isChecked={visibleEdit}
                     onChange={(event) => {
@@ -1043,27 +1043,27 @@ export default function ManageVenues() {
                   </Checkbox>
                 </Stack>
                 {isChildVenueEdit && (
-                  <Stack spacing={5} w="full">
+                  <Stack spacing={5} w='full'>
                     <Text>Select Venue</Text>
-                    <Select onChange={onParentVenueChangeEdit} size="sm">
+                    <Select onChange={onParentVenueChangeEdit} size='sm'>
                       {parentVenueDropdown}
                     </Select>
                   </Stack>
                 )}
 
                 {errorEdit && (
-                  <Stack align={"center"}>
+                  <Stack align={'center'}>
                     <Text>{errorEdit}</Text>
                   </Stack>
                 )}
 
                 <Stack spacing={10}>
                   <Button
-                    type="submit"
-                    bg={"blue.400"}
-                    color={"white"}
+                    type='submit'
+                    bg={'blue.400'}
+                    color={'white'}
                     _hover={{
-                      bg: "blue.500",
+                      bg: 'blue.500',
                     }}
                   >
                     Update

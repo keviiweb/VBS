@@ -33,28 +33,29 @@ export default function Cultural() {
   return (
     <Landing>
       <Flex
-        w="full"
-        bg="#F9FAFB"
-        p={10}
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Stack>
-          <Box textAlign={"center"}>
-            <Text
-              mt={2}
-              mb={10}
-              fontSize={{ base: "2xl", sm: "3xl", lg: "4xl" }}
-              lineHeight="8"
-              fontWeight="extrabold"
-              letterSpacing="tight"
-              color="gray.900"
-            >
-              KING EDWARD VII CULTURAL
-            </Text>
-          </Box>
+      w="full"
+      bg="#F9FAFB"
+      p={10}
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Stack>
+        <Box textAlign={"center"}>
+          <Text
+            mt={2}
+            mb={10}
+            fontSize={{ base: "2xl", sm: "3xl", lg: "4xl" }}
+            lineHeight="8"
+            fontWeight="extrabold"
+            letterSpacing="tight"
+            color="gray.900"
+          >
+            KING EDWARD VII CULTURAL
+          </Text>
+        </Box>
+
         </Stack>
-      </Flex>
+        </Flex>
       <SimpleGrid
         columns={{ base: 1, md: 2, lg: 2 }}
         pos="relative"

@@ -1,9 +1,9 @@
 module.exports = {
   presets: [
     [
-      "@babel/preset-react",
+      '@babel/preset-react',
       {
-        runtime: "automatic",
+        runtime: 'automatic',
       },
     ],
   ],
@@ -14,12 +14,12 @@ module.exports = {
   // will also work for any other 3rd-party packages that attempt to do this.
   overrides: [
     {
-      include: ["./node_modules"],
+      include: ['./node_modules'],
       plugins: [
         [
-          "babel-plugin-transform-require-ignore",
+          'babel-plugin-transform-require-ignore',
           {
-            extensions: [".css"],
+            extensions: ['.css'],
           },
         ],
       ],

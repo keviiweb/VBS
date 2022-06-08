@@ -1,17 +1,17 @@
-import { currentSession } from "@helper/sys/session";
-import { findVenueByID, fetchAllVenue } from "@helper/sys/vbs/venue";
+import { currentSession } from '@helper/sys/session';
+import { findVenueByID, fetchAllVenue } from '@helper/sys/vbs/venue';
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
-  let result = "";
+  let result = '';
   if (session) {
     const venueDB = await fetchAllVenue();
     const parsedVenue = [];
 
     if (venueDB && venueDB.status) {
       const venueData = venueDB.msg;
-      for (let ven in venueData) {
+      for (const ven in venueData) {
         if (venueData[ven]) {
           const venue = venueData[ven];
 
@@ -23,9 +23,9 @@ const handler = async (req, res) => {
             }
           }
 
-          const isAvailable = venue.visible ? "Yes" : "No";
-          const childVenue = venue.isChildVenue ? "Yes" : "No";
-          const instantBook = venue.isInstantBook ? "Yes" : "No";
+          const isAvailable = venue.visible ? 'Yes' : 'No';
+          const childVenue = venue.isChildVenue ? 'Yes' : 'No';
+          const instantBook = venue.isInstantBook ? 'Yes' : 'No';
 
           const data = {
             capacity: venue.capacity,
@@ -36,11 +36,11 @@ const handler = async (req, res) => {
             name: venue.name,
             openingHours: venue.openingHours,
             parentVenue: venue.parentVenue,
-            parentVenueName: parentVenueName,
+            parentVenueName,
             visible: venue.visible,
-            isAvailable: isAvailable,
-            childVenue: childVenue,
-            instantBook: instantBook,
+            isAvailable,
+            childVenue,
+            instantBook,
           };
 
           parsedVenue.push(data);
@@ -53,22 +53,19 @@ const handler = async (req, res) => {
       };
       res.status(200).send(result);
       res.end();
-      return;
     } else {
       result = {
         status: false,
-        error: "Cannot get all venues",
-        msg: "",
+        error: 'Cannot get all venues',
+        msg: '',
       };
       res.status(200).send(result);
       res.end();
-      return;
     }
   } else {
-    result = { status: false, error: "Unauthenticated", msg: "" };
+    result = { status: false, error: 'Unauthenticated', msg: '' };
     res.status(200).send(result);
     res.end();
-    return;
   }
 };
 

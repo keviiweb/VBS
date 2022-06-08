@@ -4,17 +4,16 @@ import {
   isCancelled,
   isRejected,
   setReject,
-} from "@helper/sys/vbs/bookingReq";
-import { currentSession } from "@helper/sys/session";
+} from '@helper/sys/vbs/bookingReq';
+import { currentSession } from '@helper/sys/session';
 
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
-  var result = "";
+  let result = '';
   const { id } = req.body;
   if (session && session.user.admin) {
     if (id) {
-      let isSuccessful = false;
       const bookingRequest = await findBookingByID(id);
 
       if (bookingRequest) {
@@ -22,8 +21,8 @@ const handler = async (req, res) => {
         if (isRequestApproved) {
           result = {
             status: false,
-            error: "Request already approved!",
-            msg: "",
+            error: 'Request already approved!',
+            msg: '',
           };
           res.status(200).send(result);
           res.end();
@@ -34,8 +33,8 @@ const handler = async (req, res) => {
         if (isRequestCancelled) {
           result = {
             status: false,
-            error: "Request already cancelled!",
-            msg: "",
+            error: 'Request already cancelled!',
+            msg: '',
           };
           res.status(200).send(result);
           res.end();
@@ -46,8 +45,8 @@ const handler = async (req, res) => {
         if (isRequestRejected) {
           result = {
             status: false,
-            error: "Request already rejected!",
-            msg: "",
+            error: 'Request already rejected!',
+            msg: '',
           };
           res.status(200).send(result);
           res.end();
@@ -56,42 +55,40 @@ const handler = async (req, res) => {
 
         const reject = await setReject(bookingRequest, session);
         if (reject.status) {
-          isSuccessful = true;
           result = {
             status: true,
             error: null,
-            msg: "Booking request rejected",
+            msg: 'Booking request rejected',
           };
           res.status(200).send(result);
           res.end();
-          return;
         } else {
           result = {
             status: false,
-            error: "Failed to reject booking",
-            msg: "",
+            error: 'Failed to reject booking',
+            msg: '',
           };
           res.status(200).send(result);
           res.end();
-          return;
         }
       } else {
-        result = { status: false, error: "No booking ID found", msg: "" };
+        result = {
+          status: false,
+          error: 'No booking ID found',
+          msg: '',
+        };
         res.status(200).send(result);
         res.end();
-        return;
       }
     } else {
-      result = { status: false, error: "No booking ID found", msg: "" };
+      result = { status: false, error: 'No booking ID found', msg: '' };
       res.status(200).send(result);
       res.end();
-      return;
     }
   } else {
-    result = { status: false, error: "Unauthenticated request", msg: "" };
+    result = { status: false, error: 'Unauthenticated request', msg: '' };
     res.status(200).send(result);
     res.end();
-    return;
   }
 };
 
