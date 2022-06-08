@@ -15,6 +15,9 @@
     "object-curly-newline": "off",
     "react/jsx-one-expression-per-line": "off",
     "operator-linebreak": "off",
-    "object-shorthand": "off"
+    "object-shorthand": "off",
+    "implicit-arrow-linebreak": "off",
+    "wrap-iife": "off",
+    "function-paren-newline": "off"
   }
 }

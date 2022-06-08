@@ -1,28 +1,35 @@
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
 import {
   Button,
+  ButtonGroup,
   Box,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputLeftAddon,
   Text,
   Tabs,
   TabList,
   Tab,
-  ButtonGroup,
-  useToast,
   SimpleGrid,
   Stack,
-  FormLabel,
   Select,
-  Input,
-  InputGroup,
-  InputLeftAddon,
+  useToast,
 } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon, InfoOutlineIcon } from '@chakra-ui/icons';
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/vbs/TableWidget';
 import BookingModal from '@components/sys/vbs/BookingModal';
 import BookingCalendar from '@components/sys/vbs/BookingCalendar';
 import { parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
+
 const MotionSimpleGrid = motion(SimpleGrid);
 
 export default function ManageBooking() {
@@ -51,31 +58,9 @@ export default function ManageBooking() {
 
   const [search, setSearch] = useState('');
 
-  var handleTabChange = useCallback(
-    async (index) => {
-      tabIndexData.current = index;
-      setTabIndex(index);
-      switch (index) {
-        case PENDING:
-          await fetchPendingData();
-          break;
-        case APPROVED:
-          await fetchApprovedData();
-          break;
-        case REJECTED:
-          await fetchRejectedData();
-          break;
-        case ALL:
-          await fetchAllData();
-          break;
-        default:
-          break;
-      }
-    },
-    [fetchPendingData, fetchApprovedData, fetchAllData, fetchRejectedData],
-  );
+  let handleTabChange;
 
-  var handleApprove = useCallback(
+  const handleApprove = useCallback(
     async (id) => {
       if (id) {
         try {
@@ -116,7 +101,7 @@ export default function ManageBooking() {
     [handleTabChange, toast],
   );
 
-  var handleReject = useCallback(
+  const handleReject = useCallback(
     async (id) => {
       if (id) {
         try {
@@ -157,25 +142,11 @@ export default function ManageBooking() {
     [handleTabChange, toast],
   );
 
-  var handleDetails = useCallback((content) => {
+  const handleDetails = useCallback((content) => {
     setModalData(content);
   }, []);
 
-  var includeActionButton = useCallback(
-    async (content, action) => {
-      for (let key in content) {
-        if (content[key]) {
-          const data = content[key];
-          const buttons = await generateActionButton(data, action);
-          data.action = buttons;
-        }
-      }
-      setData(content);
-    },
-    [generateActionButton],
-  );
-
-  var generateActionButton = useCallback(
+  const generateActionButton = useCallback(
     async (content, action) => {
       let button = null;
 
@@ -208,20 +179,20 @@ export default function ManageBooking() {
               </ButtonGroup>
             );
             return button;
-          } else {
-            button = (
-              <ButtonGroup>
-                <Button
-                  size='sm'
-                  leftIcon={<InfoOutlineIcon />}
-                  onClick={() => handleDetails(content)}
-                >
-                  View Details
-                </Button>
-              </ButtonGroup>
-            );
-            return button;
           }
+          button = (
+            <ButtonGroup>
+              <Button
+                size='sm'
+                leftIcon={<InfoOutlineIcon />}
+                onClick={() => handleDetails(content)}
+              >
+                View Details
+              </Button>
+            </ButtonGroup>
+          );
+          return button;
+
         case APPROVED:
           button = (
             <ButtonGroup>
@@ -276,26 +247,41 @@ export default function ManageBooking() {
               </ButtonGroup>
             );
             return button;
-          } else {
-            button = (
-              <ButtonGroup>
-                <Button
-                  size='sm'
-                  leftIcon={<InfoOutlineIcon />}
-                  onClick={() => handleDetails(content)}
-                >
-                  View Details
-                </Button>
-              </ButtonGroup>
-            );
-            return button;
           }
+          button = (
+            <ButtonGroup>
+              <Button
+                size='sm'
+                leftIcon={<InfoOutlineIcon />}
+                onClick={() => handleDetails(content)}
+              >
+                View Details
+              </Button>
+            </ButtonGroup>
+          );
+          return button;
+        default:
+          return button;
       }
     },
     [handleApprove, handleDetails, handleReject],
   );
 
-  var fetchAllData = useCallback(async () => {
+  const includeActionButton = useCallback(
+    async (content, action) => {
+      for (let key = 0; key < content.length; key += 1) {
+        if (content[key]) {
+          const dataField = content[key];
+          const buttons = await generateActionButton(dataField, action);
+          dataField.action = buttons;
+        }
+      }
+      setData(content);
+    },
+    [generateActionButton],
+  );
+
+  const fetchAllData = useCallback(async () => {
     setLoadingData(true);
     setData(null);
     try {
@@ -316,7 +302,7 @@ export default function ManageBooking() {
     }
   }, [includeActionButton]);
 
-  var fetchApprovedData = useCallback(async () => {
+  const fetchApprovedData = useCallback(async () => {
     setLoadingData(true);
     setData(null);
     try {
@@ -337,7 +323,7 @@ export default function ManageBooking() {
     }
   }, [includeActionButton]);
 
-  var fetchRejectedData = useCallback(async () => {
+  const fetchRejectedData = useCallback(async () => {
     setLoadingData(true);
     setData(null);
 
@@ -358,7 +344,7 @@ export default function ManageBooking() {
     }
   }, [includeActionButton]);
 
-  var fetchPendingData = useCallback(async () => {
+  const fetchPendingData = useCallback(async () => {
     setLoadingData(true);
     setData(null);
     try {
@@ -378,7 +364,53 @@ export default function ManageBooking() {
     }
   }, [includeActionButton]);
 
-  var fetchVenue = useCallback(async () => {
+  handleTabChange = useCallback(
+    async (index) => {
+      tabIndexData.current = index;
+      setTabIndex(index);
+      switch (index) {
+        case PENDING:
+          await fetchPendingData();
+          break;
+        case APPROVED:
+          await fetchApprovedData();
+          break;
+        case REJECTED:
+          await fetchRejectedData();
+          break;
+        case ALL:
+          await fetchAllData();
+          break;
+        default:
+          break;
+      }
+    },
+    [fetchPendingData, fetchApprovedData, fetchAllData, fetchRejectedData],
+  );
+
+  const generateVenueDropdown = useCallback(async (content) => {
+    const selection = [];
+    venueData.current = [];
+
+    selection.push(<option key='' value='' aria-label='Default' />);
+
+    for (let key = 0; key < content.length; key += 1) {
+      if (content[key]) {
+        const dataField = content[key];
+        selection.push(
+          <option key={dataField.id} value={dataField.id}>
+            {dataField.name}
+          </option>,
+        );
+
+        venueData.current.push(dataField);
+      }
+    }
+
+    setVenueDropdown(selection);
+  }, []);
+
+  const fetchVenue = useCallback(async () => {
     try {
       const rawResponse = await fetch('/api/venue/fetch', {
         headers: {
@@ -395,35 +427,37 @@ export default function ManageBooking() {
     }
   }, [generateVenueDropdown]);
 
-  var generateVenueDropdown = useCallback(async (content) => {
-    const selection = [];
-    venueData.current = [];
+  const populateCalendar = async (content) => {
+    const event = [];
+    let count = 0;
 
-    selection.push(<option key={''} value={''}></option>);
-
-    for (let key in content) {
+    for (let key = 0; key < content.length; key += 1) {
       if (content[key]) {
-        const data = content[key];
-        selection.push(
-          <option key={data.id} value={data.id}>
-            {data.name}
-          </option>,
-        );
+        const dataField = content[key];
 
-        venueData.current.push(data);
+        const description = `CCA: ${dataField.cca} EMAIL: ${dataField.email}`;
+
+        const e = {
+          id: dataField.id,
+          title: dataField.title,
+          start: dataField.start,
+          end: dataField.end,
+          extendedProps: {
+            description: description,
+          },
+        };
+
+        event.push(e);
+
+        if (count === 0) {
+          setStartTime(dataField.startHour);
+          setEndTime(dataField.endHour);
+          count += 1;
+        }
       }
     }
 
-    setVenueDropdown(selection);
-  }, []);
-
-  const onVenueIDChange = async (event) => {
-    if (event.target.value) {
-      const value = event.target.value;
-      venueIDDB.current = value;
-      setVenueID(value);
-      await fetchBookings(value);
-    }
+    setEvents(event);
   };
 
   const fetchBookings = async (id) => {
@@ -447,37 +481,13 @@ export default function ManageBooking() {
     }
   };
 
-  const populateCalendar = async (content) => {
-    const event = [];
-    let count = 0;
-
-    for (let key in content) {
-      if (content[key]) {
-        const data = content[key];
-
-        const description = 'CCA: ' + data.cca + ' EMAIL: ' + data.email;
-
-        const e = {
-          id: data.id,
-          title: data.title,
-          start: data.start,
-          end: data.end,
-          extendedProps: {
-            description: description,
-          },
-        };
-
-        event.push(e);
-
-        if (count == 0) {
-          setStartTime(data.startHour);
-          setEndTime(data.endHour);
-          count++;
-        }
-      }
+  const onVenueIDChange = async (event) => {
+    if (event.target.value) {
+      const { value } = event.target;
+      venueIDDB.current = value;
+      setVenueID(value);
+      await fetchBookings(value);
     }
-
-    setEvents(event);
   };
 
   const handleMouseEnter = (info) => {
@@ -492,7 +502,7 @@ export default function ManageBooking() {
     }
   };
 
-  const handleMouseLeave = (_info) => {
+  const handleMouseLeave = () => {
     toast.closeAll();
   };
 
@@ -500,20 +510,19 @@ export default function ManageBooking() {
     const searchInput = event.target.value;
     setSearch(searchInput);
 
-    if (searchInput && searchInput != '') {
-      let filteredData = data.filter((value) => {
-        return (
+    if (searchInput && searchInput !== '') {
+      const filteredDataField = data.filter(
+        (value) =>
           value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.cca.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.venue.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.date.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.timeSlots.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.email.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.status.toLowerCase().includes(searchInput.toLowerCase())
-        );
-      });
+          value.status.toLowerCase().includes(searchInput.toLowerCase()),
+      );
 
-      setFilteredData(filteredData);
+      setFilteredData(filteredDataField);
     } else {
       setFilteredData(null);
     }
@@ -622,16 +631,20 @@ export default function ManageBooking() {
               <Tab>Rejected</Tab>
               <Tab>All Bookings</Tab>
             </TabList>
-            {loadingData && !data ? (
+            {loadingData && !data && (
               <Box align='center' justify='center' mt={30}>
                 <Text>Loading Please wait...</Text>
               </Box>
-            ) : !loadingData && data.length == 0 ? (
-              <Box align='center' justify='center' minWidth={'full'} mt={30}>
+            )}
+
+            {!loadingData && data.length === 0 && (
+              <Box align='center' justify='center' minWidth='full' mt={30}>
                 <Text>No bookings found</Text>
               </Box>
-            ) : (
-              <Box align='center' justify='center' minWidth={'full'} mt={30}>
+            )}
+
+            {!loadingData && data.length > 0 && (
+              <Box align='center' justify='center' minWidth='full' mt={30}>
                 <Stack spacing={30}>
                   <InputGroup>
                     <InputLeftAddon>Search:</InputLeftAddon>
@@ -653,9 +666,10 @@ export default function ManageBooking() {
                 </Stack>
               </Box>
             )}
+
             <BookingModal
-              isAdmin={true}
-              isOpen={modalData ? true : false}
+              isAdmin
+              isOpen={!!modalData}
               onClose={() => setModalData(null)}
               modalData={modalData}
             />

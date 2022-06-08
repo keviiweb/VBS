@@ -1,29 +1,35 @@
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+} from 'react';
 import {
+  ButtonGroup,
   Button,
   Box,
-  Heading,
-  FormControl,
-  Input,
-  FormLabel,
-  Flex,
-  Icon,
-  Text,
-  Stack,
-  ButtonGroup,
   Checkbox,
-  Select,
-  useToast,
   chakra,
-  VisuallyHidden,
-  SimpleGrid,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
   InputGroup,
   InputLeftAddon,
+  Icon,
+  Text,
+  SimpleGrid,
+  Stack,
+  Select,
+  useToast,
+  VisuallyHidden,
 } from '@chakra-ui/react';
 
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import { cardVariant, parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/vbs/TableWidget';
 import VenueModal from '@components/sys/vbs/VenueModal';
@@ -68,9 +74,8 @@ export default function ManageVenues() {
   const selectedFileDB = useRef(null);
   const [fileName, setFileName] = useState(null);
 
-  const [error, setError] = useState(null);
+  const [errorMsg, setError] = useState(null);
 
-  //Edits
   const [nameEdit, setNameEdit] = useState('');
   const [descriptionEdit, setDescriptionEdit] = useState('');
   const [capacityEdit, setCapacityEdit] = useState('');
@@ -98,12 +103,15 @@ export default function ManageVenues() {
 
   const [errorEdit, setErrorEdit] = useState(null);
 
-  // Creating new venue;
-  var handleDetails = useCallback((content) => {
+  let generateActionButton;
+  let fetchData;
+  let resetEdit;
+
+  const handleDetails = useCallback((content) => {
     setModalData(content);
   }, []);
 
-  var reset = useCallback(async () => {
+  const reset = useCallback(async () => {
     selectedFileDB.current = null;
     nameDB.current = '';
     descriptionDB.current = '';
@@ -126,11 +134,65 @@ export default function ManageVenues() {
     setEndTime('');
   }, []);
 
+  const validateFields = (
+    nameField,
+    descriptionField,
+    capacityField,
+    isChildVenueField,
+    parentVenueField,
+    startTimeField,
+    endTimeField,
+    openingHoursField,
+  ) => {
+    // super basic validation here
+    if (!nameField) {
+      setError('Name must not be empty!');
+      return false;
+    }
+
+    if (!descriptionField) {
+      setError('Description must not be empty!');
+      return false;
+    }
+
+    if (!capacityField) {
+      setError('Capacity must not be empty!');
+      return false;
+    }
+
+    if (isChildVenueField && !parentVenueField) {
+      setError('Please select a parent venue!');
+      return false;
+    }
+
+    if (!openingHoursField) {
+      setError('Please select the opening hours!');
+      return false;
+    }
+
+    if (!startTimeField) {
+      setError('Please select a start time!');
+      return false;
+    }
+
+    if (!endTimeField) {
+      setError('Please select an end time!');
+      return false;
+    }
+
+    if (Number(startTimeField) >= Number(endTimeField)) {
+      setError('Start time must be earlier than end time!');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = useCallback(
     async (event) => {
       setError(null);
       event.preventDefault();
-      const openingHours = startTimeDB.current + ' - ' + endTimeDB.current;
+      const openingHours = `${startTimeDB.current} - ${endTimeDB.current}`;
       if (
         validateFields(
           nameDB.current,
@@ -143,21 +205,21 @@ export default function ManageVenues() {
           openingHours,
         )
       ) {
-        const data = new FormData();
-        data.append('image', selectedFileDB.current);
-        data.append('name', nameDB.current);
-        data.append('description', descriptionDB.current);
-        data.append('capacity', capacityDB.current);
-        data.append('isInstantBook', instantBookDB.current);
-        data.append('visible', visibleDB.current);
-        data.append('isChildVenue', isChildVenueDB.current);
-        data.append('parentVenue', parentVenue.current);
-        data.append('openingHours', openingHours);
+        const dataField = new FormData();
+        dataField.append('image', selectedFileDB.current);
+        dataField.append('name', nameDB.current);
+        dataField.append('description', descriptionDB.current);
+        dataField.append('capacity', capacityDB.current);
+        dataField.append('isInstantBook', instantBookDB.current);
+        dataField.append('visible', visibleDB.current);
+        dataField.append('isChildVenue', isChildVenueDB.current);
+        dataField.append('parentVenue', parentVenue.current);
+        dataField.append('openingHours', openingHours);
 
         try {
           const rawResponse = await fetch('/api/venue/create', {
             method: 'POST',
-            body: data,
+            body: dataField,
           });
           const content = await rawResponse.json();
           if (content.status) {
@@ -196,14 +258,14 @@ export default function ManageVenues() {
 
   const onParentVenueChange = async (event) => {
     if (event.target.value) {
-      const value = event.target.value;
+      const { value } = event.target;
       parentVenue.current = value;
     }
   };
 
   const onStartTimeChange = async (event) => {
     if (event.target.value) {
-      const value = event.target.value;
+      const { value } = event.target;
       startTimeDB.current = value;
       setStartTime(value);
     }
@@ -211,46 +273,46 @@ export default function ManageVenues() {
 
   const onEndTimeChange = async (event) => {
     if (event.target.value) {
-      const value = event.target.value;
+      const { value } = event.target;
       endTimeDB.current = value;
       setEndTime(value);
     }
   };
 
-  var includeActionButton = useCallback(
+  const includeActionButton = useCallback(
     async (content) => {
       const selection = [];
       const selectionEdit = [];
       let count = 0;
       venueData.current = [];
 
-      selectionEdit.push(<option key={''} value={''}></option>);
+      selectionEdit.push(<option key='' value='' aria-label='Default' />);
 
-      for (let key in content) {
+      for (let key = 0; key < content.length; key += 1) {
         if (content[key]) {
-          const data = content[key];
-          if (!data.isChildVenue) {
+          const dataField = content[key];
+          if (!dataField.isChildVenue) {
             selection.push(
-              <option key={data.id} value={data.id}>
-                {data.name}
+              <option key={dataField.id} value={dataField.id}>
+                {dataField.name}
               </option>,
             );
 
-            if (count == 0) {
-              parentVenue.current = data.id;
-              count++;
+            if (count === 0) {
+              parentVenue.current = dataField.id;
+              count += 1;
             }
           }
 
           selectionEdit.push(
-            <option key={data.id} value={data.id}>
-              {data.name}
+            <option key={dataField.id} value={dataField.id}>
+              {dataField.name}
             </option>,
           );
 
-          venueData.current.push(data);
-          const buttons = await generateActionButton(data);
-          data.action = buttons;
+          venueData.current.push(dataField);
+          const buttons = await generateActionButton(dataField);
+          dataField.action = buttons;
         }
       }
 
@@ -261,7 +323,7 @@ export default function ManageVenues() {
     [generateActionButton],
   );
 
-  var generateActionButton = useCallback(
+  generateActionButton = useCallback(
     async (content) => {
       let button = null;
 
@@ -282,7 +344,7 @@ export default function ManageVenues() {
     [handleDetails],
   );
 
-  var fetchData = useCallback(async () => {
+  fetchData = useCallback(async () => {
     setLoadingData(true);
     setData(null);
     try {
@@ -302,25 +364,25 @@ export default function ManageVenues() {
     }
   }, [includeActionButton]);
 
-  var generateTimeSlots = useCallback(async () => {
+  const generateTimeSlots = useCallback(async () => {
     const start = [];
     const end = [];
 
-    start.push(<option key={'start'} value={''}></option>);
-    end.push(<option key={'end'} value={''}></option>);
+    start.push(<option key='start' value='' aria-label='Default' />);
+    end.push(<option key='end' value='' aria-label='Default' />);
 
-    for (let key in timeSlots) {
+    for (let key = 0; key < timeSlots.length; key += 1) {
       if (timeSlots[key]) {
-        const data = timeSlots[key];
+        const dataField = timeSlots[key];
         start.push(
-          <option key={'start' + key} value={data}>
-            {data}
+          <option key={`start${key}`} value={dataField}>
+            {dataField}
           </option>,
         );
 
         end.push(
-          <option key={'end' + key} value={data}>
-            {data}
+          <option key={`end${key}`} value={dataField}>
+            {dataField}
           </option>,
         );
       }
@@ -373,118 +435,25 @@ export default function ManageVenues() {
     [],
   );
 
-  const validateFields = (
-    name,
-    description,
-    capacity,
-    isChildVenue,
-    parentVenue,
-    startTime,
-    endTime,
-    openingHours,
-  ) => {
-    //super basic validation here
-    if (!name) {
-      setError('Name must not be empty!');
-      return false;
-    }
+  const changeDataEdit = (dataField) => {
+    setNameEdit(dataField.name);
+    setDescriptionEdit(dataField.description);
+    setCapacityEdit(dataField.capacity);
+    setInstantBookEdit(dataField.isInstantBook);
+    setIsChildVenueEdit(dataField.isChildVenue);
+    setVisibleEdit(dataField.visible);
 
-    if (!description) {
-      setError('Description must not be empty!');
-      return false;
-    }
+    nameDBEdit.current = dataField.name;
+    descriptionDBEdit.current = dataField.description;
+    capacityDBEdit.current = dataField.capacity;
+    instantBookDBEdit.current = dataField.isInstantBook;
+    isChildVenueDBEdit.current = dataField.isChildVenue;
+    visibleDBEdit.current = dataField.visible;
+    parentVenueEdit.current = dataField.parentVenue
+      ? dataField.parentVenue
+      : '';
 
-    if (!capacity) {
-      setError('Capacity must not be empty!');
-      return false;
-    }
-
-    if (isChildVenue && !parentVenue) {
-      setError('Please select a parent venue!');
-      return false;
-    }
-
-    if (!openingHours) {
-      setError('Please select the opening hours!');
-      return false;
-    }
-
-    if (!startTime) {
-      setError('Please select a start time!');
-      return false;
-    }
-
-    if (!endTime) {
-      setError('Please select an end time!');
-      return false;
-    }
-
-    if (Number(startTime) >= Number(endTime)) {
-      setError('Start time must be earlier than end time!');
-      return false;
-    }
-
-    return true;
-  };
-
-  //Edit functions
-  const onParentVenueChangeEdit = async (event) => {
-    if (event.target.value) {
-      const value = event.target.value;
-      parentVenueEdit.current = value;
-    }
-  };
-
-  const onStartTimeChangeEdit = async (event) => {
-    if (event.target.value) {
-      const value = event.target.value;
-      startTimeDBEdit.current = value;
-      setStartTimeEdit(value);
-    }
-  };
-
-  const onEndTimeChangeEdit = async (event) => {
-    if (event.target.value) {
-      const value = event.target.value;
-      endTimeDBEdit.current = value;
-      setEndTimeEdit(value);
-    }
-  };
-
-  const onVenueIDChangeEdit = async (event) => {
-    if (event.target.value) {
-      const value = event.target.value;
-      venueIDDBEdit.current = value;
-      setVenueIDEdit(value);
-
-      if (venueData.current) {
-        for (let key in venueData.current) {
-          const data = venueData.current[key];
-          if (data.id == value) {
-            changeDataEdit(data);
-          }
-        }
-      }
-    }
-  };
-
-  const changeDataEdit = (data) => {
-    setNameEdit(data.name);
-    setDescriptionEdit(data.description);
-    setCapacityEdit(data.capacity);
-    setInstantBookEdit(data.isInstantBook);
-    setIsChildVenueEdit(data.isChildVenue);
-    setVisibleEdit(data.visible);
-
-    nameDBEdit.current = data.name;
-    descriptionDBEdit.current = data.description;
-    capacityDBEdit.current = data.capacity;
-    instantBookDBEdit.current = data.isInstantBook;
-    isChildVenueDBEdit.current = data.isChildVenue;
-    visibleDBEdit.current = data.visible;
-    parentVenueEdit.current = data.parentVenue ? data.parentVenue : '';
-
-    const split = data.openingHours.split('-');
+    const split = dataField.openingHours.split('-');
     const start = split[0].trim();
     const end = split[1].trim();
 
@@ -494,13 +463,113 @@ export default function ManageVenues() {
     setEndTimeEdit(end);
   };
 
-  var handleSubmitEdit = useCallback(
+  const onParentVenueChangeEdit = async (event) => {
+    if (event.target.value) {
+      const { value } = event.target;
+      parentVenueEdit.current = value;
+    }
+  };
+
+  const onStartTimeChangeEdit = async (event) => {
+    if (event.target.value) {
+      const { value } = event.target;
+      startTimeDBEdit.current = value;
+      setStartTimeEdit(value);
+    }
+  };
+
+  const onEndTimeChangeEdit = async (event) => {
+    if (event.target.value) {
+      const { value } = event.target;
+      endTimeDBEdit.current = value;
+      setEndTimeEdit(value);
+    }
+  };
+
+  const onVenueIDChangeEdit = async (event) => {
+    if (event.target.value) {
+      const { value } = event.target;
+      venueIDDBEdit.current = value;
+      setVenueIDEdit(value);
+
+      if (venueData.current) {
+        for (let key = 0; key < venueData.current.length; key += 1) {
+          if (venueData.current[key]) {
+            const dataField = venueData.current[key];
+            if (dataField.id === value) {
+              changeDataEdit(dataField);
+            }
+          }
+        }
+      }
+    }
+  };
+
+  const validateFieldsEdit = (
+    idField,
+    nameField,
+    descriptionField,
+    capacityField,
+    isChildVenueField,
+    parentVenueField,
+    startTimeField,
+    endTimeField,
+    openingHoursField,
+  ) => {
+    if (!idField) {
+      setErrorEdit('ID must not be empty!');
+      return false;
+    }
+
+    if (!nameField) {
+      setErrorEdit('Name must not be empty!');
+      return false;
+    }
+
+    if (!descriptionField) {
+      setErrorEdit('Description must not be empty!');
+      return false;
+    }
+
+    if (!capacityField) {
+      setErrorEdit('Capacity must not be empty!');
+      return false;
+    }
+
+    if (isChildVenueField && !parentVenueField) {
+      setErrorEdit('Please select a parent venue!');
+      return false;
+    }
+
+    if (!openingHoursField) {
+      setErrorEdit('Please select the opening hours!');
+      return false;
+    }
+
+    if (!startTimeField) {
+      setErrorEdit('Please select a start time!');
+      return false;
+    }
+
+    if (!endTimeField) {
+      setErrorEdit('Please select an end time!');
+      return false;
+    }
+
+    if (Number(startTimeField) >= Number(endTimeField)) {
+      setErrorEdit('Start time must be earlier than end time!');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmitEdit = useCallback(
     async (event) => {
       setErrorEdit(null);
       event.preventDefault();
 
-      const openingHours =
-        startTimeDBEdit.current + ' - ' + endTimeDBEdit.current;
+      const openingHours = `${startTimeDBEdit.current} - ${endTimeDBEdit.current}`;
       if (
         validateFieldsEdit(
           venueIDDBEdit.current,
@@ -514,21 +583,21 @@ export default function ManageVenues() {
           openingHours,
         )
       ) {
-        const data = new FormData();
-        data.append('id', venueIDDBEdit.current);
-        data.append('name', nameDBEdit.current);
-        data.append('description', descriptionDBEdit.current);
-        data.append('capacity', capacityDBEdit.current);
-        data.append('isInstantBook', instantBookDBEdit.current);
-        data.append('visible', visibleDBEdit.current);
-        data.append('isChildVenue', isChildVenueDBEdit.current);
-        data.append('parentVenue', parentVenueEdit.current);
-        data.append('openingHours', openingHours);
+        const dataField = new FormData();
+        dataField.append('id', venueIDDBEdit.current);
+        dataField.append('name', nameDBEdit.current);
+        dataField.append('description', descriptionDBEdit.current);
+        dataField.append('capacity', capacityDBEdit.current);
+        dataField.append('isInstantBook', instantBookDBEdit.current);
+        dataField.append('visible', visibleDBEdit.current);
+        dataField.append('isChildVenue', isChildVenueDBEdit.current);
+        dataField.append('parentVenue', parentVenueEdit.current);
+        dataField.append('openingHours', openingHours);
 
         try {
           const rawResponse = await fetch('/api/venue/edit', {
             method: 'POST',
-            body: data,
+            body: dataField,
           });
           const content = await rawResponse.json();
           if (content.status) {
@@ -559,67 +628,7 @@ export default function ManageVenues() {
     [fetchData, resetEdit, toast],
   );
 
-  const validateFieldsEdit = (
-    id,
-    name,
-    description,
-    capacity,
-    isChildVenue,
-    parentVenue,
-    startTime,
-    endTime,
-    openingHours,
-  ) => {
-    //super basic validation here
-    if (!id) {
-      setErrorEdit('ID must not be empty!');
-      return false;
-    }
-
-    if (!name) {
-      setErrorEdit('Name must not be empty!');
-      return false;
-    }
-
-    if (!description) {
-      setErrorEdit('Description must not be empty!');
-      return false;
-    }
-
-    if (!capacity) {
-      setErrorEdit('Capacity must not be empty!');
-      return false;
-    }
-
-    if (isChildVenue && !parentVenue) {
-      setErrorEdit('Please select a parent venue!');
-      return false;
-    }
-
-    if (!openingHours) {
-      setErrorEdit('Please select the opening hours!');
-      return false;
-    }
-
-    if (!startTime) {
-      setErrorEdit('Please select a start time!');
-      return false;
-    }
-
-    if (!endTime) {
-      setErrorEdit('Please select an end time!');
-      return false;
-    }
-
-    if (Number(startTime) >= Number(endTime)) {
-      setErrorEdit('Start time must be earlier than end time!');
-      return false;
-    }
-
-    return true;
-  };
-
-  var resetEdit = useCallback(async () => {
+  resetEdit = useCallback(async () => {
     venueIDDBEdit.current = '';
     nameDBEdit.current = '';
     descriptionDBEdit.current = '';
@@ -646,9 +655,9 @@ export default function ManageVenues() {
     const searchInput = event.target.value;
     setSearch(searchInput);
 
-    if (searchInput && searchInput != '') {
-      let filteredData = data.filter((value) => {
-        return (
+    if (searchInput && searchInput !== '') {
+      const filteredDataField = data.filter(
+        (value) =>
           value.name.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.description.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.openingHours
@@ -657,11 +666,10 @@ export default function ManageVenues() {
           value.capacity
             .toString()
             .toLowerCase()
-            .includes(searchInput.toLowerCase())
-        );
-      });
+            .includes(searchInput.toLowerCase()),
+      );
 
-      setFilteredData(filteredData);
+      setFilteredData(filteredDataField);
     } else {
       setFilteredData(null);
     }
@@ -674,7 +682,7 @@ export default function ManageVenues() {
           {loadingData && !data ? (
             <Text>Loading Please wait...</Text>
           ) : (
-            <Box align='center' justify='center' minWidth={'full'} mt={30}>
+            <Box align='center' justify='center' minWidth='full' mt={30}>
               <Stack spacing={30}>
                 <InputGroup>
                   <InputLeftAddon>Search:</InputLeftAddon>
@@ -697,7 +705,7 @@ export default function ManageVenues() {
             </Box>
           )}
           <VenueModal
-            isOpen={modalData ? true : false}
+            isOpen={modalData}
             onClose={() => setModalData(null)}
             modalData={modalData}
           />
@@ -716,11 +724,11 @@ export default function ManageVenues() {
           {' '}
           <Stack
             spacing={4}
-            w={'full'}
-            maxW={'md'}
+            w='full'
+            maxW='md'
             bg='white'
-            rounded={'xl'}
-            boxShadow={'lg'}
+            rounded='xl'
+            boxShadow='lg'
             p={6}
             my={12}
           >
@@ -898,17 +906,17 @@ export default function ManageVenues() {
                   </Flex>
                 </FormControl>
 
-                {error && (
-                  <Stack align={'center'}>
-                    <Text>{error}</Text>
+                {errorMsg && (
+                  <Stack align='center'>
+                    <Text>{errorMsg}</Text>
                   </Stack>
                 )}
 
                 <Stack spacing={10}>
                   <Button
                     type='submit'
-                    bg={'blue.400'}
-                    color={'white'}
+                    bg='blue.400'
+                    color='white'
                     _hover={{
                       bg: 'blue.500',
                     }}
@@ -924,11 +932,11 @@ export default function ManageVenues() {
         <MotionBox>
           <Stack
             spacing={4}
-            w={'full'}
-            maxW={'md'}
+            w='full'
+            maxW='md'
             bg='white'
-            rounded={'xl'}
-            boxShadow={'lg'}
+            rounded='xl'
+            boxShadow='lg'
             p={6}
             my={12}
           >
@@ -1052,7 +1060,7 @@ export default function ManageVenues() {
                 )}
 
                 {errorEdit && (
-                  <Stack align={'center'}>
+                  <Stack align='center'>
                     <Text>{errorEdit}</Text>
                   </Stack>
                 )}
@@ -1060,8 +1068,8 @@ export default function ManageVenues() {
                 <Stack spacing={10}>
                   <Button
                     type='submit'
-                    bg={'blue.400'}
-                    color={'white'}
+                    bg='blue.400'
+                    color='white'
                     _hover={{
                       bg: 'blue.500',
                     }}
