@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { Box, Flex, Link, Image, Text, Button } from '@chakra-ui/react';
+import { Box, Button, Flex, Image, Link, Text } from '@chakra-ui/react';
 import NextLink from 'next/link';
 
 export default function Card({
@@ -21,7 +21,7 @@ export default function Card({
   const SubCardWButton = useCallback(
     () => (
       <Box mx='auto' rounded='lg' shadow='lg' maxW='2xl' _hover={hoverStyles}>
-        {img && <Image w='full' fit='cover' src={img} alt='Event' />}
+        {img && <Image w='full' fit='cover' src={img} alt='Event' loading='eager' />}
         <Box p={6}>
           <Box>
             <Text fontWeight='bold' fontSize='2xl'>
