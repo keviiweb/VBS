@@ -153,7 +153,7 @@ export default function Header() {
     <chakra.header id='header' w='full' px={{ base: 2, sm: 4 }} py={6}>
       <Flex alignItems='center' justifyContent='space-between' mx='auto'>
         <NextLink href='/'>
-          <Flex mt={3} ml={{ base: 5, md: 8, lg: 12, xl: 20 }}>
+          <Flex mt={3} mb={3} ml={{ base: 5, md: 8, lg: 12, xl: 20 }}>
             <Image
               src='/sys/image/keviilogo.png'
               width='50px'

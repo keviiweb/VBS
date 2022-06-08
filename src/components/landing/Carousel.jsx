@@ -117,7 +117,7 @@ export default function Carousel() {
                       pos='absolute'
                       top='0'
                     >
-                      {sid + 1} /{slidesCount}
+                      {sid + 1} /{` ${slidesCount}`}
                     </Text>
                     <Image
                       src={slide.img}

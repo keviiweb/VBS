@@ -86,7 +86,7 @@ export default function Feature() {
             </Flex>
             <Flex
               bg='#F9FAFB'
-              p={{ base: 4, md: 8, lg: 12, xl: 20 }}
+              p={{ base: 4, md: 8, lg: 12, xl: 17 }}
               w='auto'
               justifyContent='center'
               alignItems='center'
