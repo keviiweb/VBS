@@ -565,17 +565,10 @@ export default function ManageBooking() {
   return (
     <Auth admin>
       <MotionSimpleGrid
-<<<<<<< HEAD
         columns={{ base: 1, md: 1, lg: 1 }}
         mt='3'
         spacing='2em'
         minH='600px'
-=======
-        mt="3"
-        minChildWidth={{ base: "full", md: "500px", lg: "500px" }}
-        spacing="2em"
-        minH="600px"
->>>>>>> parent of 1ced736 (Added community page)
         variants={parentVariant}
         initial='initial'
         animate='animate'
