@@ -10,12 +10,12 @@ This repo holds source code for King Edward VII's Venue Booking System and CCA A
 Run npm run dev and start building awesome things!
 
 ## Commands
-
     npm run clean - Cleans build artifacts
     npm run dev - Starts project locally (localhost:3000) and recompiles on source code changes
     npm run build - Builds static assets into out folder
     npm run start - Serves static assets from out folder
-    npm run prettier - Checks code for correct formating
+    npm run prettier - Prettify code
+    npm run lint - Checks code for correct formating
 
 ## Project Structure
 
@@ -34,6 +34,37 @@ Run npm run dev and start building awesome things!
 * Prisma - ORM to define data models and their relations
 * PlanetScale - MySQL-compatible serverless database platform
 
+## Libraries
+Further add ons as necessary
+
+**Necessary**
+* Babel - Javascript calendar, used in FullCalendar
+* Next-Auth - Authentication library
+* Prisma - ORM library for database
+* Formidable - Library to parse form uploads with files 
+* Next-Transpile - Transpile modules from node_modules using the Next.js Babel configuration
+* Nodemailer - Library to send out emails
+* React - Frontend necessity
+* Safe-JSON-Stringify - Prevent from throwing errors on getters
+
+**Styling**
+* Chakra-UI - Component Library 
+* Emotion - Styling
+* Framer-Motion - Animation
+* React-Chakra-Pagination - Easy way for paginate lists using Chakra UI, using lists components and hooks
+* React-Icons - Library for Icons
+
+**Component**
+* FullCalendar - Calendar with list view
+* Google-Map-React - Map view
+* Node-Telegram-API - Library for Telegram bots
+* React-Calendar - Small calendar with datepicker
+* React-Table - Table
+
+**Utilities**
+* ESlint - Code formatter and checker
+* Sharp - High-performance image processing
+* SWR - React-Hooks library for data fetching
 ## Contributing
 
 * Fork this repository to your own profile
