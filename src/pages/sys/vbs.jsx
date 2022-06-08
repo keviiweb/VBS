@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { cardVariant, parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
 import {
@@ -45,20 +45,24 @@ export default function VBS(props) {
   };
 
   useEffect(() => {
-    async function fetchData(props) {
+    async function fetchData(propsField) {
       setIsLoading(true);
 
-      const propRes = await props;
-      minDate.current = props.minDate ? props.minDate : minDate.current;
-      maxDate.current = props.maxDate ? props.maxDate : maxDate.current;
+      const propRes = await propsField;
+      minDate.current = propsField.minDate
+        ? propsField.minDate
+        : minDate.current;
+      maxDate.current = propsField.maxDate
+        ? propsField.maxDate
+        : maxDate.current;
 
       if (propRes.data) {
         const res = propRes.data;
         if (res.msg.length > 0) {
           if (res.status) {
-            let result = res.msg;
+            const result = res.msg;
             if (result !== '') {
-              let cardRes = [];
+              const cardRes = [];
               result.forEach((item) => {
                 if (item.visible) {
                   cardRes.push(
@@ -86,12 +90,12 @@ export default function VBS(props) {
     const searchInput = event.target.value;
     setSearch(searchInput);
 
-    if (searchInput && searchInput != '') {
-      let filteredData = cards.filter((value) => {
-        return value.props.id.toLowerCase().includes(searchInput.toLowerCase());
-      });
+    if (searchInput && searchInput !== '') {
+      const filteredDataField = cards.filter((value) =>
+        value.props.id.toLowerCase().includes(searchInput.toLowerCase()),
+      );
 
-      setFilteredData(filteredData);
+      setFilteredData(filteredDataField);
     } else {
       setFilteredData(null);
     }
@@ -101,7 +105,7 @@ export default function VBS(props) {
     <>
       {isLoading && (
         <Box>
-          <Loading message={'Loading venues...'} />
+          <Loading message='Loading venues...' />
         </Box>
       )}
       {!isLoading && (
@@ -136,7 +140,7 @@ export default function VBS(props) {
               {filteredData && filteredData.length ? filteredData : cards}
             </MotionSimpleGrid>
             <VenueBookingModal
-              isOpen={modalData ? true : false}
+              isOpen={!!modalData}
               onClose={() => setModalData(null)}
               dataHandler={dataFromVenueModal}
               modalData={modalData}
@@ -144,7 +148,7 @@ export default function VBS(props) {
               calendarMax={maxDate.current}
             />
             <VenueBookingModalConfirmation
-              isOpen={modalDataConfirm ? true : false}
+              isOpen={!!modalDataConfirm}
               onClose={() => setModalDataConfirm(null)}
               modalData={modalDataConfirm}
             />
@@ -155,9 +159,9 @@ export default function VBS(props) {
   );
 }
 
-export async function getServerSideProps(_context) {
+export async function getServerSideProps() {
   return {
-    props: (async function () {
+    props: (async function Props() {
       try {
         const res = await fetchVenue();
         const stringifiedData = safeJsonStringify(res);

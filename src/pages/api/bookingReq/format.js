@@ -14,12 +14,12 @@ const handler = async (req, res) => {
 
   const { bookings } = req.body;
 
-  var result = '';
+  let result = '';
   if (session && session.user.admin) {
     try {
       if (bookings) {
         const parsedBooking = [];
-        for (let booking in bookings) {
+        for (let booking = 0; booking < bookings.length; booking += 1) {
           if (bookings[booking]) {
             const book = bookings[booking];
             const venueReq = await findVenueByID(book.venue);
@@ -31,7 +31,7 @@ const handler = async (req, res) => {
             if (venueReq.status) {
               const venue = venueReq.msg.name;
 
-              let cca = undefined;
+              let cca;
               if (book.cca === 'PERSONAL') {
                 cca = 'PERSONAL';
               } else {
@@ -92,28 +92,25 @@ const handler = async (req, res) => {
         res.status(200).send(result);
         res.end();
         return;
-      } else {
-        result = {
-          status: false,
-          error: 'Cannot get all bookings',
-          msg: '',
-        };
-        res.status(200).send(result);
-        res.end();
-        return;
       }
+      result = {
+        status: false,
+        error: 'Cannot get all bookings',
+        msg: '',
+      };
+      res.status(200).send(result);
+      res.end();
+      return;
     } catch (error) {
       console.log(error);
       result = { status: false, error: error, msg: '' };
       res.status(200).send(result);
       res.end();
-      return;
     }
   } else {
     result = { status: false, error: 'Unauthenticated', msg: '' };
     res.status(200).send(result);
     res.end();
-    return;
   }
 };
 

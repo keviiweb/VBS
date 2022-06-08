@@ -422,7 +422,7 @@ const options = {
         await transport.sendMail({
           to: email,
           from,
-          subject: `KEVII VBS: Sign in`,
+          subject: 'KEVII VBS: Sign in',
           text: text({ url, host }),
           html: html({ url, email }),
         });
@@ -462,9 +462,8 @@ const options = {
 
       if (isAllowedToSignIn) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
     async session({ session, user }) {
       const userFromDB = await prisma.users.findUnique({
@@ -474,7 +473,7 @@ const options = {
       });
 
       if (userFromDB != null) {
-        let newSession = session;
+        const newSession = session;
         newSession.user.email = userFromDB.email;
         newSession.user.username = userFromDB.name;
         newSession.user.studentID = userFromDB.studentID;

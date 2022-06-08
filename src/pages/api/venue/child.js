@@ -4,43 +4,43 @@ import { findVenueByID, fetchChildVenue } from '@helper/sys/vbs/venue';
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
-  let result = [];
+  const result = [];
   const { venue } = req.body;
   if (session) {
     if (venue) {
       try {
         const venueDB = await fetchChildVenue(venue);
-        let parsedVenue = [];
+        const parsedVenue = [];
 
         if (venueDB.status && venueDB.msg != null) {
           const childVenue = venueDB.msg;
-          for (let ven in childVenue) {
+          for (let ven = 0; ven < childVenue.length; ven += 1) {
             if (childVenue[ven]) {
-              const venue = childVenue[ven];
+              const venueField = childVenue[ven];
 
               let parentVenueName = null;
-              if (venue.isChildVenue) {
-                const venueReq = await findVenueByID(venue.parentVenue);
+              if (venueField.isChildVenue) {
+                const venueReq = await findVenueByID(venueField.parentVenue);
                 if (venueReq && venueReq.status) {
                   parentVenueName = venueReq.msg.name;
                 }
               }
 
-              const isAvailable = venue.visible ? 'Yes' : 'No';
-              const cv = venue.isChildVenue ? 'Yes' : 'No';
-              const instantBook = venue.isInstantBook ? 'Yes' : 'No';
+              const isAvailable = venueField.visible ? 'Yes' : 'No';
+              const cv = venueField.isChildVenue ? 'Yes' : 'No';
+              const instantBook = venueField.isInstantBook ? 'Yes' : 'No';
 
               const data = {
-                capacity: venue.capacity,
-                description: venue.description,
-                id: venue.id,
-                isChildVenue: venue.isChildVenue,
-                isInstantBook: venue.isInstantBook,
-                name: venue.name,
-                openingHours: venue.openingHours,
-                parentVenue: venue.parentVenue,
+                capacity: venueField.capacity,
+                description: venueField.description,
+                id: venueField.id,
+                isChildVenue: venueField.isChildVenue,
+                isInstantBook: venueField.isInstantBook,
+                name: venueField.name,
+                openingHours: venueField.openingHours,
+                parentVenue: venueField.parentVenue,
                 parentVenueName: parentVenueName,
-                visible: venue.visible,
+                visible: venueField.visible,
                 isAvailable: isAvailable,
                 childVenue: cv,
                 instantBook: instantBook,
@@ -50,7 +50,6 @@ const handler = async (req, res) => {
             }
           }
         }
-
         res.status(200).send(parsedVenue);
         res.end();
         return;
@@ -58,17 +57,14 @@ const handler = async (req, res) => {
         console.log(error);
         res.status(200).send(result);
         res.end();
-        return;
       }
     } else {
       res.status(200).send(result);
       res.end();
-      return;
     }
   } else {
     res.status(200).send(result);
     res.end();
-    return;
   }
 };
 

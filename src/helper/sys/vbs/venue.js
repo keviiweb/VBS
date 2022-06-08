@@ -6,10 +6,9 @@ export const fetchChildVenue = async (venue) => {
     const childVenues = await prisma.venue.findMany({
       where: { parentVenue: venue, isChildVenue: true },
     });
-
     return { status: true, error: null, msg: childVenues };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { status: false, error: error, msg: '' };
   }
 };
@@ -19,7 +18,7 @@ export const fetchAllVenue = async () => {
     const locations = await prisma.venue.findMany();
     return { status: true, error: null, msg: locations };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { status: false, error: error, msg: '' };
   }
 };
@@ -36,7 +35,7 @@ export const fetchVenue = async () => {
       return { status: true, error: null, msg: '' };
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { status: false, error: 'Connection timeout', msg: '' };
   }
 };
@@ -53,7 +52,7 @@ export const findVenueByID = async (id) => {
       return { status: true, error: null, msg: '' };
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { status: false, error: 'Connection timeout', msg: '' };
   }
 };
@@ -79,7 +78,7 @@ export const fetchOpeningHours = async (id) => {
       return { start: null, end: null };
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { start: null, end: null };
   }
 };
@@ -98,7 +97,7 @@ export const splitHours = async (opening) => {
       return { start: null, end: null };
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { start: null, end: null };
   }
 };
@@ -135,7 +134,7 @@ export const splitHoursISO = async (date, timeSlot) => {
       return { start: null, end: null };
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { start: null, end: null };
   }
 };
@@ -155,7 +154,7 @@ export const splitOpeningHours = async (opening) => {
       return { start: null, end: null };
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { start: null, end: null };
   }
 };
@@ -172,7 +171,7 @@ export const isInstantBook = async (id) => {
       return false;
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return false;
   }
 };
@@ -189,7 +188,7 @@ export const isVisible = async (id) => {
       return false;
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return false;
   }
 };
@@ -206,7 +205,7 @@ export const createVenue = async (data) => {
       return { status: false, error: 'Failed to create venue', msg: '' };
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { status: false, error: error, msg: '' };
   }
 };
@@ -226,7 +225,7 @@ export const editVenue = async (data) => {
       return { status: false, error: 'Failed to update venue', msg: '' };
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { status: false, error: error, msg: '' };
   }
 };

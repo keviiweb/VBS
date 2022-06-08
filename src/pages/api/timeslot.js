@@ -7,7 +7,7 @@ import { fetchBookedTimeSlots } from '@helper/sys/vbs/timeslot';
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
-  let slots = [];
+  const slots = [];
   const { venue, date } = req.body;
 
   if (session) {
@@ -24,8 +24,13 @@ const handler = async (req, res) => {
         );
 
         if (bookedTimeSlots && bookedTimeSlots.status) {
-          for (let key in timingSlotNumberToTimingMapping) {
-            if (timingSlotNumberToTimingMapping.hasOwnProperty(key)) {
+          for (let key = 0; key < Object.keys(timingSlotNumberToTimingMapping).length; key += 1) {
+            if (
+              Object.prototype.hasOwnProperty.call(
+                timingSlotNumberToTimingMapping,
+                key,
+              )
+            ) {
               if (Number(key) >= startHour && Number(key) <= endHour) {
                 slots[key] = {
                   id: Number(key),
@@ -45,8 +50,13 @@ const handler = async (req, res) => {
             };
           });
         } else {
-          for (let key in timingSlotNumberToTimingMapping) {
-            if (timingSlotNumberToTimingMapping.hasOwnProperty(key)) {
+          for (let key = 0; key < Object.keys(timingSlotNumberToTimingMapping).length; key += 1) {
+            if (
+              Object.prototype.hasOwnProperty.call(
+                timingSlotNumberToTimingMapping,
+                key,
+              )
+            ) {
               if (Number(key) >= startHour && Number(key) <= endHour) {
                 slots[key] = {
                   id: Number(key),
@@ -60,10 +70,14 @@ const handler = async (req, res) => {
 
         res.status(200).send(slots);
         res.end();
-        return;
       } else {
-        for (let key in timingSlotNumberToTimingMapping) {
-          if (timingSlotNumberToTimingMapping.hasOwnProperty(key)) {
+        for (let key = 0; key < Object.keys(timingSlotNumberToTimingMapping).length; key += 1) {
+          if (
+            Object.prototype.hasOwnProperty.call(
+              timingSlotNumberToTimingMapping,
+              key,
+            )
+          ) {
             slots[key] = {
               id: Number(key),
               slot: timingSlotNumberToTimingMapping[key],
@@ -74,17 +88,14 @@ const handler = async (req, res) => {
 
         res.status(200).send(slots);
         res.end();
-        return;
       }
     } else {
       res.status(200).send(slots);
       res.end();
-      return;
     }
   } else {
     res.status(200).send(slots);
     res.end();
-    return;
   }
 };
 

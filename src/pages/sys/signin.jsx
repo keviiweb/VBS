@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   Flex,
   Box,
@@ -10,17 +11,16 @@ import {
   Text,
   Spinner,
 } from '@chakra-ui/react';
-import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 
 export default function SignIn(props) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
-  const [url, setURL] = useState('https://vbs-kevii.vercel.app'); //default
+  const [url, setURL] = useState('https://vbs-kevii.vercel.app'); // default
 
   useEffect(() => {
-    async function fetchData(props) {
-      const propRes = await props;
+    async function fetchData(propsField) {
+      const propRes = await propsField;
       if (propRes.data) {
         setURL(propRes.data);
       }
@@ -34,7 +34,7 @@ export default function SignIn(props) {
       setLoading(true);
       await signIn('email', {
         email: email,
-        callbackUrl: url + '/',
+        callbackUrl: `${url}/`,
       });
     } catch (error) {
       console.log(error);
@@ -43,15 +43,15 @@ export default function SignIn(props) {
   };
 
   return (
-    <Flex minH={'100vh'} align={'center'} justify={'center'} bg='gray.50'>
-      <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-        <Stack align={'center'}>
-          <Heading fontSize={'4xl'}>KEVII VBS</Heading>
-          <Text fontSize={'sm'} color={'gray.600'}>
+    <Flex minH='100vh' align='center' justify='center' bg='gray.50'>
+      <Stack spacing={8} mx='auto' maxW='lg' py={12} px={6}>
+        <Stack align='center'>
+          <Heading fontSize='4xl'>KEVII VBS</Heading>
+          <Text fontSize='sm' color='gray.600'>
             Please enter your school email ending with @u.nus.edu
           </Text>
         </Stack>
-        <Box rounded={'lg'} bg='white' boxShadow={'lg'} p={8}>
+        <Box rounded='lg' bg='white' boxShadow='lg' p={8}>
           <form onSubmit={handleSubmit}>
             <Stack spacing={4}>
               <FormControl id='email'>
@@ -66,8 +66,8 @@ export default function SignIn(props) {
               <Stack spacing={10}>
                 <Button
                   type='submit'
-                  bg={'blue.400'}
-                  color={'white'}
+                  bg='blue.400'
+                  color='white'
                   _hover={{
                     bg: 'blue.500',
                   }}
@@ -79,16 +79,14 @@ export default function SignIn(props) {
           </form>
 
           {loading && (
-            <>
-              <Stack spacing={10} mt={5}>
-                <Stack align={'center'}>
-                  <Text fontSize={'sm'} color={'gray.600'}>
-                    Logging in...
-                  </Text>
-                  <Spinner />
-                </Stack>
+            <Stack spacing={10} mt={5}>
+              <Stack align='center'>
+                <Text fontSize='sm' color='gray.600'>
+                  Logging in...
+                </Text>
+                <Spinner />
               </Stack>
-            </>
+            </Stack>
           )}
         </Box>
       </Stack>
@@ -96,9 +94,9 @@ export default function SignIn(props) {
   );
 }
 
-export async function getServerSideProps(_context) {
+export async function getServerSideProps() {
   return {
-    props: (async function () {
+    props: (async function Props() {
       try {
         return {
           data: process.env.NEXTAUTH_URL,

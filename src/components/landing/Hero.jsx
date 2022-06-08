@@ -11,7 +11,7 @@ import React from 'react';
 
 export default function Hero() {
   return (
-    <Flex w='full' h={{ base: '60vh', md: '110vh' }}>
+    <Flex w='full' h={{ base: '60vh', md: '130vh' }}>
       <Box>
         <video autoPlay muted loop id='myVideo'>
           <source

@@ -11,7 +11,7 @@ const handler = async (req, res) => {
 
     if (venueDB && venueDB.status) {
       const venueData = venueDB.msg;
-      for (let ven in venueData) {
+      for (let ven = 0; ven < venueData.length; ven += 1) {
         if (venueData[ven]) {
           const venue = venueData[ven];
 
@@ -53,7 +53,6 @@ const handler = async (req, res) => {
       };
       res.status(200).send(result);
       res.end();
-      return;
     } else {
       result = {
         status: false,
@@ -62,13 +61,11 @@ const handler = async (req, res) => {
       };
       res.status(200).send(result);
       res.end();
-      return;
     }
   } else {
     result = { status: false, error: 'Unauthenticated', msg: '' };
     res.status(200).send(result);
     res.end();
-    return;
   }
 };
 

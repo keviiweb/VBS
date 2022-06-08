@@ -17,14 +17,18 @@ const handler = async (req, res) => {
     const data = await new Promise((resolve, reject) => {
       const form = new IncomingForm();
       form.parse(req, (err, fields, files) => {
-        if (err) return reject(err);
+        if (err) {
+          return reject(err);
+        }
+
         resolve({ fields, files });
+        return true;
       });
     });
 
     try {
-      let isChildVenue = data.fields.isChildVenue === 'true';
-      let parentVenue = isChildVenue ? data.fields.parentVenue : null;
+      const isChildVenue = data.fields.isChildVenue === 'true';
+      const parentVenue = isChildVenue ? data.fields.parentVenue : null;
 
       const venueData = {
         id: data.fields.id,
@@ -48,28 +52,25 @@ const handler = async (req, res) => {
         res.status(200).send(result);
         res.end();
         return;
-      } else {
-        result = {
-          status: false,
-          error: editVenueRequest.error,
-          msg: '',
-        };
-        res.status(200).send(result);
-        res.end();
-        return;
       }
+      result = {
+        status: false,
+        error: editVenueRequest.error,
+        msg: '',
+      };
+      res.status(200).send(result);
+      res.end();
+      return;
     } catch (error) {
       console.log(error);
       result = { status: false, error: 'Failed to create venue', msg: '' };
       res.status(200).send(result);
       res.end();
-      return;
     }
   } else {
     result = { status: false, error: 'Unauthenticated request', msg: '' };
     res.status(200).send(result);
     res.end();
-    return;
   }
 };
 

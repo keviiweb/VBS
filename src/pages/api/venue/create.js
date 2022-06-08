@@ -18,8 +18,12 @@ const handler = async (req, res) => {
     const data = await new Promise((resolve, reject) => {
       const form = new IncomingForm();
       form.parse(req, (err, fields, files) => {
-        if (err) return reject(err);
+        if (err) {
+          return reject(err);
+        }
+
         resolve({ fields, files });
+        return true;
       });
     });
 
@@ -30,14 +34,14 @@ const handler = async (req, res) => {
       if (imageFile) {
         const imagePath = imageFile.filepath;
 
-        venuePath = '/sys/venue/' + imageFile.originalFilename;
-        const pathToWriteImage = 'public' + venuePath;
+        venuePath = `/sys/venue/${imageFile.originalFilename}`;
+        const pathToWriteImage = `public${venuePath}`;
         const image = await fs.readFile(imagePath);
         await fs.writeFile(pathToWriteImage, image);
       }
 
-      let isChildVenue = data.fields.isChildVenue === 'true';
-      let parentVenue = isChildVenue ? data.fields.parentVenue : null;
+      const isChildVenue = data.fields.isChildVenue === 'true';
+      const parentVenue = isChildVenue ? data.fields.parentVenue : null;
 
       const venueData = {
         capacity: Number(data.fields.capacity),
@@ -61,16 +65,15 @@ const handler = async (req, res) => {
         res.status(200).send(result);
         res.end();
         return;
-      } else {
-        result = {
-          status: false,
-          error: createVenueRequest.error,
-          msg: '',
-        };
-        res.status(200).send(result);
-        res.end();
-        return;
       }
+      result = {
+        status: false,
+        error: createVenueRequest.error,
+        msg: '',
+      };
+      res.status(200).send(result);
+      res.end();
+      return;
     } catch (error) {
       console.log(error);
       result = {
@@ -80,13 +83,11 @@ const handler = async (req, res) => {
       };
       res.status(200).send(result);
       res.end();
-      return;
     }
   } else {
     result = { status: false, error: 'Unauthenticated request', msg: '' };
     res.status(200).send(result);
     res.end();
-    return;
   }
 };
 

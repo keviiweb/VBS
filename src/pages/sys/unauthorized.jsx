@@ -1,5 +1,5 @@
+import React, { useEffect } from 'react';
 import { Flex, Box, Stack, Heading, Text } from '@chakra-ui/react';
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 export default function Unauthorized() {
@@ -12,14 +12,14 @@ export default function Unauthorized() {
   }, [router]);
 
   return (
-    <Flex minH={'100vh'} align={'center'} justify={'center'} bg='gray.50'>
-      <Stack mx={'auto'} maxW={'lg'} py={12} px={6}>
-        <Box rounded={'lg'} align={'center'} bg='white' boxShadow={'lg'} p={8}>
-          <Heading fontSize={'4xl'}>Unauthorized user</Heading>
-          <Text fontSize={'sm'} color={'gray.600'}>
+    <Flex minH='100vh' align='center' justify='center' bg='gray.50'>
+      <Stack mx='auto' maxW='lg' py={12} px={6}>
+        <Box rounded='lg' align='center' bg='white' boxShadow='lg' p={8}>
+          <Heading fontSize='4xl'>Unauthorized user</Heading>
+          <Text fontSize='sm' color='gray.600'>
             You are unauthorized to visit the target page.
           </Text>
-          <Text mt={4} fontSize={'sm'} color={'gray.600'}>
+          <Text mt={4} fontSize='sm' color='gray.600'>
             Redirecting you to main page in 5 seconds...
           </Text>
         </Box>

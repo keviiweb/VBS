@@ -14,7 +14,7 @@ import { createVenueBooking } from '@helper/sys/vbs/booking';
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
-  var result = '';
+  let result = '';
   const { id } = req.body;
   if (session && session.user.admin) {
     if (id) {
@@ -98,7 +98,6 @@ const handler = async (req, res) => {
           };
           res.status(200).send(result);
           res.end();
-          return;
         } else {
           result = {
             status: false,
@@ -107,25 +106,21 @@ const handler = async (req, res) => {
           };
           res.status(200).send(result);
           res.end();
-          return;
         }
       } else {
         result = { status: false, error: 'No booking ID found', msg: '' };
         res.status(200).send(result);
         res.end();
-        return;
       }
     } else {
       result = { status: false, error: 'No booking ID found', msg: '' };
       res.status(200).send(result);
       res.end();
-      return;
     }
   } else {
     result = { status: false, error: 'Unauthenticated request', msg: '' };
     res.status(200).send(result);
     res.end();
-    return;
   }
 };
 

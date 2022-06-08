@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Button,
   Box,
@@ -12,7 +13,6 @@ import {
 import { CloseIcon, InfoOutlineIcon } from '@chakra-ui/icons';
 import { cardVariant } from '@root/motion';
 import { motion } from 'framer-motion';
-import { useState, useEffect, useMemo, useCallback } from 'react';
 import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/vbs/TableWidget';
 import BookingModal from '@components/sys/vbs/BookingModal';
@@ -29,11 +29,14 @@ export default function ManageBooking() {
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState(null);
 
-  var handleDetails = useCallback((content) => {
+  let generateActionButton;
+  let fetchData;
+
+  const handleDetails = useCallback((content) => {
     setModalData(content);
   }, []);
 
-  var handleCancel = useCallback(
+  const handleCancel = useCallback(
     async (id) => {
       if (id) {
         try {
@@ -71,16 +74,16 @@ export default function ManageBooking() {
         }
       }
     },
-    [toast],
+    [toast, fetchData],
   );
 
-  var includeActionButton = useCallback(
+  const includeActionButton = useCallback(
     async (content) => {
-      for (let key in content) {
+      for (let key = 0; key < content.length; key += 1) {
         if (content[key]) {
-          const data = content[key];
-          const buttons = await generateActionButton(data);
-          data.action = buttons;
+          const dataField = content[key];
+          const buttons = await generateActionButton(dataField);
+          dataField.action = buttons;
         }
       }
       setData(content);
@@ -88,7 +91,7 @@ export default function ManageBooking() {
     [generateActionButton],
   );
 
-  var generateActionButton = useCallback(
+  generateActionButton = useCallback(
     async (content) => {
       let button = null;
 
@@ -112,69 +115,66 @@ export default function ManageBooking() {
           </ButtonGroup>
         );
         return button;
-      } else {
-        button = (
-          <ButtonGroup>
-            <Button
-              size='sm'
-              leftIcon={<InfoOutlineIcon />}
-              onClick={() => handleDetails(content)}
-            >
-              View Details
-            </Button>
-          </ButtonGroup>
-        );
-        return button;
       }
+      button = (
+        <ButtonGroup>
+          <Button
+            size='sm'
+            leftIcon={<InfoOutlineIcon />}
+            onClick={() => handleDetails(content)}
+          >
+            View Details
+          </Button>
+        </ButtonGroup>
+      );
+      return button;
     },
     [handleDetails, handleCancel],
   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoadingData(true);
-      setData(null);
-      try {
-        const rawResponse = await fetch('/api/bookingReq/fetch?q=USER', {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        });
-        const content = await rawResponse.json();
-        if (content.status) {
-          await includeActionButton(content.msg);
-        }
-
-        setLoadingData(false);
-      } catch (error) {
-        console.log(error);
+  fetchData = useCallback(async () => {
+    setLoadingData(true);
+    setData(null);
+    try {
+      const rawResponse = await fetch('/api/bookingReq/fetch?q=USER', {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      const content = await rawResponse.json();
+      if (content.status) {
+        await includeActionButton(content.msg);
       }
-    };
 
+      setLoadingData(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [includeActionButton]);
+
+  useEffect(() => {
     if (loadingData) {
       fetchData();
     }
-  }, [includeActionButton, loadingData]);
+  }, [fetchData, loadingData]);
 
   const handleSearch = (event) => {
     const searchInput = event.target.value;
     setSearch(searchInput);
 
-    if (searchInput && searchInput != '') {
-      let filteredData = data.filter((value) => {
-        return (
-          value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
+    if (searchInput && searchInput !== '') {
+      const filteredDataField = data.filter(
+        (value) => value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.cca.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.venue.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.date.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.timeSlots.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.email.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.status.toLowerCase().includes(searchInput.toLowerCase())
-        );
-      });
+          value.status.toLowerCase().includes(searchInput.toLowerCase()),
+      );
 
-      setFilteredData(filteredData);
+      setFilteredData(filteredDataField);
     } else {
       setFilteredData(null);
     }
@@ -222,16 +222,20 @@ export default function ManageBooking() {
     <Auth>
       <Box bg='white' borderRadius='lg' p={8} color='gray.700' shadow='base'>
         <MotionBox variants={cardVariant} key='1'>
-          {loadingData && !data ? (
+          {loadingData && !data && (
             <Box align='center' justify='center' mt={30}>
               <Text>Loading Please wait...</Text>
             </Box>
-          ) : !loadingData && data.length == 0 ? (
+          )}
+
+          {!loadingData && data.length === 0 && (
             <Box align='center' justify='center' mt={30}>
               <Text>No bookings found</Text>
             </Box>
-          ) : (
-            <Box align='center' justify='center' minWidth={'full'} mt={30}>
+          )}
+
+          {!loadingData && data.length > 0 && (
+            <Box align='center' justify='center' minWidth='full' mt={30}>
               <Stack spacing={30}>
                 <InputGroup>
                   <InputLeftAddon>Search:</InputLeftAddon>
@@ -253,9 +257,10 @@ export default function ManageBooking() {
               </Stack>
             </Box>
           )}
+
           <BookingModal
             isAdmin={false}
-            isOpen={modalData ? true : false}
+            isOpen={!!modalData}
             onClose={() => setModalData(null)}
             modalData={modalData}
           />

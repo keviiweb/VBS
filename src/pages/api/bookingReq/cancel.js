@@ -12,7 +12,7 @@ import { compareDate } from '@constants/sys/helper';
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
-  var result = '';
+  let result = '';
   const { id } = req.body;
   if (session) {
     if (id) {
@@ -74,7 +74,6 @@ const handler = async (req, res) => {
             };
             res.status(200).send(result);
             res.end();
-            return;
           } else {
             result = {
               status: false,
@@ -83,10 +82,9 @@ const handler = async (req, res) => {
             };
             res.status(200).send(result);
             res.end();
-            return;
           }
         } else {
-          const msg = 'Cancellation only possible ' + minDay + ' day(s) before';
+          const msg = `Cancellation only possible ${minDay} day(s) before`;
           result = {
             status: false,
             error: msg,
@@ -94,25 +92,21 @@ const handler = async (req, res) => {
           };
           res.status(200).send(result);
           res.end();
-          return;
         }
       } else {
         result = { status: false, error: 'No booking ID found', msg: '' };
         res.status(200).send(result);
         res.end();
-        return;
       }
     } else {
       result = { status: false, error: 'No booking ID found', msg: '' };
       res.status(200).send(result);
       res.end();
-      return;
     }
   } else {
     result = { status: false, error: 'Unauthenticated request', msg: '' };
     res.status(200).send(result);
     res.end();
-    return;
   }
 };
 

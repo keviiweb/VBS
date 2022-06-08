@@ -26,7 +26,7 @@ const handler = async (req, res) => {
   let result = '';
   if (session) {
     let bookings = null;
-    if (query && query == 'USER') {
+    if (query && query === 'USER') {
       bookings = await findBookingByUser(session);
     } else if (session.user.admin) {
       try {
@@ -41,6 +41,9 @@ const handler = async (req, res) => {
                 break;
               case 'REJECTED':
                 bookings = await findRejectedBooking();
+                break;
+              default:
+                bookings = await findPendingBooking();
                 break;
             }
           }
@@ -63,7 +66,7 @@ const handler = async (req, res) => {
 
     if (bookings) {
       const parsedBooking = [];
-      for (let booking in bookings) {
+      for (let booking = 0; booking < bookings.length; booking += 1) {
         if (bookings[booking]) {
           const book = bookings[booking];
           const venueReq = await findVenueByID(book.venue);
@@ -75,7 +78,7 @@ const handler = async (req, res) => {
           if (venueReq.status) {
             const venue = venueReq.msg.name;
 
-            let cca = undefined;
+            let cca;
             if (book.cca === 'PERSONAL') {
               cca = 'PERSONAL';
             } else {
@@ -96,14 +99,15 @@ const handler = async (req, res) => {
               ? process.env.CANCEL_MIN_DAY
               : 3;
 
+            let success = true;
+
             if (!book.isApproved && !book.isCancelled && !book.isRejected) {
               status = 'PENDING';
-
               if (!compareDate(bookingDate, minDay)) {
-                if (query && query != 'USER') {
-                  continue;
-                } else {
+                if (query && query === 'USER') {
                   status = 'EXPIRED';
+                } else {
+                  success = false;
                 }
               }
             } else if (
@@ -128,22 +132,24 @@ const handler = async (req, res) => {
               status = 'UNKNOWN';
             }
 
-            const data = {
-              id: book.id,
-              email: book.email,
-              venue: venue,
-              date: prettifyDate(date),
-              timeSlots: prettifyTiming(timeSlots),
-              isApproved: book.isApproved,
-              isRejected: book.isRejected,
-              isCancelled: book.isCancelled,
-              purpose: book.purpose,
-              cca: cca,
-              conflictRequest: conflicts,
-              status: status,
-            };
+            if (success) {
+              const data = {
+                id: book.id,
+                email: book.email,
+                venue: venue,
+                date: prettifyDate(date),
+                timeSlots: prettifyTiming(timeSlots),
+                isApproved: book.isApproved,
+                isRejected: book.isRejected,
+                isCancelled: book.isCancelled,
+                purpose: book.purpose,
+                cca: cca,
+                conflictRequest: conflicts,
+                status: status,
+              };
 
-            parsedBooking.push(data);
+              parsedBooking.push(data);
+            }
           }
         }
       }
@@ -155,7 +161,6 @@ const handler = async (req, res) => {
       };
       res.status(200).send(result);
       res.end();
-      return;
     } else {
       result = {
         status: false,
@@ -164,13 +169,11 @@ const handler = async (req, res) => {
       };
       res.status(200).send(result);
       res.end();
-      return;
     }
   } else {
     result = { status: false, error: 'Unauthenticated', msg: '' };
     res.status(200).send(result);
     res.end();
-    return;
   }
 };
 

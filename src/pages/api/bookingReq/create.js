@@ -22,7 +22,7 @@ import { createVenueBooking } from '@helper/sys/vbs/booking';
 const handler = async (req, res) => {
   const session = await currentSession(req);
 
-  var result = '';
+  let result = '';
   const { email, venue, venueName, date, timeSlots, type, purpose } = req.body;
   if (session) {
     if (email && venue && venueName && date && timeSlots && type && purpose) {
@@ -30,7 +30,7 @@ const handler = async (req, res) => {
       const slots = convertSlotToArray(timeSlots, false);
       let isSuccessful = false;
       let bookingID = null;
-      let cca = undefined;
+      let cca;
 
       if (type !== 'PERSONAL') {
         const dbSearch = await findCCAbyID(type);
@@ -151,10 +151,10 @@ const handler = async (req, res) => {
           return;
         }
 
-        const timeSlots = convertSlotToArray(bookingRequest.timeSlots, true);
+        const timeSlotsField = convertSlotToArray(bookingRequest.timeSlots, true);
         const createBooking = await createVenueBooking(
           bookingRequest,
-          timeSlots,
+          timeSlotsField,
           session,
         );
 
@@ -228,13 +228,11 @@ const handler = async (req, res) => {
       result = { status: false, error: 'Booking request not created', msg: '' };
       res.status(200).send(result);
       res.end();
-      return;
     }
   } else {
     result = { status: false, error: 'Booking request not created', msg: '' };
     res.status(200).send(result);
     res.end();
-    return;
   }
 };
 
