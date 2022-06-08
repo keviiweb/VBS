@@ -93,10 +93,14 @@ export default function ManageBooking() {
               isClosable: true,
             });
           }
+
+          return true;
         } catch (error) {
-          console.log(error);
+          return false;
         }
       }
+
+      return false;
     },
     [handleTabChange, toast],
   );
@@ -134,10 +138,13 @@ export default function ManageBooking() {
               isClosable: true,
             });
           }
+          return true;
         } catch (error) {
-          console.log(error);
+          return false;
         }
       }
+
+      return false;
     },
     [handleTabChange, toast],
   );
@@ -575,7 +582,7 @@ export default function ManageBooking() {
     <Auth admin>
       <MotionSimpleGrid
         mt='3'
-        minChildWidth={{ base: 'full', md: '500px', lg: '500px' }}
+        columns={{ base: 1, md: 1, lg: 1 }}
         spacing='2em'
         minH='600px'
         variants={parentVariant}
