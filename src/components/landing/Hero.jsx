@@ -8,18 +8,22 @@ import {
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import React from 'react';
+
 const MotionBox = motion(Box);
 export default function Hero() {
   return (
-    <Flex w='full' h={{ base: '15em', md: '28em', lg: '37em', xl: '52em', "2xl": '54em'}}>
-      <video width="full" autoPlay muted loop id='myVideo'>
-          <source
-            src='https://nus.edu.sg/osa/videos/default-source/kevii-videos/promo-final-2.mp4?sfvrsn=2ad1ed6f_0'
-            type='video/mp4'
-          />
-          Promotional Video
-        </video>
-      
+    <Flex
+      w='full'
+      h={{ base: '15em', md: '28em', lg: '37em', xl: '52em', '2xl': '54em' }}
+    >
+      <video width='full' autoPlay muted loop id='myVideo'>
+        <source
+          src='https://nus.edu.sg/osa/videos/default-source/kevii-videos/promo-final-2.mp4?sfvrsn=2ad1ed6f_0'
+          type='video/mp4'
+        />
+        Promotional Video
+      </video>
+
       <VStack
         w='full'
         justify='center'

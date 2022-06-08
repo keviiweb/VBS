@@ -46,9 +46,9 @@ export default function Event() {
         columns={{ base: 1, md: 1, lg: 1, xl: 2 }}
         pos='relative'
         gap={{ base: 6, sm: 8 }}
-        px={{ sm: 2 , md: 2, lg: 5, xl: 8}}
-        py={{ sm: 2 , md: 2, lg: 5, xl: 8}}
-        p={{ sm: 2 , md: 2, lg: 5, xl: 8}}
+        px={{ sm: 2, md: 2, lg: 5, xl: 8 }}
+        py={{ sm: 2, md: 2, lg: 5, xl: 8 }}
+        p={{ sm: 2, md: 2, lg: 5, xl: 8 }}
         variants={parentVariant}
         initial='initial'
         animate='animate'

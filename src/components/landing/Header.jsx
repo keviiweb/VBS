@@ -150,7 +150,7 @@ export default function Header() {
   }, []);
 
   return (
-    <chakra.header id="header" w='full' px={{ base: 2, sm: 4 }} py={6}>
+    <chakra.header id='header' w='full' px={{ base: 2, sm: 4 }} py={6}>
       <Flex alignItems='center' justifyContent='space-between' mx='auto'>
         <NextLink href='/'>
           <Flex mt={3} ml={{ base: 5, md: 8, lg: 12, xl: 20 }}>
@@ -199,7 +199,7 @@ export default function Header() {
               </PopoverContent>
             </Popover>
           </HStack>
-          
+
           <Box display={{ base: 'inline-flex', md: 'none' }}>
             <IconButton
               display={{ base: 'flex', md: 'none' }}
