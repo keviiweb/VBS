@@ -442,7 +442,7 @@ const options = {
   pages: {
     signIn: '/sys/signin',
     verifyRequest: '/sys/verify-request',
-    error: '/sys/unauthorized',
+    error: '/sys/error',
   },
   callbacks: {
     async signIn({ user, email }) {
@@ -463,6 +463,7 @@ const options = {
           });
 
           if (doesUserExist !== null) {
+            console.log('CAN LOG IN');
             isAllowedToSignIn = true;
           }
         }

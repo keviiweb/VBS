@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "prettier": "prettier --write .",
+    "code": "npm run prettier && npm run lint -- --fix",
     "postinstall": "prisma generate"
   },
   "engines": {

@@ -1,16 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Flex, Box, Stack, Heading, Text } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
 
-export default function Unauthorized() {
-  const router = useRouter();
-
-  useEffect(() => {
-    setTimeout(() => {
-      router.push('/');
-    }, 5000);
-  }, [router]);
-
+export default function Error() {
   return (
     <Flex minH='100vh' align='center' justify='center' bg='gray.50'>
       <Stack mx='auto' maxW='lg' py={12} px={6}>
