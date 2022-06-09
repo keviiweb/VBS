@@ -76,10 +76,10 @@ export default function Cultural() {
       <MotionSimpleGrid
         columns={{ base: 1, md: 1, lg: 1, xl: 2 }}
         pos='relative'
-        gap={{ base: 6, sm: 8 }}
-        px={5}
-        py={6}
-        p={{ sm: 8 }}
+        gap={{ base: 2, sm: 8 }}
+        px={{ base: 1, sm: 2, md: 3, lg: 8, xl: 8 }}
+        py={{ base: 2, sm: 2, md: 3, lg: 8, xl: 8 }}
+        p={{ base: 2, sm: 2, md: 3, lg: 8, xl: 8 }}
         variants={parentVariant}
         initial='initial'
         animate='animate'

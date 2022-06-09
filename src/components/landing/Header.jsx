@@ -21,7 +21,7 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 
 export default function Header() {
-  const bg = 'black';
+  const bg = 'white';
   const mobileNav = useDisclosure();
 
   const Section = useCallback((props) => {
@@ -291,6 +291,31 @@ export default function Header() {
                 aria-label='Close menu'
                 onClick={mobileNav.onClose}
               />
+
+              <Popover>
+                <PopoverTrigger>
+                  <Button
+                    variant='ghost'
+                    bg='brand.500'
+                    _hover={{ bg: 'brand.500' }}
+                    _active={{
+                      transform: 'scale(0.92)',
+                    }}
+                    _focus={{
+                      boxShadow: '0 0',
+                    }}
+                  >
+                    CCA
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  w='100vw'
+                  maxW='md'
+                  _focus={{ boxShadow: 'md' }}
+                >
+                  <CCA />
+                </PopoverContent>
+              </Popover>
 
               <NextLink href='/event'>
                 <Button

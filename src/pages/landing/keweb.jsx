@@ -80,7 +80,7 @@ export default function KEWeb() {
 
             <Flex
               bg='#F9FAFB'
-              p={{ base: 6, md: 12, lg: 16, xl: 20 }}
+              p={{ base: 12, md: 14, lg: 16, xl: 20 }}
               w='full'
               justifyContent='center'
               alignItems='center'

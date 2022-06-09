@@ -1,13 +1,13 @@
 ## Overview
 
-This repo holds source code for King Edward VII's Venue Booking System and CCA Attendance tracking. Project is built on top of https://nextjs.org and Chakra-UI to allow easy contributions be it to code or other areas of the website.
+This repo holds source code for King Edward VII's Website. Project is built on top of https://nextjs.org and Chakra-UI to allow easy contributions be it to code or other areas of the website.
 
 ## Getting Started
 
 * Install latest (LTS) version of NodeJS
 * Verify your installation by running node -v; npm -v command in your terminal / command line, you should see 2 version outputs
 * Install project dependencies by running npm i from project root
-Run npm run dev and start building awesome things!
+* Run npm run dev and start building awesome things!
 
 ## Commands
     npm run clean - Cleans build artifacts

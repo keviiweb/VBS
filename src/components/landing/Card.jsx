@@ -81,7 +81,6 @@ export default function Card({
             border='thin'
             rounded='xl'
             shadow='2xl'
-            maxW='2xl'
             _hover={{ md: hoverStyles }}
           >
             {img && (
