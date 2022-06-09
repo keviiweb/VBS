@@ -449,17 +449,19 @@ const options = {
       let isAllowedToSignIn = true;
       console.log(' SIGNIN CALLBACK ');
       try {
-        if (Object.prototype.hasOwnProperty.call(email, 'verificationRequest')) {
+        if (
+          Object.prototype.hasOwnProperty.call(email, 'verificationRequest')
+        ) {
           console.log('INSIDE VERIFICATION EMAIL ');
-  
+
           isAllowedToSignIn = false;
-  
+
           const doesUserExist = await prisma.users.findUnique({
             where: {
               email: user.email,
             },
           });
-  
+
           if (doesUserExist !== null) {
             isAllowedToSignIn = true;
           }
@@ -471,7 +473,7 @@ const options = {
       } catch (error) {
         console.log(error);
       }
-      
+
       return '/sys/unauthorized';
     },
     async session({ session, user }) {
@@ -484,14 +486,14 @@ const options = {
             email: user.email,
           },
         });
-  
+
         if (userFromDB != null) {
           const newSession = session;
           newSession.user.email = userFromDB.email;
           newSession.user.username = userFromDB.name;
           newSession.user.studentID = userFromDB.studentID;
           newSession.user.admin = userFromDB.admin;
-  
+
           return newSession;
         }
       } catch (error) {
@@ -505,7 +507,7 @@ const options = {
 
 export default async function auth(req, res) {
   if (req.method === 'HEAD') {
-    console.log("OUTLOOK TROUBLE");
+    console.log('OUTLOOK TROUBLE');
     return res.status(200);
   }
 

@@ -17,7 +17,8 @@ export default function Unauthorized() {
         <Box rounded='lg' align='center' bg='white' boxShadow='lg' p={8}>
           <Heading fontSize='4xl'>An error occured</Heading>
           <Text fontSize='sm' color='gray.600'>
-            We are currently fixing the problem. Please give us time to troubleshoot {':('}
+            We are currently fixing the problem. Please give us time to
+            troubleshoot :(
           </Text>
         </Box>
       </Stack>
