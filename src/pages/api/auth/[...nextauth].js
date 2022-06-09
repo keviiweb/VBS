@@ -447,47 +447,55 @@ const options = {
   callbacks: {
     async signIn({ user, email }) {
       let isAllowedToSignIn = true;
-
-      if (Object.prototype.hasOwnProperty.call(email, 'verificationRequest')) {
-        console.log('INSIDE VERIFICATION EMAIL ');
-
-        isAllowedToSignIn = false;
-
-        const doesUserExist = await prisma.users.findUnique({
-          where: {
-            email: user.email,
-          },
-        });
-
-        if (doesUserExist !== null) {
-          isAllowedToSignIn = true;
+      console.log(' SIGNIN CALLBACK ');
+      try {
+        if (Object.prototype.hasOwnProperty.call(email, 'verificationRequest')) {
+          console.log('INSIDE VERIFICATION EMAIL ');
+  
+          isAllowedToSignIn = false;
+  
+          const doesUserExist = await prisma.users.findUnique({
+            where: {
+              email: user.email,
+            },
+          });
+  
+          if (doesUserExist !== null) {
+            isAllowedToSignIn = true;
+          }
         }
-      }
 
-      if (isAllowedToSignIn) {
-        return true;
+        if (isAllowedToSignIn) {
+          return true;
+        }
+      } catch (error) {
+        console.log(error);
       }
-
+      
       return '/sys/unauthorized';
     },
     async session({ session, user }) {
       console.log(`SESSION : ${session}`);
       console.log(`SESSION USER : ${user}`);
 
-      const userFromDB = await prisma.users.findUnique({
-        where: {
-          email: user.email,
-        },
-      });
-
-      if (userFromDB != null) {
-        const newSession = session;
-        newSession.user.email = userFromDB.email;
-        newSession.user.username = userFromDB.name;
-        newSession.user.studentID = userFromDB.studentID;
-        newSession.user.admin = userFromDB.admin;
-
-        return newSession;
+      try {
+        const userFromDB = await prisma.users.findUnique({
+          where: {
+            email: user.email,
+          },
+        });
+  
+        if (userFromDB != null) {
+          const newSession = session;
+          newSession.user.email = userFromDB.email;
+          newSession.user.username = userFromDB.name;
+          newSession.user.studentID = userFromDB.studentID;
+          newSession.user.admin = userFromDB.admin;
+  
+          return newSession;
+        }
+      } catch (error) {
+        console.log(error);
       }
 
       return session;
@@ -497,6 +505,7 @@ const options = {
 
 export default async function auth(req, res) {
   if (req.method === 'HEAD') {
+    console.log("OUTLOOK TROUBLE");
     return res.status(200);
   }
 
