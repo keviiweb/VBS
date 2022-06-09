@@ -2,7 +2,6 @@ import React, { useCallback, useMemo } from 'react';
 import { Box, Button, Flex, Img, Link, Text } from '@chakra-ui/react';
 import NextLink from 'next/link';
 
-
 export default function Card({
   title,
   description,
