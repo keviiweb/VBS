@@ -442,6 +442,7 @@ const options = {
   pages: {
     signIn: '/sys/signin',
     verifyRequest: '/sys/verify-request',
+    error: '/sys/unauthorized',
   },
   callbacks: {
     async signIn({ user, email }) {

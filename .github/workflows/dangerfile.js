@@ -1,5 +1,5 @@
-const { danger, fail, warn } = require('danger');
-const fs = require('fs');
+import { danger, fail, warn } from 'danger';
+import { readFileSync } from 'fs';
 
 const PR = danger.github.pr;
 const MODIFIED_FILES = danger.git.modified_files;
@@ -38,7 +38,7 @@ if (PR.base.ref === 'main') {
 
   // -- SRC_FILES checks ------------------------------------------------------------------ //
   FILES.forEach((file) => {
-    const content = fs.readFileSync(file).toString();
+    const content = readFileSync(file).toString();
 
     // Check for TODO comment
     if (content.includes('TODO')) {
@@ -46,6 +46,9 @@ if (PR.base.ref === 'main') {
     }
   });
 
+  const modifiedMD = danger.git.modified_files.join('- ');
+  message('Changed Files in this PR: \n - ' + modifiedMD);
+} else {
   const modifiedMD = danger.git.modified_files.join('- ');
   message('Changed Files in this PR: \n - ' + modifiedMD);
 }

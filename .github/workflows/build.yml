@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
 
 permissions:
   actions: write
@@ -27,7 +30,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DANGER_DISABLE_TRANSPILATION: true
 
+  merge_conflict_job:
+    runs-on: ubuntu-latest
+    name: Find merge conflicts
+    needs: danger
+    steps:
+      - uses: actions/checkout@v2
+      - name: Merge Conflict finder
+        uses: olivernybroe/action-conflict-finder@v2.0
+
   lint:
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     needs: danger
 
@@ -42,6 +55,7 @@ jobs:
         run: npm run lint
 
   build:
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     needs: lint
     strategy:
