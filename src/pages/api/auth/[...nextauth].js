@@ -464,6 +464,7 @@ const options = {
 
           if (doesUserExist !== null) {
             console.log('CAN LOG IN');
+            console.log(doesUserExist);
             isAllowedToSignIn = true;
           }
         }
