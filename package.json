@@ -6,7 +6,7 @@
     "clean": "rm -rf out; rm -rf .next",
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p $PORT",
+    "start": "next start -p 3000",
     "lint": "next lint",
     "prettier": "prettier --write .",
     "code": "npm run prettier && npm run lint -- --fix",
