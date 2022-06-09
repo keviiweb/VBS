@@ -7,7 +7,7 @@ export default function Loading() {
       <Stack spacing={8} mx='auto' maxW='lg' py={12} px={6}>
         <Box rounded='lg' bg='white' boxShadow='lg' p={8}>
           <Stack align='center'>
-            <Heading fontSize='4xl'>ARMAzing</Heading>
+            <Heading fontSize='4xl'>KEVII</Heading>
             <Text fontSize='sm' color='gray.600'>
               Loading webpage... Please give it a moment
             </Text>

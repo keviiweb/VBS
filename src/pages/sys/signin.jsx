@@ -46,7 +46,7 @@ export default function SignIn(props) {
     <Flex minH='100vh' align='center' justify='center' bg='gray.50'>
       <Stack spacing={8} mx='auto' maxW='lg' py={12} px={6}>
         <Stack align='center'>
-          <Heading fontSize='4xl'>KEVII VBS</Heading>
+          <Heading fontSize='4xl'>KEVII</Heading>
           <Text fontSize='sm' color='gray.600'>
             Please enter your school email ending with @u.nus.edu
           </Text>

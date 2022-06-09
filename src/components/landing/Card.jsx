@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
-import { Box, Button, Flex, Image, Link, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Img, Link, Text } from '@chakra-ui/react';
 import NextLink from 'next/link';
+
 
 export default function Card({
   title,
@@ -30,7 +31,7 @@ export default function Card({
         _hover={{ md: hoverStyles }}
       >
         {img && (
-          <Image
+          <Img
             borderRadius='xl'
             w='full'
             fit='cover'
@@ -81,10 +82,11 @@ export default function Card({
             border='thin'
             rounded='xl'
             shadow='2xl'
+            maxW='2xl'
             _hover={{ md: hoverStyles }}
           >
             {img && (
-              <Image
+              <Img
                 borderRadius='xl'
                 w='full'
                 fit='cover'
