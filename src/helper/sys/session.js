@@ -3,8 +3,7 @@ import { getSession, useSession } from 'next-auth/react';
 export const currentSession = async (req = null) => {
   if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     let session = null;
-    let status = 'unauthenticated';
-
+    let status = 'authenticated';
     session = {
       expires: '1',
       user: {
@@ -18,17 +17,13 @@ export const currentSession = async (req = null) => {
     return { session, status };
   } else {
     const isServer = typeof window === 'undefined';
-
+    let session = null;
     if (isServer && req) {
-      let session = null;
-      let status = 'unauthenticated';
-
       session = await getSession({ req });
-      if (session) {
-        status = 'authenticated';
-      }
-
-      return { session, status };
+      return session;
+    } else if (isServer) {
+      session = await getSession();
+      return session;
     } else {
       const { data: session, status } = useSession();
       return { session, status };
