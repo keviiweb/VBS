@@ -40,7 +40,7 @@ function Auth({ children, admin }) {
     }
 
     fetchData();
-  }, []);
+  }, [admin, children, router]);
 }
 
 export default Auth;
