@@ -480,9 +480,6 @@ const options = {
       return '/sys/unauthorized';
     },
     async session({ session, user }) {
-      console.log(`SESSION : ${session}`);
-      console.log(`SESSION USER : ${user}`);
-
       try {
         const userFromDB = await prisma.users.findUnique({
           where: {

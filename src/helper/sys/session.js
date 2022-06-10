@@ -1,8 +1,10 @@
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 
 export const currentSession = async (req = null) => {
-  var session = null;
   if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+    let session = null;
+    let status = 'unauthenticated';
+
     session = {
       expires: '1',
       user: {
@@ -12,17 +14,24 @@ export const currentSession = async (req = null) => {
         studentID: 'A7654321',
       },
     };
+
+    return { session, status };
   } else {
     const isServer = typeof window === 'undefined';
-    let session = null;
+
     if (isServer && req) {
+      let session = null;
+      let status = 'unauthenticated';
+
       session = await getSession({ req });
+      if (session) {
+        status = 'authenticated';
+      }
+
+      return { session, status };
     } else {
-      session = await getSession();
+      const { data: session, status } = useSession();
+      return { session, status };
     }
-
-    return session;
   }
-
-  return session;
 };

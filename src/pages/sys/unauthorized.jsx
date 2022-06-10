@@ -16,7 +16,7 @@ export default function Unauthorized() {
       <Stack mx='auto' maxW='lg' py={12} px={6}>
         <Box rounded='lg' align='center' bg='white' boxShadow='lg' p={8}>
           <Heading fontSize='4xl'>Unauthorized user</Heading>
-          <Text fontSize='sm' color='gray.600'>
+          <Text fontSize='sm' color='gray.600' mt={10}>
             You are unauthorized to visit the target page.
           </Text>
           <Text mt={4} fontSize='sm' color='gray.600'>
