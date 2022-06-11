@@ -12,7 +12,8 @@ export default function VerifyRequest() {
               An email has been sent to you!
             </Text>
             <Text fontSize='sm' color='gray.600'>
-              Please click on the link in the email to complete your authentication.
+              Please click on the link in the email to complete your
+              authentication.
             </Text>
           </Stack>
         </Box>
