@@ -6,6 +6,12 @@ module.exports = {
         runtime: 'automatic',
       },
     ],
+    [
+      '@babel/preset-typescript',
+      {
+        runtime: 'automatic',
+      },
+    ],
   ],
 
   // fullcalendar attempts to import its own CSS files, but next.js does not allow this.
