@@ -95,7 +95,7 @@ export default function Feature() {
                 <Map
                   location={location}
                   zoomLevel={21}
-                  apiKey='AIzaSyCoiMvqTY6CAobxafxPCDPF5WmVh3ajlAQ'
+                  apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}
                 />
               </Box>
             </Flex>
