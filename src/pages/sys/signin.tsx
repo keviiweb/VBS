@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Flex,
   Box,
@@ -16,6 +16,9 @@ import { signIn } from 'next-auth/react';
 export default function SignIn(props) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
+  const emailDB = useRef('');
+  const [errorMsg, setError] = useState(null);
+
   const [url, setURL] = useState('https://vbs-kevii.vercel.app'); // default
 
   useEffect(() => {
@@ -28,17 +31,22 @@ export default function SignIn(props) {
     fetchData(props);
   }, [url, props]);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    try {
-      setLoading(true);
-      await signIn('email', {
-        email: email,
-        callbackUrl: `${url}/sys`,
-      });
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
+    if (emailDB.current !== '' && emailDB.current.includes('@')) {
+      try {
+        setError(null);
+        setLoading(true);
+        await signIn('email', {
+          email: email,
+          callbackUrl: `${url}/sys`,
+        });
+      } catch (error) {
+        console.log(error);
+        setLoading(false);
+      }
+    } else {
+      setError('Please enter a valid email');
     }
   };
 
@@ -51,6 +59,13 @@ export default function SignIn(props) {
             Please enter your school email ending with @u.nus.edu
           </Text>
         </Stack>
+
+        {errorMsg && (
+          <Stack align='center'>
+            <Text>{errorMsg}</Text>
+          </Stack>
+        )}
+
         <Box rounded='lg' bg='white' boxShadow='lg' p={8}>
           <form onSubmit={handleSubmit}>
             <Stack spacing={4}>
@@ -60,7 +75,10 @@ export default function SignIn(props) {
                   type='email'
                   placeholder='test@u.nus.edu'
                   size='lg'
-                  onChange={(event) => setEmail(event.currentTarget.value)}
+                  onChange={(event) => {
+                    setEmail(event.currentTarget.value);
+                    emailDB.current = event.currentTarget.value;
+                  }}
                 />
               </FormControl>
               <Stack spacing={10}>

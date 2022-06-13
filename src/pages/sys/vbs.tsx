@@ -21,7 +21,7 @@ import { GetServerSideProps } from 'next';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
-export default function VBS(props) {
+export default function VBS(props: any) {
   const [modalData, setModalData] = useState(null);
   const [modalDataConfirm, setModalDataConfirm] = useState(null);
   const [isLoading, setIsLoading] = useState(false);

@@ -7,7 +7,7 @@ import { prisma } from '@constants/sys/db';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-function html({ url, email }) {
+function html({ newURL, email }) {
   const escapedEmail = `${email.replace(/\./g, '&#8203;.')}`;
 
   return `
@@ -266,7 +266,7 @@ function html({ url, email }) {
 
                               <div align="center">
                                 <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:'Cabin',sans-serif;"><tr><td style="font-family:'Cabin',sans-serif;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="http://www.google.com" style="height:46px; v-text-anchor:middle; width:126px;" arcsize="8.5%" stroke="f" fillcolor="#ff6600"><w:anchorlock/><center style="color:#FFFFFF;font-family:'Cabin',sans-serif;"><![endif]-->
-                                <a href="${url}" target="_blank" style="box-sizing: border-box;display: inline-block;font-family:'Cabin',sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #ff6600; border-radius: 4px;-webkit-border-radius: 4px; -moz-border-radius: 4px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;">
+                                <a href="${newURL}" target="_blank" style="box-sizing: border-box;display: inline-block;font-family:'Cabin',sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #ff6600; border-radius: 4px;-webkit-border-radius: 4px; -moz-border-radius: 4px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;">
                                   <span style="display:block;padding:14px 44px 13px;line-height:120%;"><span style="font-size: 16px; line-height: 19.2px;"><strong><span style="line-height: 19.2px; font-size: 16px;">Login</span></strong>
                                   </span>
                                   </span>
@@ -398,8 +398,8 @@ function html({ url, email }) {
 `;
 }
 
-function text({ url, host }) {
-  return `Sign in to ${host}\n${url}\n\n`;
+function text({ newURL, host }) {
+  return `Sign in to ${host}\n${newURL}\n\n`;
 }
 
 const options = {
@@ -419,16 +419,19 @@ const options = {
         url,
         provider: { server, from },
       }) {
-        console.log('URL');
-        console.log(url);
-        const { host } = new URL(url);
+        const filterString = `${process.env.NEXTAUTH_URL}/api/auth/callback/`;
+        const urlSplit = url.replace(filterString, '');
+
+        const newURL = `${process.env.NEXTAUTH_URL}/sys/callback/${urlSplit}`;
+
+        const { host } = new URL(newURL);
         const transport = nodemailer.createTransport(server);
         await transport.sendMail({
           to: email,
           from,
           subject: 'KEVII VBS: Sign in',
-          text: text({ url, host }),
-          html: html({ url, email }),
+          text: text({ newURL, host }),
+          html: html({ newURL, email }),
         });
       },
     }),
@@ -452,13 +455,10 @@ const options = {
   callbacks: {
     async signIn({ user, email }) {
       let isAllowedToSignIn = true;
-      console.log(' SIGNIN CALLBACK ');
       try {
         if (
           Object.prototype.hasOwnProperty.call(email, 'verificationRequest')
         ) {
-          console.log('INSIDE VERIFICATION EMAIL ');
-
           isAllowedToSignIn = false;
 
           const doesUserExist = await prisma.users.findUnique({
@@ -468,8 +468,6 @@ const options = {
           });
 
           if (doesUserExist !== null) {
-            console.log('CAN LOG IN');
-            console.log(doesUserExist);
             isAllowedToSignIn = true;
           }
         }
@@ -514,10 +512,7 @@ const options = {
 };
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
-  console.log(req.method);
-
   if (req.method === 'HEAD') {
-    console.log('OUTLOOK TROUBLE');
     return res.status(200);
   }
 

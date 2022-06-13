@@ -9,8 +9,10 @@ export default function Error() {
           <Stack align='center'>
             <Heading fontSize='4xl'>An error occured</Heading>
             <Text fontSize='sm' color='gray.600' mt={5}>
-              We are currently fixing the problem. Please give us time to
-              troubleshoot :(
+              We are currently fixing the problem.
+            </Text>
+            <Text fontSize='sm' color='gray.600' mt={-5}>
+              Please give us time to troubleshoot :(
             </Text>
           </Stack>
         </Box>
