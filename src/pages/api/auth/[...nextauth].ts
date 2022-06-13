@@ -437,7 +437,6 @@ const options = {
     }),
   ],
   adapter: PrismaAdapter(prisma),
-  debug: true,
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     jwt: true,
