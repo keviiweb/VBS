@@ -5,7 +5,7 @@ import nodemailer from 'nodemailer';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '@constants/sys/db';
 
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 function html({ url, email }) {
   const escapedEmail = `${email.replace(/\./g, '&#8203;.')}`;
@@ -512,16 +512,12 @@ const options = {
 };
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
-  
   if (req.method === 'HEAD') {
     console.log('OUTLOOK TROUBLE');
     return res.status(200);
-  } else {
-    console.log(req.method);
-
-    const au = NextAuth(req, res, options);
-    return au;
   }
+  console.log(req.method);
 
-
+  const au = NextAuth(req, res, options);
+  return au;
 }
