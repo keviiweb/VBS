@@ -512,14 +512,13 @@ const options = {
 };
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
-
   console.log(req.method);
 
   if (req.method === 'HEAD') {
     console.log('OUTLOOK TROUBLE');
     return res.status(200);
   }
- 
+
   const au = NextAuth(req, res, options);
   return au;
 }
