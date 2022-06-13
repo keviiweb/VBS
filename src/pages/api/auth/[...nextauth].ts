@@ -419,6 +419,8 @@ const options = {
         url,
         provider: { server, from },
       }) {
+        console.log('URL');
+        console.log(url);
         const { host } = new URL(url);
         const transport = nodemailer.createTransport(server);
         await transport.sendMail({

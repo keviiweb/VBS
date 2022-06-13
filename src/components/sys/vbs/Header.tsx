@@ -12,7 +12,7 @@ export default function Header({ onOpen, ...rest }) {
       position='sticky'
       top='0'
       height='20'
-      zIndex='1'
+      zIndex='10'
       alignItems='center'
       bg='white'
       borderBottomWidth='1px'
