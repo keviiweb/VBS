@@ -362,7 +362,7 @@ export default function VenueBookingModalConfirmation({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalCloseButton />
+        {!submitting && <ModalCloseButton />}
         <ModalHeader />
         <ModalBody>
           {submitting && (
