@@ -18,6 +18,7 @@ permissions:
 
 jobs:
   danger:
+    if: ${{ github.event_name == 'pull_request' }}
     name: Danger JS
     runs-on: ubuntu-latest
     steps:
