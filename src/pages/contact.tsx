@@ -76,6 +76,7 @@ export default function Cultural() {
                 >
                   Keep updated on our socials if you would like to get updates
                   on our upcoming activities. {'\n'}
+                  {'\n'}
                   If you have any questions, do not hesitate to email us at
                   kehhelp@nus.edu.sg. {'\n'}
                   {'\n'}
