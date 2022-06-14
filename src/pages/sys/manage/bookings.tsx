@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
 import {
   Button,
   Box,
@@ -31,6 +37,13 @@ export default function ManageBooking() {
 
   let generateActionButton;
   let fetchData;
+
+  const PAGESIZE = 10;
+  const PAGEINDEX = 0;
+
+  const [pageCount, setPageCount] = useState(0);
+  const pageSizeDB = useRef(PAGESIZE);
+  const pageIndexDB = useRef(PAGEINDEX);
 
   const handleDetails = useCallback((content) => {
     setModalData(content);
@@ -79,14 +92,24 @@ export default function ManageBooking() {
 
   const includeActionButton = useCallback(
     async (content) => {
-      for (let key = 0; key < content.length; key += 1) {
-        if (content[key]) {
-          const dataField = content[key];
-          const buttons = await generateActionButton(dataField);
-          dataField.action = buttons;
+      if (
+        (content.count !== undefined || content.count !== null) &&
+        (content.res !== undefined || content.res !== null)
+      ) {
+        const booking = content.res;
+        if (booking !== []) {
+          for (let key = 0; key < booking.length; key += 1) {
+            if (booking[key]) {
+              const dataField = booking[key];
+              const buttons = await generateActionButton(dataField);
+              dataField.action = buttons;
+            }
+          }
+          setData(booking);
         }
+
+        setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
       }
-      setData(content);
     },
     [generateActionButton],
   );
@@ -136,12 +159,15 @@ export default function ManageBooking() {
     setLoadingData(true);
     setData(null);
     try {
-      const rawResponse = await fetch('/api/bookingReq/fetch?q=USER', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+      const rawResponse = await fetch(
+        `/api/bookingReq/fetch?q=USER&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg);
@@ -152,6 +178,41 @@ export default function ManageBooking() {
       console.log(error);
     }
   }, [includeActionButton]);
+
+  const fetchDataTable = useCallback(async () => {
+    try {
+      const rawResponse = await fetch(
+        `/api/bookingReq/fetch?q=USER&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      const content = await rawResponse.json();
+      if (content.status) {
+        await includeActionButton(content.msg);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [includeActionButton]);
+
+  const onTableChange = useCallback(
+    async ({ pageIndex, pageSize }) => {
+      if (
+        pageSize !== pageSizeDB.current ||
+        pageIndex !== pageIndexDB.current
+      ) {
+        pageSizeDB.current = pageSize;
+        pageIndexDB.current = pageIndex;
+
+        await fetchDataTable();
+      }
+    },
+    [fetchDataTable],
+  );
 
   useEffect(() => {
     if (loadingData) {
@@ -239,8 +300,8 @@ export default function ManageBooking() {
             </Box>
           )}
 
-          {!loadingData && data.length > 0 && (
-            <Box minWidth='full' mt={30}>
+          {!loadingData && data && data !== [] && data.length > 0 && (
+            <Box minWidth='full' mt={30} overflow='auto'>
               <Stack align='center' justify='center' spacing={30}>
                 <InputGroup>
                   <InputLeftAddon>Search:</InputLeftAddon>
@@ -258,6 +319,8 @@ export default function ManageBooking() {
                   data={
                     filteredData && filteredData.length ? filteredData : data
                   }
+                  controlledPageCount={pageCount}
+                  dataHandler={onTableChange}
                 />
               </Stack>
             </Box>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTable, usePagination } from 'react-table';
 import {
   Box,
@@ -26,7 +26,12 @@ import {
   ChevronLeftIcon,
 } from '@chakra-ui/icons';
 
-export default function TableWidget({ columns, data }) {
+export default function TableWidget({
+  columns,
+  data,
+  controlledPageCount,
+  dataHandler,
+}) {
   const {
     getTableProps,
     getTableBodyProps,
@@ -46,9 +51,21 @@ export default function TableWidget({ columns, data }) {
     {
       columns,
       data,
+      manualPagination: true,
+      pageCount: controlledPageCount,
     },
     usePagination,
   );
+
+  useEffect(() => {
+    async function sendData() {
+      if (dataHandler) {
+        await dataHandler({ pageIndex, pageSize });
+      }
+    }
+
+    sendData();
+  }, [dataHandler, pageIndex, pageSize]);
 
   return (
     <Box

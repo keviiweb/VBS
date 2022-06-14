@@ -14,6 +14,11 @@ import { findVenueByID } from '@helper/sys/vbs/venue';
 import { findCCAbyID } from '@helper/sys/vbs/cca';
 import {
   BOOKINGS,
+  countAllBooking,
+  countApprovedBooking,
+  countRejectedBooking,
+  countPendingBooking,
+  countBookingByUser,
   getConflictingRequest,
   findBookingByUser,
   findApprovedBooking,
@@ -26,11 +31,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
   const query = req.query.q;
 
+  const limitQuery = req.query.limit;
+  const skipQuery = req.query.skip;
+
   let result: Result = null;
   if (session) {
     let bookings = null;
+    let count = 0;
+
+    const limit = limitQuery !== undefined ? Number(limitQuery) : 10;
+    const skip = skipQuery !== undefined ? Number(skipQuery) : 0;
+
     if (query && query === 'USER') {
-      bookings = await findBookingByUser(session);
+      count = await countBookingByUser(session);
+      bookings = await findBookingByUser(session, limit, skip);
     } else if (session.user.admin) {
       try {
         if (query) {
@@ -38,24 +52,30 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             if (BOOKINGS.includes(query)) {
               switch (query) {
                 case 'APPROVED':
-                  bookings = await findApprovedBooking();
+                  count = await countApprovedBooking();
+                  bookings = await findApprovedBooking(limit, skip);
                   break;
                 case 'PENDING':
-                  bookings = await findPendingBooking();
+                  count = await countPendingBooking();
+                  bookings = await findPendingBooking(limit, skip);
                   break;
                 case 'REJECTED':
-                  bookings = await findRejectedBooking();
+                  count = await countRejectedBooking();
+                  bookings = await findRejectedBooking(limit, skip);
                   break;
                 default:
-                  bookings = await findPendingBooking();
+                  count = await countPendingBooking();
+                  bookings = await findPendingBooking(limit, skip);
                   break;
               }
             }
           } else {
-            bookings = await findAllBooking();
+            count = await countAllBooking();
+            bookings = await findAllBooking(limit, skip);
           }
         } else {
-          bookings = await findAllBooking();
+          count = await countAllBooking();
+          bookings = await findAllBooking(limit, skip);
         }
       } catch (error) {
         console.log(error);
@@ -163,7 +183,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: true,
         error: null,
-        msg: parsedBooking,
+        msg: { count: count, res: parsedBooking },
       };
       res.status(200).send(result);
       res.end();

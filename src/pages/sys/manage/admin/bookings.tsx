@@ -50,6 +50,7 @@ export default function ManageBooking() {
   const [venueDropdown, setVenueDropdown] = useState([]);
   const [venueID, setVenueID] = useState('');
   const venueIDDB = useRef('');
+  const [selectedVenue, setSelectedVenue] = useState('');
 
   const [events, setEvents] = useState(null);
   const [startTime, setStartTime] = useState('08:00:00');
@@ -58,6 +59,13 @@ export default function ManageBooking() {
   const [search, setSearch] = useState('');
 
   let handleTabChange;
+
+  const PAGESIZE = 10;
+  const PAGEINDEX = 0;
+
+  const [pageCount, setPageCount] = useState(0);
+  const pageSizeDB = useRef(PAGESIZE);
+  const pageIndexDB = useRef(PAGEINDEX);
 
   const handleApprove = useCallback(
     async (id) => {
@@ -275,28 +283,163 @@ export default function ManageBooking() {
 
   const includeActionButton = useCallback(
     async (content, action) => {
-      for (let key = 0; key < content.length; key += 1) {
-        if (content[key]) {
-          const dataField = content[key];
-          const buttons = await generateActionButton(dataField, action);
-          dataField.action = buttons;
+      if (
+        (content.count !== undefined || content.count !== null) &&
+        (content.res !== undefined || content.res !== null)
+      ) {
+        const booking = content.res;
+        if (booking !== []) {
+          for (let key = 0; key < booking.length; key += 1) {
+            if (booking[key]) {
+              const dataField = booking[key];
+              const buttons = await generateActionButton(dataField, action);
+              dataField.action = buttons;
+            }
+          }
+          setData(booking);
         }
+
+        setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
       }
-      setData(content);
     },
     [generateActionButton],
+  );
+
+  const fetchAllDataTable = useCallback(async () => {
+    try {
+      const rawResponse = await fetch(
+        `/api/bookingReq/fetch?limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      const content = await rawResponse.json();
+      if (content.status) {
+        await includeActionButton(content.msg, ALL);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [includeActionButton]);
+
+  const fetchApprovedDataTable = useCallback(async () => {
+    try {
+      const rawResponse = await fetch(
+        `/api/bookingReq/fetch?q=APPROVED&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      const content = await rawResponse.json();
+      if (content.status) {
+        await includeActionButton(content.msg, APPROVED);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [includeActionButton]);
+
+  const fetchRejectedDataTable = useCallback(async () => {
+    try {
+      const rawResponse = await fetch(
+        `/api/bookingReq/fetch?q=REJECTED&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      const content = await rawResponse.json();
+      if (content.status) {
+        await includeActionButton(content.msg, REJECTED);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [includeActionButton]);
+
+  const fetchPendingDataTable = useCallback(async () => {
+    try {
+      const rawResponse = await fetch(
+        `/api/bookingReq/fetch?q=PENDING&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      const content = await rawResponse.json();
+      if (content.status) {
+        await includeActionButton(content.msg, PENDING);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [includeActionButton]);
+
+  const tableChange = useCallback(
+    async (index) => {
+      switch (index) {
+        case PENDING:
+          await fetchPendingDataTable();
+          break;
+        case APPROVED:
+          await fetchApprovedDataTable();
+          break;
+        case REJECTED:
+          await fetchRejectedDataTable();
+          break;
+        case ALL:
+          await fetchAllDataTable();
+          break;
+        default:
+          break;
+      }
+    },
+    [
+      fetchPendingDataTable,
+      fetchApprovedDataTable,
+      fetchRejectedDataTable,
+      fetchAllDataTable,
+    ],
+  );
+
+  const onTableChange = useCallback(
+    async ({ pageIndex, pageSize }) => {
+      if (
+        pageSize !== pageSizeDB.current ||
+        pageIndex !== pageIndexDB.current
+      ) {
+        pageSizeDB.current = pageSize;
+        pageIndexDB.current = pageIndex;
+
+        await tableChange(tabIndexData.current);
+      }
+    },
+    [tableChange],
   );
 
   const fetchAllData = useCallback(async () => {
     setLoadingData(true);
     setData(null);
     try {
-      const rawResponse = await fetch('/api/bookingReq/fetch', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+      const rawResponse = await fetch(
+        `/api/bookingReq/fetch?limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, ALL);
@@ -312,12 +455,15 @@ export default function ManageBooking() {
     setLoadingData(true);
     setData(null);
     try {
-      const rawResponse = await fetch('/api/bookingReq/fetch?q=APPROVED', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+      const rawResponse = await fetch(
+        `/api/bookingReq/fetch?q=APPROVED&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, APPROVED);
@@ -334,12 +480,15 @@ export default function ManageBooking() {
     setData(null);
 
     try {
-      const rawResponse = await fetch('/api/bookingReq/fetch?q=REJECTED', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+      const rawResponse = await fetch(
+        `/api/bookingReq/fetch?q=REJECTED&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, REJECTED);
@@ -353,13 +502,17 @@ export default function ManageBooking() {
   const fetchPendingData = useCallback(async () => {
     setLoadingData(true);
     setData(null);
+
     try {
-      const rawResponse = await fetch('/api/bookingReq/fetch?q=PENDING', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+      const rawResponse = await fetch(
+        `/api/bookingReq/fetch?q=PENDING&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, PENDING);
@@ -373,6 +526,9 @@ export default function ManageBooking() {
   handleTabChange = useCallback(
     async (index) => {
       tabIndexData.current = index;
+      pageIndexDB.current = PAGEINDEX;
+      pageSizeDB.current = PAGESIZE;
+
       switch (index) {
         case PENDING:
           await fetchPendingData();
@@ -489,9 +645,19 @@ export default function ManageBooking() {
   const onVenueIDChange = async (event) => {
     if (event.target.value) {
       const { value } = event.target;
+      await fetchBookings(value);
       venueIDDB.current = value;
       setVenueID(value);
-      await fetchBookings(value);
+
+      for (let key = 0; key < venueData.current.length; key += 1) {
+        if (venueData.current[key]) {
+          const ven = venueData.current[key];
+          if (ven.id === value) {
+            setSelectedVenue(ven.name);
+            break;
+          }
+        }
+      }
     }
   };
 
@@ -595,6 +761,8 @@ export default function ManageBooking() {
           color='gray.700'
           shadow='base'
         >
+          {selectedVenue && <Text>Selected Venue: {selectedVenue}</Text>}
+
           {venueDropdown && (
             <Stack spacing={2} w='full' mb='10'>
               <FormLabel>Select Venue</FormLabel>
@@ -643,7 +811,7 @@ export default function ManageBooking() {
               </Box>
             )}
 
-            {!loadingData && data.length === 0 && (
+            {!loadingData && data && data.length === 0 && (
               <Box mt={30}>
                 <Stack align='center' justify='center'>
                   <Text>No bookings found</Text>
@@ -651,8 +819,8 @@ export default function ManageBooking() {
               </Box>
             )}
 
-            {!loadingData && data.length > 0 && (
-              <Box minWidth='full' mt={30}>
+            {!loadingData && data && data !== [] && data.length > 0 && (
+              <Box w='full' mt={30} overflow='auto'>
                 <Stack align='center' justify='center' spacing={30}>
                   <InputGroup>
                     <InputLeftAddon>Search:</InputLeftAddon>
@@ -670,6 +838,8 @@ export default function ManageBooking() {
                     data={
                       filteredData && filteredData.length ? filteredData : data
                     }
+                    controlledPageCount={pageCount}
+                    dataHandler={onTableChange}
                   />
                 </Stack>
               </Box>

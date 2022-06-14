@@ -124,7 +124,7 @@ export default function VenueBookingModalConfirmation({
       return false;
     }
 
-    if (typeField) {
+    if (typeField && typeField !== '') {
       if (typeField !== 'PERSONAL') {
         let found = false;
 
@@ -165,6 +165,7 @@ export default function VenueBookingModalConfirmation({
     setShowCCAs(false);
     setSuccessBooking(false);
     setIsSwitch(false);
+    setCCASelection('');
 
     emailDB.current = null;
     venueNameDB.current = null;
@@ -292,6 +293,8 @@ export default function VenueBookingModalConfirmation({
       if (content.status && content.msg.length > 0) {
         CCALIST.current = [];
         const ccaContent = content.msg;
+
+        selection.push(<option key='' value='' aria-label='default' />);
 
         for (let key = 0; key < ccaContent.length; key += 1) {
           if (ccaContent[key]) {

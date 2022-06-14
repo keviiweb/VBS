@@ -23,7 +23,79 @@ import {
 
 export const BOOKINGS = ['PENDING', 'APPROVED', 'REJECTED'];
 
-export const findBookingByUser = async (session) => {
+export const countBookingByUser = async (session) => {
+  try {
+    const count = await prisma.venueBookingRequest.count({
+      where: {
+        sessionEmail: session.user.email,
+      },
+    });
+    return count;
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
+};
+
+export const countAllBooking = async () => {
+  try {
+    const count = await prisma.venueBookingRequest.count();
+    return count;
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
+};
+
+export const countApprovedBooking = async () => {
+  try {
+    const count = await prisma.venueBookingRequest.count({
+      where: {
+        isApproved: true,
+        isCancelled: false,
+        isRejected: false,
+      },
+    });
+    return count;
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
+};
+
+export const countPendingBooking = async () => {
+  try {
+    const count = await prisma.venueBookingRequest.count({
+      where: {
+        isApproved: false,
+        isCancelled: false,
+        isRejected: false,
+      },
+    });
+    return count;
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
+};
+
+export const countRejectedBooking = async () => {
+  try {
+    const count = await prisma.venueBookingRequest.count({
+      where: {
+        isApproved: false,
+        isCancelled: false,
+        isRejected: true,
+      },
+    });
+    return count;
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
+};
+
+export const findBookingByUser = async (session, limit, skip) => {
   try {
     const bookings = await prisma.venueBookingRequest.findMany({
       orderBy: [
@@ -34,16 +106,18 @@ export const findBookingByUser = async (session) => {
       where: {
         sessionEmail: session.user.email,
       },
+      skip: skip * limit,
+      take: limit,
     });
 
     return bookings;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return null;
   }
 };
 
-export const findApprovedBooking = async () => {
+export const findApprovedBooking = async (limit, skip) => {
   try {
     const bookings = await prisma.venueBookingRequest.findMany({
       orderBy: [
@@ -56,16 +130,18 @@ export const findApprovedBooking = async () => {
         isCancelled: false,
         isRejected: false,
       },
+      skip: skip * limit,
+      take: limit,
     });
 
     return bookings;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return null;
   }
 };
 
-export const findRejectedBooking = async () => {
+export const findRejectedBooking = async (limit, skip) => {
   try {
     const bookings = await prisma.venueBookingRequest.findMany({
       orderBy: [
@@ -78,16 +154,18 @@ export const findRejectedBooking = async () => {
         isCancelled: false,
         isRejected: true,
       },
+      skip: skip * limit,
+      take: limit,
     });
 
     return bookings;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return null;
   }
 };
 
-export const findPendingBooking = async () => {
+export const findPendingBooking = async (limit, skip) => {
   try {
     const bookings = await prisma.venueBookingRequest.findMany({
       orderBy: [
@@ -100,16 +178,18 @@ export const findPendingBooking = async () => {
         isCancelled: false,
         isRejected: false,
       },
+      skip: skip * limit,
+      take: limit,
     });
 
     return bookings;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return null;
   }
 };
 
-export const findAllBooking = async () => {
+export const findAllBooking = async (limit, skip) => {
   try {
     const bookings = await prisma.venueBookingRequest.findMany({
       orderBy: [
@@ -117,11 +197,13 @@ export const findAllBooking = async () => {
           created_at: 'desc',
         },
       ],
+      skip: skip * limit,
+      take: limit,
     });
 
     return bookings;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return null;
   }
 };
@@ -136,7 +218,7 @@ export const findBookingByID = async (id) => {
 
     return bookingRequest;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return null;
   }
 };
@@ -145,7 +227,7 @@ export const isApproved = async (bookingRequest) => {
   try {
     return bookingRequest.isApproved;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return true;
   }
 };
@@ -154,7 +236,7 @@ export const isCancelled = async (bookingRequest) => {
   try {
     return bookingRequest.isCancelled;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return true;
   }
 };
@@ -163,7 +245,7 @@ export const isRejected = async (bookingRequest) => {
   try {
     return bookingRequest.isRejected;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return true;
   }
 };
@@ -187,7 +269,7 @@ export const isConflict = async (bookingRequest) => {
 
     return false;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return true;
   }
 };
@@ -235,14 +317,14 @@ export const setApprove = async (bookingRequest, session) => {
         try {
           await sendApproveMail(bookingRequest.email, data);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
 
         try {
           const teleMSG = approvalBookingRequestMessageBuilder(data);
           await sendMessageToChannel(teleMSG);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
       return {
@@ -301,14 +383,14 @@ export const setReject = async (bookingRequest, session) => {
         try {
           await sendRejectMail(bookingRequest.email, data);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
 
         try {
           const teleMSG = rejectBookingRequestMessageBuilder(data);
           await sendMessageToChannel(teleMSG);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
 
@@ -367,7 +449,7 @@ export const setCancel = async (bookingRequest, session) => {
         try {
           await sendCancelMail(bookingRequest.email, data);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
 
@@ -457,7 +539,7 @@ export const setRejectConflicts = async (bookingRequest, session) => {
           conflicting.push(request.id);
           const reject = await setReject(request, session);
           if (!reject.status) {
-            console.log(reject.error);
+            console.error(reject.error);
             success = false;
           }
         }
@@ -533,7 +615,7 @@ export const notifyConflicts = async (bookingRequest, session) => {
 
         const email = await notifyConflictsEmail(booking, session);
         if (!email.status) {
-          console.log(email.error);
+          console.error(email.error);
           success = false;
         }
       }
@@ -593,7 +675,7 @@ export const notifyConflictsEmail = async (bookingRequest, session) => {
         await sendNotifyMail(bookingRequest.email, data);
         result = { status: true, error: null, msg: 'Successfully notified!' };
       } catch (error) {
-        console.log(error);
+        console.error(error);
         result = { status: false, error: error.toString(), msg: '' };
       }
     }

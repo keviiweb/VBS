@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+} from 'react';
 import {
   Box,
   Button,
@@ -36,6 +42,17 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
   const [isAvailable, setIsAvailable] = useState(null);
   const [instantBook, setInstantBook] = useState(null);
   const [childVenues, setChildVenues] = useState(null);
+
+  const pageIndexDB = useRef(0);
+  const pageSizeDB = useRef(10);
+
+  const onTableChange = useCallback(({ pageIndex, pageSize }) => {
+    console.log(`PAGEINDEX ${pageIndex}`);
+    console.log(`PAGESIZE ${pageSize}`);
+
+    pageIndexDB.current = pageIndex;
+    pageSizeDB.current = pageSize;
+  }, []);
 
   const reset = () => {
     setID(null);
@@ -241,7 +258,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                 alignItems='center'
                 justifyContent='center'
               >
-                <Box>
+                <Box overflow='scroll'>
                   <Text
                     fontSize={{ base: '16px', lg: '18px' }}
                     fontWeight='500'
@@ -256,7 +273,13 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                   )}
 
                   {childVenues && !loadingData && (
-                    <TableWidget key={2} columns={columns} data={childVenues} />
+                    <TableWidget
+                      key={2}
+                      columns={columns}
+                      data={childVenues}
+                      controlledPageCount={pageIndexDB.current}
+                      dataHandler={onTableChange}
+                    />
                   )}
 
                   {!childVenues && loadingData && (

@@ -328,7 +328,8 @@ export default function VenueBookingModal({
   const handleDate = async (dateObj) => {
     setError(null);
     rawDate.current = dateObj;
-    if (dateObj && dateObj !== new Date()) {
+
+    if (dateObj) {
       setDisplayedSlots(null);
       selectedTimeSlots.current = [];
       const prettified = prettifyDate(dateObj);

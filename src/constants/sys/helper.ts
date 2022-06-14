@@ -79,7 +79,7 @@ export const dateISO = (date) => {
 };
 
 export const convertDateToUnix = (date) => {
-  const prettified = prettifyDate(date);
+  const prettified = prettifyDate(date + 'GMT+0800');
   if (prettified) {
     const parseDate = Date.parse(prettified);
     return parseDate ? Math.floor(parseDate / 1000) : 0;

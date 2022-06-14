@@ -15,24 +15,20 @@ import {
 import { FiChevronDown } from 'react-icons/fi';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { currentSession } from '@helper/sys/session';
 
-export default function UserProfile(props) {
+export default function UserProfile({ session }, props) {
   const [admin, setAdmin] = useState(null);
   const [name, setName] = useState(null);
   const [url, setURL] = useState('https://vbs-kevii.vercel.app'); // default
   const router = useRouter();
 
   useEffect(() => {
-    async function fetchData(propsField) {
-      const session = await currentSession();
-      console.log(session);
-      console.log(session.user.admin);
-      console.log(session.user.username);
-
-      const adminField = session && session.user.admin ? 'Admin' : 'User';
+    async function fetchData(sessionField, propsField) {
+      const adminField = sessionField && sessionField.user.admin ? 'Admin' : '';
       const nameField =
-        session && session.user.username ? session.user.username : 'Test User';
+        sessionField && sessionField.user.username
+          ? sessionField.user.username
+          : '';
       setAdmin(adminField);
       setName(nameField);
 
@@ -45,8 +41,8 @@ export default function UserProfile(props) {
         console.log(error);
       }
     }
-    fetchData(props);
-  }, [url, props]);
+    fetchData(session, props);
+  }, [url, props, session]);
 
   return (
     <HStack spacing={{ base: '0', md: '6' }}>

@@ -4,7 +4,7 @@ import Sidebar from '@components/sys/vbs/Sidebar';
 
 import { Box, Drawer, DrawerContent, useDisclosure } from '@chakra-ui/react';
 
-export default function Layout({ children }) {
+export default function Layout({ session, children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH='100vh' bg='gray.100'>
@@ -27,7 +27,7 @@ export default function Layout({ children }) {
       </Drawer>
 
       {/*= Header =*/}
-      <Header onOpen={onOpen} />
+      <Header session={session} onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p='4'>
         {children}
       </Box>

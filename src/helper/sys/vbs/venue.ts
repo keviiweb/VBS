@@ -3,6 +3,16 @@ import { findSlots, dateISO } from '@constants/sys/helper';
 import { Venue } from 'types/venue';
 import { Result } from 'types/api';
 
+export const countVenue = async () => {
+  try {
+    const count = await prisma.venue.count();
+    return count;
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
+};
+
 export const fetchChildVenue = async (venue) => {
   try {
     const childVenues = await prisma.venue.findMany({
@@ -15,9 +25,12 @@ export const fetchChildVenue = async (venue) => {
   }
 };
 
-export const fetchAllVenue = async () => {
+export const fetchAllVenue = async (limit, skip) => {
   try {
-    const locations = await prisma.venue.findMany();
+    const locations = await prisma.venue.findMany({
+      skip: skip * limit,
+      take: limit,
+    });
     return { status: true, error: null, msg: locations };
   } catch (error) {
     console.error(error);

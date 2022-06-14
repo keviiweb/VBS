@@ -107,6 +107,13 @@ export default function ManageVenues() {
   let fetchData;
   let resetEdit;
 
+  const PAGESIZE = 10;
+  const PAGEINDEX = 0;
+
+  const [pageCount, setPageCount] = useState(0);
+  const pageSizeDB = useRef(PAGESIZE);
+  const pageIndexDB = useRef(PAGEINDEX);
+
   const handleDetails = useCallback((content) => {
     setModalData(content);
   }, []);
@@ -281,44 +288,52 @@ export default function ManageVenues() {
 
   const includeActionButton = useCallback(
     async (content) => {
-      const selection = [];
-      const selectionEdit = [];
-      let count = 0;
-      venueData.current = [];
+      if (
+        (content.count !== undefined || content.count !== null) &&
+        (content.res !== undefined || content.res !== null)
+      ) {
+        const contentRes = content.res;
+        const selection = [];
+        const selectionEdit = [];
+        let count = 0;
+        venueData.current = [];
 
-      selectionEdit.push(<option key='' value='' aria-label='Default' />);
+        selectionEdit.push(<option key='' value='' aria-label='Default' />);
 
-      for (let key = 0; key < content.length; key += 1) {
-        if (content[key]) {
-          const dataField = content[key];
-          if (!dataField.isChildVenue) {
-            selection.push(
+        for (let key = 0; key < contentRes.length; key += 1) {
+          if (contentRes[key]) {
+            const dataField = contentRes[key];
+            if (!dataField.isChildVenue) {
+              selection.push(
+                <option key={dataField.id} value={dataField.id}>
+                  {dataField.name}
+                </option>,
+              );
+
+              if (count === 0) {
+                parentVenue.current = dataField.id;
+                count += 1;
+              }
+            }
+
+            selectionEdit.push(
               <option key={dataField.id} value={dataField.id}>
                 {dataField.name}
               </option>,
             );
 
-            if (count === 0) {
-              parentVenue.current = dataField.id;
-              count += 1;
-            }
+            venueData.current.push(dataField);
+            const buttons = await generateActionButton(dataField);
+            dataField.action = buttons;
           }
-
-          selectionEdit.push(
-            <option key={dataField.id} value={dataField.id}>
-              {dataField.name}
-            </option>,
-          );
-
-          venueData.current.push(dataField);
-          const buttons = await generateActionButton(dataField);
-          dataField.action = buttons;
         }
-      }
 
-      setParentVenueDropdown(selection);
-      setVenueDropdown(selectionEdit);
-      setData(content);
+        setParentVenueDropdown(selection);
+        setVenueDropdown(selectionEdit);
+        setData(contentRes);
+
+        setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
+      }
     },
     [generateActionButton],
   );
@@ -348,17 +363,40 @@ export default function ManageVenues() {
     setLoadingData(true);
     setData(null);
     try {
-      const rawResponse = await fetch('/api/venue/fetch', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+      const rawResponse = await fetch(
+        `/api/venue/fetch?limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
       const content = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg);
       }
       setLoadingData(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [includeActionButton]);
+
+  const fetchDataTable = useCallback(async () => {
+    try {
+      const rawResponse = await fetch(
+        `/api/venue/fetch?limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      const content = await rawResponse.json();
+      if (content.status) {
+        await includeActionButton(content.msg);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -675,9 +713,31 @@ export default function ManageVenues() {
     }
   };
 
+  const onTableChange = useCallback(
+    async ({ pageIndex, pageSize }) => {
+      if (
+        pageSize !== pageSizeDB.current ||
+        pageIndex !== pageIndexDB.current
+      ) {
+        pageSizeDB.current = pageSize;
+        pageIndexDB.current = pageIndex;
+
+        await fetchDataTable();
+      }
+    },
+    [fetchDataTable],
+  );
+
   return (
     <Auth admin>
-      <Box bg='white' borderRadius='lg' p={8} color='gray.700' shadow='base'>
+      <Box
+        bg='white'
+        borderRadius='lg'
+        p={8}
+        color='gray.700'
+        shadow='base'
+        overflow='auto'
+      >
         <MotionBox variants={cardVariant} key='1'>
           {loadingData && !data ? (
             <Text>Loading Please wait...</Text>
@@ -700,6 +760,8 @@ export default function ManageVenues() {
                   data={
                     filteredData && filteredData.length ? filteredData : data
                   }
+                  controlledPageCount={pageCount}
+                  dataHandler={onTableChange}
                 />
               </Stack>
             </Box>

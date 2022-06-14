@@ -2,14 +2,26 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 
 import { currentSession } from '@helper/sys/session';
-import { findVenueByID, fetchAllVenue } from '@helper/sys/vbs/venue';
+import {
+  findVenueByID,
+  fetchAllVenue,
+  countVenue,
+} from '@helper/sys/vbs/venue';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
 
+  const limitQuery = req.query.limit;
+  const skipQuery = req.query.skip;
+
   let result: Result = null;
   if (session) {
-    const venueDB = await fetchAllVenue();
+    const limit = limitQuery !== undefined ? Number(limitQuery) : 10;
+    const skip = skipQuery !== undefined ? Number(skipQuery) : 0;
+
+    const venueDB = await fetchAllVenue(limit, skip);
+    const count = await countVenue();
+
     const parsedVenue = [];
 
     if (venueDB && venueDB.status) {
@@ -52,7 +64,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: true,
         error: null,
-        msg: parsedVenue,
+        msg: { count: count, res: parsedVenue },
       };
       res.status(200).send(result);
       res.end();
