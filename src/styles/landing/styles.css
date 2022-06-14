@@ -45,7 +45,7 @@
 
 #scrollButton img {
   transform: rotate(180deg);
-  width: 40%;
+  width: 70%;
   transition: all ease 0.3s;
 }
 
