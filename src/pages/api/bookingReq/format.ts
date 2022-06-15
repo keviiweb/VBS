@@ -73,7 +73,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 email: book.email,
                 venue: venue,
                 date: prettifyDate(date),
-                timeSlots: prettifyTiming(timeSlots),
+                timeSlots: prettifyTiming(timeSlots as string[]),
                 isApproved: book.isApproved,
                 isRejected: book.isRejected,
                 isCancelled: book.isCancelled,

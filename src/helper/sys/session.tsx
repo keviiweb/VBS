@@ -1,6 +1,10 @@
 import { getSession } from 'next-auth/react';
+import { Session } from 'next-auth/core/types';
+import { NextApiRequest } from 'next';
 
-export const currentSession = async (req = null) => {
+export const currentSession = async (
+  req: NextApiRequest = null,
+): Promise<Session> => {
   if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     let session = null;
     session = {

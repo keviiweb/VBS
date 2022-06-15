@@ -1,11 +1,13 @@
 import { Result } from 'types/api';
 import { prisma } from '@constants/sys/db';
+import { CCA } from 'types/cca';
+import { Session } from 'next-auth/core/types';
 
-export const findCCAbyName = async (name: string) => {
-  let result: Result = null;
+export const findCCAbyName = async (name: string): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
 
   try {
-    const query = await prisma.cCA.findUnique({
+    const query: CCA = await prisma.cCA.findUnique({
       where: {
         name: name,
       },
@@ -20,11 +22,11 @@ export const findCCAbyName = async (name: string) => {
   return result;
 };
 
-export const findCCAbyID = async (id: string) => {
-  let result: Result = null;
+export const findCCAbyID = async (id: string): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
 
   try {
-    const query = await prisma.cCA.findUnique({
+    const query: CCA = await prisma.cCA.findUnique({
       where: {
         id: id,
       },
@@ -39,11 +41,11 @@ export const findCCAbyID = async (id: string) => {
   return result;
 };
 
-export const findAllCCA = async () => {
-  let result: Result = null;
+export const findAllCCA = async (): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
 
   try {
-    const ccaList = await prisma.cCA.findMany({
+    const ccaList: CCA[] = await prisma.cCA.findMany({
       orderBy: {
         name: 'asc',
       },
@@ -57,11 +59,14 @@ export const findAllCCA = async () => {
   return result;
 };
 
-export const isLeader = async (ccaID: string, session: any) => {
-  let result: Result = null;
+export const isLeader = async (
+  ccaID: string,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
 
   try {
-    const ldr = await prisma.cCALeader.findFirst({
+    const ldr: CCA = await prisma.cCALeader.findFirst({
       where: {
         ccaID: ccaID,
         sessionEmail: session.user.email,

@@ -409,7 +409,7 @@ export default function ManageVenues() {
     start.push(<option key='start' value='' aria-label='Default' />);
     end.push(<option key='end' value='' aria-label='Default' />);
 
-    for (let key = 0; key < Object.keys(timeSlots).length; key += 1) {
+    for (let key = 0; key <= Object.keys(timeSlots).length; key += 1) {
       if (timeSlots[key]) {
         const dataField = timeSlots[key];
         start.push(

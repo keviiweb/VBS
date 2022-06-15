@@ -549,7 +549,8 @@ export default function ManageBooking() {
     [fetchPendingData, fetchApprovedData, fetchAllData, fetchRejectedData],
   );
 
-  const generateVenueDropdown = useCallback(async (content) => {
+  const generateVenueDropdown = useCallback(async (contentRes) => {
+    const content = contentRes.res;
     const selection = [];
     venueData.current = [];
 

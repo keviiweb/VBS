@@ -1,8 +1,14 @@
 import { prisma } from '@constants/sys/db';
+import { BookingRequest } from 'types/bookingReq';
+import { Result } from 'types/api';
+import { Booking } from 'types/booking';
+import { Session } from 'next-auth/core/types';
 
-export const findAllBookingByVenueID = async (id) => {
+export const findAllBookingByVenueID = async (
+  id: string,
+): Promise<Booking[]> => {
   try {
-    const bookings = await prisma.venueBooking.findMany({
+    const bookings: Booking[] = await prisma.venueBooking.findMany({
       orderBy: [
         {
           date: 'desc',
@@ -24,13 +30,15 @@ export const findAllBookingByVenueID = async (id) => {
 };
 
 export const createVenueBooking = async (
-  bookingRequest,
-  timeSlots,
-  session,
-) => {
+  bookingRequest: BookingRequest,
+  timeSlots: number[],
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  let success = true;
   try {
     for (let i in timeSlots) {
-      const insertRequest = await prisma.venueBooking.create({
+      const insertRequest: Booking = await prisma.venueBooking.create({
         data: {
           email: bookingRequest.email,
           venue: bookingRequest.venue,
@@ -44,7 +52,8 @@ export const createVenueBooking = async (
 
       if (!insertRequest) {
         console.log('Approve Request - Venue Booking creation failed!');
-        return {
+        success = false;
+        result = {
           status: false,
           error: 'Error in creating venue booking',
           msg: '',
@@ -52,9 +61,21 @@ export const createVenueBooking = async (
       }
     }
 
-    return { status: true, error: '', msg: 'Successfully created bookings' };
+    if (success) {
+      result = {
+        status: true,
+        error: '',
+        msg: 'Successfully created bookings',
+      };
+    }
   } catch (error) {
     console.log(error);
-    return { status: false, error: 'Error in creating venue booking', msg: '' };
+    result = {
+      status: false,
+      error: 'Error in creating venue booking',
+      msg: '',
+    };
   }
+
+  return result;
 };

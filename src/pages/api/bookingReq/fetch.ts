@@ -100,7 +100,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const date = convertUnixToDate(book.date);
           const timeSlots = mapSlotToTiming(
             convertSlotToArray(book.timeSlots, true),
-          );
+          ) as string[];
 
           if (venueReq.status) {
             const venue = venueReq.msg.name;
@@ -122,7 +122,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             let status = null;
             const bookingDate = book.date;
             const minDay = process.env.CANCEL_MIN_DAY
-              ? process.env.CANCEL_MIN_DAY
+              ? Number(process.env.CANCEL_MIN_DAY)
               : 3;
 
             let success = true;

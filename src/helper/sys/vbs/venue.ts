@@ -3,90 +3,96 @@ import { findSlots, dateISO } from '@constants/sys/helper';
 import { Venue } from 'types/venue';
 import { Result } from 'types/api';
 
-export const countVenue = async () => {
+export const countVenue = async (): Promise<Number> => {
+  let count: number = 0;
   try {
-    const count = await prisma.venue.count();
-    return count;
+    count = await prisma.venue.count();
   } catch (error) {
     console.error(error);
-    return 0;
   }
+
+  return count;
 };
 
-export const fetchChildVenue = async (venue) => {
+export const fetchChildVenue = async (venue: string): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
   try {
-    const childVenues = await prisma.venue.findMany({
+    const childVenues: Venue[] = await prisma.venue.findMany({
       where: { parentVenue: venue, isChildVenue: true },
     });
-    return { status: true, error: null, msg: childVenues };
+    result = { status: true, error: null, msg: childVenues };
   } catch (error) {
     console.error(error);
-    return { status: false, error: error, msg: '' };
+    result = { status: false, error: error.toString(), msg: '' };
   }
+
+  return result;
 };
 
-export const fetchAllVenue = async (limit, skip) => {
+export const fetchAllVenue = async (
+  limit: number,
+  skip: number,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
   try {
-    const locations = await prisma.venue.findMany({
+    const locations: Venue[] = await prisma.venue.findMany({
       skip: skip * limit,
       take: limit,
     });
-    return { status: true, error: null, msg: locations };
+    result = { status: true, error: null, msg: locations };
   } catch (error) {
     console.error(error);
-    return { status: false, error: error, msg: '' };
+    result = { status: false, error: error.toString(), msg: '' };
   }
+
+  return result;
 };
 
-export const fetchVenue = async () => {
+export const fetchVenue = async (): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
   try {
-    const locations = await prisma.venue.findMany({
+    const locations: Venue[] = await prisma.venue.findMany({
       where: { visible: true, isChildVenue: false },
     });
 
-    if (locations) {
-      return { status: true, error: null, msg: locations };
-    } else {
-      return { status: true, error: null, msg: '' };
-    }
+    result = { status: true, error: null, msg: locations };
   } catch (error) {
     console.error(error);
-    return { status: false, error: 'Connection timeout', msg: '' };
+    result = { status: false, error: error.toString(), msg: '' };
   }
+
+  return result;
 };
 
-export const findVenueByID = async (id: string) => {
-  let result: Result = null;
+export const findVenueByID = async (id: string): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    const locations: Venue = await prisma.venue.findFirst({
+      where: { id: id },
+    });
 
+    result = { status: true, error: null, msg: locations };
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: error.toString(), msg: '' };
+  }
+
+  return result;
+};
+
+export const fetchOpeningHours = async (
+  id: string,
+): Promise<{ start: number; end: number }> => {
   try {
     const locations: Venue = await prisma.venue.findFirst({
       where: { id: id },
     });
 
     if (locations) {
-      result = { status: true, error: null, msg: locations };
-    } else {
-      result = { status: true, error: null, msg: '' };
-    }
-  } catch (error) {
-    console.error(error);
-    result = { status: false, error: 'Connection timeout', msg: '' };
-  }
-
-  return result;
-};
-
-export const fetchOpeningHours = async (id) => {
-  try {
-    const locations = await prisma.venue.findFirst({
-      where: { id: id },
-    });
-
-    if (locations) {
-      const opening = locations.openingHours;
-      const hours = opening.split('-');
-      const start = await findSlots(hours[0].trim(), true);
-      const end = await findSlots(hours[1].trim(), false);
+      const opening: string = locations.openingHours;
+      const hours: string[] = opening.split('-');
+      const start: string = await findSlots(hours[0].trim(), true);
+      const end: string = await findSlots(hours[1].trim(), false);
 
       if (start && end) {
         return { start: Number(start), end: Number(end) };
@@ -102,10 +108,12 @@ export const fetchOpeningHours = async (id) => {
   }
 };
 
-export const splitHours = async (opening) => {
+export const splitHours = async (
+  opening: string,
+): Promise<{ start: number; end: number }> => {
   try {
     if (opening) {
-      const hours = opening.split('-');
+      const hours: string[] = opening.split('-');
 
       if (hours) {
         return { start: Number(hours[0].trim()), end: Number(hours[1].trim()) };
@@ -121,23 +129,26 @@ export const splitHours = async (opening) => {
   }
 };
 
-export const splitHoursISO = async (date, timeSlot) => {
+export const splitHoursISO = async (
+  date: Date,
+  timeSlot: string,
+): Promise<{ start: string; end: string }> => {
   try {
     if (timeSlot) {
-      const hours = timeSlot.split('-');
+      const hours: string[] = timeSlot.split('-');
 
       if (hours) {
-        const startHour = hours[0].trim();
-        const endHour = hours[1].trim();
+        const startHour: string = hours[0].trim();
+        const endHour: string = hours[1].trim();
 
-        const start =
+        const start: string =
           dateISO(date) +
           'T' +
           startHour.toString().slice(0, 2) +
           ':' +
           startHour.slice(2) +
           ':00';
-        const end =
+        const end: string =
           dateISO(date) +
           'T' +
           endHour.toString().slice(0, 2) +
@@ -157,12 +168,14 @@ export const splitHoursISO = async (date, timeSlot) => {
     return { start: null, end: null };
   }
 };
-export const splitOpeningHours = async (opening) => {
+export const splitOpeningHours = async (
+  opening: string,
+): Promise<{ start: number; end: number }> => {
   try {
     if (opening) {
-      const hours = opening.split('-');
-      const start = await findSlots(hours[0].trim(), true);
-      const end = await findSlots(hours[1].trim(), false);
+      const hours: string[] = opening.split('-');
+      const start: string = await findSlots(hours[0].trim(), true);
+      const end: string = await findSlots(hours[1].trim(), false);
 
       if (start && end) {
         return { start: Number(start), end: Number(end) };
@@ -178,9 +191,9 @@ export const splitOpeningHours = async (opening) => {
   }
 };
 
-export const isInstantBook = async (id) => {
+export const isInstantBook = async (id: string): Promise<Boolean> => {
   try {
-    const locations = await prisma.venue.findFirst({
+    const locations: Venue = await prisma.venue.findFirst({
       where: { id: id },
     });
 
@@ -195,9 +208,9 @@ export const isInstantBook = async (id) => {
   }
 };
 
-export const isVisible = async (id) => {
+export const isVisible = async (id: string): Promise<Boolean> => {
   try {
-    const locations = await prisma.venue.findFirst({
+    const locations: Venue = await prisma.venue.findFirst({
       where: { id: id },
     });
 
@@ -212,24 +225,28 @@ export const isVisible = async (id) => {
   }
 };
 
-export const createVenue = async (data) => {
+export const createVenue = async (data: Venue): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
   try {
-    const venue = await prisma.venue.create({
+    const venue: Venue = await prisma.venue.create({
       data: data,
     });
 
     if (venue) {
-      return { status: true, error: '', msg: 'Successfully created venue' };
+      result = { status: true, error: '', msg: 'Successfully created venue' };
     } else {
-      return { status: false, error: 'Failed to create venue', msg: '' };
+      result = { status: false, error: 'Failed to create venue', msg: '' };
     }
   } catch (error) {
     console.error(error);
-    return { status: false, error: error, msg: '' };
+    result = { status: false, error: error.toString(), msg: '' };
   }
+
+  return result;
 };
 
-export const editVenue = async (data) => {
+export const editVenue = async (data: Venue): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
   try {
     const venue = await prisma.venue.update({
       where: {
@@ -239,12 +256,14 @@ export const editVenue = async (data) => {
     });
 
     if (venue) {
-      return { status: true, error: '', msg: 'Successfully updated venue' };
+      result = { status: true, error: '', msg: 'Successfully updated venue' };
     } else {
-      return { status: false, error: 'Failed to update venue', msg: '' };
+      result = { status: false, error: 'Failed to update venue', msg: '' };
     }
   } catch (error) {
     console.error(error);
-    return { status: false, error: error, msg: '' };
+    result = { status: false, error: error.toString(), msg: '' };
   }
+
+  return result;
 };

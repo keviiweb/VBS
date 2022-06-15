@@ -7,11 +7,11 @@ import { useSession } from 'next-auth/react';
 
 export default function Auth({ children, admin }) {
   const { data: session, status } = useSession();
-  const loading = status === 'loading';
-  const hasUser = !!session?.user;
+  const loading: boolean = status === 'loading';
+  const hasUser: boolean = !!session?.user;
   const router = useRouter();
   const devSession = useRef(null);
-  const isAdmin = !!admin;
+  const isAdmin: boolean = !!admin;
 
   useEffect(() => {
     async function fetchData() {

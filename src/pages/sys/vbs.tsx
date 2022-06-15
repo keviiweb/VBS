@@ -33,13 +33,13 @@ export default function VBS(props: any) {
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState(null);
 
-  const dataFromVenueModal = (venue, venueName, date, timeSlots) => {
-    if (venue && date && timeSlots && venueName) {
+  const dataFromVenueModal = (venue, venueName, timeSlots, dateParsed) => {
+    if (venue && timeSlots && venueName && dateParsed) {
       const data = {
         venue: venue,
         venueName: venueName,
-        date: date,
         timeSlots: timeSlots,
+        dateParsed: dateParsed,
       };
       setModalDataConfirm(data);
     }

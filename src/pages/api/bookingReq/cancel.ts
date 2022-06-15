@@ -46,8 +46,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           return;
         }
 
-        const minDay = process.env.CANCEL_MIN_DAY;
-        const currentDate = bookingRequest.date;
+        const minDay = Number(process.env.CANCEL_MIN_DAY);
+        const currentDate = bookingRequest.date as number;
 
         if (compareDate(currentDate, minDay)) {
           const isRequestApproved = await isApproved(bookingRequest);

@@ -21,6 +21,7 @@ import TimeSlotButton from '@components/sys/vbs/TimeSlotButton';
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 import { prettifyDate } from '@constants/sys/helper';
+import moment from 'moment-timezone';
 import Loading from './Loading';
 
 const MotionSimpleGrid = motion(SimpleGrid);
@@ -37,6 +38,7 @@ export default function VenueBookingModal({
   const [selectedDate, changeDate] = useState(null);
   const date = useRef(null);
   const rawDate = useRef(null);
+  const dateParsed = useRef(null);
 
   const [id, setID] = useState('');
   const [name, setName] = useState('Venue');
@@ -109,6 +111,7 @@ export default function VenueBookingModal({
     selectedTimeSlots.current = [];
     rawSlots.current = [];
     selectedVenue.current = '';
+    dateParsed.current = '';
 
     setID('');
     setName('');
@@ -144,15 +147,15 @@ export default function VenueBookingModal({
     if (
       validateFields(
         selectedVenue.current,
-        date.current,
+        dateParsed.current,
         selectedTimeSlots.current,
       )
     ) {
       dataHandler(
         selectedVenue.current,
         displayVenue(selectedVenue.current),
-        date.current,
         selectedTimeSlots.current,
+        dateParsed.current,
       );
 
       setTimeout(() => {
@@ -334,7 +337,12 @@ export default function VenueBookingModal({
       selectedTimeSlots.current = [];
       const prettified = prettifyDate(dateObj);
       date.current = prettified;
+      const dateYYMMDD = moment(dateObj)
+        .tz('Asia/Singapore')
+        .format('YYYY-MM-DD');
+      dateParsed.current = dateYYMMDD;
       changeDate(prettified);
+
       try {
         const rawResponse = await fetch('/api/timeslot', {
           method: 'POST',
@@ -342,7 +350,10 @@ export default function VenueBookingModal({
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ venue: selectedVenue.current, date: dateObj }),
+          body: JSON.stringify({
+            venue: selectedVenue.current,
+            date: dateYYMMDD,
+          }),
         });
         const content = await rawResponse.json();
         rawSlots.current = content;

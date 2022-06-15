@@ -9,6 +9,7 @@ export default function Layout({ session, children }) {
   return (
     <Box minH='100vh' bg='gray.100'>
       <Sidebar
+        session={session}
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}
       />
@@ -22,12 +23,12 @@ export default function Layout({ session, children }) {
         size='full'
       >
         <DrawerContent>
-          <Sidebar onClose={onClose} />
+          <Sidebar session={session} onClose={onClose} />
         </DrawerContent>
       </Drawer>
 
       {/*= Header =*/}
-      <Header session={session} onOpen={onOpen} />
+      <Header onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p='4'>
         {children}
       </Box>

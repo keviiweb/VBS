@@ -61,10 +61,11 @@ export default function VenueBookingModalConfirmation({
   const emailDB = useRef(null);
   const venueNameDB = useRef(null);
   const venueDB = useRef(null);
-  const dateDB = useRef(null);
   const timeSlotsDB = useRef(null);
   const typeDB = useRef('PERSONAL');
   const purposeDB = useRef(null);
+
+  const dateParsed = useRef(null);
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -170,7 +171,6 @@ export default function VenueBookingModalConfirmation({
     emailDB.current = null;
     venueNameDB.current = null;
     venueDB.current = null;
-    dateDB.current = null;
     timeSlotsDB.current = null;
     typeDB.current = 'PERSONAL';
     purposeDB.current = null;
@@ -249,7 +249,7 @@ export default function VenueBookingModalConfirmation({
         emailDB.current,
         venueDB.current,
         venueNameDB.current,
-        dateDB.current,
+        dateParsed.current,
         timeSlotsDB.current,
         typeDB.current,
         purposeDB.current,
@@ -259,7 +259,7 @@ export default function VenueBookingModalConfirmation({
         emailDB.current,
         venueDB.current,
         venueNameDB.current,
-        dateDB.current,
+        dateParsed.current,
         timeSlotsDB.current,
         typeDB.current,
         purposeDB.current,
@@ -269,7 +269,7 @@ export default function VenueBookingModalConfirmation({
 
   const buildText = async (modalDataField) => {
     setVenue(modalDataField.venueName);
-    setDate(modalDataField.date);
+    setDate(modalDataField.dateParsed);
     let str = '';
     for (let key = 0; key < modalDataField.timeSlots.length; key += 1) {
       if (modalDataField.timeSlots[key]) {
@@ -325,8 +325,8 @@ export default function VenueBookingModalConfirmation({
       await buildCCAList();
       venueNameDB.current = modalData ? modalData.venueName : null;
       venueDB.current = modalData ? modalData.venue : null;
-      dateDB.current = modalData ? modalData.date : null;
       timeSlotsDB.current = modalData ? modalData.timeSlots : null;
+      dateParsed.current = modalData ? modalData.dateParsed : null;
     }
 
     if (modalData) {

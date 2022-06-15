@@ -70,7 +70,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   parsed.purpose === book.purpose &&
                   parsed.cca === cca
                 ) {
-                  const bookTimeSlots = mapSlotToTiming(book.timingSlot);
+                  const bookTimeSlots = mapSlotToTiming(
+                    book.timingSlot,
+                  ) as string;
                   const timeSplit = await splitHours(bookTimeSlots);
 
                   const parsedtimeSlots = parsed.timingSlot;
@@ -136,7 +138,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   2,
                 )}:00`;
 
-                const bookedTimeSlots = mapSlotToTiming(book.timingSlot);
+                const bookedTimeSlots = mapSlotToTiming(
+                  book.timingSlot,
+                ) as string;
                 const bookedTimeSlotsISO = await splitHoursISO(
                   date,
                   bookedTimeSlots,

@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  useRef,
-  useCallback,
-} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -41,17 +35,6 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
   const [purpose, setPurpose] = useState(null);
   const [conflict, setConflict] = useState(null);
   const [status, setStatus] = useState(null);
-
-  const pageIndexDB = useRef(0);
-  const pageSizeDB = useRef(10);
-
-  const onTableChange = useCallback(({ pageIndex, pageSize }) => {
-    console.log(`PAGEINDEX ${pageIndex}`);
-    console.log(`PAGESIZE ${pageSize}`);
-
-    pageIndexDB.current = pageIndex;
-    pageSizeDB.current = pageSize;
-  }, []);
 
   const reset = () => {
     setID(null);
@@ -299,8 +282,12 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                             key={2}
                             columns={columns}
                             data={conflict}
-                            controlledPageCount={pageIndexDB.current}
-                            dataHandler={onTableChange}
+                            controlledPageCount={
+                              modalData.conflictRequest.length
+                                ? modalData.conflictRequest.length
+                                : 0
+                            }
+                            dataHandler={null}
                           />
                         )}
 

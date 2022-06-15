@@ -1,7 +1,7 @@
 export type Venue = {
-  id: string;
+  id?: string;
   name: string;
-  image: string;
+  image?: string;
   openingHours: string;
   description: string;
   visible: boolean;

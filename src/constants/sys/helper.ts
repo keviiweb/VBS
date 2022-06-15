@@ -4,10 +4,9 @@ import {
 } from '@constants/sys/timeslot';
 import { numberToWeekday } from '@constants/sys/weekdays';
 import { monthNamesFull } from '@constants/sys/months';
+import moment from 'moment-timezone';
 
-export const isInside = (want, check) => {
-  // Check if want is inside check
-  // Sample: "1,2,3"  is inside "4,5,6" ?
+export const isInside = (want: string, check: string): boolean => {
   const wantArr = convertSlotToArray(want, true);
   const checkArr = convertSlotToArray(check, true);
 
@@ -23,9 +22,9 @@ export const isInside = (want, check) => {
   return false;
 };
 
-export const mapSlotToTiming = (data) => {
+export const mapSlotToTiming = (data: string | number[]): string[] | string => {
   if (Array.isArray(data)) {
-    const result = [];
+    const result: string[] = [];
     for (let key in data) {
       let map = timingSlotNumberToTimingMapping[Number(data[key])];
       result.push(map);
@@ -33,12 +32,12 @@ export const mapSlotToTiming = (data) => {
 
     return result;
   } else {
-    let map = timingSlotNumberToTimingMapping[Number(data)];
+    let map: string = timingSlotNumberToTimingMapping[Number(data)];
     return map;
   }
 };
 
-export const prettifyTiming = (data) => {
+export const prettifyTiming = (data: string[]): string => {
   let str = '';
   let count = 0;
 
@@ -54,19 +53,21 @@ export const prettifyTiming = (data) => {
   return str;
 };
 
-export const prettifyDate = (date) => {
+export const prettifyDate = (date: Date): string => {
   if (date) {
-    const dateObj = new Date(date);
-    const day = numberToWeekday[dateObj.getDay()];
-    const month = monthNamesFull[dateObj.getMonth()];
-    const prettyDate = `${day}, ${dateObj.getDate()} ${month} ${dateObj.getFullYear()}`;
+    const dateObj = moment(date).tz('Asia/Singapore');
+    const day = numberToWeekday[dateObj.day()];
+    const month = monthNamesFull[dateObj.month()];
+    const prettyDate = `${day}, ${dateObj.format(
+      'DD',
+    )} ${month} ${dateObj.year()}`;
     return prettyDate;
   }
 
   return `Unknown Date`;
 };
 
-export const dateISO = (date) => {
+export const dateISO = (date: Date | string): string => {
   if (date) {
     const dateObj = new Date(date);
     const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
@@ -78,19 +79,16 @@ export const dateISO = (date) => {
   return `Unknown Date`;
 };
 
-export const convertDateToUnix = (date) => {
-  const prettified = prettifyDate(date + 'GMT+0800');
-  if (prettified) {
-    const parseDate = Date.parse(prettified);
-    return parseDate ? Math.floor(parseDate / 1000) : 0;
-  }
+export const convertDateToUnix = (date: string): number => {
+  const prettified = Number(moment(date).tz('Asia/Singapore').format('x'));
+  return Math.floor(prettified / 1000);
 };
 
-export const convertUnixToDate = (date) => {
+export const convertUnixToDate = (date: number): Date => {
   return new Date(date * 1000);
 };
 
-export const compareDate = (comparedDate, number) => {
+export const compareDate = (comparedDate: number, number: number): boolean => {
   let compared = convertUnixToDate(comparedDate);
   let date = new Date();
   date.setDate(date.getDate() + Number(number));
@@ -98,7 +96,7 @@ export const compareDate = (comparedDate, number) => {
   return date <= compared;
 };
 
-export const convertSlotToArray = (slots, reverse = false) => {
+export const convertSlotToArray = (slots, reverse: boolean = false) => {
   if (reverse) {
     const result = slots.split(',');
     for (let key in result) {
@@ -118,7 +116,7 @@ export const convertSlotToArray = (slots, reverse = false) => {
   }
 };
 
-export const findSlots = async (slot, isStart) => {
+export const findSlots = async (slot, isStart: boolean): Promise<string> => {
   for (let i in timingSlotNumberToTimingMapping) {
     if (timingSlotNumberToTimingMapping[i].includes(slot)) {
       const split = timingSlotNumberToTimingMapping[i].split('-');
@@ -135,7 +133,7 @@ export const findSlots = async (slot, isStart) => {
   return null;
 };
 
-export const findSlotsByID = async (slot) => {
+export const findSlotsByID = async (slot: number): Promise<string> => {
   if (slot) {
     return timeSlots[slot];
   }

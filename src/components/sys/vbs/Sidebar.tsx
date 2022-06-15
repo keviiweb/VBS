@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Box, CloseButton, Flex, Text } from '@chakra-ui/react';
 import {
@@ -11,19 +11,6 @@ import {
 } from 'react-icons/fi';
 import NavLink from '@components/sys/vbs/NavLink';
 import Link from 'next/link';
-import { currentSession } from '@helper/sys/session';
-
-let LinkItems = [
-  { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },
-  { label: 'CCA ATTENDANCE', icon: FiSettings, href: '/sys/cca' },
-  { label: 'KEIPs', icon: FiStar, href: '/sys/keips' },
-  { label: 'CONTACT US', icon: FiCompass, href: '/sys/contact' },
-  {
-    label: 'MANAGE BOOKINGS',
-    icon: FiCalendar,
-    href: '/sys/manage/bookings',
-  },
-];
 
 const adminMenu = [
   { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },
@@ -54,26 +41,22 @@ const userMenu = [
   },
 ];
 
-export default function Sidebar({ onClose, ...rest }) {
+export default function Sidebar({ session, onClose, ...rest }) {
   const router = useRouter();
+  const [menu, setMenu] = useState(userMenu);
+
   useEffect(() => {
-    async function fetchData() {
-      const session = await currentSession();
-      if (session) {
-        if (session.user.admin) {
-          LinkItems = adminMenu;
-        } else {
-          LinkItems = userMenu;
-        }
+    if (session) {
+      if (session.user.admin) {
+        setMenu(adminMenu);
       }
     }
-    fetchData();
 
     router.events.on('routeChangeComplete', onClose);
     return () => {
       router.events.off('routeChangeComplete', onClose);
     };
-  }, [router.events, onClose]);
+  }, [router.events, onClose, session]);
 
   return (
     <Box
@@ -94,9 +77,7 @@ export default function Sidebar({ onClose, ...rest }) {
         </Link>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link, i) => (
-        <NavLink key={i} link={link} />
-      ))}
+      {menu && menu.map((link, i) => <NavLink key={i} link={link} />)}
     </Box>
   );
 }

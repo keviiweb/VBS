@@ -34,15 +34,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const parentVenue = isChildVenue ? data.fields.parentVenue : null;
 
       const venueData = {
-        id: data.fields.id,
+        id: data.fields.id as string,
         capacity: Number(data.fields.capacity),
-        name: data.fields.name,
-        description: data.fields.description,
+        name: data.fields.name as string,
+        description: data.fields.description as string,
         isInstantBook: data.fields.isInstantBook === 'true',
         visible: data.fields.visible === 'true',
         isChildVenue: isChildVenue,
-        parentVenue: parentVenue,
-        openingHours: data.fields.openingHours,
+        parentVenue: parentVenue as string,
+        openingHours: data.fields.openingHours as string,
       };
 
       const editVenueRequest = await editVenue(venueData);

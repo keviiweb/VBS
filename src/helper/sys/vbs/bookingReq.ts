@@ -1,5 +1,4 @@
 import { Result } from 'types/api';
-
 import { prisma } from '@constants/sys/db';
 import {
   convertSlotToArray,
@@ -20,95 +19,107 @@ import {
   rejectBookingRequestMessageBuilder,
   sendMessageToChannel,
 } from '@helper/sys/vbs/telegram';
+import { Session } from 'next-auth/core/types';
+import { BookingRequest } from '@root/src/types/bookingReq';
 
 export const BOOKINGS = ['PENDING', 'APPROVED', 'REJECTED'];
 
-export const countBookingByUser = async (session) => {
+export const countBookingByUser = async (session: Session): Promise<number> => {
+  let count = 0;
   try {
-    const count = await prisma.venueBookingRequest.count({
+    count = await prisma.venueBookingRequest.count({
       where: {
         sessionEmail: session.user.email,
       },
     });
-    return count;
   } catch (error) {
     console.error(error);
-    return 0;
   }
+
+  return count;
 };
 
-export const countAllBooking = async () => {
+export const countAllBooking = async (): Promise<number> => {
+  let count = 0;
   try {
-    const count = await prisma.venueBookingRequest.count();
-    return count;
+    count = await prisma.venueBookingRequest.count();
   } catch (error) {
     console.error(error);
-    return 0;
   }
+
+  return count;
 };
 
-export const countApprovedBooking = async () => {
+export const countApprovedBooking = async (): Promise<number> => {
+  let count = 0;
   try {
-    const count = await prisma.venueBookingRequest.count({
+    count = await prisma.venueBookingRequest.count({
       where: {
         isApproved: true,
         isCancelled: false,
         isRejected: false,
       },
     });
-    return count;
   } catch (error) {
     console.error(error);
-    return 0;
   }
+
+  return count;
 };
 
-export const countPendingBooking = async () => {
+export const countPendingBooking = async (): Promise<number> => {
+  let count = 0;
   try {
-    const count = await prisma.venueBookingRequest.count({
+    count = await prisma.venueBookingRequest.count({
       where: {
         isApproved: false,
         isCancelled: false,
         isRejected: false,
       },
     });
-    return count;
   } catch (error) {
     console.error(error);
-    return 0;
   }
+
+  return count;
 };
 
-export const countRejectedBooking = async () => {
+export const countRejectedBooking = async (): Promise<number> => {
+  let count = 0;
   try {
-    const count = await prisma.venueBookingRequest.count({
+    count = await prisma.venueBookingRequest.count({
       where: {
         isApproved: false,
         isCancelled: false,
         isRejected: true,
       },
     });
-    return count;
   } catch (error) {
     console.error(error);
-    return 0;
   }
+
+  return count;
 };
 
-export const findBookingByUser = async (session, limit, skip) => {
+export const findBookingByUser = async (
+  session: Session,
+  limit: number,
+  skip: number,
+): Promise<BookingRequest[]> => {
   try {
-    const bookings = await prisma.venueBookingRequest.findMany({
-      orderBy: [
-        {
-          created_at: 'desc',
+    const bookings: BookingRequest[] =
+      await prisma.venueBookingRequest.findMany({
+        orderBy: [
+          {
+            created_at: 'desc',
+          },
+        ],
+        where: {
+          sessionEmail: session.user.email,
         },
-      ],
-      where: {
-        sessionEmail: session.user.email,
-      },
-      skip: skip * limit,
-      take: limit,
-    });
+        skip: skip * limit,
+        take: limit,
+      });
 
     return bookings;
   } catch (error) {
@@ -117,22 +128,26 @@ export const findBookingByUser = async (session, limit, skip) => {
   }
 };
 
-export const findApprovedBooking = async (limit, skip) => {
+export const findApprovedBooking = async (
+  limit: number,
+  skip: number,
+): Promise<BookingRequest[]> => {
   try {
-    const bookings = await prisma.venueBookingRequest.findMany({
-      orderBy: [
-        {
-          created_at: 'desc',
+    const bookings: BookingRequest[] =
+      await prisma.venueBookingRequest.findMany({
+        orderBy: [
+          {
+            created_at: 'desc',
+          },
+        ],
+        where: {
+          isApproved: true,
+          isCancelled: false,
+          isRejected: false,
         },
-      ],
-      where: {
-        isApproved: true,
-        isCancelled: false,
-        isRejected: false,
-      },
-      skip: skip * limit,
-      take: limit,
-    });
+        skip: skip * limit,
+        take: limit,
+      });
 
     return bookings;
   } catch (error) {
@@ -141,22 +156,26 @@ export const findApprovedBooking = async (limit, skip) => {
   }
 };
 
-export const findRejectedBooking = async (limit, skip) => {
+export const findRejectedBooking = async (
+  limit: number,
+  skip: number,
+): Promise<BookingRequest[]> => {
   try {
-    const bookings = await prisma.venueBookingRequest.findMany({
-      orderBy: [
-        {
-          created_at: 'desc',
+    const bookings: BookingRequest[] =
+      await prisma.venueBookingRequest.findMany({
+        orderBy: [
+          {
+            created_at: 'desc',
+          },
+        ],
+        where: {
+          isApproved: false,
+          isCancelled: false,
+          isRejected: true,
         },
-      ],
-      where: {
-        isApproved: false,
-        isCancelled: false,
-        isRejected: true,
-      },
-      skip: skip * limit,
-      take: limit,
-    });
+        skip: skip * limit,
+        take: limit,
+      });
 
     return bookings;
   } catch (error) {
@@ -165,22 +184,26 @@ export const findRejectedBooking = async (limit, skip) => {
   }
 };
 
-export const findPendingBooking = async (limit, skip) => {
+export const findPendingBooking = async (
+  limit: number,
+  skip: number,
+): Promise<BookingRequest[]> => {
   try {
-    const bookings = await prisma.venueBookingRequest.findMany({
-      orderBy: [
-        {
-          created_at: 'desc',
+    const bookings: BookingRequest[] =
+      await prisma.venueBookingRequest.findMany({
+        orderBy: [
+          {
+            created_at: 'desc',
+          },
+        ],
+        where: {
+          isApproved: false,
+          isCancelled: false,
+          isRejected: false,
         },
-      ],
-      where: {
-        isApproved: false,
-        isCancelled: false,
-        isRejected: false,
-      },
-      skip: skip * limit,
-      take: limit,
-    });
+        skip: skip * limit,
+        take: limit,
+      });
 
     return bookings;
   } catch (error) {
@@ -189,17 +212,21 @@ export const findPendingBooking = async (limit, skip) => {
   }
 };
 
-export const findAllBooking = async (limit, skip) => {
+export const findAllBooking = async (
+  limit: number,
+  skip: number,
+): Promise<BookingRequest[]> => {
   try {
-    const bookings = await prisma.venueBookingRequest.findMany({
-      orderBy: [
-        {
-          created_at: 'desc',
-        },
-      ],
-      skip: skip * limit,
-      take: limit,
-    });
+    const bookings: BookingRequest[] =
+      await prisma.venueBookingRequest.findMany({
+        orderBy: [
+          {
+            created_at: 'desc',
+          },
+        ],
+        skip: skip * limit,
+        take: limit,
+      });
 
     return bookings;
   } catch (error) {
@@ -208,13 +235,14 @@ export const findAllBooking = async (limit, skip) => {
   }
 };
 
-export const findBookingByID = async (id) => {
+export const findBookingByID = async (id: string): Promise<BookingRequest> => {
   try {
-    const bookingRequest = await prisma.venueBookingRequest.findFirst({
-      where: {
-        id: id,
-      },
-    });
+    const bookingRequest: BookingRequest =
+      await prisma.venueBookingRequest.findFirst({
+        where: {
+          id: id,
+        },
+      });
 
     return bookingRequest;
   } catch (error) {
@@ -223,7 +251,9 @@ export const findBookingByID = async (id) => {
   }
 };
 
-export const isApproved = async (bookingRequest) => {
+export const isApproved = async (
+  bookingRequest: BookingRequest,
+): Promise<Boolean> => {
   try {
     return bookingRequest.isApproved;
   } catch (error) {
@@ -232,7 +262,9 @@ export const isApproved = async (bookingRequest) => {
   }
 };
 
-export const isCancelled = async (bookingRequest) => {
+export const isCancelled = async (
+  bookingRequest: BookingRequest,
+): Promise<Boolean> => {
   try {
     return bookingRequest.isCancelled;
   } catch (error) {
@@ -241,7 +273,9 @@ export const isCancelled = async (bookingRequest) => {
   }
 };
 
-export const isRejected = async (bookingRequest) => {
+export const isRejected = async (
+  bookingRequest: BookingRequest,
+): Promise<Boolean> => {
   try {
     return bookingRequest.isRejected;
   } catch (error) {
@@ -250,17 +284,23 @@ export const isRejected = async (bookingRequest) => {
   }
 };
 
-export const isConflict = async (bookingRequest) => {
+export const isConflict = async (
+  bookingRequest: BookingRequest,
+): Promise<Boolean> => {
   try {
-    const timeSlots = convertSlotToArray(bookingRequest.timeSlots, true);
+    const timeSlots: string | number[] = convertSlotToArray(
+      bookingRequest.timeSlots,
+      true,
+    ) as number[];
     for (let i in timeSlots) {
-      const anyConflicting = await prisma.venueBooking.findFirst({
-        where: {
-          date: bookingRequest.date,
-          timingSlot: timeSlots[i],
-          venue: bookingRequest.venue,
-        },
-      });
+      const anyConflicting: BookingRequest =
+        await prisma.venueBooking.findFirst({
+          where: {
+            date: bookingRequest.date,
+            timingSlot: timeSlots[i],
+            venue: bookingRequest.venue,
+          },
+        });
 
       if (anyConflicting) {
         return true;
@@ -274,9 +314,13 @@ export const isConflict = async (bookingRequest) => {
   }
 };
 
-export const setApprove = async (bookingRequest, session) => {
+export const setApprove = async (
+  bookingRequest: BookingRequest,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
   if (bookingRequest) {
-    const update = await prisma.venueBookingRequest.update({
+    const update: BookingRequest = await prisma.venueBookingRequest.update({
       where: {
         id: bookingRequest.id,
       },
@@ -288,27 +332,30 @@ export const setApprove = async (bookingRequest, session) => {
     });
 
     if (update) {
-      let slotArray = convertSlotToArray(bookingRequest.timeSlots, true);
+      let slotArray: string | number[] | string[] = convertSlotToArray(
+        bookingRequest.timeSlots,
+        true,
+      ) as number[];
       slotArray = mapSlotToTiming(slotArray);
-      const venueReq = await findVenueByID(bookingRequest.venue);
-      let date = convertUnixToDate(bookingRequest.date);
-      let prettifiedDate = prettifyDate(date);
+      const venueReq: Result = await findVenueByID(bookingRequest.venue);
+      let date: Date = convertUnixToDate(bookingRequest.date as number);
+      let prettifiedDate: string = prettifyDate(date);
 
       if (venueReq && venueReq.status) {
-        let cca = undefined;
+        let cca: string = undefined;
         if (bookingRequest.cca === 'PERSONAL') {
           cca = 'PERSONAL';
         } else {
-          const ccaReq = await findCCAbyID(bookingRequest.cca);
+          const ccaReq: Result = await findCCAbyID(bookingRequest.cca);
           cca = ccaReq.msg.name;
         }
 
-        const data = {
+        const data: BookingRequest = {
           id: bookingRequest.id,
           email: bookingRequest.email,
           venue: venueReq.msg.name,
           date: prettifiedDate,
-          timeSlots: prettifyTiming(slotArray),
+          timeSlots: prettifyTiming(slotArray as string[]),
           cca: cca,
           purpose: bookingRequest.purpose,
           sessionEmail: session.user.email,
@@ -321,28 +368,34 @@ export const setApprove = async (bookingRequest, session) => {
         }
 
         try {
-          const teleMSG = approvalBookingRequestMessageBuilder(data);
+          const teleMSG: string = approvalBookingRequestMessageBuilder(data);
           await sendMessageToChannel(teleMSG);
         } catch (error) {
           console.error(error);
         }
       }
-      return {
+      result = {
         status: true,
         error: null,
         msg: 'Successfully updated request on approval',
       };
     } else {
-      return { status: false, error: 'Error in updating', msg: '' };
+      result = { status: false, error: 'Error in updating', msg: '' };
     }
   } else {
-    return { status: false, error: 'No booking ID found', msg: '' };
+    result = { status: false, error: 'No booking ID found', msg: '' };
   }
+
+  return result;
 };
 
-export const setReject = async (bookingRequest, session) => {
+export const setReject = async (
+  bookingRequest: BookingRequest,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
   if (bookingRequest) {
-    const update = await prisma.venueBookingRequest.update({
+    const update: BookingRequest = await prisma.venueBookingRequest.update({
       where: {
         id: bookingRequest.id,
       },
@@ -354,27 +407,30 @@ export const setReject = async (bookingRequest, session) => {
     });
 
     if (update) {
-      let slotArray = convertSlotToArray(bookingRequest.timeSlots, true);
+      let slotArray: string | number[] | string[] = convertSlotToArray(
+        bookingRequest.timeSlots,
+        true,
+      ) as number[];
       slotArray = mapSlotToTiming(slotArray);
-      const venueReq = await findVenueByID(bookingRequest.venue);
-      let date = convertUnixToDate(bookingRequest.date);
-      let prettifiedDate = prettifyDate(date);
+      const venueReq: Result = await findVenueByID(bookingRequest.venue);
+      let date: Date = convertUnixToDate(bookingRequest.date as number);
+      let prettifiedDate: string = prettifyDate(date);
 
       if (venueReq && venueReq.status) {
-        let cca = undefined;
+        let cca: string = undefined;
         if (bookingRequest.cca === 'PERSONAL') {
           cca = 'PERSONAL';
         } else {
-          const ccaReq = await findCCAbyID(bookingRequest.cca);
+          const ccaReq: Result = await findCCAbyID(bookingRequest.cca);
           cca = ccaReq.msg.name;
         }
 
-        const data = {
+        const data: BookingRequest = {
           id: bookingRequest.id,
           email: bookingRequest.email,
           venue: venueReq.msg.name,
           date: prettifiedDate,
-          timeSlots: prettifyTiming(slotArray),
+          timeSlots: prettifyTiming(slotArray as string[]),
           cca: cca,
           purpose: bookingRequest.purpose,
           sessionEmail: session.user.email,
@@ -387,29 +443,35 @@ export const setReject = async (bookingRequest, session) => {
         }
 
         try {
-          const teleMSG = rejectBookingRequestMessageBuilder(data);
+          const teleMSG: string = rejectBookingRequestMessageBuilder(data);
           await sendMessageToChannel(teleMSG);
         } catch (error) {
           console.error(error);
         }
       }
 
-      return {
+      result = {
         status: true,
         error: null,
         msg: 'Successfully updated request on reject',
       };
     } else {
-      return { status: false, error: 'Error in updating', msg: '' };
+      result = { status: false, error: 'Error in updating', msg: '' };
     }
   } else {
-    return { status: false, error: 'No booking ID found', msg: '' };
+    result = { status: false, error: 'No booking ID found', msg: '' };
   }
+
+  return result;
 };
 
-export const setCancel = async (bookingRequest, session) => {
+export const setCancel = async (
+  bookingRequest: BookingRequest,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
   if (bookingRequest) {
-    const update = await prisma.venueBookingRequest.update({
+    const update: BookingRequest = await prisma.venueBookingRequest.update({
       where: {
         id: bookingRequest.id,
       },
@@ -421,27 +483,30 @@ export const setCancel = async (bookingRequest, session) => {
     });
 
     if (update) {
-      let slotArray = convertSlotToArray(bookingRequest.timeSlots, true);
+      let slotArray: string | number[] | string[] = convertSlotToArray(
+        bookingRequest.timeSlots,
+        true,
+      ) as number[];
       slotArray = mapSlotToTiming(slotArray);
-      const venueReq = await findVenueByID(bookingRequest.venue);
-      let date = convertUnixToDate(bookingRequest.date);
-      let prettifiedDate = prettifyDate(date);
+      const venueReq: Result = await findVenueByID(bookingRequest.venue);
+      let date: Date = convertUnixToDate(bookingRequest.date as number);
+      let prettifiedDate: string = prettifyDate(date);
 
-      let cca = undefined;
+      let cca: string = undefined;
       if (bookingRequest.cca === 'PERSONAL') {
         cca = 'PERSONAL';
       } else {
-        const ccaReq = await findCCAbyID(bookingRequest.cca);
+        const ccaReq: Result = await findCCAbyID(bookingRequest.cca);
         cca = ccaReq.msg.name;
       }
 
       if (venueReq && venueReq.status) {
-        const data = {
+        const data: BookingRequest = {
           id: bookingRequest.id,
           email: bookingRequest.email,
           venue: venueReq.msg.name,
           date: prettifiedDate,
-          timeSlots: prettifyTiming(slotArray),
+          timeSlots: prettifyTiming(slotArray as string[]),
           cca: cca,
           purpose: bookingRequest.purpose,
           sessionEmail: session.user.email,
@@ -453,38 +518,43 @@ export const setCancel = async (bookingRequest, session) => {
         }
       }
 
-      return {
+      result = {
         status: true,
         error: null,
         msg: 'Successfully updated request on cancel',
       };
     } else {
-      return { status: false, error: 'Error in updating', msg: '' };
+      result = { status: false, error: 'Error in updating', msg: '' };
     }
   } else {
-    return { status: false, error: 'No booking ID found', msg: '' };
+    result = { status: false, error: 'No booking ID found', msg: '' };
   }
+
+  return result;
 };
 
-export const getConflictingRequest = async (bookingRequest) => {
-  let result: Result = null;
+export const getConflictingRequest = async (
+  bookingRequest: BookingRequest,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
   let success = true;
 
   if (bookingRequest) {
-    let conflicting = [];
-    const sameDayVenue = await prisma.venueBookingRequest.findMany({
-      where: {
-        date: bookingRequest.date,
-        venue: bookingRequest.venue,
-        id: {
-          not: bookingRequest.id,
+    let conflicting: BookingRequest[] = [];
+    const sameDayVenue: BookingRequest[] =
+      await prisma.venueBookingRequest.findMany({
+        where: {
+          date: bookingRequest.date,
+          venue: bookingRequest.venue,
+          id: {
+            not: bookingRequest.id,
+          },
         },
-      },
-    });
+      });
 
     if (sameDayVenue) {
       for (let key in sameDayVenue) {
-        const request = sameDayVenue[key];
+        const request: BookingRequest = sameDayVenue[key];
         if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
           conflicting.push(request);
         }
@@ -513,31 +583,36 @@ export const getConflictingRequest = async (bookingRequest) => {
   return result;
 };
 
-export const setRejectConflicts = async (bookingRequest, session) => {
+export const setRejectConflicts = async (
+  bookingRequest: BookingRequest,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
   let success = true;
 
   if (bookingRequest) {
-    const sameDayVenue = await prisma.venueBookingRequest.findMany({
-      where: {
-        date: bookingRequest.date,
-        venue: bookingRequest.venue,
-        id: {
-          not: bookingRequest.id,
+    const sameDayVenue: BookingRequest[] =
+      await prisma.venueBookingRequest.findMany({
+        where: {
+          date: bookingRequest.date,
+          venue: bookingRequest.venue,
+          id: {
+            not: bookingRequest.id,
+          },
+          isApproved: false,
+          isCancelled: false,
+          isRejected: false,
         },
-        isApproved: false,
-        isCancelled: false,
-        isRejected: false,
-      },
-    });
+      });
 
     if (sameDayVenue) {
-      let conflicting = [];
+      let conflicting: string[] = [];
 
       for (let key in sameDayVenue) {
-        const request = sameDayVenue[key];
+        const request: BookingRequest = sameDayVenue[key];
         if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
           conflicting.push(request.id);
-          const reject = await setReject(request, session);
+          const reject: Result = await setReject(request, session);
           if (!reject.status) {
             console.error(reject.error);
             success = false;
@@ -549,26 +624,32 @@ export const setRejectConflicts = async (bookingRequest, session) => {
     }
 
     if (success) {
-      return {
+      result = {
         status: true,
         error: null,
         msg: 'Successfully rejected conflicting timeslots',
       };
     } else {
-      return {
+      result = {
         status: false,
         error: 'Failed to reject conflicting timeslots',
         msg: '',
       };
     }
   } else {
-    return { status: false, error: 'No booking ID found', msg: '' };
+    result = { status: false, error: 'No booking ID found', msg: '' };
   }
+
+  return result;
 };
 
-export const updateConflictingIDs = async (bookingRequest, conflict) => {
+export const updateConflictingIDs = async (
+  bookingRequest: BookingRequest,
+  conflict: string[],
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
   if (bookingRequest) {
-    const update = await prisma.venueBookingRequest.update({
+    const update: BookingRequest = await prisma.venueBookingRequest.update({
       where: {
         id: bookingRequest.id,
       },
@@ -578,20 +659,24 @@ export const updateConflictingIDs = async (bookingRequest, conflict) => {
     });
 
     if (update) {
-      return {
+      result = {
         status: true,
         error: null,
         msg: 'Successfully updated request on reject',
       };
     } else {
-      return { status: false, error: 'Error in updating', msg: '' };
+      result = { status: false, error: 'Error in updating', msg: '' };
     }
   } else {
-    return { status: false, error: 'No booking ID found', msg: '' };
+    result = { status: false, error: 'No booking ID found', msg: '' };
   }
+
+  return result;
 };
 
-export const createVenueBookingRequest = async (data) => {
+export const createVenueBookingRequest = async (
+  data: BookingRequest,
+): Promise<BookingRequest> => {
   try {
     const bookedTimeSlots = await prisma.venueBookingRequest.create({
       data: data,
@@ -603,17 +688,21 @@ export const createVenueBookingRequest = async (data) => {
   }
 };
 
-export const notifyConflicts = async (bookingRequest, session) => {
+export const notifyConflicts = async (
+  bookingRequest: BookingRequest,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
   let success = true;
 
   if (bookingRequest) {
     if (bookingRequest.conflictRequest) {
-      let sameDayVenue = bookingRequest.conflictRequest.split(',');
+      let sameDayVenue: string[] = bookingRequest.conflictRequest.split(',');
       for (let key in sameDayVenue) {
-        const request = sameDayVenue[key];
-        const booking = await findBookingByID(request);
+        const request: string = sameDayVenue[key];
+        const booking: BookingRequest = await findBookingByID(request);
 
-        const email = await notifyConflictsEmail(booking, session);
+        const email: Result = await notifyConflictsEmail(booking, session);
         if (!email.status) {
           console.error(email.error);
           success = false;
@@ -624,48 +713,56 @@ export const notifyConflicts = async (bookingRequest, session) => {
     }
 
     if (success) {
-      return {
+      result = {
         status: true,
         error: null,
         msg: 'Successfully notified conflicting bookings',
       };
     } else {
-      return {
+      result = {
         status: false,
         error: 'Failed to notify conflicting bookings',
         msg: '',
       };
     }
   } else {
-    return { status: false, error: 'No booking ID found', msg: '' };
+    result = { status: false, error: 'No booking ID found', msg: '' };
   }
+
+  return result;
 };
 
-export const notifyConflictsEmail = async (bookingRequest, session) => {
-  let result: Result = null;
+export const notifyConflictsEmail = async (
+  bookingRequest: BookingRequest,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
 
   if (bookingRequest) {
-    let slotArray = convertSlotToArray(bookingRequest.timeSlots, true);
+    let slotArray: string | number[] | string[] = convertSlotToArray(
+      bookingRequest.timeSlots,
+      true,
+    ) as number[];
     slotArray = mapSlotToTiming(slotArray);
-    const venueReq = await findVenueByID(bookingRequest.venue);
-    let date = convertUnixToDate(bookingRequest.date);
-    let prettifiedDate = prettifyDate(date);
+    const venueReq: Result = await findVenueByID(bookingRequest.venue);
+    let date: Date = convertUnixToDate(bookingRequest.date as number);
+    let prettifiedDate: string = prettifyDate(date);
 
     if (venueReq && venueReq.status) {
-      let cca = undefined;
+      let cca: string = undefined;
       if (bookingRequest.cca === 'PERSONAL') {
         cca = 'PERSONAL';
       } else {
-        const ccaReq = await findCCAbyID(bookingRequest.cca);
+        const ccaReq: Result = await findCCAbyID(bookingRequest.cca);
         cca = ccaReq.msg.name;
       }
 
-      const data = {
+      const data: BookingRequest = {
         id: bookingRequest.id,
         email: bookingRequest.email,
         venue: venueReq.msg.name,
         date: prettifiedDate,
-        timeSlots: prettifyTiming(slotArray),
+        timeSlots: prettifyTiming(slotArray as string[]),
         cca: cca,
         purpose: bookingRequest.purpose,
         sessionEmail: session.user.email,

@@ -5,8 +5,8 @@ import { prisma } from '@constants/sys/db';
 export const fetchBookedTimeSlots = async (
   venue: string,
   convertedDate: number,
-) => {
-  let result: Result = null;
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const bookedTimeSlots: Booking[] = await prisma.venueBooking.findMany({
