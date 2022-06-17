@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'kevii'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_002135375B864A19B990B30E03878CE6 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_EB4D9DF6C1544AE4B487F5923899A182 }}
           package: .
