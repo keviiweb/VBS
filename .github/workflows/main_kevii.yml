@@ -9,6 +9,9 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
