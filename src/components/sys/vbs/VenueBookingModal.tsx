@@ -20,7 +20,7 @@ import CalendarWidget from '@components/sys/vbs/CalendarWidget';
 import TimeSlotButton from '@components/sys/vbs/TimeSlotButton';
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
-import { prettifyDate } from '@constants/sys/helper';
+import { prettifyDate } from '@constants/sys/date';
 import moment from 'moment-timezone';
 import Loading from './Loading';
 

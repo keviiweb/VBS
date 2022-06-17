@@ -3,10 +3,10 @@ import { Result } from 'types/api';
 
 import {
   mapSlotToTiming,
-  convertDateToUnix,
   convertSlotToArray,
   prettifyTiming,
 } from '@constants/sys/helper';
+import { convertDateToUnix } from '@constants/sys/date';
 import { currentSession } from '@helper/sys/session';
 import { findCCAbyID, isLeader } from '@helper/sys/vbs/cca';
 import {

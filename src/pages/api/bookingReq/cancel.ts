@@ -10,7 +10,7 @@ import {
   notifyConflicts,
 } from '@helper/sys/vbs/bookingReq';
 import { currentSession } from '@helper/sys/session';
-import { compareDate } from '@constants/sys/helper';
+import { compareDate } from '@constants/sys/date';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
@@ -61,7 +61,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               if (!notifyOtherRejected.status) {
                 result = {
                   status: false,
-                  error: 'Failed to notify conflicting requests!',
+                  error: notifyOtherRejected.error,
                   msg: '',
                 };
                 res.status(200).send(result);

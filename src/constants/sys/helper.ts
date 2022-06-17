@@ -2,9 +2,6 @@ import {
   timingSlotNumberToTimingMapping,
   timeSlots,
 } from '@constants/sys/timeslot';
-import { numberToWeekday } from '@constants/sys/weekdays';
-import { monthNamesFull } from '@constants/sys/months';
-import moment from 'moment-timezone';
 
 export const isInside = (want: string, check: string): boolean => {
   const wantArr = convertSlotToArray(want, true);
@@ -26,14 +23,24 @@ export const mapSlotToTiming = (data: string | number[]): string[] | string => {
   if (Array.isArray(data)) {
     const result: string[] = [];
     for (let key in data) {
-      let map = timingSlotNumberToTimingMapping[Number(data[key])];
-      result.push(map);
+      if (data[key]) {
+        if (!isNaN(data[key])) {
+          let map = timingSlotNumberToTimingMapping[Number(data[key])];
+          result.push(map);
+        }
+      }
     }
 
     return result;
   } else {
-    let map: string = timingSlotNumberToTimingMapping[Number(data)];
-    return map;
+    if (!isNaN(Number(data))) {
+      if (timingSlotNumberToTimingMapping[Number(data)]) {
+        let map: string = timingSlotNumberToTimingMapping[Number(data)];
+        return map;
+      }
+    }
+
+    return '';
   }
 };
 
@@ -51,49 +58,6 @@ export const prettifyTiming = (data: string[]): string => {
   }
 
   return str;
-};
-
-export const prettifyDate = (date: Date): string => {
-  if (date) {
-    const dateObj = moment(date).tz('Asia/Singapore');
-    const day = numberToWeekday[dateObj.day()];
-    const month = monthNamesFull[dateObj.month()];
-    const prettyDate = `${day}, ${dateObj.format(
-      'DD',
-    )} ${month} ${dateObj.year()}`;
-    return prettyDate;
-  }
-
-  return `Unknown Date`;
-};
-
-export const dateISO = (date: Date | string): string => {
-  if (date) {
-    const dateObj = new Date(date);
-    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
-    const day = dateObj.getDate().toString().padStart(2, '0');
-    const prettyDate = `${dateObj.getFullYear()}-${month}-${day}`;
-    return prettyDate;
-  }
-
-  return `Unknown Date`;
-};
-
-export const convertDateToUnix = (date: string): number => {
-  const prettified = Number(moment(date).tz('Asia/Singapore').format('x'));
-  return Math.floor(prettified / 1000);
-};
-
-export const convertUnixToDate = (date: number): Date => {
-  return new Date(date * 1000);
-};
-
-export const compareDate = (comparedDate: number, number: number): boolean => {
-  let compared = convertUnixToDate(comparedDate);
-  let date = new Date();
-  date.setDate(date.getDate() + Number(number));
-
-  return date <= compared;
 };
 
 export const convertSlotToArray = (slots, reverse: boolean = false) => {
@@ -134,7 +98,7 @@ export const findSlots = async (slot, isStart: boolean): Promise<string> => {
 };
 
 export const findSlotsByID = async (slot: number): Promise<string> => {
-  if (slot) {
+  if (slot && timeSlots[slot]) {
     return timeSlots[slot];
   }
 

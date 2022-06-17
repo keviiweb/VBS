@@ -1,5 +1,6 @@
 import { prisma } from '@constants/sys/db';
-import { findSlots, dateISO } from '@constants/sys/helper';
+import { findSlots } from '@constants/sys/helper';
+import { dateISO, isValidDate } from '@constants/sys/date';
 import { Venue } from 'types/venue';
 import { Result } from 'types/api';
 
@@ -113,10 +114,20 @@ export const splitHours = async (
 ): Promise<{ start: number; end: number }> => {
   try {
     if (opening) {
-      const hours: string[] = opening.split('-');
+      if (!opening.includes('-')) {
+        return { start: null, end: null };
+      }
 
-      if (hours) {
-        return { start: Number(hours[0].trim()), end: Number(hours[1].trim()) };
+      const hours: string[] = opening.split('-');
+      if (hours.length === 2) {
+        const startN = Number(hours[0].trim());
+        const endN = Number(hours[1].trim());
+
+        if (isNaN(startN) || startN === null || isNaN(endN) || endN === null) {
+          return { start: null, end: null };
+        } else {
+          return { start: startN, end: endN };
+        }
       } else {
         return { start: null, end: null };
       }
@@ -134,29 +145,42 @@ export const splitHoursISO = async (
   timeSlot: string,
 ): Promise<{ start: string; end: string }> => {
   try {
+    if (!isValidDate(date)) {
+      return { start: null, end: null };
+    }
+
     if (timeSlot) {
+      if (!timeSlot.includes('-')) {
+        return { start: null, end: null };
+      }
+
       const hours: string[] = timeSlot.split('-');
 
-      if (hours) {
+      if (hours.length === 2) {
         const startHour: string = hours[0].trim();
         const endHour: string = hours[1].trim();
 
-        const start: string =
-          dateISO(date) +
-          'T' +
-          startHour.toString().slice(0, 2) +
-          ':' +
-          startHour.slice(2) +
-          ':00';
-        const end: string =
-          dateISO(date) +
-          'T' +
-          endHour.toString().slice(0, 2) +
-          ':' +
-          endHour.slice(2) +
-          ':00';
+        const iso = dateISO(date);
+        if (iso !== null) {
+          const start: string =
+            iso +
+            'T' +
+            startHour.toString().slice(0, 2) +
+            ':' +
+            startHour.slice(2) +
+            ':00';
+          const end: string =
+            iso +
+            'T' +
+            endHour.toString().slice(0, 2) +
+            ':' +
+            endHour.slice(2) +
+            ':00';
 
-        return { start: start, end: end };
+          return { start: start, end: end };
+        } else {
+          return { start: null, end: null };
+        }
       } else {
         return { start: null, end: null };
       }
@@ -168,6 +192,7 @@ export const splitHoursISO = async (
     return { start: null, end: null };
   }
 };
+
 export const splitOpeningHours = async (
   opening: string,
 ): Promise<{ start: number; end: number }> => {

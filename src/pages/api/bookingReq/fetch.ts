@@ -4,11 +4,13 @@ import { Result } from 'types/api';
 import {
   mapSlotToTiming,
   convertSlotToArray,
-  convertUnixToDate,
   prettifyTiming,
-  prettifyDate,
-  compareDate,
 } from '@constants/sys/helper';
+import {
+  convertUnixToDate,
+  compareDate,
+  prettifyDate,
+} from '@constants/sys/date';
 import { currentSession } from '@helper/sys/session';
 import { findVenueByID } from '@helper/sys/vbs/venue';
 import { findCCAbyID } from '@helper/sys/vbs/cca';

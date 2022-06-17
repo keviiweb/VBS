@@ -5,9 +5,8 @@ import {
   isInside,
   mapSlotToTiming,
   prettifyTiming,
-  convertUnixToDate,
-  prettifyDate,
 } from '@constants/sys/helper';
+import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
 import { findVenueByID } from '@helper/sys/vbs/venue';
 import { findCCAbyID } from '@helper/sys/vbs/cca';
 import { sendApproveMail } from '@helper/sys/vbs/email/approve';
@@ -708,8 +707,6 @@ export const notifyConflicts = async (
           success = false;
         }
       }
-    } else {
-      success = false;
     }
 
     if (success) {
