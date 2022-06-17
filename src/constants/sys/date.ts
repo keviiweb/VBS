@@ -3,7 +3,9 @@ import { monthNamesFull } from '@constants/sys/months';
 import moment from 'moment-timezone';
 
 export const convertDateToUnix = (date: string): number => {
-  const prettified = moment(date, 'YYYY-MM-DD', true).tz('Asia/Singapore');
+  const prettified = moment
+    .tz(date, 'YYYY-MM-DD', true, 'Asia/Singapore')
+    .startOf('day');
   if (prettified.isValid()) {
     return Math.floor(prettified.valueOf() / 1000);
   } else {
@@ -16,14 +18,14 @@ export const convertUnixToDate = (date: number): Date => {
     return null;
   }
 
-  const converted = moment(date * 1000);
+  const converted = moment.tz(date * 1000, 'Asia/Singapore').startOf('day');
   if (converted.isValid()) {
-    const today = moment();
+    const today = moment.tz(new Date(), 'Asia/Singapore').startOf('day');
     const diff = converted.diff(today, 'years', true);
     if (diff > 1 || diff < -1) {
       return null;
     }
-    return converted.tz('Asia/Singapore').toDate();
+    return converted.toDate();
   } else {
     return null;
   }
@@ -51,8 +53,9 @@ export const isValidDate = (d: Date): boolean => {
 
 export const dateISO = (date: Date): string => {
   if (date && isValidDate(date)) {
-    return moment(date, 'YYYY-MM-DD', true)
-      .tz('Asia/Singapore')
+    return moment
+      .tz(date, 'Asia/Singapore')
+      .startOf('day')
       .format('YYYY-MM-DD');
   }
 
@@ -61,7 +64,7 @@ export const dateISO = (date: Date): string => {
 
 export const prettifyDate = (date: Date): string => {
   if (date && isValidDate(date)) {
-    const dateObj = moment(date, 'YYYY-MM-DD', true).tz('Asia/Singapore');
+    const dateObj = moment.tz(date, 'Asia/Singapore');
     const day = numberToWeekday[dateObj.day()];
     const month = monthNamesFull[dateObj.month()];
     const prettyDate = `${day}, ${dateObj.format(

@@ -1,22 +1,4 @@
-import {
-  fetchChildVenue,
-  splitHours,
-  splitHoursISO,
-} from '@helper/sys/vbs/venue';
-
-test('fetching child venue', async () => {
-  const res = await fetchChildVenue('cl2yuuu5t0039x4drmgorjprv'); // Basketball Court
-  expect(res.status).toBe(true);
-  expect(res.error).toBeNull();
-  expect(res.msg.length).toBe(1);
-});
-
-test('fetching child venue 2', async () => {
-  const res = await fetchChildVenue('cl30cw3it0013wcdrkkg6qzpb'); // Multi-Purpose Court
-  expect(res.status).toBe(true);
-  expect(res.error).toBeNull();
-  expect(res.msg.length).toBe(0);
-});
+import { splitHours, splitHoursISO } from '@helper/sys/vbs/venue';
 
 test('split hours', async () => {
   const res = await splitHours('0700 - 2300');
