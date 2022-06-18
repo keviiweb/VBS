@@ -9,7 +9,6 @@ import {
   Button,
   Box,
   Text,
-  ButtonGroup,
   useToast,
   Input,
   InputGroup,
@@ -120,7 +119,7 @@ export default function ManageBooking() {
 
       if (content.status === 'PENDING' || content.status === 'APPROVED') {
         button = (
-          <ButtonGroup>
+          <Stack direction='column'>
             <Button
               size='sm'
               leftIcon={<CloseIcon />}
@@ -135,20 +134,18 @@ export default function ManageBooking() {
             >
               View Details
             </Button>
-          </ButtonGroup>
+          </Stack>
         );
         return button;
       }
       button = (
-        <ButtonGroup>
-          <Button
-            size='sm'
-            leftIcon={<InfoOutlineIcon />}
-            onClick={() => handleDetails(content)}
-          >
-            View Details
-          </Button>
-        </ButtonGroup>
+        <Button
+          size='sm'
+          leftIcon={<InfoOutlineIcon />}
+          onClick={() => handleDetails(content)}
+        >
+          View Details
+        </Button>
       );
       return button;
     },

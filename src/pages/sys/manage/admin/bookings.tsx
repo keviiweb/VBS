@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import {
   Button,
-  ButtonGroup,
   Box,
   FormLabel,
   Input,
@@ -168,7 +167,7 @@ export default function ManageBooking() {
         case ALL:
           if (content.status === 'PENDING') {
             button = (
-              <ButtonGroup>
+              <Stack direction='column'>
                 <Button
                   size='sm'
                   leftIcon={<CheckIcon />}
@@ -190,53 +189,47 @@ export default function ManageBooking() {
                 >
                   View Details
                 </Button>
-              </ButtonGroup>
+              </Stack>
             );
             return button;
           }
           button = (
-            <ButtonGroup>
-              <Button
-                size='sm'
-                leftIcon={<InfoOutlineIcon />}
-                onClick={() => handleDetails(content)}
-              >
-                View Details
-              </Button>
-            </ButtonGroup>
+            <Button
+              size='sm'
+              leftIcon={<InfoOutlineIcon />}
+              onClick={() => handleDetails(content)}
+            >
+              View Details
+            </Button>
           );
           return button;
 
         case APPROVED:
           button = (
-            <ButtonGroup>
-              <Button
-                size='sm'
-                leftIcon={<InfoOutlineIcon />}
-                onClick={() => handleDetails(content)}
-              >
-                View Details
-              </Button>
-            </ButtonGroup>
+            <Button
+              size='sm'
+              leftIcon={<InfoOutlineIcon />}
+              onClick={() => handleDetails(content)}
+            >
+              View Details
+            </Button>
           );
           return button;
         case REJECTED:
           button = (
-            <ButtonGroup>
-              <Button
-                size='sm'
-                leftIcon={<InfoOutlineIcon />}
-                onClick={() => handleDetails(content)}
-              >
-                View Details
-              </Button>
-            </ButtonGroup>
+            <Button
+              size='sm'
+              leftIcon={<InfoOutlineIcon />}
+              onClick={() => handleDetails(content)}
+            >
+              View Details
+            </Button>
           );
           return button;
         case PENDING:
           if (content.status === 'PENDING') {
             button = (
-              <ButtonGroup>
+              <Stack direction='column'>
                 <Button
                   size='sm'
                   leftIcon={<CheckIcon />}
@@ -258,20 +251,18 @@ export default function ManageBooking() {
                 >
                   View Details
                 </Button>
-              </ButtonGroup>
+              </Stack>
             );
             return button;
           }
           button = (
-            <ButtonGroup>
-              <Button
-                size='sm'
-                leftIcon={<InfoOutlineIcon />}
-                onClick={() => handleDetails(content)}
-              >
-                View Details
-              </Button>
-            </ButtonGroup>
+            <Button
+              size='sm'
+              leftIcon={<InfoOutlineIcon />}
+              onClick={() => handleDetails(content)}
+            >
+              View Details
+            </Button>
           );
           return button;
         default:
@@ -792,7 +783,7 @@ export default function ManageBooking() {
         >
           <Tabs
             onChange={handleTabChange}
-            size='md'
+            size='sm'
             isManual
             isLazy
             isFitted

@@ -13,6 +13,7 @@ const withTM = require('next-transpile-modules')([
 
 module.exports = withTM({
   reactStrictMode: false,
+  optimizeFonts: false,
   images: {
     domains: [
       'https://vbs-kevii.vercel.app/',

@@ -6,7 +6,6 @@ import React, {
   useCallback,
 } from 'react';
 import {
-  ButtonGroup,
   Button,
   Box,
   Checkbox,
@@ -343,15 +342,13 @@ export default function ManageVenues() {
       let button = null;
 
       button = (
-        <ButtonGroup>
-          <Button
-            size='sm'
-            leftIcon={<InfoOutlineIcon />}
-            onClick={() => handleDetails(content)}
-          >
-            View Details
-          </Button>
-        </ButtonGroup>
+        <Button
+          size='sm'
+          leftIcon={<InfoOutlineIcon />}
+          onClick={() => handleDetails(content)}
+        >
+          View Details
+        </Button>
       );
 
       return button;

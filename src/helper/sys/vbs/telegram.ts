@@ -5,7 +5,7 @@ const channel_id = process.env.TELEGRAM_BOT_CHANNEL_ID;
 export const bot = global.bot || new TelegramBot(token, { polling: true });
 
 if (process.env.NODE_ENV !== 'production') global.bot = bot;
-bot.on('polling_error', (msg) => console.log(msg));
+bot.on('polling_error', (msg: string) => console.log(msg));
 
 export const sendMessageToChannel = async (message: string): Promise<void> => {
   if (
