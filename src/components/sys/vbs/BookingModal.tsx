@@ -101,32 +101,35 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
     }
   }, [modalData]);
 
-  const columns = useMemo(() => [
-    {
-      Header: 'Venue',
-      accessor: 'venue',
-    },
-    {
-      Header: 'Date',
-      accessor: 'dateStr',
-    },
-    {
-      Header: 'Timeslot(s)',
-      accessor: 'timeSlots',
-    },
-    {
-      Header: 'CCA',
-      accessor: 'cca',
-    },
-    {
-      Header: 'Purpose',
-      accessor: 'purpose',
-    },
-    {
-      Header: 'Status',
-      accessor: 'status',
-    },
-  ], []);
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Venue',
+        accessor: 'venue',
+      },
+      {
+        Header: 'Date',
+        accessor: 'dateStr',
+      },
+      {
+        Header: 'Timeslot(s)',
+        accessor: 'timeSlots',
+      },
+      {
+        Header: 'CCA',
+        accessor: 'cca',
+      },
+      {
+        Header: 'Purpose',
+        accessor: 'purpose',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+      },
+    ],
+    [],
+  );
 
   return (
     <Modal
