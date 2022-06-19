@@ -1,5 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
+import { BookingRequest } from 'types/bookingReq';
+import { CCA } from 'types/cca';
 
 import {
   mapSlotToTiming,
@@ -37,69 +39,69 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const skipQuery = req.query.skip;
 
   let result: Result = null;
-  if (session) {
-    let bookings = null;
-    let count = 0;
+  if (session !== undefined && session !== null) {
+    let bookings: BookingRequest[] = null;
+    let count: number = 0;
 
-    const limit = limitQuery !== undefined ? Number(limitQuery) : 10;
-    const skip = skipQuery !== undefined ? Number(skipQuery) : 0;
+    const limit: number = limitQuery !== undefined ? Number(limitQuery) : 10;
+    const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
+    let successBooking: boolean = false;
 
-    if (query && query === 'USER') {
+    if (query !== undefined && query === 'USER') {
       count = await countBookingByUser(session);
       bookings = await findBookingByUser(session, limit, skip);
+
+      successBooking = true;
     } else if (session.user.admin) {
-      try {
-        if (query) {
-          if (typeof query === 'string') {
-            if (BOOKINGS.includes(query)) {
-              switch (query) {
-                case 'APPROVED':
-                  count = await countApprovedBooking();
-                  bookings = await findApprovedBooking(limit, skip);
-                  break;
-                case 'PENDING':
-                  count = await countPendingBooking();
-                  bookings = await findPendingBooking(limit, skip);
-                  break;
-                case 'REJECTED':
-                  count = await countRejectedBooking();
-                  bookings = await findRejectedBooking(limit, skip);
-                  break;
-                default:
-                  count = await countPendingBooking();
-                  bookings = await findPendingBooking(limit, skip);
-                  break;
-              }
+      if (query !== undefined) {
+        if (typeof query === 'string') {
+          if (BOOKINGS.includes(query)) {
+            switch (query) {
+              case 'APPROVED':
+                count = await countApprovedBooking();
+                bookings = await findApprovedBooking(limit, skip);
+                break;
+              case 'PENDING':
+                count = await countPendingBooking();
+                bookings = await findPendingBooking(limit, skip);
+                break;
+              case 'REJECTED':
+                count = await countRejectedBooking();
+                bookings = await findRejectedBooking(limit, skip);
+                break;
+              default:
+                count = await countPendingBooking();
+                bookings = await findPendingBooking(limit, skip);
+                break;
             }
-          } else {
-            count = await countAllBooking();
-            bookings = await findAllBooking(limit, skip);
+
+            successBooking = true;
           }
         } else {
           count = await countAllBooking();
           bookings = await findAllBooking(limit, skip);
+
+          successBooking = true;
         }
-      } catch (error) {
-        console.log(error);
-        result = { status: false, error: error, msg: '' };
-        res.status(200).send(result);
-        res.end();
-        return;
+      } else {
+        count = await countAllBooking();
+        bookings = await findAllBooking(limit, skip);
+
+        successBooking = true;
       }
     } else {
       result = { status: false, error: 'Unauthorized access', msg: '' };
       res.status(200).send(result);
       res.end();
-      return;
     }
 
-    if (bookings) {
-      const parsedBooking = [];
+    if ((bookings !== null || bookings !== undefined) && successBooking) {
+      const parsedBooking: BookingRequest[] = [];
       for (let booking = 0; booking < bookings.length; booking += 1) {
         if (bookings[booking]) {
-          const book = bookings[booking];
-          const venueReq = await findVenueByID(book.venue);
-          const date = convertUnixToDate(book.date);
+          const book: BookingRequest = bookings[booking];
+          const venueReq: Result = await findVenueByID(book.venue);
+          const date = convertUnixToDate(book.date as number);
           const timeSlots = mapSlotToTiming(
             convertSlotToArray(book.timeSlots, true),
           ) as string[];
@@ -107,27 +109,32 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           if (venueReq.status) {
             const venue = venueReq.msg.name;
 
-            let cca;
+            let cca: string = null;
             if (book.cca === 'PERSONAL') {
               cca = 'PERSONAL';
             } else {
-              const ccaReq = await findCCAbyID(book.cca);
-              cca = ccaReq.msg.name;
+              const ccaReq: Result = await findCCAbyID(book.cca);
+              if (ccaReq.status) {
+                const ccaReqMsg: CCA = ccaReq.msg;
+                cca = ccaReqMsg.name;
+              } else {
+                console.error(ccaReq.error);
+              }
             }
 
-            const conflictsRequest = await getConflictingRequest(book);
-            let conflicts = [];
+            const conflictsRequest: Result = await getConflictingRequest(book);
+            let conflicts: BookingRequest[] = [];
             if (conflictsRequest.status) {
               conflicts = conflictsRequest.msg;
             }
 
-            let status = null;
-            const bookingDate = book.date;
-            const minDay = process.env.CANCEL_MIN_DAY
+            let status: string = null;
+            const bookingDate: number = book.date as number;
+            const minDay: number = process.env.CANCEL_MIN_DAY
               ? Number(process.env.CANCEL_MIN_DAY)
               : 3;
 
-            let success = true;
+            let success: boolean = true;
 
             if (!book.isApproved && !book.isCancelled && !book.isRejected) {
               status = 'PENDING';
@@ -161,11 +168,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             }
 
             if (success) {
-              const data = {
+              const data: BookingRequest = {
                 id: book.id,
                 email: book.email,
                 venue: venue,
-                date: prettifyDate(date),
+                dateStr: prettifyDate(date),
                 timeSlots: prettifyTiming(timeSlots),
                 isApproved: book.isApproved,
                 isRejected: book.isRejected,

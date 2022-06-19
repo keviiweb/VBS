@@ -4,7 +4,7 @@ import { dateISO, isValidDate } from '@constants/sys/date';
 import { Venue } from 'types/venue';
 import { Result } from 'types/api';
 
-export const countVenue = async (): Promise<Number> => {
+export const countVenue = async (): Promise<number> => {
   let count: number = 0;
   try {
     count = await prisma.venue.count();
@@ -216,7 +216,7 @@ export const splitOpeningHours = async (
   }
 };
 
-export const isInstantBook = async (id: string): Promise<Boolean> => {
+export const isInstantBook = async (id: string): Promise<boolean> => {
   try {
     const locations: Venue = await prisma.venue.findFirst({
       where: { id: id },
@@ -233,7 +233,7 @@ export const isInstantBook = async (id: string): Promise<Boolean> => {
   }
 };
 
-export const isVisible = async (id: string): Promise<Boolean> => {
+export const isVisible = async (id: string): Promise<boolean> => {
   try {
     const locations: Venue = await prisma.venue.findFirst({
       where: { id: id },

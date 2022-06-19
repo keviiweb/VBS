@@ -1,5 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
+import { BookingRequest } from 'types/bookingReq';
+import { CCA } from 'types/cca';
+import { Venue } from 'types/venue';
 
 import {
   mapSlotToTiming,
@@ -17,98 +20,97 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { bookings } = req.body;
 
   let result: Result = null;
-  if (session && session.user.admin) {
-    try {
-      if (bookings) {
-        const parsedBooking = [];
-        for (let booking = 0; booking < bookings.length; booking += 1) {
-          if (bookings[booking]) {
-            const book = bookings[booking];
-            const venueReq = await findVenueByID(book.venue);
-            const date = convertUnixToDate(book.date);
-            const timeSlots = mapSlotToTiming(
-              convertSlotToArray(book.timeSlots, true),
-            );
+  if (session !== undefined && session !== null && session.user.admin) {
+    if (bookings !== null && bookings !== undefined) {
+      const parsedBooking: BookingRequest[] = [];
+      for (let booking = 0; booking < bookings.length; booking += 1) {
+        if (bookings[booking]) {
+          const book: BookingRequest = bookings[booking];
+          const venueReq: Result = await findVenueByID(book.venue);
+          const date = convertUnixToDate(book.date as number);
+          const timeSlots: string[] = mapSlotToTiming(
+            convertSlotToArray(book.timeSlots, true),
+          ) as string[];
 
-            if (venueReq.status) {
-              const venue = venueReq.msg.name;
+          if (venueReq.status) {
+            const venueReqMsg: Venue = venueReq.msg;
+            const venue = venueReqMsg.name;
 
-              let cca;
-              if (book.cca === 'PERSONAL') {
-                cca = 'PERSONAL';
+            let cca: string = null;
+            if (book.cca === 'PERSONAL') {
+              cca = 'PERSONAL';
+            } else {
+              const ccaReq: Result = await findCCAbyID(book.cca);
+              if (ccaReq.status) {
+                const ccaReqMsg: CCA = ccaReq.msg;
+                cca = ccaReqMsg.name;
               } else {
-                const ccaReq = await findCCAbyID(book.cca);
-                cca = ccaReq.msg.name;
+                console.error(ccaReq.error);
               }
-
-              let status = null;
-
-              if (!book.isApproved && !book.isCancelled && !book.isRejected) {
-                status = 'Pending';
-              } else if (
-                book.isApproved &&
-                !book.isCancelled &&
-                !book.isRejected
-              ) {
-                status = 'Approved';
-              } else if (
-                !book.isApproved &&
-                book.isCancelled &&
-                !book.isRejected
-              ) {
-                status = 'Cancelled';
-              } else if (
-                !book.isApproved &&
-                !book.isCancelled &&
-                book.isRejected
-              ) {
-                status = 'Rejected';
-              } else {
-                status = 'Unknown';
-              }
-
-              const data = {
-                id: book.id,
-                email: book.email,
-                venue: venue,
-                date: prettifyDate(date),
-                timeSlots: prettifyTiming(timeSlots as string[]),
-                isApproved: book.isApproved,
-                isRejected: book.isRejected,
-                isCancelled: book.isCancelled,
-                purpose: book.purpose,
-                cca: cca,
-                status: status,
-              };
-
-              parsedBooking.push(data);
             }
+
+            let status: string = null;
+
+            if (!book.isApproved && !book.isCancelled && !book.isRejected) {
+              status = 'Pending';
+            } else if (
+              book.isApproved &&
+              !book.isCancelled &&
+              !book.isRejected
+            ) {
+              status = 'Approved';
+            } else if (
+              !book.isApproved &&
+              book.isCancelled &&
+              !book.isRejected
+            ) {
+              status = 'Cancelled';
+            } else if (
+              !book.isApproved &&
+              !book.isCancelled &&
+              book.isRejected
+            ) {
+              status = 'Rejected';
+            } else {
+              status = 'Unknown';
+            }
+
+            const data: BookingRequest = {
+              id: book.id,
+              email: book.email,
+              venue: venue,
+              dateStr: prettifyDate(date),
+              timeSlots: prettifyTiming(timeSlots),
+              isApproved: book.isApproved,
+              isRejected: book.isRejected,
+              isCancelled: book.isCancelled,
+              purpose: book.purpose,
+              cca: cca,
+              status: status,
+            };
+
+            parsedBooking.push(data);
+          } else {
+            console.error(venueReq.error);
           }
         }
-
-        result = {
-          status: true,
-          error: null,
-          msg: parsedBooking,
-        };
-        res.status(200).send(result);
-        res.end();
-        return;
       }
+
       result = {
-        status: false,
-        error: 'Cannot get all bookings',
-        msg: '',
+        status: true,
+        error: null,
+        msg: parsedBooking,
       };
       res.status(200).send(result);
       res.end();
-      return;
-    } catch (error) {
-      console.log(error);
-      result = { status: false, error: error, msg: '' };
-      res.status(200).send(result);
-      res.end();
     }
+    result = {
+      status: false,
+      error: 'Cannot get all bookings',
+      msg: '',
+    };
+    res.status(200).send(result);
+    res.end();
   } else {
     result = { status: false, error: 'Unauthenticated', msg: '' };
     res.status(200).send(result);

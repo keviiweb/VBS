@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
+import { CCA } from 'types/cca';
 
 import { currentSession } from '@helper/sys/session';
 import { findAllCCA } from '@helper/sys/vbs/cca';
@@ -7,35 +8,31 @@ import { findAllCCA } from '@helper/sys/vbs/cca';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
   let result: Result = null;
-  const cca = [];
+  const cca: CCA[] = [];
 
-  if (session) {
-    try {
-      const ccaList = await findAllCCA();
-      if (ccaList.status) {
-        const { msg } = ccaList;
-        msg.forEach((item) => {
-          cca.push(item);
-        });
-      }
+  if (session !== undefined && session !== null) {
+    const ccaList: Result = await findAllCCA();
+    if (ccaList.status) {
+      const { msg } = ccaList;
+      msg.forEach((item: CCA) => {
+        cca.push(item);
+      });
 
       result = {
         status: true,
         error: null,
         msg: cca,
       };
-      res.status(200).send(result);
-      res.end();
-    } catch (error) {
-      console.error(error);
+    } else {
       result = {
         status: false,
-        error: error.toString(),
+        error: ccaList.error,
         msg: '',
       };
-      res.status(200).send(result);
-      res.end();
     }
+
+    res.status(200).send(result);
+    res.end();
   } else {
     result = {
       status: false,

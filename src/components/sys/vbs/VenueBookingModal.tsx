@@ -328,8 +328,13 @@ export default function VenueBookingModal({
     return true;
   };
 
-  const handleDate = async (dateObj) => {
+  const handleDate = async (dateObj: Date) => {
     setError(null);
+    const day = dateObj.getDate().toString().padStart(2, '0');
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    const year = dateObj.getFullYear();
+    const formattedDate = `${year}-${month}-${day}`;
+
     rawDate.current = dateObj;
 
     if (dateObj) {
@@ -337,8 +342,8 @@ export default function VenueBookingModal({
       selectedTimeSlots.current = [];
       const prettified = prettifyDate(dateObj);
       date.current = prettified;
-      const dateYYMMDD = moment(dateObj)
-        .tz('Asia/Singapore')
+      const dateYYMMDD: string = moment
+        .tz(formattedDate, 'YYYY-MM-DD', true, 'Asia/Singapore')
         .format('YYYY-MM-DD');
       dateParsed.current = dateYYMMDD;
       changeDate(prettified);

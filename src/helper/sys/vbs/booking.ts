@@ -24,7 +24,7 @@ export const findAllBookingByVenueID = async (
 
     return bookings;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return null;
   }
 };
@@ -51,7 +51,7 @@ export const createVenueBooking = async (
       });
 
       if (!insertRequest) {
-        console.log('Approve Request - Venue Booking creation failed!');
+        console.error('Approve Request - Venue Booking creation failed!');
         success = false;
         result = {
           status: false,
@@ -69,7 +69,7 @@ export const createVenueBooking = async (
       };
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     result = {
       status: false,
       error: 'Error in creating venue booking',

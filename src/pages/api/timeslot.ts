@@ -1,29 +1,39 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { Result } from 'types/api';
+import { Booking } from 'types/booking';
+import { TimeSlot } from 'types/timeslot';
+
 import { timingSlotNumberToTimingMapping } from '@constants/sys/timeslot';
 import { convertDateToUnix } from '@constants/sys/date';
 import { currentSession } from '@helper/sys/session';
 import { fetchOpeningHours } from '@helper/sys/vbs/venue';
 import { fetchBookedTimeSlots } from '@helper/sys/vbs/timeslot';
 
-const handler = async (req, res) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
 
-  const slots = [];
+  const slots: TimeSlot[] = [];
   const { venue, date } = req.body;
 
-  if (session) {
-    if (venue && date) {
-      const convertedDate = convertDateToUnix(date);
+  if (session !== undefined && session !== null) {
+    if (
+      venue !== null &&
+      venue !== undefined &&
+      date !== null &&
+      date !== undefined
+    ) {
+      const convertedDate: number = convertDateToUnix(date);
       const openingHours = await fetchOpeningHours(venue);
-      const startHour = openingHours.start;
-      const endHour = openingHours.end;
+      const startHour: number = openingHours.start;
+      const endHour: number = openingHours.end;
 
-      if (startHour && endHour) {
-        const bookedTimeSlots = await fetchBookedTimeSlots(
+      if (startHour !== null && endHour !== null) {
+        const bookedTimeSlots: Result = await fetchBookedTimeSlots(
           venue,
           convertedDate,
         );
 
-        if (bookedTimeSlots && bookedTimeSlots.status) {
+        if (bookedTimeSlots.status) {
           for (
             let key = 0;
             key < Object.keys(timingSlotNumberToTimingMapping).length;
@@ -46,7 +56,7 @@ const handler = async (req, res) => {
           }
 
           const timeslot = bookedTimeSlots.msg;
-          timeslot.forEach((item) => {
+          timeslot.forEach((item: Booking) => {
             slots[item.timingSlot] = {
               id: Number(item.timingSlot),
               slot: timingSlotNumberToTimingMapping[item.timingSlot],

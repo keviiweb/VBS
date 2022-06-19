@@ -82,7 +82,7 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
     async function setupData() {
       setID(modalData.id);
       setVenue(modalData.venue);
-      setDate(modalData.date);
+      setDate(modalData.dateStr);
       setTimeSlots(modalData.timeSlots);
       setEmail(modalData.email);
       setCCA(modalData.cca);
@@ -101,66 +101,32 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
     }
   }, [modalData]);
 
-  const columns = useMemo(() => {
-    if (isAdmin) {
-      return [
-        {
-          Header: 'Venue',
-          accessor: 'venue',
-        },
-        {
-          Header: 'Date',
-          accessor: 'date',
-        },
-        {
-          Header: 'Timeslot(s)',
-          accessor: 'timeSlots',
-        },
-        {
-          Header: 'Email',
-          accessor: 'email',
-        },
-        {
-          Header: 'CCA',
-          accessor: 'cca',
-        },
-        {
-          Header: 'Purpose',
-          accessor: 'purpose',
-        },
-        {
-          Header: 'Status',
-          accessor: 'status',
-        },
-      ];
-    }
-    return [
-      {
-        Header: 'Venue',
-        accessor: 'venue',
-      },
-      {
-        Header: 'Date',
-        accessor: 'date',
-      },
-      {
-        Header: 'Timeslot(s)',
-        accessor: 'timeSlots',
-      },
-      {
-        Header: 'CCA',
-        accessor: 'cca',
-      },
-      {
-        Header: 'Purpose',
-        accessor: 'purpose',
-      },
-      {
-        Header: 'Status',
-        accessor: 'status',
-      },
-    ];
-  }, [isAdmin]);
+  const columns = useMemo(() => [
+    {
+      Header: 'Venue',
+      accessor: 'venue',
+    },
+    {
+      Header: 'Date',
+      accessor: 'dateStr',
+    },
+    {
+      Header: 'Timeslot(s)',
+      accessor: 'timeSlots',
+    },
+    {
+      Header: 'CCA',
+      accessor: 'cca',
+    },
+    {
+      Header: 'Purpose',
+      accessor: 'purpose',
+    },
+    {
+      Header: 'Status',
+      accessor: 'status',
+    },
+  ], []);
 
   return (
     <Modal
@@ -263,21 +229,30 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                         </List>
                       </Box>
 
-                      <Box overflow='auto'>
-                        <Text
-                          fontSize={{ base: '16px', lg: '18px' }}
-                          fontWeight='500'
-                          textTransform='uppercase'
-                          mb='4'
-                        >
-                          Conflicting Requests
-                        </Text>
-
-                        {conflict && loadingData && (
+                      {isAdmin && conflict && loadingData && (
+                        <Box overflow='auto'>
+                          <Text
+                            fontSize={{ base: '16px', lg: '18px' }}
+                            fontWeight='500'
+                            textTransform='uppercase'
+                            mb='4'
+                          >
+                            Conflicting Requests
+                          </Text>
                           <Text>Loading Please wait...</Text>
-                        )}
+                        </Box>
+                      )}
 
-                        {conflict && !loadingData && (
+                      {isAdmin && conflict && !loadingData && (
+                        <Box overflow='auto'>
+                          <Text
+                            fontSize={{ base: '16px', lg: '18px' }}
+                            fontWeight='500'
+                            textTransform='uppercase'
+                            mb='4'
+                          >
+                            Conflicting Requests
+                          </Text>
                           <TableWidget
                             key={2}
                             columns={columns}
@@ -289,13 +264,33 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                             }
                             dataHandler={null}
                           />
-                        )}
+                        </Box>
+                      )}
 
-                        {!conflict && loadingData && (
+                      {isAdmin && !conflict && loadingData && (
+                        <Box overflow='auto'>
+                          <Text
+                            fontSize={{ base: '16px', lg: '18px' }}
+                            fontWeight='500'
+                            textTransform='uppercase'
+                            mb='4'
+                          >
+                            Conflicting Requests
+                          </Text>
                           <Text>Loading Please wait...</Text>
-                        )}
+                        </Box>
+                      )}
 
-                        {!conflict && !loadingData && (
+                      {isAdmin && !conflict && !loadingData && (
+                        <Box overflow='auto'>
+                          <Text
+                            fontSize={{ base: '16px', lg: '18px' }}
+                            fontWeight='500'
+                            textTransform='uppercase'
+                            mb='4'
+                          >
+                            Conflicting Requests
+                          </Text>
                           <Text
                             fontSize={{ base: '16px', lg: '18px' }}
                             fontWeight='500'
@@ -304,8 +299,8 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                           >
                             No conflicting requests found
                           </Text>
-                        )}
-                      </Box>
+                        </Box>
+                      )}
                     </Stack>
                   </Stack>
                 </Flex>

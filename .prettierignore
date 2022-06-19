@@ -3,3 +3,4 @@ build
 coverage
 .next
 README.md
+src/components/landing/ButtonScroll.tsx

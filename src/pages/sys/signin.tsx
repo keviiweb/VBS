@@ -24,7 +24,11 @@ export default function SignIn(props) {
   useEffect(() => {
     async function fetchData(propsField) {
       const propRes = await propsField;
-      if (propRes.data) {
+      if (
+        propRes.data !== '' &&
+        propRes.data !== undefined &&
+        propRes.data !== null
+      ) {
         setURL(propRes.data);
       }
     }

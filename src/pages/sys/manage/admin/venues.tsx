@@ -34,12 +34,16 @@ import TableWidget from '@components/sys/vbs/TableWidget';
 import VenueModal from '@components/sys/vbs/VenueModal';
 import { timeSlots } from '@constants/sys/timeslot';
 
+import { Venue } from 'types/venue';
+import { Result } from 'types/api';
+
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
 export default function ManageVenues() {
   const [modalData, setModalData] = useState(null);
   const toast = useToast();
+
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState([]);
 
@@ -48,23 +52,23 @@ export default function ManageVenues() {
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [capacity, setCapacity] = useState('');
+  const [capacity, setCapacity] = useState(0);
   const [instantBook, setInstantBook] = useState(false);
   const [isChildVenue, setIsChildVenue] = useState(false);
   const [visible, setVisible] = useState(true);
 
   const nameDB = useRef('');
   const descriptionDB = useRef('');
-  const capacityDB = useRef('');
+  const capacityDB = useRef(0);
   const instantBookDB = useRef(false);
   const isChildVenueDB = useRef(false);
   const visibleDB = useRef(true);
 
   const [parentVenueDropdown, setParentVenueDropdown] = useState([]);
-  const parentVenue = useRef(null);
+  const parentVenue = useRef('');
 
-  const startTimeDB = useRef(null);
-  const endTimeDB = useRef(null);
+  const startTimeDB = useRef('');
+  const endTimeDB = useRef('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [startTimeDropdown, setStartTimeDropdown] = useState([]);
@@ -73,25 +77,25 @@ export default function ManageVenues() {
   const selectedFileDB = useRef(null);
   const [fileName, setFileName] = useState(null);
 
-  const [errorMsg, setError] = useState(null);
+  const [errorMsg, setError] = useState('');
 
   const [nameEdit, setNameEdit] = useState('');
   const [descriptionEdit, setDescriptionEdit] = useState('');
-  const [capacityEdit, setCapacityEdit] = useState('');
+  const [capacityEdit, setCapacityEdit] = useState(0);
   const [instantBookEdit, setInstantBookEdit] = useState(false);
   const [isChildVenueEdit, setIsChildVenueEdit] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(true);
 
   const nameDBEdit = useRef('');
   const descriptionDBEdit = useRef('');
-  const capacityDBEdit = useRef('');
+  const capacityDBEdit = useRef(0);
   const instantBookDBEdit = useRef(false);
   const isChildVenueDBEdit = useRef(false);
   const visibleDBEdit = useRef(true);
 
-  const parentVenueEdit = useRef(null);
-  const startTimeDBEdit = useRef(null);
-  const endTimeDBEdit = useRef(null);
+  const parentVenueEdit = useRef('');
+  const startTimeDBEdit = useRef('');
+  const endTimeDBEdit = useRef('');
   const [startTimeEdit, setStartTimeEdit] = useState('');
   const [endTimeEdit, setEndTimeEdit] = useState('');
 
@@ -100,20 +104,20 @@ export default function ManageVenues() {
   const venueIDDBEdit = useRef('');
   const venueData = useRef([]);
 
-  const [errorEdit, setErrorEdit] = useState(null);
+  const [errorEdit, setErrorEdit] = useState('');
 
   let generateActionButton;
   let fetchData;
   let resetEdit;
 
-  const PAGESIZE = 10;
-  const PAGEINDEX = 0;
+  const PAGESIZE: number = 10;
+  const PAGEINDEX: number = 0;
 
   const [pageCount, setPageCount] = useState(0);
   const pageSizeDB = useRef(PAGESIZE);
   const pageIndexDB = useRef(PAGEINDEX);
 
-  const handleDetails = useCallback((content) => {
+  const handleDetails = useCallback((content: Venue) => {
     setModalData(content);
   }, []);
 
@@ -121,17 +125,17 @@ export default function ManageVenues() {
     selectedFileDB.current = null;
     nameDB.current = '';
     descriptionDB.current = '';
-    capacityDB.current = '';
+    capacityDB.current = 0;
     instantBookDB.current = false;
     isChildVenueDB.current = false;
     visibleDB.current = false;
     parentVenue.current = null;
-    startTimeDB.current = null;
-    endTimeDB.current = null;
+    startTimeDB.current = '';
+    endTimeDB.current = '';
 
     setName('');
     setDescription('');
-    setCapacity('');
+    setCapacity(0);
     setInstantBook(false);
     setIsChildVenue(false);
     setVisible(true);
@@ -141,47 +145,72 @@ export default function ManageVenues() {
   }, []);
 
   const validateFields = (
-    nameField,
-    descriptionField,
-    capacityField,
-    isChildVenueField,
-    parentVenueField,
-    startTimeField,
-    endTimeField,
-    openingHoursField,
+    nameField: string,
+    descriptionField: string,
+    capacityField: number,
+    isChildVenueField: boolean,
+    parentVenueField: string,
+    startTimeField: string,
+    endTimeField: string,
+    openingHoursField: string,
   ) => {
     // super basic validation here
-    if (!nameField) {
+    if (nameField === '' || nameField === null || nameField === undefined) {
       setError('Name must not be empty!');
       return false;
     }
 
-    if (!descriptionField) {
+    if (
+      descriptionField === '' ||
+      descriptionField === null ||
+      descriptionField === undefined
+    ) {
       setError('Description must not be empty!');
       return false;
     }
 
-    if (!capacityField) {
+    if (
+      capacityField === 0 ||
+      capacityField === null ||
+      capacityField === undefined
+    ) {
       setError('Capacity must not be empty!');
       return false;
     }
 
-    if (isChildVenueField && !parentVenueField) {
+    if (
+      isChildVenueField &&
+      (parentVenueField === '' ||
+        parentVenueField === null ||
+        parentVenueField === undefined)
+    ) {
       setError('Please select a parent venue!');
       return false;
     }
 
-    if (!openingHoursField) {
+    if (
+      openingHoursField === '' ||
+      openingHoursField === null ||
+      openingHoursField === undefined
+    ) {
       setError('Please select the opening hours!');
       return false;
     }
 
-    if (!startTimeField) {
+    if (
+      startTimeField === '' ||
+      startTimeField === null ||
+      startTimeField === undefined
+    ) {
       setError('Please select a start time!');
       return false;
     }
 
-    if (!endTimeField) {
+    if (
+      endTimeField === '' ||
+      endTimeField === null ||
+      endTimeField === undefined
+    ) {
       setError('Please select an end time!');
       return false;
     }
@@ -195,10 +224,10 @@ export default function ManageVenues() {
   };
 
   const handleSubmit = useCallback(
-    async (event) => {
+    async (event: { preventDefault: () => void }) => {
       setError(null);
       event.preventDefault();
-      const openingHours = `${startTimeDB.current} - ${endTimeDB.current}`;
+      const openingHours: string = `${startTimeDB.current} - ${endTimeDB.current}`;
       if (
         validateFields(
           nameDB.current,
@@ -215,7 +244,7 @@ export default function ManageVenues() {
         dataField.append('image', selectedFileDB.current);
         dataField.append('name', nameDB.current);
         dataField.append('description', descriptionDB.current);
-        dataField.append('capacity', capacityDB.current);
+        dataField.append('capacity', capacityDB.current.toString());
         dataField.append('isInstantBook', instantBookDB.current.toString());
         dataField.append('visible', visibleDB.current.toString());
         dataField.append('isChildVenue', isChildVenueDB.current.toString());
@@ -227,7 +256,7 @@ export default function ManageVenues() {
             method: 'POST',
             body: dataField,
           });
-          const content = await rawResponse.json();
+          const content: Result = await rawResponse.json();
           if (content.status) {
             await reset();
             toast({
@@ -249,27 +278,27 @@ export default function ManageVenues() {
             });
           }
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
     },
     [fetchData, reset, toast],
   );
 
-  const onFileChange = async (event) => {
+  const onFileChange = async (event: { target: { files: any[] | any } }) => {
     const file = event.target.files[0];
     selectedFileDB.current = file;
     setFileName(file.name);
   };
 
-  const onParentVenueChange = async (event) => {
+  const onParentVenueChange = async (event: { target: { value: string } }) => {
     if (event.target.value) {
       const { value } = event.target;
       parentVenue.current = value;
     }
   };
 
-  const onStartTimeChange = async (event) => {
+  const onStartTimeChange = async (event: { target: { value: string } }) => {
     if (event.target.value) {
       const { value } = event.target;
       startTimeDB.current = value;
@@ -277,7 +306,7 @@ export default function ManageVenues() {
     }
   };
 
-  const onEndTimeChange = async (event) => {
+  const onEndTimeChange = async (event: { target: { value: string } }) => {
     if (event.target.value) {
       const { value } = event.target;
       endTimeDB.current = value;
@@ -291,17 +320,16 @@ export default function ManageVenues() {
         (content.count !== undefined || content.count !== null) &&
         (content.res !== undefined || content.res !== null)
       ) {
-        const contentRes = content.res;
+        const contentRes: Venue[] = content.res;
         const selection = [];
         const selectionEdit = [];
         let count = 0;
-        venueData.current = [];
-
+        const allVenues: Venue[] = [];
         selectionEdit.push(<option key='' value='' aria-label='Default' />);
 
         for (let key = 0; key < contentRes.length; key += 1) {
           if (contentRes[key]) {
-            const dataField = contentRes[key];
+            const dataField: Venue = contentRes[key];
             if (!dataField.isChildVenue) {
               selection.push(
                 <option key={dataField.id} value={dataField.id}>
@@ -321,12 +349,13 @@ export default function ManageVenues() {
               </option>,
             );
 
-            venueData.current.push(dataField);
+            allVenues.push(dataField);
             const buttons = await generateActionButton(dataField);
             dataField.action = buttons;
           }
         }
 
+        venueData.current = allVenues;
         setParentVenueDropdown(selection);
         setVenueDropdown(selectionEdit);
         setData(contentRes);
@@ -338,7 +367,7 @@ export default function ManageVenues() {
   );
 
   generateActionButton = useCallback(
-    async (content) => {
+    async (content: Venue) => {
       let button = null;
 
       button = (
@@ -369,13 +398,13 @@ export default function ManageVenues() {
           },
         },
       );
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg);
       }
       setLoadingData(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [includeActionButton]);
 
@@ -390,12 +419,12 @@ export default function ManageVenues() {
           },
         },
       );
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [includeActionButton]);
 
@@ -408,7 +437,7 @@ export default function ManageVenues() {
 
     for (let key = 0; key <= Object.keys(timeSlots).length; key += 1) {
       if (timeSlots[key]) {
-        const dataField = timeSlots[key];
+        const dataField: string = timeSlots[key];
         start.push(
           <option key={`start${key}`} value={dataField}>
             {dataField}
@@ -488,9 +517,9 @@ export default function ManageVenues() {
       ? dataField.parentVenue
       : '';
 
-    const split = dataField.openingHours.split('-');
-    const start = split[0].trim();
-    const end = split[1].trim();
+    const split: string[] = dataField.openingHours.split('-');
+    const start: string = split[0].trim();
+    const end: string = split[1].trim();
 
     startTimeDBEdit.current = start;
     endTimeDBEdit.current = end;
@@ -498,14 +527,18 @@ export default function ManageVenues() {
     setEndTimeEdit(end);
   };
 
-  const onParentVenueChangeEdit = async (event) => {
+  const onParentVenueChangeEdit = async (event: {
+    target: { value: string };
+  }) => {
     if (event.target.value) {
       const { value } = event.target;
       parentVenueEdit.current = value;
     }
   };
 
-  const onStartTimeChangeEdit = async (event) => {
+  const onStartTimeChangeEdit = async (event: {
+    target: { value: string };
+  }) => {
     if (event.target.value) {
       const { value } = event.target;
       startTimeDBEdit.current = value;
@@ -513,7 +546,7 @@ export default function ManageVenues() {
     }
   };
 
-  const onEndTimeChangeEdit = async (event) => {
+  const onEndTimeChangeEdit = async (event: { target: { value: string } }) => {
     if (event.target.value) {
       const { value } = event.target;
       endTimeDBEdit.current = value;
@@ -521,16 +554,16 @@ export default function ManageVenues() {
     }
   };
 
-  const onVenueIDChangeEdit = async (event) => {
+  const onVenueIDChangeEdit = async (event: { target: { value: string } }) => {
     if (event.target.value) {
       const { value } = event.target;
       venueIDDBEdit.current = value;
       setVenueIDEdit(value);
 
-      if (venueData.current) {
+      if (venueData.current !== []) {
         for (let key = 0; key < venueData.current.length; key += 1) {
           if (venueData.current[key]) {
-            const dataField = venueData.current[key];
+            const dataField: Venue = venueData.current[key];
             if (dataField.id === value) {
               changeDataEdit(dataField);
             }
@@ -541,52 +574,77 @@ export default function ManageVenues() {
   };
 
   const validateFieldsEdit = (
-    idField,
-    nameField,
-    descriptionField,
-    capacityField,
-    isChildVenueField,
-    parentVenueField,
-    startTimeField,
-    endTimeField,
-    openingHoursField,
+    idField: string,
+    nameField: string,
+    descriptionField: string,
+    capacityField: number,
+    isChildVenueField: boolean,
+    parentVenueField: string,
+    startTimeField: string,
+    endTimeField: string,
+    openingHoursField: string,
   ) => {
-    if (!idField) {
+    if (idField === '' || idField === null || idField === undefined) {
       setErrorEdit('ID must not be empty!');
       return false;
     }
 
-    if (!nameField) {
+    if (nameField === '' || nameField === null || nameField === undefined) {
       setErrorEdit('Name must not be empty!');
       return false;
     }
 
-    if (!descriptionField) {
+    if (
+      descriptionField === '' ||
+      descriptionField === null ||
+      descriptionField === undefined
+    ) {
       setErrorEdit('Description must not be empty!');
       return false;
     }
 
-    if (!capacityField) {
+    if (
+      capacityField === 0 ||
+      capacityField === null ||
+      capacityField === undefined
+    ) {
       setErrorEdit('Capacity must not be empty!');
       return false;
     }
 
-    if (isChildVenueField && !parentVenueField) {
+    if (
+      isChildVenueField &&
+      (parentVenueField === '' ||
+        parentVenueField === null ||
+        parentVenueField === undefined)
+    ) {
       setErrorEdit('Please select a parent venue!');
       return false;
     }
 
-    if (!openingHoursField) {
+    if (
+      openingHoursField === '' ||
+      openingHoursField === null ||
+      openingHoursField === undefined
+    ) {
       setErrorEdit('Please select the opening hours!');
       return false;
     }
 
-    if (!startTimeField) {
+    if (
+      startTimeField === '' ||
+      startTimeField === null ||
+      startTimeField === undefined
+    ) {
       setErrorEdit('Please select a start time!');
       return false;
     }
 
-    if (!endTimeField) {
+    if (
+      endTimeField === '' ||
+      endTimeField === null ||
+      endTimeField === undefined
+    ) {
       setErrorEdit('Please select an end time!');
       return false;
     }
@@ -600,11 +658,11 @@ export default function ManageVenues() {
   };
 
   const handleSubmitEdit = useCallback(
-    async (event) => {
+    async (event: { preventDefault: () => void }) => {
       setErrorEdit(null);
       event.preventDefault();
 
-      const openingHours = `${startTimeDBEdit.current} - ${endTimeDBEdit.current}`;
+      const openingHours: string = `${startTimeDBEdit.current} - ${endTimeDBEdit.current}`;
       if (
         validateFieldsEdit(
           venueIDDBEdit.current,
@@ -622,7 +680,7 @@ export default function ManageVenues() {
         dataField.append('id', venueIDDBEdit.current);
         dataField.append('name', nameDBEdit.current);
         dataField.append('description', descriptionDBEdit.current);
-        dataField.append('capacity', capacityDBEdit.current);
+        dataField.append('capacity', capacityDBEdit.current.toString());
         dataField.append('isInstantBook', instantBookDBEdit.current.toString());
         dataField.append('visible', visibleDBEdit.current.toString());
         dataField.append('isChildVenue', isChildVenueDBEdit.current.toString());
@@ -634,7 +692,7 @@ export default function ManageVenues() {
             method: 'POST',
             body: dataField,
           });
-          const content = await rawResponse.json();
+          const content: Result = await rawResponse.json();
           if (content.status) {
             await resetEdit();
             toast({
@@ -656,7 +714,7 @@ export default function ManageVenues() {
             });
           }
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
     },
@@ -667,7 +725,7 @@ export default function ManageVenues() {
     venueIDDBEdit.current = '';
     nameDBEdit.current = '';
     descriptionDBEdit.current = '';
-    capacityDBEdit.current = '';
+    capacityDBEdit.current = 0;
     instantBookDBEdit.current = false;
     isChildVenueDBEdit.current = false;
     visibleDBEdit.current = false;
@@ -678,7 +736,7 @@ export default function ManageVenues() {
     setVenueIDEdit('');
     setNameEdit('');
     setDescriptionEdit('');
-    setCapacityEdit('');
+    setCapacityEdit(0);
     setInstantBookEdit(false);
     setIsChildVenueEdit(false);
     setVisibleEdit(true);
@@ -686,13 +744,17 @@ export default function ManageVenues() {
     setEndTimeEdit('');
   }, []);
 
-  const handleSearch = (event) => {
-    const searchInput = event.target.value;
+  const handleSearch = (event: { target: { value: string } }) => {
+    const searchInput: string = event.target.value;
     setSearch(searchInput);
 
-    if (searchInput && searchInput !== '') {
-      const filteredDataField = data.filter(
-        (value) =>
+    if (
+      searchInput !== '' &&
+      searchInput !== null &&
+      searchInput !== undefined
+    ) {
+      const filteredDataField: Venue[] = data.filter(
+        (value: Venue) =>
           value.name.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.description.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.openingHours
@@ -828,8 +890,8 @@ export default function ManageVenues() {
                     value={capacity}
                     size='lg'
                     onChange={(event) => {
-                      setCapacity(event.currentTarget.value);
-                      capacityDB.current = event.currentTarget.value;
+                      setCapacity(Number(event.currentTarget.value));
+                      capacityDB.current = Number(event.currentTarget.value);
                     }}
                   />
                 </FormControl>
@@ -1049,8 +1111,10 @@ export default function ManageVenues() {
                     value={capacityEdit}
                     size='lg'
                     onChange={(event) => {
-                      setCapacityEdit(event.currentTarget.value);
-                      capacityDBEdit.current = event.currentTarget.value;
+                      setCapacityEdit(Number(event.currentTarget.value));
+                      capacityDBEdit.current = Number(
+                        event.currentTarget.value,
+                      );
                     }}
                   />
                 </FormControl>

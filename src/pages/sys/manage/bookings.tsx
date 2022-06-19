@@ -22,6 +22,9 @@ import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/vbs/TableWidget';
 import BookingModal from '@components/sys/vbs/BookingModal';
 
+import { Result } from 'types/api';
+import { BookingRequest } from 'types/bookingReq';
+
 const MotionBox = motion(Box);
 
 export default function ManageBooking() {
@@ -37,20 +40,20 @@ export default function ManageBooking() {
   let generateActionButton;
   let fetchData;
 
-  const PAGESIZE = 10;
-  const PAGEINDEX = 0;
+  const PAGESIZE: number = 10;
+  const PAGEINDEX: number = 0;
 
   const [pageCount, setPageCount] = useState(0);
   const pageSizeDB = useRef(PAGESIZE);
   const pageIndexDB = useRef(PAGEINDEX);
 
-  const handleDetails = useCallback((content) => {
+  const handleDetails = useCallback((content: BookingRequest) => {
     setModalData(content);
   }, []);
 
   const handleCancel = useCallback(
-    async (id) => {
-      if (id) {
+    async (id: string) => {
+      if (id !== '' && id !== undefined && id !== null) {
         try {
           const rawResponse = await fetch('/api/bookingReq/cancel', {
             method: 'POST',
@@ -62,7 +65,7 @@ export default function ManageBooking() {
               id: id,
             }),
           });
-          const content = await rawResponse.json();
+          const content: Result = await rawResponse.json();
           if (content.status) {
             toast({
               title: 'Request cancelled.',
@@ -82,7 +85,7 @@ export default function ManageBooking() {
             });
           }
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       }
     },
@@ -95,11 +98,11 @@ export default function ManageBooking() {
         (content.count !== undefined || content.count !== null) &&
         (content.res !== undefined || content.res !== null)
       ) {
-        const booking = content.res;
+        const booking: BookingRequest[] = content.res;
         if (booking !== []) {
           for (let key = 0; key < booking.length; key += 1) {
             if (booking[key]) {
-              const dataField = booking[key];
+              const dataField: BookingRequest = booking[key];
               const buttons = await generateActionButton(dataField);
               dataField.action = buttons;
             }
@@ -114,7 +117,7 @@ export default function ManageBooking() {
   );
 
   generateActionButton = useCallback(
-    async (content) => {
+    async (content: BookingRequest) => {
       let button = null;
 
       if (content.status === 'PENDING' || content.status === 'APPROVED') {
@@ -165,14 +168,14 @@ export default function ManageBooking() {
           },
         },
       );
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg);
       }
 
       setLoadingData(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [includeActionButton]);
 
@@ -187,12 +190,12 @@ export default function ManageBooking() {
           },
         },
       );
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [includeActionButton]);
 
@@ -217,17 +220,24 @@ export default function ManageBooking() {
     }
   }, [fetchData, loadingData]);
 
-  const handleSearch = (event) => {
-    const searchInput = event.target.value;
+  const handleSearch = (event: { target: { value: string } }) => {
+    const searchInput: string = event.target.value;
     setSearch(searchInput);
 
-    if (searchInput && searchInput !== '') {
+    if (
+      searchInput !== '' &&
+      searchInput !== null &&
+      searchInput !== undefined
+    ) {
       const filteredDataField = data.filter(
-        (value) =>
+        (value: BookingRequest) =>
           value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.cca.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.venue.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.date.toLowerCase().includes(searchInput.toLowerCase()) ||
+          value.date
+            .toString()
+            .toLowerCase()
+            .includes(searchInput.toLowerCase()) ||
           value.timeSlots.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.email.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.status.toLowerCase().includes(searchInput.toLowerCase()),
@@ -247,7 +257,7 @@ export default function ManageBooking() {
       },
       {
         Header: 'Date',
-        accessor: 'date',
+        accessor: 'dateStr',
       },
       {
         Header: 'Timeslot(s)',
@@ -324,10 +334,10 @@ export default function ManageBooking() {
           )}
 
           <BookingModal
-            isAdmin={false}
             isOpen={!!modalData}
             onClose={() => setModalData(null)}
             modalData={modalData}
+            isAdmin={undefined}
           />
         </MotionBox>
       </Box>

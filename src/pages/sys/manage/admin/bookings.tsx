@@ -28,6 +28,10 @@ import BookingModal from '@components/sys/vbs/BookingModal';
 import BookingCalendar from '@components/sys/vbs/BookingCalendar';
 import { parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
+import { Result } from 'types/api';
+import { BookingRequest } from '@root/src/types/bookingReq';
+import { Venue } from '@root/src/types/venue';
+import { Booking } from '@root/src/types/booking';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 
@@ -38,10 +42,10 @@ export default function ManageBooking() {
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState(null);
   const [filteredData, setFilteredData] = useState(null);
-  const ALL = 3;
-  const PENDING = 0;
-  const APPROVED = 1;
-  const REJECTED = 2;
+  const ALL: number = 3;
+  const PENDING: number = 0;
+  const APPROVED: number = 1;
+  const REJECTED: number = 2;
 
   const tabIndexData = useRef(0);
 
@@ -59,15 +63,15 @@ export default function ManageBooking() {
 
   let handleTabChange;
 
-  const PAGESIZE = 10;
-  const PAGEINDEX = 0;
+  const PAGESIZE: number = 10;
+  const PAGEINDEX: number = 0;
 
   const [pageCount, setPageCount] = useState(0);
   const pageSizeDB = useRef(PAGESIZE);
   const pageIndexDB = useRef(PAGEINDEX);
 
   const handleApprove = useCallback(
-    async (id) => {
+    async (id: string) => {
       if (id) {
         try {
           const rawResponse = await fetch('/api/bookingReq/approve', {
@@ -80,7 +84,7 @@ export default function ManageBooking() {
               id: id,
             }),
           });
-          const content = await rawResponse.json();
+          const content: Result = await rawResponse.json();
           if (content.status) {
             toast({
               title: 'Request approved.',
@@ -112,7 +116,7 @@ export default function ManageBooking() {
   );
 
   const handleReject = useCallback(
-    async (id) => {
+    async (id: string) => {
       if (id) {
         try {
           const rawResponse = await fetch('/api/bookingReq/reject', {
@@ -125,7 +129,7 @@ export default function ManageBooking() {
               id: id,
             }),
           });
-          const content = await rawResponse.json();
+          const content: Result = await rawResponse.json();
           if (content.status) {
             toast({
               title: 'Request rejected.',
@@ -155,12 +159,12 @@ export default function ManageBooking() {
     [handleTabChange, toast],
   );
 
-  const handleDetails = useCallback((content) => {
+  const handleDetails = useCallback((content: BookingRequest) => {
     setModalData(content);
   }, []);
 
   const generateActionButton = useCallback(
-    async (content, action) => {
+    async (content: BookingRequest, action: number) => {
       let button = null;
 
       switch (action) {
@@ -273,16 +277,16 @@ export default function ManageBooking() {
   );
 
   const includeActionButton = useCallback(
-    async (content, action) => {
+    async (content, action: number) => {
       if (
         (content.count !== undefined || content.count !== null) &&
         (content.res !== undefined || content.res !== null)
       ) {
-        const booking = content.res;
+        const booking: BookingRequest[] = content.res;
         if (booking !== []) {
           for (let key = 0; key < booking.length; key += 1) {
             if (booking[key]) {
-              const dataField = booking[key];
+              const dataField: BookingRequest = booking[key];
               const buttons = await generateActionButton(dataField, action);
               dataField.action = buttons;
             }
@@ -307,12 +311,12 @@ export default function ManageBooking() {
           },
         },
       );
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, ALL);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [includeActionButton]);
 
@@ -327,12 +331,12 @@ export default function ManageBooking() {
           },
         },
       );
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, APPROVED);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [includeActionButton]);
 
@@ -347,12 +351,12 @@ export default function ManageBooking() {
           },
         },
       );
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, REJECTED);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [includeActionButton]);
 
@@ -367,17 +371,17 @@ export default function ManageBooking() {
           },
         },
       );
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, PENDING);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [includeActionButton]);
 
   const tableChange = useCallback(
-    async (index) => {
+    async (index: number) => {
       switch (index) {
         case PENDING:
           await fetchPendingDataTable();
@@ -431,14 +435,14 @@ export default function ManageBooking() {
           },
         },
       );
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, ALL);
       }
 
       setLoadingData(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [includeActionButton]);
 
@@ -455,14 +459,14 @@ export default function ManageBooking() {
           },
         },
       );
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, APPROVED);
       }
 
       setLoadingData(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [includeActionButton]);
 
@@ -480,13 +484,13 @@ export default function ManageBooking() {
           },
         },
       );
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, REJECTED);
       }
       setLoadingData(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [includeActionButton]);
 
@@ -504,18 +508,18 @@ export default function ManageBooking() {
           },
         },
       );
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         await includeActionButton(content.msg, PENDING);
       }
       setLoadingData(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [includeActionButton]);
 
   handleTabChange = useCallback(
-    async (index) => {
+    async (index: number) => {
       tabIndexData.current = index;
       pageIndexDB.current = PAGEINDEX;
       pageSizeDB.current = PAGESIZE;
@@ -541,7 +545,7 @@ export default function ManageBooking() {
   );
 
   const generateVenueDropdown = useCallback(async (contentRes) => {
-    const content = contentRes.res;
+    const content: Venue[] = contentRes.res;
     const selection = [];
     venueData.current = [];
 
@@ -549,7 +553,7 @@ export default function ManageBooking() {
 
     for (let key = 0; key < content.length; key += 1) {
       if (content[key]) {
-        const dataField = content[key];
+        const dataField: Venue = content[key];
         selection.push(
           <option key={dataField.id} value={dataField.id}>
             {dataField.name}
@@ -571,22 +575,22 @@ export default function ManageBooking() {
           'Content-Type': 'application/json',
         },
       });
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         generateVenueDropdown(content.msg);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }, [generateVenueDropdown]);
 
-  const populateCalendar = async (content) => {
+  const populateCalendar = async (content: Booking[]) => {
     const event = [];
     let count = 0;
 
     for (let key = 0; key < content.length; key += 1) {
       if (content[key]) {
-        const dataField = content[key];
+        const dataField: Booking = content[key];
 
         const description = `CCA: ${dataField.cca} EMAIL: ${dataField.email}`;
 
@@ -613,7 +617,7 @@ export default function ManageBooking() {
     setEvents(event);
   };
 
-  const fetchBookings = async (id) => {
+  const fetchBookings = async (id: string) => {
     try {
       const rawResponse = await fetch('/api/booking/fetch', {
         method: 'POST',
@@ -625,16 +629,16 @@ export default function ManageBooking() {
           id: id,
         }),
       });
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         await populateCalendar(content.msg);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
-  const onVenueIDChange = async (event) => {
+  const onVenueIDChange = async (event: { target: { value: string } }) => {
     if (event.target.value) {
       const { value } = event.target;
       await fetchBookings(value);
@@ -643,7 +647,7 @@ export default function ManageBooking() {
 
       for (let key = 0; key < venueData.current.length; key += 1) {
         if (venueData.current[key]) {
-          const ven = venueData.current[key];
+          const ven: Venue = venueData.current[key];
           if (ven.id === value) {
             setSelectedVenue(ven.name);
             break;
@@ -653,7 +657,9 @@ export default function ManageBooking() {
     }
   };
 
-  const handleMouseEnter = (info) => {
+  const handleMouseEnter = (info: {
+    event: { extendedProps: { description: string }; title: string };
+  }) => {
     if (info.event.extendedProps.description) {
       toast({
         title: info.event.title,
@@ -669,17 +675,20 @@ export default function ManageBooking() {
     toast.closeAll();
   };
 
-  const handleSearch = (event) => {
-    const searchInput = event.target.value;
+  const handleSearch = (event: { target: { value: any } }) => {
+    const searchInput: string = event.target.value;
     setSearch(searchInput);
 
     if (searchInput && searchInput !== '') {
       const filteredDataField = data.filter(
-        (value) =>
+        (value: BookingRequest) =>
           value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.cca.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.venue.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.date.toLowerCase().includes(searchInput.toLowerCase()) ||
+          value.date
+            .toString()
+            .toLowerCase()
+            .includes(searchInput.toLowerCase()) ||
           value.timeSlots.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.email.toLowerCase().includes(searchInput.toLowerCase()) ||
           value.status.toLowerCase().includes(searchInput.toLowerCase()),
@@ -699,7 +708,7 @@ export default function ManageBooking() {
       },
       {
         Header: 'Date',
-        accessor: 'date',
+        accessor: 'dateStr',
       },
       {
         Header: 'Timeslot(s)',
@@ -838,10 +847,10 @@ export default function ManageBooking() {
             )}
 
             <BookingModal
-              isAdmin
               isOpen={!!modalData}
               onClose={() => setModalData(null)}
               modalData={modalData}
+              isAdmin
             />
           </Tabs>
         </Box>

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
+import { BookingRequest } from 'types/bookingReq';
 
 import {
   findBookingByID,
@@ -15,12 +16,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   let result: Result = null;
   const { id } = req.body;
-  if (session && session.user.admin) {
-    if (id) {
-      const bookingRequest = await findBookingByID(id);
+  if (session !== undefined && session !== null && session.user.admin) {
+    if (id !== undefined && id !== null) {
+      const bookingRequest: BookingRequest = await findBookingByID(id);
 
       if (bookingRequest) {
         const isRequestApproved = await isApproved(bookingRequest);
+        const isRequestCancelled = await isCancelled(bookingRequest);
+        const isRequestRejected = await isRejected(bookingRequest);
+
         if (isRequestApproved) {
           result = {
             status: false,
@@ -29,11 +33,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           };
           res.status(200).send(result);
           res.end();
-          return;
-        }
-
-        const isRequestCancelled = await isCancelled(bookingRequest);
-        if (isRequestCancelled) {
+        } else if (isRequestCancelled) {
           result = {
             status: false,
             error: 'Request already cancelled!',
@@ -41,11 +41,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           };
           res.status(200).send(result);
           res.end();
-          return;
-        }
-
-        const isRequestRejected = await isRejected(bookingRequest);
-        if (isRequestRejected) {
+        } else if (isRequestRejected) {
           result = {
             status: false,
             error: 'Request already rejected!',
@@ -53,29 +49,28 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           };
           res.status(200).send(result);
           res.end();
-          return;
-        }
-
-        const reject = await setReject(bookingRequest, session);
-        if (reject.status) {
-          result = {
-            status: true,
-            error: null,
-            msg: 'Booking request rejected',
-          };
-          res.status(200).send(result);
-          res.end();
         } else {
-          result = {
-            status: false,
-            error: 'Failed to reject booking',
-            msg: '',
-          };
-          res.status(200).send(result);
-          res.end();
+          const reject: Result = await setReject(bookingRequest, session);
+          if (reject.status) {
+            result = {
+              status: true,
+              error: null,
+              msg: 'Booking request rejected',
+            };
+            res.status(200).send(result);
+            res.end();
+          } else {
+            result = {
+              status: false,
+              error: reject.error,
+              msg: '',
+            };
+            res.status(200).send(result);
+            res.end();
+          }
         }
       } else {
-        result = { status: false, error: 'No booking ID found', msg: '' };
+        result = { status: false, error: 'No booking found', msg: '' };
         res.status(200).send(result);
         res.end();
       }

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
+import { BookingRequest } from 'types/bookingReq';
 
 import {
   findBookingByID,
@@ -19,12 +20,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   let result: Result = null;
   const { id } = req.body;
-  if (session && session.user.admin) {
-    if (id) {
-      const bookingRequest = await findBookingByID(id);
+  if (session !== undefined && session !== null && session.user.admin) {
+    if (id !== null && id !== undefined) {
+      const bookingRequest: BookingRequest = await findBookingByID(id);
 
-      if (bookingRequest) {
-        const isRequestApproved = await isApproved(bookingRequest);
+      if (bookingRequest !== null && bookingRequest !== undefined) {
+        const isRequestApproved: boolean = await isApproved(bookingRequest);
+        const isRequestCancelled: boolean = await isCancelled(bookingRequest);
+        const isRequestRejected: boolean = await isRejected(bookingRequest);
+
         if (isRequestApproved) {
           result = {
             status: false,
@@ -33,11 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           };
           res.status(200).send(result);
           res.end();
-          return;
-        }
-
-        const isRequestCancelled = await isCancelled(bookingRequest);
-        if (isRequestCancelled) {
+        } else if (isRequestCancelled) {
           result = {
             status: false,
             error: 'Request already cancelled!',
@@ -45,11 +45,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           };
           res.status(200).send(result);
           res.end();
-          return;
-        }
-
-        const isRequestRejected = await isRejected(bookingRequest);
-        if (isRequestRejected) {
+        } else if (isRequestRejected) {
           result = {
             status: false,
             error: 'Request already rejected!',
@@ -57,58 +53,62 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           };
           res.status(200).send(result);
           res.end();
-          return;
-        }
+        } else {
+          const isThereConflict: boolean = await isConflict(bookingRequest);
+          const timeSlots: number[] = convertSlotToArray(
+            bookingRequest.timeSlots,
+            true,
+          ) as number[];
 
-        const isThereConflict = await isConflict(bookingRequest);
-        const timeSlots = convertSlotToArray(bookingRequest.timeSlots, true);
-        if (!isThereConflict) {
-          const createBooking = await createVenueBooking(
-            bookingRequest,
-            timeSlots,
-            session,
-          );
+          if (!isThereConflict) {
+            const createBooking = await createVenueBooking(
+              bookingRequest,
+              timeSlots,
+              session,
+            );
 
-          if (!createBooking.status) {
+            if (!createBooking.status) {
+              result = {
+                status: false,
+                error: createBooking.error,
+                msg: '',
+              };
+              res.status(200).send(result);
+              res.end();
+            } else {
+              const approve: Result = await setApprove(bookingRequest, session);
+              const cancel: Result = await setRejectConflicts(
+                bookingRequest,
+                session,
+              );
+
+              if (approve.status && cancel.status) {
+                result = {
+                  status: true,
+                  error: null,
+                  msg: 'Booking request created',
+                };
+                res.status(200).send(result);
+                res.end();
+              } else {
+                result = {
+                  status: false,
+                  error: 'Either failed to approve slot or cancel conflicting',
+                  msg: '',
+                };
+                res.status(200).send(result);
+                res.end();
+              }
+            }
+          } else {
             result = {
               status: false,
-              error: createBooking.error,
+              error: 'Conflicts found in booking',
               msg: '',
             };
             res.status(200).send(result);
             res.end();
-            return;
           }
-        } else {
-          result = {
-            status: false,
-            error: 'Conflicts found in booking',
-            msg: '',
-          };
-          res.status(200).send(result);
-          res.end();
-          return;
-        }
-
-        const approve = await setApprove(bookingRequest, session);
-        const cancel = await setRejectConflicts(bookingRequest, session);
-
-        if (approve.status && cancel.status) {
-          result = {
-            status: true,
-            error: null,
-            msg: 'Booking request created',
-          };
-          res.status(200).send(result);
-          res.end();
-        } else {
-          result = {
-            status: false,
-            error: 'Either failed to approve slot or cancel conflicting',
-            msg: '',
-          };
-          res.status(200).send(result);
-          res.end();
         }
       } else {
         result = { status: false, error: 'No booking ID found', msg: '' };

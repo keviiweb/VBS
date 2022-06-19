@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
+import { BookingRequest } from 'types/bookingReq';
 
 import {
   findBookingByID,
@@ -17,12 +18,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   let result: Result = null;
   const { id } = req.body;
-  if (session) {
-    if (id) {
-      const bookingRequest = await findBookingByID(id);
+  if (session !== undefined && session !== null) {
+    if (id !== null && id !== undefined) {
+      const bookingRequest: BookingRequest = await findBookingByID(id);
 
-      if (bookingRequest) {
-        const isRequestCancelled = await isCancelled(bookingRequest);
+      if (bookingRequest !== null || bookingRequest !== undefined) {
+        const isRequestCancelled: boolean = await isCancelled(bookingRequest);
+        const isRequestRejected: boolean = await isRejected(bookingRequest);
+
         if (isRequestCancelled) {
           result = {
             status: false,
@@ -31,11 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           };
           res.status(200).send(result);
           res.end();
-          return;
-        }
-
-        const isRequestRejected = await isRejected(bookingRequest);
-        if (isRequestRejected) {
+        } else if (isRequestRejected) {
           result = {
             status: false,
             error: 'Request already rejected!',
@@ -43,61 +42,67 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           };
           res.status(200).send(result);
           res.end();
-          return;
-        }
+        } else {
+          const minDay: number = Number(process.env.CANCEL_MIN_DAY);
+          const currentDate: number = bookingRequest.date as number;
 
-        const minDay = Number(process.env.CANCEL_MIN_DAY);
-        const currentDate = bookingRequest.date as number;
-
-        if (compareDate(currentDate, minDay)) {
-          const isRequestApproved = await isApproved(bookingRequest);
-          const reject = await setCancel(bookingRequest, session);
-          if (reject.status) {
-            if (isRequestApproved) {
-              const notifyOtherRejected = await notifyConflicts(
-                bookingRequest,
-                session,
-              );
-              if (!notifyOtherRejected.status) {
+          if (compareDate(currentDate, minDay)) {
+            const isRequestApproved: boolean = await isApproved(bookingRequest);
+            const reject: Result = await setCancel(bookingRequest, session);
+            if (reject.status) {
+              if (isRequestApproved) {
+                const notifyOtherRejected: Result = await notifyConflicts(
+                  bookingRequest,
+                  session,
+                );
+                if (!notifyOtherRejected.status) {
+                  result = {
+                    status: false,
+                    error: notifyOtherRejected.error,
+                    msg: '',
+                  };
+                  res.status(200).send(result);
+                  res.end();
+                } else {
+                  result = {
+                    status: true,
+                    error: null,
+                    msg: 'Booking request rejected',
+                  };
+                  res.status(200).send(result);
+                  res.end();
+                }
+              } else {
                 result = {
-                  status: false,
-                  error: notifyOtherRejected.error,
-                  msg: '',
+                  status: true,
+                  error: null,
+                  msg: 'Booking request rejected',
                 };
                 res.status(200).send(result);
                 res.end();
-                return;
               }
+            } else {
+              result = {
+                status: false,
+                error: reject.error,
+                msg: '',
+              };
+              res.status(200).send(result);
+              res.end();
             }
-
-            result = {
-              status: true,
-              error: null,
-              msg: 'Booking request rejected',
-            };
-            res.status(200).send(result);
-            res.end();
           } else {
+            const msg = `Cancellation only possible ${minDay} day(s) before`;
             result = {
               status: false,
-              error: 'Failed to reject booking',
+              error: msg,
               msg: '',
             };
             res.status(200).send(result);
             res.end();
           }
-        } else {
-          const msg = `Cancellation only possible ${minDay} day(s) before`;
-          result = {
-            status: false,
-            error: msg,
-            msg: '',
-          };
-          res.status(200).send(result);
-          res.end();
         }
       } else {
-        result = { status: false, error: 'No booking ID found', msg: '' };
+        result = { status: false, error: 'No booking found', msg: '' };
         res.status(200).send(result);
         res.end();
       }

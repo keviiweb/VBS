@@ -84,11 +84,11 @@ export default function Profile() {
   useEffect(() => {
     async function fetchData() {
       const session = await currentSession();
-      const studentIDField =
+      const studentIDField: string =
         session && session.user.studentID ? session.user.studentID : 'A1234567';
-      const usernameField =
+      const usernameField: string =
         session && session.user.username ? session.user.username : 'Test User';
-      const emailField =
+      const emailField: string =
         session && session.user.email ? session.user.email : 'test@test.com';
 
       setStudentID(studentIDField);

@@ -1,6 +1,15 @@
+import { BookingRequest } from 'types/bookingReq';
 import nodemailer from 'nodemailer';
 
 function html({ data }) {
+  const id: string = data.id ? data.id : '';
+  const email: string = data.email ? data.email : '';
+  const venue: string = data.venue ? data.venue : '';
+  const date: string = data.dateStr ? data.dateStr : '';
+  const cca: string = data.cca ? data.cca : '';
+  const timeSlots: string = data.timeSlots ? data.timeSlots : '';
+  const purpose: string = data.purpose ? data.purpose : '';
+
   return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
     
@@ -235,8 +244,8 @@ function html({ data }) {
                                 <td style="overflow-wrap:break-word;word-break:break-word;padding:11px 55px 22px;font-family:'Cabin',sans-serif;" align="left">
     
                                   <div style="line-height: 160%; text-align: center; word-wrap: break-word;">
-                                    <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 18px; line-height: 28.8px;">Reference No: ${data.id}</span></p>
-                                    <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 18px; line-height: 28.8px;">Hi, ${data.email}</span></p>
+                                    <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 18px; line-height: 28.8px;">Reference No: ${id}</span></p>
+                                    <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 18px; line-height: 28.8px;">Hi, ${email}</span></p>
                                     <p style="font-size: 14px; line-height: 160%;">We have received your venue booking request with the following details:</p>
                                   </div>
     
@@ -251,15 +260,15 @@ function html({ data }) {
                                 <td style="overflow-wrap:break-word;word-break:break-word;padding:11px 55px 22px;font-family:'Cabin',sans-serif;" align="left">
     
                                   <div style="line-height: 160%; text-align: center; word-wrap: break-word;">
-                                    <p style="font-size: 14px; line-height: 160%;"><strong>Venue: </strong>${data.venue}</p>
-                                    <p style="font-size: 14px; line-height: 160%;"><strong>Date:&nbsp;</strong>${data.date}</p>
-                                    <p style="font-size: 14px; line-height: 160%;"><strong>Timeslot(s): </strong>${data.timeSlots}</p>
-                                    <p style="font-size: 14px; line-height: 160%;"><strong>CCA/Personal:&nbsp;</strong>${data.cca}</p>
-                                    <p style="font-size: 14px; line-height: 160%;"><strong>Purpose:&nbsp;</strong>${data.purpose}</p>
+                                    <p style="font-size: 14px; line-height: 160%;"><strong>Venue: </strong>${venue}</p>
+                                    <p style="font-size: 14px; line-height: 160%;"><strong>Date:&nbsp;</strong>${date}</p>
+                                    <p style="font-size: 14px; line-height: 160%;"><strong>Timeslot(s): </strong>${timeSlots}</p>
+                                    <p style="font-size: 14px; line-height: 160%;"><strong>CCA/Personal:&nbsp;</strong>${cca}</p>
+                                    <p style="font-size: 14px; line-height: 160%;"><strong>Purpose:&nbsp;</strong>${purpose}</p>
                                     <p style="font-size: 14px; line-height: 160%;">&nbsp;</p>
                                     <p style="font-size: 14px; line-height: 160%;">We hope to get back to you within 3 calendar days.</p>
-                                    <p style="font-size: 14px; line-height: 160%;">For urgent approval, please drop Yunus a message on Telegram</p>
-                                    <p style="font-size: 14px; line-height: 160%;">@yunusali</p>
+                                    <p style="font-size: 14px; line-height: 160%;">For urgent approval, please drop Yen Ming a message on Telegram</p>
+                                    <p style="font-size: 14px; line-height: 160%;">@yenrawr</p>
                                   </div>
     
                                 </td>
@@ -373,10 +382,13 @@ function text() {
   return `We received your booking request\n\n`;
 }
 
-export const sendProgressMail = async (target, data) => {
+export const sendProgressMail = async (
+  target: string,
+  data: BookingRequest,
+) => {
   if (
     process.env.SEND_EMAIL &&
-    (process.env.SEND_EMAIL == '1' || Number(process.env.SEND_EMAIL) == 1)
+    (process.env.SEND_EMAIL === '1' || Number(process.env.SEND_EMAIL) === 1)
   ) {
     const config = {
       host: process.env.EMAIL_SERVER_HOST,
@@ -399,7 +411,7 @@ export const sendProgressMail = async (target, data) => {
       },
       function (err) {
         if (err) {
-          console.log('Error ' + err);
+          console.error('Error ' + err);
         }
       },
     );

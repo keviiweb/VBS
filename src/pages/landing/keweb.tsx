@@ -93,8 +93,8 @@ export default function KEWeb() {
                   w='full'
                   rounded='lg'
                   shadow='2xl'
-                  src='/landing/contact/farewell.png'
-                  alt='KEVIIAN Farewell Photo'
+                  src='/landing/cca/keweb.png'
+                  alt='KEWEB'
                 />
               </MotionBox>
             </Flex>

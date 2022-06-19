@@ -2,10 +2,11 @@ import {
   timingSlotNumberToTimingMapping,
   timeSlots,
 } from '@constants/sys/timeslot';
+import { TimeSlot } from 'types/timeslot';
 
 export const isInside = (want: string, check: string): boolean => {
-  const wantArr = convertSlotToArray(want, true);
-  const checkArr = convertSlotToArray(check, true);
+  const wantArr = convertSlotToArray(want, true) as number[];
+  const checkArr = convertSlotToArray(check, true) as number[];
 
   for (let obj in wantArr) {
     let i = checkArr.length;
@@ -19,7 +20,9 @@ export const isInside = (want: string, check: string): boolean => {
   return false;
 };
 
-export const mapSlotToTiming = (data: string | number[]): string[] | string => {
+export const mapSlotToTiming = (
+  data: number | string | number[],
+): string[] | string => {
   if (Array.isArray(data)) {
     const result: string[] = [];
     for (let key in data) {
@@ -60,19 +63,25 @@ export const prettifyTiming = (data: string[]): string => {
   return str;
 };
 
-export const convertSlotToArray = (slots, reverse: boolean = false) => {
+export const convertSlotToArray = (
+  slots: string | TimeSlot[],
+  reverse: boolean = false,
+): number[] | string => {
   if (reverse) {
-    const result = slots.split(',');
-    for (let key in result) {
-      result[key] = Number(result[key]);
+    const strSlot = slots as string;
+    const stringArr: string[] = strSlot.split(',');
+    const result: number[] = [];
+    for (let key in stringArr) {
+      result[key] = Number(stringArr[key]);
     }
 
     return result;
   } else {
     const result = [];
-    for (let key in slots) {
-      if (slots[key]) {
-        result.push(slots[key].id);
+    const slotArr = slots as TimeSlot[];
+    for (let key in slotArr) {
+      if (slotArr[key]) {
+        result.push(slotArr[key].id);
       }
     }
 
@@ -80,7 +89,10 @@ export const convertSlotToArray = (slots, reverse: boolean = false) => {
   }
 };
 
-export const findSlots = async (slot, isStart: boolean): Promise<string> => {
+export const findSlots = async (
+  slot: string,
+  isStart: boolean,
+): Promise<string> => {
   for (let i in timingSlotNumberToTimingMapping) {
     if (timingSlotNumberToTimingMapping[i].includes(slot)) {
       const split = timingSlotNumberToTimingMapping[i].split('-');

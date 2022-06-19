@@ -5,19 +5,20 @@ const channel_id = process.env.TELEGRAM_BOT_CHANNEL_ID;
 export const bot = global.bot || new TelegramBot(token, { polling: true });
 
 if (process.env.NODE_ENV !== 'production') global.bot = bot;
-bot.on('polling_error', (msg: string) => console.log(msg));
+bot.on('polling_error', (msg: string) => console.error(msg));
 
 export const sendMessageToChannel = async (message: string): Promise<void> => {
   if (
     process.env.SEND_TELEGRAM &&
-    (process.env.SEND_TELEGRAM == '1' || Number(process.env.SEND_TELEGRAM) == 1)
+    (process.env.SEND_TELEGRAM === '1' ||
+      Number(process.env.SEND_TELEGRAM) === 1)
   ) {
     try {
       bot.sendMessage(channel_id, message).catch((err) => {
-        console.log('Channel message not sent', err);
+        console.error('Channel message not sent', err);
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 };

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
+import { Venue } from 'types/venue';
 
 import { createVenue } from '@helper/sys/vbs/venue';
 import formidable, { IncomingForm } from 'formidable';
@@ -17,7 +18,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
   let result: Result = null;
 
-  if (session && session.user.admin) {
+  if (session !== undefined && session !== null && session.user.admin) {
     const data: { fields: formidable.Fields; files: formidable.Files } =
       await new Promise((resolve, reject) => {
         const form = new IncomingForm();
@@ -43,10 +44,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         await fs.writeFile(pathToWriteImage, image);
       }
 
-      const isChildVenue = data.fields.isChildVenue === 'true';
-      const parentVenue = isChildVenue ? data.fields.parentVenue : null;
+      const isChildVenue: boolean = data.fields.isChildVenue === 'true';
+      const parentVenue: string = isChildVenue
+        ? (data.fields.parentVenue as string)
+        : null;
 
-      const venueData = {
+      const venueData: Venue = {
         capacity: Number(data.fields.capacity),
         name: data.fields.name as string,
         description: data.fields.description as string,
@@ -58,7 +61,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         image: venuePath,
       };
 
-      const createVenueRequest = await createVenue(venueData);
+      const createVenueRequest: Result = await createVenue(venueData);
       if (createVenueRequest.status) {
         result = {
           status: true,
@@ -67,18 +70,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         };
         res.status(200).send(result);
         res.end();
-        return;
+      } else {
+        result = {
+          status: false,
+          error: createVenueRequest.error,
+          msg: '',
+        };
+        res.status(200).send(result);
+        res.end();
       }
-      result = {
-        status: false,
-        error: createVenueRequest.error,
-        msg: '',
-      };
-      res.status(200).send(result);
-      res.end();
-      return;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       result = {
         status: false,
         error: `Failed to create ${data.fields.name}`,

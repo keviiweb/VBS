@@ -252,7 +252,7 @@ export const findBookingByID = async (id: string): Promise<BookingRequest> => {
 
 export const isApproved = async (
   bookingRequest: BookingRequest,
-): Promise<Boolean> => {
+): Promise<boolean> => {
   try {
     return bookingRequest.isApproved;
   } catch (error) {
@@ -263,7 +263,7 @@ export const isApproved = async (
 
 export const isCancelled = async (
   bookingRequest: BookingRequest,
-): Promise<Boolean> => {
+): Promise<boolean> => {
   try {
     return bookingRequest.isCancelled;
   } catch (error) {
@@ -274,7 +274,7 @@ export const isCancelled = async (
 
 export const isRejected = async (
   bookingRequest: BookingRequest,
-): Promise<Boolean> => {
+): Promise<boolean> => {
   try {
     return bookingRequest.isRejected;
   } catch (error) {
@@ -285,9 +285,9 @@ export const isRejected = async (
 
 export const isConflict = async (
   bookingRequest: BookingRequest,
-): Promise<Boolean> => {
+): Promise<boolean> => {
   try {
-    const timeSlots: string | number[] = convertSlotToArray(
+    const timeSlots: number[] = convertSlotToArray(
       bookingRequest.timeSlots,
       true,
     ) as number[];
@@ -331,13 +331,13 @@ export const setApprove = async (
     });
 
     if (update) {
-      let slotArray: string | number[] | string[] = convertSlotToArray(
+      const slotArrayMsg: number[] = convertSlotToArray(
         bookingRequest.timeSlots,
         true,
       ) as number[];
-      slotArray = mapSlotToTiming(slotArray);
+      const slotArray: string[] = mapSlotToTiming(slotArrayMsg) as string[];
       const venueReq: Result = await findVenueByID(bookingRequest.venue);
-      let date: Date = convertUnixToDate(bookingRequest.date as number);
+      let date: Date = convertUnixToDate(bookingRequest.date);
       let prettifiedDate: string = prettifyDate(date);
 
       if (venueReq && venueReq.status) {
@@ -353,8 +353,8 @@ export const setApprove = async (
           id: bookingRequest.id,
           email: bookingRequest.email,
           venue: venueReq.msg.name,
-          date: prettifiedDate,
-          timeSlots: prettifyTiming(slotArray as string[]),
+          dateStr: prettifiedDate,
+          timeSlots: prettifyTiming(slotArray),
           cca: cca,
           purpose: bookingRequest.purpose,
           sessionEmail: session.user.email,
@@ -428,7 +428,7 @@ export const setReject = async (
           id: bookingRequest.id,
           email: bookingRequest.email,
           venue: venueReq.msg.name,
-          date: prettifiedDate,
+          dateStr: prettifiedDate,
           timeSlots: prettifyTiming(slotArray as string[]),
           cca: cca,
           purpose: bookingRequest.purpose,
@@ -504,7 +504,7 @@ export const setCancel = async (
           id: bookingRequest.id,
           email: bookingRequest.email,
           venue: venueReq.msg.name,
-          date: prettifiedDate,
+          dateStr: prettifiedDate,
           timeSlots: prettifyTiming(slotArray as string[]),
           cca: cca,
           purpose: bookingRequest.purpose,
@@ -553,9 +553,11 @@ export const getConflictingRequest = async (
 
     if (sameDayVenue) {
       for (let key in sameDayVenue) {
-        const request: BookingRequest = sameDayVenue[key];
-        if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
-          conflicting.push(request);
+        if (sameDayVenue[key]) {
+          const request: BookingRequest = sameDayVenue[key];
+          if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
+            conflicting.push(request);
+          }
         }
       }
     } else {
@@ -692,19 +694,22 @@ export const notifyConflicts = async (
   session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
-  let success = true;
+  let success: boolean = true;
 
   if (bookingRequest) {
     if (bookingRequest.conflictRequest) {
-      let sameDayVenue: string[] = bookingRequest.conflictRequest.split(',');
-      for (let key in sameDayVenue) {
-        const request: string = sameDayVenue[key];
-        const booking: BookingRequest = await findBookingByID(request);
-
-        const email: Result = await notifyConflictsEmail(booking, session);
-        if (!email.status) {
-          console.error(email.error);
-          success = false;
+      const conflicts: BookingRequest[] = bookingRequest.conflictRequest;
+      for (let key = 0; key < conflicts.length; key += 1) {
+        if (conflicts[key]) {
+          const sameDayVenue: BookingRequest = conflicts[key];
+          const email: Result = await notifyConflictsEmail(
+            sameDayVenue,
+            session,
+          );
+          if (!email.status) {
+            console.error(email.error);
+            success = false;
+          }
         }
       }
     }
@@ -751,14 +756,20 @@ export const notifyConflictsEmail = async (
         cca = 'PERSONAL';
       } else {
         const ccaReq: Result = await findCCAbyID(bookingRequest.cca);
-        cca = ccaReq.msg.name;
+
+        if (ccaReq.status) {
+          const ccaReqMsg = ccaReq.msg;
+          cca = ccaReqMsg.name;
+        } else {
+          console.error(ccaReq.error);
+        }
       }
 
       const data: BookingRequest = {
         id: bookingRequest.id,
         email: bookingRequest.email,
         venue: venueReq.msg.name,
-        date: prettifiedDate,
+        dateStr: prettifiedDate,
         timeSlots: prettifyTiming(slotArray as string[]),
         cca: cca,
         purpose: bookingRequest.purpose,

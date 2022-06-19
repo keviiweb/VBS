@@ -14,14 +14,27 @@ export default function EmailCallBack() {
       query.callbackUrl &&
       query.callback &&
       query.token &&
-      link.current
+      link.current !== ''
     ) {
       router.push(link.current);
     }
   }, [query.callback, query.callbackUrl, query.email, query.token, router]);
 
   const transferToAuth = useCallback(() => {
-    if (query.email && query.callbackUrl && query.callback && query.token) {
+    if (
+      query.email !== '' &&
+      query.email !== null &&
+      query.email !== undefined &&
+      query.callbackUrl !== '' &&
+      query.callbackUrl !== null &&
+      query.callbackUrl !== undefined &&
+      query.callback !== '' &&
+      query.callback !== null &&
+      query.callback !== undefined &&
+      query.token !== '' &&
+      query.token !== null &&
+      query.token !== undefined
+    ) {
       link.current = `/api/auth/callback/${query.callback}?callbackUrl=${query.callbackUrl}&token=${query.token}&email=${query.email}`;
       setTimeout(timeout, 9000);
     }

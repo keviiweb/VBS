@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
+import { Venue } from 'types/venue';
 
 import { currentSession } from '@helper/sys/session';
 import {
@@ -15,26 +16,27 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const skipQuery = req.query.skip;
 
   let result: Result = null;
-  if (session) {
-    const limit = limitQuery !== undefined ? Number(limitQuery) : 10;
-    const skip = skipQuery !== undefined ? Number(skipQuery) : 0;
+  if (session !== null && session !== undefined) {
+    const limit: number = limitQuery !== undefined ? Number(limitQuery) : 100;
+    const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
-    const venueDB = await fetchAllVenue(limit, skip);
-    const count = await countVenue();
+    const venueDB: Result = await fetchAllVenue(limit, skip);
+    const count: number = await countVenue();
 
-    const parsedVenue = [];
+    const parsedVenue: Venue[] = [];
 
-    if (venueDB && venueDB.status) {
-      const venueData = venueDB.msg;
+    if (venueDB.status) {
+      const venueData: Venue[] = venueDB.msg;
       for (let ven = 0; ven < venueData.length; ven += 1) {
         if (venueData[ven]) {
-          const venue = venueData[ven];
+          const venue: Venue = venueData[ven];
 
-          let parentVenueName = null;
+          let parentVenueName: string = null;
           if (venue.isChildVenue) {
             const venueReq = await findVenueByID(venue.parentVenue);
             if (venueReq && venueReq.status) {
-              parentVenueName = venueReq.msg.name;
+              const venueReqMsg: Venue = venueReq.msg;
+              parentVenueName = venueReqMsg.name;
             }
           }
 
@@ -42,7 +44,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const childVenue = venue.isChildVenue ? 'Yes' : 'No';
           const instantBook = venue.isInstantBook ? 'Yes' : 'No';
 
-          const data = {
+          const data: Venue = {
             capacity: venue.capacity,
             description: venue.description,
             id: venue.id,
@@ -61,6 +63,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           parsedVenue.push(data);
         }
       }
+
       result = {
         status: true,
         error: null,
@@ -71,7 +74,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     } else {
       result = {
         status: false,
-        error: 'Cannot get all venues',
+        error: venueDB.error,
         msg: '',
       };
       res.status(200).send(result);

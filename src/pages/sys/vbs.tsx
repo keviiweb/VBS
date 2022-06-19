@@ -18,6 +18,10 @@ import { fetchVenue } from '@helper/sys/vbs/venue';
 import safeJsonStringify from 'safe-json-stringify';
 import { GetServerSideProps } from 'next';
 
+import { Result } from 'types/api';
+import { Venue } from 'types/venue';
+import { TimeSlot } from 'types/timeslot';
+
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -33,7 +37,12 @@ export default function VBS(props: any) {
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState(null);
 
-  const dataFromVenueModal = (venue, venueName, timeSlots, dateParsed) => {
+  const dataFromVenueModal = (
+    venue: string,
+    venueName: string,
+    timeSlots: TimeSlot[],
+    dateParsed: string,
+  ) => {
     if (venue && timeSlots && venueName && dateParsed) {
       const data = {
         venue: venue,
@@ -58,11 +67,11 @@ export default function VBS(props: any) {
         : maxDate.current;
 
       if (propRes.data) {
-        const res = propRes.data;
+        const res: Result = propRes.data;
         if (res.msg.length > 0) {
           if (res.status) {
-            const result = res.msg;
-            if (result !== '') {
+            const result: Venue[] = res.msg;
+            if (result !== [] && result !== null && result !== undefined) {
               const cardRes = [];
               result.forEach((item) => {
                 if (item.visible) {
@@ -87,11 +96,15 @@ export default function VBS(props: any) {
     fetchData(props);
   }, [props]);
 
-  const handleSearch = (event) => {
-    const searchInput = event.target.value;
+  const handleSearch = (event: { target: { value: string } }) => {
+    const searchInput: string = event.target.value;
     setSearch(searchInput);
 
-    if (searchInput && searchInput !== '') {
+    if (
+      searchInput !== '' &&
+      searchInput !== null &&
+      searchInput !== undefined
+    ) {
       const filteredDataField = cards.filter((value) =>
         value.props.id.toLowerCase().includes(searchInput.toLowerCase()),
       );
@@ -163,9 +176,9 @@ export default function VBS(props: any) {
 export const getServerSideProps: GetServerSideProps = async () => ({
   props: (async function Props() {
     try {
-      const res = await fetchVenue();
+      const res: Result = await fetchVenue();
       const stringifiedData = safeJsonStringify(res);
-      const data = JSON.parse(stringifiedData);
+      const data: Result = JSON.parse(stringifiedData);
       return {
         minDate: process.env.CALENDAR_MIN_DAY,
         maxDate: process.env.CALENDAR_MAX_DAY,

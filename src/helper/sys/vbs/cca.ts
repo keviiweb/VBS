@@ -15,7 +15,7 @@ export const findCCAbyName = async (name: string): Promise<Result> => {
 
     result = { status: true, error: null, msg: query };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     result = { status: false, error: error.toString(), msg: '' };
   }
 
@@ -34,7 +34,7 @@ export const findCCAbyID = async (id: string): Promise<Result> => {
 
     result = { status: true, error: null, msg: query };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     result = { status: false, error: error.toString(), msg: '' };
   }
 
@@ -52,7 +52,7 @@ export const findAllCCA = async (): Promise<Result> => {
     });
     result = { status: true, error: null, msg: ccaList };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     result = { status: false, error: error.toString(), msg: '' };
   }
 
@@ -79,7 +79,7 @@ export const isLeader = async (
       result = { status: true, error: null, msg: false };
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     result = { status: false, error: error.toString(), msg: '' };
   }
 

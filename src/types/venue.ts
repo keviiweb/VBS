@@ -7,6 +7,11 @@ export type Venue = {
   visible: boolean;
   capacity: number;
   parentVenue: string;
+  parentVenueName?: string;
   isChildVenue: boolean;
   isInstantBook: boolean;
+  isAvailable?: string;
+  childVenue?: string;
+  instantBook?: string;
+  action?: any;
 };
