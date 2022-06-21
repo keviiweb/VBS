@@ -128,6 +128,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               const conflictsRequest: Result = await getConflictingRequest(
                 book,
               );
+
               let conflicts: BookingRequest[] = [];
               if (conflictsRequest.status) {
                 conflicts = conflictsRequest.msg;

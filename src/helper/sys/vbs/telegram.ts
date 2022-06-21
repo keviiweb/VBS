@@ -3,10 +3,6 @@ import { BookingRequest } from 'types/bookingReq';
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const channel_id = process.env.TELEGRAM_BOT_CHANNEL_ID;
-export const bot = global.bot || new TelegramBot(token, { polling: true });
-
-if (process.env.NODE_ENV !== 'production') global.bot = bot;
-bot.on('polling_error', (msg: string) => console.error(msg));
 
 export const sendMessageToChannel = async (message: string): Promise<void> => {
   if (
@@ -15,9 +11,13 @@ export const sendMessageToChannel = async (message: string): Promise<void> => {
       Number(process.env.SEND_TELEGRAM) === 1)
   ) {
     try {
-      bot.sendMessage(channel_id, message).catch((err) => {
-        console.error('Channel message not sent', err);
-      });
+      const bot = new TelegramBot(token, { polling: true });
+      if (bot.isPolling()) {
+        bot.sendMessage(channel_id, message).catch((err) => {
+          console.error('Channel message not sent', err);
+        });
+        await bot.stopPolling();
+      }
     } catch (error) {
       console.error(error);
     }

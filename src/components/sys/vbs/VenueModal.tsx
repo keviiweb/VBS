@@ -258,21 +258,30 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                 alignItems='center'
                 justifyContent='center'
               >
-                <Box overflow='scroll'>
-                  <Text
-                    fontSize={{ base: '16px', lg: '18px' }}
-                    fontWeight='500'
-                    textTransform='uppercase'
-                    mb='4'
-                  >
-                    Child Venues
-                  </Text>
-
-                  {childVenues && loadingData && (
+                {childVenues && loadingData && (
+                  <Box overflow='scroll'>
+                    <Text
+                      fontSize={{ base: '16px', lg: '18px' }}
+                      fontWeight='500'
+                      textTransform='uppercase'
+                      mb='4'
+                    >
+                      Child Venues
+                    </Text>
                     <Text>Loading Please wait...</Text>
-                  )}
+                  </Box>
+                )}
 
-                  {childVenues && !loadingData && (
+                {childVenues && !loadingData && (
+                  <Box overflow='scroll'>
+                    <Text
+                      fontSize={{ base: '16px', lg: '18px' }}
+                      fontWeight='500'
+                      textTransform='uppercase'
+                      mb='4'
+                    >
+                      Child Venues
+                    </Text>
                     <TableWidget
                       key={2}
                       columns={columns}
@@ -280,23 +289,8 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                       controlledPageCount={pageIndexDB.current}
                       dataHandler={onTableChange}
                     />
-                  )}
-
-                  {!childVenues && loadingData && (
-                    <Text>Loading Please wait...</Text>
-                  )}
-
-                  {!childVenues && !loadingData && (
-                    <Text
-                      fontSize={{ base: '16px', lg: '18px' }}
-                      fontWeight='500'
-                      textTransform='uppercase'
-                      mb='4'
-                    >
-                      No child venues found
-                    </Text>
-                  )}
-                </Box>
+                  </Box>
+                )}
               </Flex>
             </MotionBox>
           </MotionSimpleGrid>

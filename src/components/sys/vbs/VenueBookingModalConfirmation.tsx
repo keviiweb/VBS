@@ -75,6 +75,8 @@ export default function VenueBookingModalConfirmation({
 
   const [submitting, setSubmitting] = useState(false);
 
+  const timeouts = useRef([]);
+
   const check = (timeSlotsField: TimeSlot[]): boolean => {
     if (timeSlotsField.length === 0) {
       return false;
@@ -184,10 +186,17 @@ export default function VenueBookingModalConfirmation({
   };
 
   const handleModalCloseButton = () => {
-    setTimeout(() => {
+    for (let key = 0; key < timeouts.current.length; key += 1) {
+      const t = timeouts.current[key];
+      clearTimeout(t);
+    }
+
+    const close = setTimeout(() => {
       reset();
       onClose();
     }, 200);
+
+    timeouts.current.push(close);
   };
 
   const submitBookingRequest = async (
@@ -221,9 +230,17 @@ export default function VenueBookingModalConfirmation({
       if (content.status) {
         setSubmitting(false);
         setSuccessBooking(true);
-        setTimeout(() => {
+
+        for (let key = 0; key < timeouts.current.length; key += 1) {
+          const t = timeouts.current[key];
+          clearTimeout(t);
+        }
+
+        const time = setTimeout(() => {
           handleModalCloseButton();
         }, 5000);
+
+        timeouts.current.push(time);
       } else {
         toast({
           title: 'Error',

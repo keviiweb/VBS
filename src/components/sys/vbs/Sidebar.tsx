@@ -19,7 +19,7 @@ const adminMenu = [
   { label: 'KEIPs', icon: FiStar, href: '/sys/keips' },
   { label: 'CONTACT US', icon: FiCompass, href: '/sys/contact' },
   {
-    label: 'MANAGE BOOKINGS',
+    label: 'APPROVE BOOKINGS',
     icon: FiCalendar,
     href: '/sys/manage/admin/bookings',
   },
@@ -27,6 +27,11 @@ const adminMenu = [
     label: 'MANAGE VENUES',
     icon: FiMapPin,
     href: '/sys/manage/admin/venues',
+  },
+  {
+    label: 'MANAGE BOOKINGS',
+    icon: FiCalendar,
+    href: '/sys/manage/bookings',
   },
 ];
 

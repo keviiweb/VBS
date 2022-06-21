@@ -268,8 +268,9 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                             columns={columns}
                             data={conflict}
                             controlledPageCount={
-                              modalData.conflictRequest.length
-                                ? modalData.conflictRequest.length
+                              modalData.conflictRequestObj &&
+                              modalData.conflictRequestObj.length
+                                ? modalData.conflictRequestObj.length
                                 : 0
                             }
                             dataHandler={null}
