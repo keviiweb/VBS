@@ -66,7 +66,7 @@ export const mapSlotToTiming = (
 
     return result;
   } else {
-    if (!checkerNumber(Number(data))) {
+    if (checkerNumber(Number(data))) {
       if (timingSlotNumberToTimingMapping[Number(data)]) {
         let map: string = timingSlotNumberToTimingMapping[Number(data)];
         return map;
