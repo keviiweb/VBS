@@ -4,6 +4,7 @@ import {
   compareDate,
   dateISO,
   prettifyDate,
+  isValidDate,
 } from '@constants/sys/date';
 import moment from 'moment-timezone';
 
@@ -180,5 +181,22 @@ test('prettifyDate test 1', async () => {
   );
   expect(prettifyDate(new Date('how are youuuuu'))).toStrictEqual(
     'Unknown Date',
+  );
+});
+
+test('isValidDate test 1', async () => {
+  expect(isValidDate(new Date('2022-06-17'))).toStrictEqual(true);
+  expect(isValidDate(new Date('2022-07-17'))).toStrictEqual(true);
+  expect(isValidDate(new Date('2023-06-17'))).toStrictEqual(true);
+  expect(isValidDate(new Date('2022-03-07'))).toStrictEqual(true);
+  expect(isValidDate(new Date('2022-10-17'))).toStrictEqual(true);
+  expect(isValidDate(new Date('asdasdsa 213123adsfdsesdfds'))).toStrictEqual(
+    false,
+  );
+  expect(isValidDate(new Date('2022-10-17 213123adsfdsesdfds'))).toStrictEqual(
+    false,
+  );
+  expect(isValidDate(new Date('2022-werewr 213123adsfdsesdfds'))).toStrictEqual(
+    false,
   );
 });

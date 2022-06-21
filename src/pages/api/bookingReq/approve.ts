@@ -11,7 +11,7 @@ import {
   setApprove,
   setRejectConflicts,
 } from '@helper/sys/vbs/bookingReq';
-import { convertSlotToArray } from '@constants/sys/helper';
+import { convertSlotToArray, checkerString } from '@constants/sys/helper';
 import { currentSession } from '@helper/sys/session';
 import { createVenueBooking } from '@helper/sys/vbs/booking';
 
@@ -21,7 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = null;
   const { id } = req.body;
   if (session !== undefined && session !== null && session.user.admin) {
-    if (id !== null && id !== undefined) {
+    if (checkerString(id)) {
       const bookingRequest: BookingRequest = await findBookingByID(id);
 
       if (bookingRequest !== null && bookingRequest !== undefined) {

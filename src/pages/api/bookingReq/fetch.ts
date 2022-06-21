@@ -7,6 +7,7 @@ import {
   mapSlotToTiming,
   convertSlotToArray,
   prettifyTiming,
+  checkerString,
 } from '@constants/sys/helper';
 import {
   convertUnixToDate,
@@ -33,7 +34,7 @@ import {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
-  const query = req.query.q;
+  const query = req.query.q as string;
 
   const limitQuery = req.query.limit;
   const skipQuery = req.query.skip;
@@ -47,7 +48,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
     let successBooking: boolean = false;
 
-    if (query !== undefined && query === 'USER') {
+    if (checkerString(query) && query === 'USER') {
       count = await countBookingByUser(session);
       bookings = await findBookingByUser(session, limit, skip);
 
@@ -95,95 +96,99 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.end();
     }
 
-    if ((bookings !== null || bookings !== undefined) && successBooking) {
-      const parsedBooking: BookingRequest[] = [];
-      for (let booking = 0; booking < bookings.length; booking += 1) {
-        if (bookings[booking]) {
-          const book: BookingRequest = bookings[booking];
-          const venueReq: Result = await findVenueByID(book.venue);
-          const date = convertUnixToDate(book.date as number);
-          const timeSlots = mapSlotToTiming(
-            convertSlotToArray(book.timeSlots, true),
-          ) as string[];
+    const parsedBooking: BookingRequest[] = [];
+    if (successBooking) {
+      if (count > 0) {
+        for (let booking = 0; booking < bookings.length; booking += 1) {
+          if (bookings[booking]) {
+            const book: BookingRequest = bookings[booking];
+            const venueReq: Result = await findVenueByID(book.venue);
+            const date = convertUnixToDate(book.date as number);
+            const timeSlots = mapSlotToTiming(
+              convertSlotToArray(book.timeSlots, true),
+            ) as string[];
 
-          if (venueReq.status) {
-            const venue = venueReq.msg.name;
+            if (venueReq.status) {
+              const venue = venueReq.msg.name;
 
-            let cca: string = null;
-            if (book.cca === 'PERSONAL') {
-              cca = 'PERSONAL';
-            } else {
-              const ccaReq: Result = await findCCAbyID(book.cca);
-              if (ccaReq.status) {
-                const ccaReqMsg: CCA = ccaReq.msg;
-                cca = ccaReqMsg.name;
+              let cca: string = null;
+              if (book.cca === 'PERSONAL') {
+                cca = 'PERSONAL';
               } else {
-                console.error(ccaReq.error);
-              }
-            }
-
-            const conflictsRequest: Result = await getConflictingRequest(book);
-            let conflicts: BookingRequest[] = [];
-            if (conflictsRequest.status) {
-              conflicts = conflictsRequest.msg;
-            }
-
-            let status: string = null;
-            const bookingDate: number = book.date as number;
-            const minDay: number = process.env.CANCEL_MIN_DAY
-              ? Number(process.env.CANCEL_MIN_DAY)
-              : 3;
-
-            let success: boolean = true;
-
-            if (!book.isApproved && !book.isCancelled && !book.isRejected) {
-              status = 'PENDING';
-              if (!compareDate(bookingDate, minDay)) {
-                if (query && query === 'USER') {
-                  status = 'EXPIRED';
+                const ccaReq: Result = await findCCAbyID(book.cca);
+                if (ccaReq.status) {
+                  const ccaReqMsg: CCA = ccaReq.msg;
+                  cca = ccaReqMsg.name;
                 } else {
-                  success = false;
+                  console.error(ccaReq.error);
                 }
               }
-            } else if (
-              book.isApproved &&
-              !book.isCancelled &&
-              !book.isRejected
-            ) {
-              status = 'APPROVED';
-            } else if (
-              !book.isApproved &&
-              book.isCancelled &&
-              !book.isRejected
-            ) {
-              status = 'CANCELLED';
-            } else if (
-              !book.isApproved &&
-              !book.isCancelled &&
-              book.isRejected
-            ) {
-              status = 'REJECTED';
-            } else {
-              status = 'UNKNOWN';
-            }
 
-            if (success) {
-              const data: BookingRequest = {
-                id: book.id,
-                email: book.email,
-                venue: venue,
-                dateStr: prettifyDate(date),
-                timeSlots: prettifyTiming(timeSlots),
-                isApproved: book.isApproved,
-                isRejected: book.isRejected,
-                isCancelled: book.isCancelled,
-                purpose: book.purpose,
-                cca: cca,
-                conflictRequest: conflicts,
-                status: status,
-              };
+              const conflictsRequest: Result = await getConflictingRequest(
+                book,
+              );
+              let conflicts: BookingRequest[] = [];
+              if (conflictsRequest.status) {
+                conflicts = conflictsRequest.msg;
+              }
 
-              parsedBooking.push(data);
+              let status: string = null;
+              const bookingDate: number = book.date as number;
+              const minDay: number = process.env.CANCEL_MIN_DAY
+                ? Number(process.env.CANCEL_MIN_DAY)
+                : 3;
+
+              let success: boolean = true;
+
+              if (!book.isApproved && !book.isCancelled && !book.isRejected) {
+                status = 'PENDING';
+                if (!compareDate(bookingDate, minDay)) {
+                  if (query && query === 'USER') {
+                    status = 'EXPIRED';
+                  } else {
+                    success = false;
+                  }
+                }
+              } else if (
+                book.isApproved &&
+                !book.isCancelled &&
+                !book.isRejected
+              ) {
+                status = 'APPROVED';
+              } else if (
+                !book.isApproved &&
+                book.isCancelled &&
+                !book.isRejected
+              ) {
+                status = 'CANCELLED';
+              } else if (
+                !book.isApproved &&
+                !book.isCancelled &&
+                book.isRejected
+              ) {
+                status = 'REJECTED';
+              } else {
+                status = 'UNKNOWN';
+              }
+
+              if (success) {
+                const data: BookingRequest = {
+                  id: book.id,
+                  email: book.email,
+                  venue: venue,
+                  dateStr: prettifyDate(date),
+                  timeSlots: prettifyTiming(timeSlots),
+                  isApproved: book.isApproved,
+                  isRejected: book.isRejected,
+                  isCancelled: book.isCancelled,
+                  purpose: book.purpose,
+                  cca: cca,
+                  conflictRequest: conflicts,
+                  status: status,
+                };
+
+                parsedBooking.push(data);
+              }
             }
           }
         }

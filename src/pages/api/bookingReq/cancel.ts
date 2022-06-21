@@ -10,6 +10,7 @@ import {
   setCancel,
   notifyConflicts,
 } from '@helper/sys/vbs/bookingReq';
+import { checkerString } from '@constants/sys/helper';
 import { currentSession } from '@helper/sys/session';
 import { compareDate } from '@constants/sys/date';
 
@@ -19,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = null;
   const { id } = req.body;
   if (session !== undefined && session !== null) {
-    if (id !== null && id !== undefined) {
+    if (checkerString(id)) {
       const bookingRequest: BookingRequest = await findBookingByID(id);
 
       if (bookingRequest !== null || bookingRequest !== undefined) {

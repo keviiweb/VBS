@@ -30,41 +30,59 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         });
       });
 
-    const isChildVenue: boolean = data.fields.isChildVenue === 'true';
-    const parentVenue: string = isChildVenue
-      ? (data.fields.parentVenue as string)
-      : null;
+    try {
+      const id: string = data.fields.id as string;
+      const capacity: number = Number(data.fields.capacity);
+      const name: string = data.fields.name as string;
+      const description: string = data.fields.description as string;
+      const isInstantBook: boolean = data.fields.isInstantBook === 'true';
+      const visible: boolean = data.fields.visible === 'true';
+      const isChildVenue: boolean = data.fields.isChildVenue === 'true';
+      const parentVenue: string = isChildVenue
+        ? (data.fields.parentVenue as string)
+        : null;
+      const openingHours: string = data.fields.openingHours as string;
 
-    const venueData: Venue = {
-      id: data.fields.id as string,
-      capacity: Number(data.fields.capacity),
-      name: data.fields.name as string,
-      description: data.fields.description as string,
-      isInstantBook: data.fields.isInstantBook === 'true',
-      visible: data.fields.visible === 'true',
-      isChildVenue: isChildVenue,
-      parentVenue: parentVenue as string,
-      openingHours: data.fields.openingHours as string,
-    };
+      const venueData: Venue = {
+        id: id,
+        capacity: capacity,
+        name: name,
+        description: description,
+        isInstantBook: isInstantBook,
+        visible: visible,
+        isChildVenue: isChildVenue,
+        parentVenue: parentVenue,
+        openingHours: openingHours,
+      };
 
-    const editVenueRequest: Result = await editVenue(venueData);
-    if (editVenueRequest.status) {
+      const editVenueRequest: Result = await editVenue(venueData);
+      if (editVenueRequest.status) {
+        result = {
+          status: true,
+          error: '',
+          msg: `Successfully edited ${data.fields.name}`,
+        };
+        res.status(200).send(result);
+        res.end();
+      } else {
+        result = {
+          status: false,
+          error: editVenueRequest.error,
+          msg: '',
+        };
+        res.status(200).send(result);
+        res.end();
+      }
+    } catch (error) {
+      console.error(error);
       result = {
-        status: true,
-        error: '',
-        msg: `Successfully edited ${data.fields.name}`,
+        status: false,
+        error: 'Information of wrong type',
+        msg: '',
       };
       res.status(200).send(result);
       res.end();
-      return;
     }
-    result = {
-      status: false,
-      error: editVenueRequest.error,
-      msg: '',
-    };
-    res.status(200).send(result);
-    res.end();
   } else {
     result = { status: false, error: 'Unauthenticated request', msg: '' };
     res.status(200).send(result);

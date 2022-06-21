@@ -3,7 +3,11 @@ import { Result } from 'types/api';
 import { Venue } from 'types/venue';
 import { Booking } from 'types/booking';
 
-import { mapSlotToTiming, findSlotsByID } from '@constants/sys/helper';
+import {
+  mapSlotToTiming,
+  findSlotsByID,
+  checkerString,
+} from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
 import { currentSession } from '@helper/sys/session';
 import {
@@ -21,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   let result: Result = { status: false, error: '', msg: '' };
   if (session !== undefined && session !== null) {
-    if (id !== undefined && id !== null) {
+    if (checkerString(id)) {
       let bookings: Booking[] = null;
       if (session.user.admin) {
         bookings = await findAllBookingByVenueID(id);

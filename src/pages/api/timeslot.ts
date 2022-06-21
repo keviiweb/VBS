@@ -3,6 +3,7 @@ import { Result } from 'types/api';
 import { Booking } from 'types/booking';
 import { TimeSlot } from 'types/timeslot';
 
+import { checkerNumber, checkerString } from '@constants/sys/helper';
 import { timingSlotNumberToTimingMapping } from '@constants/sys/timeslot';
 import { convertDateToUnix } from '@constants/sys/date';
 import { currentSession } from '@helper/sys/session';
@@ -14,20 +15,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const slots: TimeSlot[] = [];
   const { venue, date } = req.body;
+  let result: Result = null;
 
   if (session !== undefined && session !== null) {
-    if (
-      venue !== null &&
-      venue !== undefined &&
-      date !== null &&
-      date !== undefined
-    ) {
+    if (checkerString(venue) && checkerString(date)) {
       const convertedDate: number = convertDateToUnix(date);
       const openingHours = await fetchOpeningHours(venue);
       const startHour: number = openingHours.start;
       const endHour: number = openingHours.end;
 
-      if (startHour !== null && endHour !== null) {
+      if (checkerNumber(startHour) && checkerNumber(endHour)) {
         const bookedTimeSlots: Result = await fetchBookedTimeSlots(
           venue,
           convertedDate,
@@ -86,8 +83,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           }
         }
 
-        res.status(200).send(slots);
-        res.end();
+        result = {
+          status: true,
+          error: null,
+          msg: slots,
+        };
       } else {
         for (
           let key = 0;
@@ -107,16 +107,33 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             };
           }
         }
-
-        res.status(200).send(slots);
-        res.end();
       }
+
+      result = {
+        status: true,
+        error: null,
+        msg: slots,
+      };
+      res.status(200).send(result);
+      res.end();
     } else {
-      res.status(200).send(slots);
+      result = {
+        status: false,
+        error: 'Missing information',
+        msg: '',
+      };
+
+      res.status(200).send(result);
       res.end();
     }
   } else {
-    res.status(200).send(slots);
+    result = {
+      status: false,
+      error: 'Unauthenticated',
+      msg: '',
+    };
+
+    res.status(200).send(result);
     res.end();
   }
 };

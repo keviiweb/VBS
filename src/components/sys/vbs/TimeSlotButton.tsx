@@ -12,7 +12,7 @@ export default function TimeSlotButton({
 
   const click = async () => {
     setSelected(!selected);
-    if (handleClick) {
+    if (handleClick !== null && handleClick !== undefined) {
       await handleClick(id);
     }
   };

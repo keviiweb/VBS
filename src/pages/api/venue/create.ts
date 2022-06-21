@@ -32,48 +32,63 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
 
     try {
+      const capacity: number = Number(data.fields.capacity);
+      const name: string = data.fields.name as string;
+      const description: string = data.fields.description as string;
+      const isInstantBook: boolean = data.fields.isInstantBook === 'true';
+      const visible: boolean = data.fields.visible === 'true';
+      const isChildVenue: boolean = data.fields.isChildVenue === 'true';
+      const parentVenue: string = isChildVenue
+        ? (data.fields.parentVenue as string)
+        : null;
+
+      const openingHours: string = data.fields.openingHours as string;
+
       const imageFile: formidable.File = data.files.image as formidable.File;
       let venuePath: string = null;
 
-      if (imageFile) {
+      if (imageFile !== null && imageFile !== undefined) {
         const imagePath = imageFile.filepath;
 
         venuePath = `/sys/venue/${imageFile.originalFilename}`;
         const pathToWriteImage = `public${venuePath}`;
         const image = await fs.readFile(imagePath);
         await fs.writeFile(pathToWriteImage, image);
-      }
 
-      const isChildVenue: boolean = data.fields.isChildVenue === 'true';
-      const parentVenue: string = isChildVenue
-        ? (data.fields.parentVenue as string)
-        : null;
-
-      const venueData: Venue = {
-        capacity: Number(data.fields.capacity),
-        name: data.fields.name as string,
-        description: data.fields.description as string,
-        isInstantBook: data.fields.isInstantBook === 'true',
-        visible: data.fields.visible === 'true',
-        isChildVenue: isChildVenue,
-        parentVenue: parentVenue as string,
-        openingHours: data.fields.openingHours as string,
-        image: venuePath,
-      };
-
-      const createVenueRequest: Result = await createVenue(venueData);
-      if (createVenueRequest.status) {
-        result = {
-          status: true,
-          error: '',
-          msg: `Successfully created ${data.fields.name}`,
+        const venueData: Venue = {
+          capacity: capacity,
+          name: name,
+          description: description,
+          isInstantBook: isInstantBook,
+          visible: visible,
+          isChildVenue: isChildVenue,
+          parentVenue: parentVenue,
+          openingHours: openingHours,
+          image: venuePath,
         };
-        res.status(200).send(result);
-        res.end();
+
+        const createVenueRequest: Result = await createVenue(venueData);
+        if (createVenueRequest.status) {
+          result = {
+            status: true,
+            error: '',
+            msg: `Successfully created ${data.fields.name}`,
+          };
+          res.status(200).send(result);
+          res.end();
+        } else {
+          result = {
+            status: false,
+            error: createVenueRequest.error,
+            msg: '',
+          };
+          res.status(200).send(result);
+          res.end();
+        }
       } else {
         result = {
           status: false,
-          error: createVenueRequest.error,
+          error: 'Please include an image!',
           msg: '',
         };
         res.status(200).send(result);

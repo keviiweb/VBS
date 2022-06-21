@@ -19,14 +19,14 @@ export default function UserProfile(props) {
   const router = useRouter();
 
   useEffect(() => {
-    async function fetchData(propsField) {
+    async function fetchData(propsField: Promise<{ data: string }>) {
       const propRes = await propsField;
       try {
         if (propRes.data) {
           setURL(propRes.data);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
     fetchData(props);

@@ -9,6 +9,7 @@ import {
   isRejected,
   setReject,
 } from '@helper/sys/vbs/bookingReq';
+import { checkerString } from '@constants/sys/helper';
 import { currentSession } from '@helper/sys/session';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -17,7 +18,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = null;
   const { id } = req.body;
   if (session !== undefined && session !== null && session.user.admin) {
-    if (id !== undefined && id !== null) {
+    if (checkerString(id)) {
       const bookingRequest: BookingRequest = await findBookingByID(id);
 
       if (bookingRequest) {

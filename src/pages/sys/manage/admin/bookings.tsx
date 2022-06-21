@@ -28,10 +28,11 @@ import BookingModal from '@components/sys/vbs/BookingModal';
 import BookingCalendar from '@components/sys/vbs/BookingCalendar';
 import { parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
+
 import { Result } from 'types/api';
-import { BookingRequest } from '@root/src/types/bookingReq';
-import { Venue } from '@root/src/types/venue';
-import { Booking } from '@root/src/types/booking';
+import { BookingRequest } from 'types/bookingReq';
+import { Venue } from 'types/venue';
+import { Booking } from 'types/booking';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 

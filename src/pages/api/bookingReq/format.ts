@@ -8,6 +8,7 @@ import {
   mapSlotToTiming,
   convertSlotToArray,
   prettifyTiming,
+  checkerArray,
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
 import { currentSession } from '@helper/sys/session';
@@ -17,81 +18,85 @@ import { findCCAbyID } from '@helper/sys/vbs/cca';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
 
-  const { bookings } = req.body;
+  const { bookingsRes } = req.body;
 
   let result: Result = null;
   if (session !== undefined && session !== null && session.user.admin) {
-    if (bookings !== null && bookings !== undefined) {
-      const parsedBooking: BookingRequest[] = [];
-      for (let booking = 0; booking < bookings.length; booking += 1) {
-        if (bookings[booking]) {
-          const book: BookingRequest = bookings[booking];
-          const venueReq: Result = await findVenueByID(book.venue);
-          const date = convertUnixToDate(book.date as number);
-          const timeSlots: string[] = mapSlotToTiming(
-            convertSlotToArray(book.timeSlots, true),
-          ) as string[];
+    const parsedBooking: BookingRequest[] = [];
+    const bookings: BookingRequest[] = bookingsRes as BookingRequest[];
 
-          if (venueReq.status) {
-            const venueReqMsg: Venue = venueReq.msg;
-            const venue = venueReqMsg.name;
+    if (checkerArray(bookings)) {
+      if (bookings.length > 0) {
+        for (let booking = 0; booking < bookings.length; booking += 1) {
+          if (bookings[booking]) {
+            const book: BookingRequest = bookings[booking];
+            const venueReq: Result = await findVenueByID(book.venue);
+            const date = convertUnixToDate(book.date);
+            const timeSlots: string[] = mapSlotToTiming(
+              convertSlotToArray(book.timeSlots, true),
+            ) as string[];
 
-            let cca: string = null;
-            if (book.cca === 'PERSONAL') {
-              cca = 'PERSONAL';
-            } else {
-              const ccaReq: Result = await findCCAbyID(book.cca);
-              if (ccaReq.status) {
-                const ccaReqMsg: CCA = ccaReq.msg;
-                cca = ccaReqMsg.name;
+            if (venueReq.status) {
+              const venueReqMsg: Venue = venueReq.msg;
+              const venue = venueReqMsg.name;
+
+              let cca: string = null;
+              if (book.cca === 'PERSONAL') {
+                cca = 'PERSONAL';
               } else {
-                console.error(ccaReq.error);
+                const ccaReq: Result = await findCCAbyID(book.cca);
+                if (ccaReq.status) {
+                  const ccaReqMsg: CCA = ccaReq.msg;
+                  cca = ccaReqMsg.name;
+                } else {
+                  console.error(ccaReq.error);
+                }
               }
-            }
 
-            let status: string = null;
+              let status: string = null;
 
-            if (!book.isApproved && !book.isCancelled && !book.isRejected) {
-              status = 'Pending';
-            } else if (
-              book.isApproved &&
-              !book.isCancelled &&
-              !book.isRejected
-            ) {
-              status = 'Approved';
-            } else if (
-              !book.isApproved &&
-              book.isCancelled &&
-              !book.isRejected
-            ) {
-              status = 'Cancelled';
-            } else if (
-              !book.isApproved &&
-              !book.isCancelled &&
-              book.isRejected
-            ) {
-              status = 'Rejected';
+              if (!book.isApproved && !book.isCancelled && !book.isRejected) {
+                status = 'Pending';
+              } else if (
+                book.isApproved &&
+                !book.isCancelled &&
+                !book.isRejected
+              ) {
+                status = 'Approved';
+              } else if (
+                !book.isApproved &&
+                book.isCancelled &&
+                !book.isRejected
+              ) {
+                status = 'Cancelled';
+              } else if (
+                !book.isApproved &&
+                !book.isCancelled &&
+                book.isRejected
+              ) {
+                status = 'Rejected';
+              } else {
+                status = 'Unknown';
+              }
+
+              const data: BookingRequest = {
+                id: book.id,
+                email: book.email,
+                venue: venue,
+                dateStr: prettifyDate(date),
+                timeSlots: prettifyTiming(timeSlots),
+                isApproved: book.isApproved,
+                isRejected: book.isRejected,
+                isCancelled: book.isCancelled,
+                purpose: book.purpose,
+                cca: cca,
+                status: status,
+              };
+
+              parsedBooking.push(data);
             } else {
-              status = 'Unknown';
+              console.error(venueReq.error);
             }
-
-            const data: BookingRequest = {
-              id: book.id,
-              email: book.email,
-              venue: venue,
-              dateStr: prettifyDate(date),
-              timeSlots: prettifyTiming(timeSlots),
-              isApproved: book.isApproved,
-              isRejected: book.isRejected,
-              isCancelled: book.isCancelled,
-              purpose: book.purpose,
-              cca: cca,
-              status: status,
-            };
-
-            parsedBooking.push(data);
-          } else {
-            console.error(venueReq.error);
           }
         }
       }
@@ -103,14 +108,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       };
       res.status(200).send(result);
       res.end();
+    } else {
+      result = {
+        status: false,
+        error: 'Cannot get all bookings',
+        msg: '',
+      };
+      res.status(200).send(result);
+      res.end();
     }
-    result = {
-      status: false,
-      error: 'Cannot get all bookings',
-      msg: '',
-    };
-    res.status(200).send(result);
-    res.end();
   } else {
     result = { status: false, error: 'Unauthenticated', msg: '' };
     res.status(200).send(result);

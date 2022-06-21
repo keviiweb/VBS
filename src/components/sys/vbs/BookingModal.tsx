@@ -20,6 +20,8 @@ import {
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 import TableWidget from '@components/sys/vbs/TableWidget';
+import { BookingRequest } from 'types/bookingReq';
+import { Result } from 'types/api';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -55,7 +57,7 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
     }, 200);
   };
 
-  const processConflicts = async (conflicts) => {
+  const processConflicts = async (conflicts: BookingRequest[]) => {
     try {
       const rawResponse = await fetch('/api/bookingReq/format', {
         method: 'POST',
@@ -67,7 +69,7 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
           bookings: conflicts,
         }),
       });
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         setConflict(content.msg);
       }

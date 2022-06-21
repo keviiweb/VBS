@@ -9,7 +9,7 @@ export default function CalendarWidget({
   calendarMin,
   calendarMax,
 }) {
-  const locale = 'Asia/Singapore';
+  const locale: string = 'Asia/Singapore';
   const [currentDate, setDate] = useState(moment().tz(locale).toDate());
   const [minDate, setMinDate] = useState(moment().tz(locale).toDate());
   const [maxDate, setMaxDate] = useState(moment().tz(locale).toDate());
@@ -18,7 +18,7 @@ export default function CalendarWidget({
   const max = useRef(0);
 
   function addDays(date: Date, days: number) {
-    return moment(date, 'YYYY-MM-DD').add(days, 'days').toDate();
+    return moment.tz(date, locale).add(days, 'days').toDate();
   }
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function CalendarWidget({
   }, [calendarMin, calendarMax]);
 
   const handleChange = async (date: Date) => {
-    const currDate = moment(date).tz('Asia/Singapore').toDate();
+    const currDate = moment.tz(date, 'Asia/Singapore').toDate();
     setDate(currDate);
     await selectedDate(currDate);
   };

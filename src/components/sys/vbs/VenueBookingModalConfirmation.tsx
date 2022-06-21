@@ -29,6 +29,11 @@ import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 import Loading from '@components/sys/vbs/Loading';
 
+import { checkerString, checkerNumber } from '@constants/sys/helper';
+import { TimeSlot } from 'types/timeslot';
+import { isValidDate } from '@constants/sys/date';
+import { Result } from 'types/api';
+
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -38,9 +43,9 @@ export default function VenueBookingModalConfirmation({
   modalData,
 }) {
   // display
-  const [venue, setVenue] = useState(null);
-  const [date, setDate] = useState(null);
-  const [timeSlots, setTimeSlots] = useState(null);
+  const [venue, setVenue] = useState('');
+  const [date, setDate] = useState('');
+  const [timeSlots, setTimeSlots] = useState('');
   const [email, setEmail] = useState('');
   const [purpose, setPurpose] = useState('');
   const [type, setType] = useState('1');
@@ -58,25 +63,26 @@ export default function VenueBookingModalConfirmation({
   const toast = useToast();
 
   // variable for db
-  const emailDB = useRef(null);
-  const venueNameDB = useRef(null);
-  const venueDB = useRef(null);
-  const timeSlotsDB = useRef(null);
+  const emailDB = useRef('');
+  const venueNameDB = useRef('');
+  const venueDB = useRef('');
+  const timeSlotsDB = useRef([]);
   const typeDB = useRef('PERSONAL');
-  const purposeDB = useRef(null);
+  const purposeDB = useRef('');
 
-  const dateParsed = useRef(null);
+  const dateParsed = useRef('');
 
   const [submitting, setSubmitting] = useState(false);
 
-  const check = (timeSlotsField) => {
+  const check = (timeSlotsField: TimeSlot[]): boolean => {
     if (timeSlotsField.length === 0) {
       return false;
     }
 
     for (let key = 0; key < timeSlotsField.length; key += 1) {
       if (timeSlotsField[key]) {
-        if (timeSlotsField[key].id) {
+        const slot = timeSlotsField[key];
+        if (!checkerNumber(slot.id)) {
           return true;
         }
       }
@@ -86,66 +92,64 @@ export default function VenueBookingModalConfirmation({
   };
 
   const validateFields = (
-    emailField,
-    venueField,
-    venueNameField,
-    dateField,
-    timeSlotsField,
-    typeField,
-    purposeField,
+    emailField: string,
+    venueField: string,
+    venueNameField: string,
+    dateField: string,
+    timeSlotsField: TimeSlot[],
+    typeField: string,
+    purposeField: string,
   ) => {
     // super basic validation here
-    if (emailField) {
-      if (!emailField.includes('@u.nus.edu')) {
-        setError('Please use your school email.');
-        return false;
-      }
-    } else {
+    if (!checkerString(emailField)) {
       setError('Please include an email.');
       return false;
     }
+    if (!emailField.includes('@u.nus.edu')) {
+      setError('Please use your school email.');
+      return false;
+    }
 
-    if (!dateField) {
+    if (!checkerString(dateField) || !isValidDate(new Date(dateField))) {
       setError('No date found');
       return false;
     }
 
-    if (!venueField) {
+    if (!checkerString(venueField)) {
       setError('No venues found');
       return false;
     }
 
-    if (!venueNameField) {
+    if (!checkerString(venueNameField)) {
       setError('No venues found');
       return false;
     }
 
-    if (!timeSlotsField || !check(timeSlotsField)) {
+    if (timeSlotsField === [] || !check(timeSlotsField)) {
       setError('No timeslots found');
       return false;
     }
 
-    if (typeField && typeField !== '') {
-      if (typeField !== 'PERSONAL') {
-        let found = false;
-
-        for (let i = 0; i < CCALIST.current.length; i += 1) {
-          if (typeField === CCALIST.current[i].id) {
-            found = true;
-          }
-        }
-
-        if (!found) {
-          setError('Not valid CCA');
-          return false;
-        }
-      }
-    } else {
+    if (!checkerString(typeField)) {
       setError('No type found');
       return false;
     }
+    if (typeField !== 'PERSONAL') {
+      let found = false;
 
-    if (!purposeField) {
+      for (let i = 0; i < CCALIST.current.length; i += 1) {
+        if (typeField === CCALIST.current[i].id) {
+          found = true;
+        }
+      }
+
+      if (!found) {
+        setError('Not valid CCA');
+        return false;
+      }
+    }
+
+    if (!checkerString(purposeField)) {
       setError('Please write a purpose for the booking.');
       return false;
     }
@@ -185,13 +189,13 @@ export default function VenueBookingModalConfirmation({
   };
 
   const submitBookingRequest = async (
-    emailField,
-    venueIDField,
-    venueNameField,
-    dateField,
-    timeSlotsField,
-    typeField,
-    purposeField,
+    emailField: string,
+    venueIDField: string,
+    venueNameField: string,
+    dateField: string,
+    timeSlotsField: TimeSlot[],
+    typeField: string,
+    purposeField: string,
   ) => {
     setSubmitting(true);
     try {
@@ -211,7 +215,7 @@ export default function VenueBookingModalConfirmation({
           purpose: purposeField,
         }),
       });
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status) {
         setSubmitting(false);
         setSuccessBooking(true);
@@ -289,7 +293,7 @@ export default function VenueBookingModalConfirmation({
           'Content-Type': 'application/json',
         },
       });
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status && content.msg.length > 0) {
         CCALIST.current = [];
         const ccaContent = content.msg;
@@ -348,7 +352,9 @@ export default function VenueBookingModalConfirmation({
     }
   };
 
-  const onCCASelectionChange = (event) => {
+  const onCCASelectionChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
     typeDB.current = event.target.value;
     setCCASelection(event.target.value);
   };
@@ -412,7 +418,7 @@ export default function VenueBookingModalConfirmation({
                         <Text fontSize='xl'>Date: {date}</Text>
                         <Text fontSize='xl'>Timeslot: {timeSlots}</Text>
                         <RadioGroup
-                          onChange={(event) => setTypeHelper(event)}
+                          onChange={setTypeHelper}
                           value={type}
                           name={venue}
                         >

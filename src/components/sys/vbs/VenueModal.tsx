@@ -26,6 +26,7 @@ import {
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 import TableWidget from '@components/sys/vbs/TableWidget';
+import { Result } from 'types/api';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -47,9 +48,6 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
   const pageSizeDB = useRef(10);
 
   const onTableChange = useCallback(({ pageIndex, pageSize }) => {
-    console.log(`PAGEINDEX ${pageIndex}`);
-    console.log(`PAGESIZE ${pageSize}`);
-
     pageIndexDB.current = pageIndex;
     pageSizeDB.current = pageSize;
   }, []);
@@ -73,7 +71,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
     }, 200);
   };
 
-  const processChildVenue = async (parentVenueID) => {
+  const processChildVenue = async (parentVenueID: string) => {
     try {
       const rawResponse = await fetch('/api/venue/child', {
         method: 'POST',
@@ -85,7 +83,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
           venue: parentVenueID,
         }),
       });
-      const content = await rawResponse.json();
+      const content: Result = await rawResponse.json();
       if (content.status && content.msg.length > 0) {
         setChildVenues(content.msg);
       }
