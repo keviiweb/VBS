@@ -1,5 +1,6 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { BookingRequest } from 'types/bookingReq';
+
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const channel_id = process.env.TELEGRAM_BOT_CHANNEL_ID;
 export const bot = global.bot || new TelegramBot(token, { polling: true });
@@ -27,7 +28,7 @@ export const approvalBookingRequestMessageBuilder = (
   bookingRequest: BookingRequest,
 ): string => {
   const venueName: string = bookingRequest.venue;
-  const date: string = bookingRequest.date.toString();
+  const date: string = bookingRequest.dateStr;
   const timeSlots: string = bookingRequest.timeSlots;
   const cca: string = bookingRequest.cca;
 
@@ -39,7 +40,7 @@ export const rejectBookingRequestMessageBuilder = (
   bookingRequest: BookingRequest,
 ): string => {
   const venueName: string = bookingRequest.venue;
-  const date: string = bookingRequest.date.toString();
+  const date: string = bookingRequest.dateStr;
   const timeSlots: string = bookingRequest.timeSlots;
   const cca: string = bookingRequest.cca;
 

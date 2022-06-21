@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 import { BookingRequest } from 'types/bookingReq';
 
+import { currentSession } from '@helper/sys/session';
 import {
   findBookingByID,
   isApproved,
@@ -9,8 +10,8 @@ import {
   isRejected,
   setReject,
 } from '@helper/sys/vbs/bookingReq';
+
 import { checkerString } from '@constants/sys/helper';
-import { currentSession } from '@helper/sys/session';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);

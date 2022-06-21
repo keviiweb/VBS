@@ -12,9 +12,11 @@ import {
 } from '@chakra-ui/react';
 import { BsPerson } from 'react-icons/bs';
 import { MdOutlineEmail, MdAccountBox } from 'react-icons/md';
+
 import Auth from '@components/sys/Auth';
-import { currentSession } from '@helper/sys/session';
 import Loading from '@components/sys/vbs/Loading';
+
+import { currentSession } from '@helper/sys/session';
 
 const confetti = {
   light: {

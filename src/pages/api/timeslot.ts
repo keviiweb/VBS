@@ -6,6 +6,7 @@ import { TimeSlot } from 'types/timeslot';
 import { checkerNumber, checkerString } from '@constants/sys/helper';
 import { timingSlotNumberToTimingMapping } from '@constants/sys/timeslot';
 import { convertDateToUnix } from '@constants/sys/date';
+
 import { currentSession } from '@helper/sys/session';
 import { fetchOpeningHours } from '@helper/sys/vbs/venue';
 import { fetchBookedTimeSlots } from '@helper/sys/vbs/timeslot';

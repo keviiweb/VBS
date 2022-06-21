@@ -19,7 +19,9 @@ import {
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
+
 import TableWidget from '@components/sys/vbs/TableWidget';
+
 import { BookingRequest } from 'types/bookingReq';
 import { Result } from 'types/api';
 
@@ -91,8 +93,11 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
       setPurpose(modalData.purpose);
       setStatus(modalData.status);
 
-      if (modalData.conflictRequest && modalData.conflictRequest.length > 0) {
-        await processConflicts(modalData.conflictRequest);
+      if (
+        modalData.conflictRequestObj &&
+        modalData.conflictRequestObj.length > 0
+      ) {
+        await processConflicts(modalData.conflictRequestObj);
       }
 
       setLoadingData(false);

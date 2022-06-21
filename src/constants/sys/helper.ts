@@ -2,6 +2,7 @@ import {
   timingSlotNumberToTimingMapping,
   timeSlots,
 } from '@constants/sys/timeslot';
+
 import { TimeSlot } from 'types/timeslot';
 
 export const checkerString = (data: string): boolean => {

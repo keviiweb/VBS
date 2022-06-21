@@ -5,25 +5,19 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
-import {
-  Button,
-  Box,
-  Text,
-  useToast,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  Stack,
-} from '@chakra-ui/react';
+import { Button, Box, Stack, Text, useToast } from '@chakra-ui/react';
 import { CloseIcon, InfoOutlineIcon } from '@chakra-ui/icons';
 import { cardVariant } from '@root/motion';
 import { motion } from 'framer-motion';
+
 import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/vbs/TableWidget';
 import BookingModal from '@components/sys/vbs/BookingModal';
 
 import { Result } from 'types/api';
 import { BookingRequest } from 'types/bookingReq';
+
+import { checkerString } from '@constants/sys/helper';
 
 const MotionBox = motion(Box);
 
@@ -33,9 +27,6 @@ export default function ManageBooking() {
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState(null);
-
-  const [search, setSearch] = useState('');
-  const [filteredData, setFilteredData] = useState(null);
 
   let generateActionButton;
   let fetchData;
@@ -53,7 +44,7 @@ export default function ManageBooking() {
 
   const handleCancel = useCallback(
     async (id: string) => {
-      if (id !== '' && id !== undefined && id !== null) {
+      if (checkerString(id)) {
         try {
           const rawResponse = await fetch('/api/bookingReq/cancel', {
             method: 'POST',
@@ -220,35 +211,6 @@ export default function ManageBooking() {
     }
   }, [fetchData, loadingData]);
 
-  const handleSearch = (event: { target: { value: string } }) => {
-    const searchInput: string = event.target.value;
-    setSearch(searchInput);
-
-    if (
-      searchInput !== '' &&
-      searchInput !== null &&
-      searchInput !== undefined
-    ) {
-      const filteredDataField = data.filter(
-        (value: BookingRequest) =>
-          value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.cca.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.venue.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.date
-            .toString()
-            .toLowerCase()
-            .includes(searchInput.toLowerCase()) ||
-          value.timeSlots.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.email.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.status.toLowerCase().includes(searchInput.toLowerCase()),
-      );
-
-      setFilteredData(filteredDataField);
-    } else {
-      setFilteredData(null);
-    }
-  };
-
   const columns = useMemo(
     () => [
       {
@@ -310,22 +272,10 @@ export default function ManageBooking() {
           {!loadingData && data && data !== [] && data.length > 0 && (
             <Box minWidth='full' mt={30} overflow='auto'>
               <Stack align='center' justify='center' spacing={30}>
-                <InputGroup>
-                  <InputLeftAddon>Search:</InputLeftAddon>
-                  <Input
-                    type='text'
-                    placeholder=''
-                    value={search}
-                    onChange={handleSearch}
-                  />
-                </InputGroup>
-
                 <TableWidget
                   key={1}
                   columns={columns}
-                  data={
-                    filteredData && filteredData.length ? filteredData : data
-                  }
+                  data={data}
                   controlledPageCount={pageCount}
                   dataHandler={onTableChange}
                 />

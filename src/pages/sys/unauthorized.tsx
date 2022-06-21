@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Flex, Box, Stack, Heading, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, Stack, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
 export default function Unauthorized() {

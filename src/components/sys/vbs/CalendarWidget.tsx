@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { monthNamesFull } from '@constants/sys/months';
 import moment from 'moment-timezone';
+
+import { monthNamesFull } from '@constants/sys/months';
 
 export default function CalendarWidget({
   selectedDate,

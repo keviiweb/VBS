@@ -1,4 +1,7 @@
 import { Result } from 'types/api';
+import { BookingRequest } from 'types/bookingReq';
+import { Session } from 'next-auth/core/types';
+
 import { prisma } from '@constants/sys/db';
 import {
   convertSlotToArray,
@@ -7,6 +10,7 @@ import {
   prettifyTiming,
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
+
 import { findVenueByID } from '@helper/sys/vbs/venue';
 import { findCCAbyID } from '@helper/sys/vbs/cca';
 import { sendApproveMail } from '@helper/sys/vbs/email/approve';
@@ -18,8 +22,6 @@ import {
   rejectBookingRequestMessageBuilder,
   sendMessageToChannel,
 } from '@helper/sys/vbs/telegram';
-import { Session } from 'next-auth/core/types';
-import { BookingRequest } from '@root/src/types/bookingReq';
 
 export const BOOKINGS = ['PENDING', 'APPROVED', 'REJECTED'];
 
@@ -280,6 +282,18 @@ export const isRejected = async (
   } catch (error) {
     console.error(error);
     return true;
+  }
+};
+
+export const isOwner = async (
+  bookingRequest: BookingRequest,
+  session: Session,
+): Promise<boolean> => {
+  try {
+    return bookingRequest.sessionEmail === session.user.email;
+  } catch (error) {
+    console.error(error);
+    return false;
   }
 };
 
@@ -610,13 +624,15 @@ export const setRejectConflicts = async (
       let conflicting: string[] = [];
 
       for (let key in sameDayVenue) {
-        const request: BookingRequest = sameDayVenue[key];
-        if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
-          conflicting.push(request.id);
-          const reject: Result = await setReject(request, session);
-          if (!reject.status) {
-            console.error(reject.error);
-            success = false;
+        if (sameDayVenue[key]) {
+          const request: BookingRequest = sameDayVenue[key];
+          if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
+            conflicting.push(request.id);
+            const reject: Result = await setReject(request, session);
+            if (!reject.status) {
+              console.error(reject.error);
+              success = false;
+            }
           }
         }
       }
@@ -698,10 +714,13 @@ export const notifyConflicts = async (
 
   if (bookingRequest) {
     if (bookingRequest.conflictRequest) {
-      const conflicts: BookingRequest[] = bookingRequest.conflictRequest;
+      const conflicts: string[] = bookingRequest.conflictRequest.split(',');
       for (let key = 0; key < conflicts.length; key += 1) {
         if (conflicts[key]) {
-          const sameDayVenue: BookingRequest = conflicts[key];
+          const conflictID: string = conflicts[key];
+          const sameDayVenue: BookingRequest = await findBookingByID(
+            conflictID,
+          );
           const email: Result = await notifyConflictsEmail(
             sameDayVenue,
             session,

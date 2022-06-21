@@ -2,18 +2,21 @@ import React, { useState, useEffect, useRef } from 'react';
 import { cardVariant, parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
 import {
-  SimpleGrid,
   Box,
   Input,
   InputGroup,
   InputLeftAddon,
+  SimpleGrid,
 } from '@chakra-ui/react';
+
 import Auth from '@components/sys/Auth';
 import VenueCard from '@components/sys/vbs/VenueCard';
 import VenueBookingModal from '@components/sys/vbs/VenueBookingModal';
 import VenueBookingModalConfirmation from '@components/sys/vbs/VenueBookingModalConfirmation';
 import Loading from '@components/sys/vbs/Loading';
+
 import { fetchVenue } from '@helper/sys/vbs/venue';
+import { checkerString, checkerArray } from '@constants/sys/helper';
 
 import safeJsonStringify from 'safe-json-stringify';
 import { GetServerSideProps } from 'next';
@@ -43,7 +46,12 @@ export default function VBS(props: any) {
     timeSlots: TimeSlot[],
     dateParsed: string,
   ) => {
-    if (venue && timeSlots && venueName && dateParsed) {
+    if (
+      checkerString(venue) &&
+      checkerArray(timeSlots) &&
+      checkerString(venueName) &&
+      checkerString(dateParsed)
+    ) {
       const data = {
         venue: venue,
         venueName: venueName,
@@ -100,11 +108,7 @@ export default function VBS(props: any) {
     const searchInput: string = event.target.value;
     setSearch(searchInput);
 
-    if (
-      searchInput !== '' &&
-      searchInput !== null &&
-      searchInput !== undefined
-    ) {
+    if (checkerString(searchInput)) {
       const filteredDataField = cards.filter((value) =>
         value.props.id.toLowerCase().includes(searchInput.toLowerCase()),
       );

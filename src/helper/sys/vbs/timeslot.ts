@@ -1,5 +1,6 @@
 import { Booking } from 'types/booking';
 import { Result } from 'types/api';
+
 import { prisma } from '@constants/sys/db';
 
 export const fetchBookedTimeSlots = async (

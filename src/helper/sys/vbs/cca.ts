@@ -1,6 +1,7 @@
 import { Result } from 'types/api';
-import { prisma } from '@constants/sys/db';
 import { CCA } from 'types/cca';
+
+import { prisma } from '@constants/sys/db';
 import { Session } from 'next-auth/core/types';
 
 export const findCCAbyName = async (name: string): Promise<Result> => {

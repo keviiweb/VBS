@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { Box, CloseButton, Flex, Text } from '@chakra-ui/react';
 import {
   FiHome,
@@ -9,8 +10,8 @@ import {
   FiCalendar,
   FiMapPin,
 } from 'react-icons/fi';
+
 import NavLink from '@components/sys/vbs/NavLink';
-import Link from 'next/link';
 
 const adminMenu = [
   { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },

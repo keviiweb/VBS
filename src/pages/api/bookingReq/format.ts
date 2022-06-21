@@ -11,6 +11,7 @@ import {
   checkerArray,
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
+
 import { currentSession } from '@helper/sys/session';
 import { findVenueByID } from '@helper/sys/vbs/venue';
 import { findCCAbyID } from '@helper/sys/vbs/cca';
@@ -18,18 +19,18 @@ import { findCCAbyID } from '@helper/sys/vbs/cca';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
 
-  const { bookingsRes } = req.body;
+  const { bookings } = req.body;
 
   let result: Result = null;
   if (session !== undefined && session !== null && session.user.admin) {
     const parsedBooking: BookingRequest[] = [];
-    const bookings: BookingRequest[] = bookingsRes as BookingRequest[];
+    const bookingsRes: BookingRequest[] = bookings as BookingRequest[];
 
-    if (checkerArray(bookings)) {
-      if (bookings.length > 0) {
-        for (let booking = 0; booking < bookings.length; booking += 1) {
-          if (bookings[booking]) {
-            const book: BookingRequest = bookings[booking];
+    if (checkerArray(bookingsRes)) {
+      if (bookingsRes.length > 0) {
+        for (let booking = 0; booking < bookingsRes.length; booking += 1) {
+          if (bookingsRes[booking]) {
+            const book: BookingRequest = bookingsRes[booking];
             const venueReq: Result = await findVenueByID(book.venue);
             const date = convertUnixToDate(book.date);
             const timeSlots: string[] = mapSlotToTiming(

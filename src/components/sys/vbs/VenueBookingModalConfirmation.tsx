@@ -27,6 +27,7 @@ import {
 import { CheckCircleIcon } from '@chakra-ui/icons';
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
+
 import Loading from '@components/sys/vbs/Loading';
 
 import { checkerString, checkerNumber } from '@constants/sys/helper';
@@ -83,12 +84,12 @@ export default function VenueBookingModalConfirmation({
       if (timeSlotsField[key]) {
         const slot = timeSlotsField[key];
         if (!checkerNumber(slot.id)) {
-          return true;
+          return false;
         }
       }
     }
 
-    return false;
+    return true;
   };
 
   const validateFields = (
@@ -134,6 +135,7 @@ export default function VenueBookingModalConfirmation({
       setError('No type found');
       return false;
     }
+
     if (typeField !== 'PERSONAL') {
       let found = false;
 
@@ -341,7 +343,7 @@ export default function VenueBookingModalConfirmation({
   const setTypeHelper = (event) => {
     if (event) {
       if (Number(event) === 2) {
-        typeDB.current = CCALIST.current[0].id;
+        typeDB.current = '';
         setShowCCAs(true);
       } else {
         typeDB.current = 'PERSONAL';

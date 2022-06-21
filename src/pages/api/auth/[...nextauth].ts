@@ -3,6 +3,7 @@ import EmailProvider from 'next-auth/providers/email';
 import nodemailer from 'nodemailer';
 
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
+
 import { prisma } from '@constants/sys/db';
 
 import type { NextApiRequest, NextApiResponse } from 'next';

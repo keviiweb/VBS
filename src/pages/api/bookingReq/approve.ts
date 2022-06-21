@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 import { BookingRequest } from 'types/bookingReq';
 
+import { convertSlotToArray, checkerString } from '@constants/sys/helper';
+
 import {
   findBookingByID,
   isConflict,
@@ -11,7 +13,6 @@ import {
   setApprove,
   setRejectConflicts,
 } from '@helper/sys/vbs/bookingReq';
-import { convertSlotToArray, checkerString } from '@constants/sys/helper';
 import { currentSession } from '@helper/sys/session';
 import { createVenueBooking } from '@helper/sys/vbs/booking';
 
@@ -61,28 +62,28 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           ) as number[];
 
           if (!isThereConflict) {
-            const createBooking = await createVenueBooking(
+            const approve: Result = await setApprove(bookingRequest, session);
+            const cancel: Result = await setRejectConflicts(
               bookingRequest,
-              timeSlots,
               session,
             );
 
-            if (!createBooking.status) {
-              result = {
-                status: false,
-                error: createBooking.error,
-                msg: '',
-              };
-              res.status(200).send(result);
-              res.end();
-            } else {
-              const approve: Result = await setApprove(bookingRequest, session);
-              const cancel: Result = await setRejectConflicts(
+            if (approve.status && cancel.status) {
+              const createBooking = await createVenueBooking(
                 bookingRequest,
+                timeSlots,
                 session,
               );
 
-              if (approve.status && cancel.status) {
+              if (!createBooking.status) {
+                result = {
+                  status: false,
+                  error: createBooking.error,
+                  msg: '',
+                };
+                res.status(200).send(result);
+                res.end();
+              } else {
                 result = {
                   status: true,
                   error: null,
@@ -90,15 +91,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 };
                 res.status(200).send(result);
                 res.end();
-              } else {
-                result = {
-                  status: false,
-                  error: 'Either failed to approve slot or cancel conflicting',
-                  msg: '',
-                };
-                res.status(200).send(result);
-                res.end();
               }
+            } else {
+              result = {
+                status: false,
+                error: 'Either failed to approve slot or cancel conflicting',
+                msg: '',
+              };
+              res.status(200).send(result);
+              res.end();
             }
           } else {
             result = {

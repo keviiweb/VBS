@@ -11,7 +11,8 @@ export type BookingRequest = {
   isRejected?: boolean;
   isCancelled?: boolean;
   sessionEmail?: string;
-  conflictRequest?: BookingRequest[];
+  conflictRequest?: string;
+  conflictRequestObj?: BookingRequest[];
   status?: string;
   action?: any;
 };

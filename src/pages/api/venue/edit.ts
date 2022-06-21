@@ -3,10 +3,10 @@ import { Result } from 'types/api';
 import { Venue } from 'types/venue';
 
 import { editVenue } from '@helper/sys/vbs/venue';
-import formidable, { IncomingForm } from 'formidable';
 import { currentSession } from '@helper/sys/session';
 
-// first we need to disable the default body parser
+import formidable, { IncomingForm } from 'formidable';
+
 export const config = {
   api: {
     bodyParser: false,

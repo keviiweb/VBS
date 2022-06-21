@@ -11,6 +11,7 @@ import {
   usePopoverContext,
 } from '@chakra-ui/react';
 import React, { useCallback } from 'react';
+
 import { PopoverTriggerProps } from 'types/popover';
 
 const PopoverTriggerNew: React.FC<

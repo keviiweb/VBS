@@ -9,9 +9,6 @@ import {
   Button,
   Box,
   FormLabel,
-  Input,
-  InputGroup,
-  InputLeftAddon,
   Text,
   Tabs,
   TabList,
@@ -22,10 +19,12 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon, InfoOutlineIcon } from '@chakra-ui/icons';
+
 import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/vbs/TableWidget';
 import BookingModal from '@components/sys/vbs/BookingModal';
 import BookingCalendar from '@components/sys/vbs/BookingCalendar';
+
 import { parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
 
@@ -42,7 +41,6 @@ export default function ManageBooking() {
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState(null);
-  const [filteredData, setFilteredData] = useState(null);
   const ALL: number = 3;
   const PENDING: number = 0;
   const APPROVED: number = 1;
@@ -60,9 +58,8 @@ export default function ManageBooking() {
   const [startTime, setStartTime] = useState('08:00:00');
   const [endTime, setEndTime] = useState('23:00:00');
 
-  const [search, setSearch] = useState('');
-
   let handleTabChange;
+  let fetchBookings;
 
   const PAGESIZE: number = 10;
   const PAGEINDEX: number = 0;
@@ -95,6 +92,7 @@ export default function ManageBooking() {
               isClosable: true,
             });
             await handleTabChange(tabIndexData.current);
+            await fetchBookings(venueIDDB.current);
           } else {
             toast({
               title: 'Error',
@@ -113,7 +111,7 @@ export default function ManageBooking() {
 
       return false;
     },
-    [handleTabChange, toast],
+    [handleTabChange, toast, fetchBookings],
   );
 
   const handleReject = useCallback(
@@ -140,6 +138,7 @@ export default function ManageBooking() {
               isClosable: true,
             });
             await handleTabChange(tabIndexData.current);
+            await fetchBookings(venueIDDB.current);
           } else {
             toast({
               title: 'Error',
@@ -157,7 +156,7 @@ export default function ManageBooking() {
 
       return false;
     },
-    [handleTabChange, toast],
+    [handleTabChange, toast, fetchBookings],
   );
 
   const handleDetails = useCallback((content: BookingRequest) => {
@@ -585,7 +584,7 @@ export default function ManageBooking() {
     }
   }, [generateVenueDropdown]);
 
-  const populateCalendar = async (content: Booking[]) => {
+  const populateCalendar = useCallback(async (content: Booking[]) => {
     const event = [];
     let count = 0;
 
@@ -616,40 +615,44 @@ export default function ManageBooking() {
     }
 
     setEvents(event);
-  };
+  }, []);
 
-  const fetchBookings = async (id: string) => {
-    try {
-      const rawResponse = await fetch('/api/booking/fetch', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: id,
-        }),
-      });
-      const content: Result = await rawResponse.json();
-      if (content.status) {
-        await populateCalendar(content.msg);
+  fetchBookings = useCallback(
+    async (id: string) => {
+      try {
+        const rawResponse = await fetch('/api/booking/fetch', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: id,
+          }),
+        });
+        const content: Result = await rawResponse.json();
+        if (content.status) {
+          await populateCalendar(content.msg);
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    },
+    [populateCalendar],
+  );
 
   const onVenueIDChange = async (event: { target: { value: string } }) => {
     if (event.target.value) {
       const { value } = event.target;
-      await fetchBookings(value);
-      venueIDDB.current = value;
-      setVenueID(value);
 
       for (let key = 0; key < venueData.current.length; key += 1) {
         if (venueData.current[key]) {
           const ven: Venue = venueData.current[key];
           if (ven.id === value) {
+            await fetchBookings(value);
+            venueIDDB.current = value;
+            setVenueID(value);
+
             setSelectedVenue(ven.name);
             break;
           }
@@ -674,31 +677,6 @@ export default function ManageBooking() {
 
   const handleMouseLeave = () => {
     toast.closeAll();
-  };
-
-  const handleSearch = (event: { target: { value: any } }) => {
-    const searchInput: string = event.target.value;
-    setSearch(searchInput);
-
-    if (searchInput && searchInput !== '') {
-      const filteredDataField = data.filter(
-        (value: BookingRequest) =>
-          value.purpose.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.cca.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.venue.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.date
-            .toString()
-            .toLowerCase()
-            .includes(searchInput.toLowerCase()) ||
-          value.timeSlots.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.email.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.status.toLowerCase().includes(searchInput.toLowerCase()),
-      );
-
-      setFilteredData(filteredDataField);
-    } else {
-      setFilteredData(null);
-    }
   };
 
   const columns = useMemo(
@@ -824,22 +802,10 @@ export default function ManageBooking() {
             {!loadingData && data && data !== [] && data.length > 0 && (
               <Box w='full' mt={30} overflow='auto'>
                 <Stack align='center' justify='center' spacing={30}>
-                  <InputGroup>
-                    <InputLeftAddon>Search:</InputLeftAddon>
-                    <Input
-                      type='text'
-                      placeholder=''
-                      value={search}
-                      onChange={handleSearch}
-                    />
-                  </InputGroup>
-
                   <TableWidget
                     key={1}
                     columns={columns}
-                    data={
-                      filteredData && filteredData.length ? filteredData : data
-                    }
+                    data={data}
                     controlledPageCount={pageCount}
                     dataHandler={onTableChange}
                   />

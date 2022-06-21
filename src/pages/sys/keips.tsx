@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Flex, Text, VStack } from '@chakra-ui/react';
+
 import Auth from '@components/sys/Auth';
 
 const confetti = {

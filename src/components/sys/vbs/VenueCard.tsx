@@ -2,17 +2,13 @@ import React from 'react';
 import Image from 'next/image';
 import { Box, Flex } from '@chakra-ui/react';
 
+import { checkerString } from '@constants/sys/helper';
+
 export default function VenueCard({ product, setModalData }) {
-  const image: string =
-    product.image !== '' &&
-    product.image !== null &&
-    product.image !== undefined
-      ? product.image
-      : '/sys/image/placeholder.png';
-  const name: string =
-    product.name !== '' && product.name !== null && product.name !== undefined
-      ? product.name
-      : 'Venue';
+  const image: string = checkerString(product.image)
+    ? product.image
+    : '/sys/image/placeholder.png';
+  const name: string = checkerString(product.name) ? product.name : 'Venue';
   return (
     <Flex
       w='full'

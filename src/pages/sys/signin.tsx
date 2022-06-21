@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Flex,
   Box,
+  Button,
+  Flex,
   FormControl,
   FormLabel,
+  Heading,
   Input,
   Stack,
-  Button,
-  Heading,
-  Text,
   Spinner,
+  Text,
 } from '@chakra-ui/react';
 import { signIn } from 'next-auth/react';
+
+import { checkerString } from '@constants/sys/helper';
 
 export default function SignIn(props) {
   const [loading, setLoading] = useState(false);
@@ -24,11 +26,7 @@ export default function SignIn(props) {
   useEffect(() => {
     async function fetchData(propsField) {
       const propRes = await propsField;
-      if (
-        propRes.data !== '' &&
-        propRes.data !== undefined &&
-        propRes.data !== null
-      ) {
+      if (checkerString(propRes.data)) {
         setURL(propRes.data);
       }
     }
@@ -37,7 +35,7 @@ export default function SignIn(props) {
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    if (emailDB.current !== '' && emailDB.current.includes('@')) {
+    if (checkerString(emailDB.current) && emailDB.current.includes('@')) {
       try {
         setError(null);
         setLoading(true);

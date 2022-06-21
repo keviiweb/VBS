@@ -1,6 +1,7 @@
 import { prisma } from '@constants/sys/db';
 import { findSlots } from '@constants/sys/helper';
 import { dateISO, isValidDate } from '@constants/sys/date';
+
 import { Venue } from 'types/venue';
 import { Result } from 'types/api';
 

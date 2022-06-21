@@ -1,5 +1,6 @@
 import { numberToWeekday } from '@constants/sys/weekdays';
 import { monthNamesFull } from '@constants/sys/months';
+
 import moment from 'moment-timezone';
 
 export const convertDateToUnix = (date: string): number => {
@@ -40,6 +41,10 @@ export const compareDate = (comparedDate: number, number: number): boolean => {
 };
 
 export const isValidDate = (d: Date): boolean => {
+  if (d === null || d === undefined) {
+    return false;
+  }
+
   if (Object.prototype.toString.call(d) === '[object Date]') {
     if (isNaN(d.getTime())) {
       return false;

@@ -2,17 +2,20 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 import { BookingRequest } from 'types/bookingReq';
 
+import { checkerString, convertSlotToArray } from '@constants/sys/helper';
+import { compareDate } from '@constants/sys/date';
+
 import {
   findBookingByID,
   isApproved,
   isCancelled,
   isRejected,
+  isOwner,
   setCancel,
   notifyConflicts,
 } from '@helper/sys/vbs/bookingReq';
-import { checkerString } from '@constants/sys/helper';
 import { currentSession } from '@helper/sys/session';
-import { compareDate } from '@constants/sys/date';
+import { deleteVenueBooking } from '@helper/sys/vbs/booking';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
@@ -26,6 +29,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (bookingRequest !== null || bookingRequest !== undefined) {
         const isRequestCancelled: boolean = await isCancelled(bookingRequest);
         const isRequestRejected: boolean = await isRejected(bookingRequest);
+        const isRequestByOwner: boolean = await isOwner(
+          bookingRequest,
+          session,
+        );
 
         if (isRequestCancelled) {
           result = {
@@ -43,15 +50,42 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           };
           res.status(200).send(result);
           res.end();
+        } else if (!isRequestByOwner) {
+          result = {
+            status: false,
+            error: 'Only the creator can cancel this request!',
+            msg: '',
+          };
+          res.status(200).send(result);
+          res.end();
         } else {
           const minDay: number = Number(process.env.CANCEL_MIN_DAY);
           const currentDate: number = bookingRequest.date as number;
 
           if (compareDate(currentDate, minDay)) {
             const isRequestApproved: boolean = await isApproved(bookingRequest);
-            const reject: Result = await setCancel(bookingRequest, session);
-            if (reject.status) {
-              if (isRequestApproved) {
+
+            if (isRequestApproved) {
+              const timeSlots: number[] = convertSlotToArray(
+                bookingRequest.timeSlots,
+                true,
+              ) as number[];
+
+              const deleteBooking = await deleteVenueBooking(
+                bookingRequest,
+                timeSlots,
+                session,
+              );
+
+              if (!deleteBooking.status) {
+                result = {
+                  status: false,
+                  error: deleteBooking.error,
+                  msg: '',
+                };
+                res.status(200).send(result);
+                res.end();
+              } else {
                 const notifyOtherRejected: Result = await notifyConflicts(
                   bookingRequest,
                   session,
@@ -65,15 +99,32 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   res.status(200).send(result);
                   res.end();
                 } else {
-                  result = {
-                    status: true,
-                    error: null,
-                    msg: 'Booking request rejected',
-                  };
-                  res.status(200).send(result);
-                  res.end();
+                  const reject: Result = await setCancel(
+                    bookingRequest,
+                    session,
+                  );
+                  if (reject.status) {
+                    result = {
+                      status: true,
+                      error: null,
+                      msg: 'Booking request rejected - Successfully notified conflicting requests',
+                    };
+                    res.status(200).send(result);
+                    res.end();
+                  } else {
+                    result = {
+                      status: false,
+                      error: reject.error,
+                      msg: '',
+                    };
+                    res.status(200).send(result);
+                    res.end();
+                  }
                 }
-              } else {
+              }
+            } else {
+              const reject: Result = await setCancel(bookingRequest, session);
+              if (reject.status) {
                 result = {
                   status: true,
                   error: null,
@@ -81,15 +132,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 };
                 res.status(200).send(result);
                 res.end();
+              } else {
+                result = {
+                  status: false,
+                  error: reject.error,
+                  msg: '',
+                };
+                res.status(200).send(result);
+                res.end();
               }
-            } else {
-              result = {
-                status: false,
-                error: reject.error,
-                msg: '',
-              };
-              res.status(200).send(result);
-              res.end();
             }
           } else {
             const msg = `Cancellation only possible ${minDay} day(s) before`;

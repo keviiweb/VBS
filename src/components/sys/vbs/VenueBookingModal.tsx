@@ -18,15 +18,18 @@ import {
 } from '@chakra-ui/react';
 import CalendarWidget from '@components/sys/vbs/CalendarWidget';
 import TimeSlotButton from '@components/sys/vbs/TimeSlotButton';
+import Loading from '@components/sys/vbs/Loading';
+
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
-import { isValidDate, prettifyDate } from '@constants/sys/date';
 import moment from 'moment-timezone';
-import Loading from '@components/sys/vbs/Loading';
+
+import { isValidDate, prettifyDate } from '@constants/sys/date';
+import { checkerArray } from '@constants/sys/helper';
+
 import { Venue } from 'types/venue';
 import { TimeSlot } from 'types/timeslot';
 import { Result } from 'types/api';
-import { checkerArray } from '@constants/sys/helper';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -61,6 +64,7 @@ export default function VenueBookingModal({
   const [timeSlots, setTimeSlots] = useState([]);
   const [displayedSlots, setDisplayedSlots] = useState(null);
 
+  const rawVenue = useRef([]);
   const rawSlots = useRef([]);
   const selectedTimeSlots = useRef([]);
 
@@ -176,21 +180,29 @@ export default function VenueBookingModal({
   const buildChildVenueDropdown = useCallback(
     async (content: Venue[]) => {
       const selection = [];
+      rawVenue.current = [];
+
       if (modalData) {
         selection.push(
           <option key={modalData.id} value={modalData.id}>
             Whole Venue
           </option>,
         );
+
+        rawVenue.current.push(modalData);
       }
 
       for (let key = 0; key < content.length; key += 1) {
+        const ven: Venue = content[key];
         selection.push(
-          <option key={content[key].id} value={content[key].id}>
-            {content[key].name}
+          <option key={ven.id} value={ven.id}>
+            {ven.name}
           </option>,
         );
+
+        rawVenue.current.push(ven);
       }
+
       setChildVenueDrop(selection);
     },
     [modalData],
@@ -397,9 +409,22 @@ export default function VenueBookingModal({
 
     if (event.target.value) {
       selectedVenue.current = event.target.value;
-      handleDate(rawDate.current);
-      selectedTimeSlots.current = [];
-      displaySlots(null);
+
+      if (isValidDate(rawDate.current)) {
+        handleDate(rawDate.current);
+        selectedTimeSlots.current = [];
+        displaySlots(null);
+      }
+
+      for (let key = 0; key < rawVenue.current.length; key += 1) {
+        const ven: Venue = rawVenue.current[key];
+        if (ven.id === event.target.value) {
+          setDescription(ven.description);
+          setCapacity(ven.capacity.toString());
+          setOpeningHours(ven.openingHours);
+          setName(ven.name);
+        }
+      }
     }
   };
 

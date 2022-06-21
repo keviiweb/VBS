@@ -14,6 +14,7 @@ import {
   compareDate,
   prettifyDate,
 } from '@constants/sys/date';
+
 import { currentSession } from '@helper/sys/session';
 import { findVenueByID } from '@helper/sys/vbs/venue';
 import { findCCAbyID } from '@helper/sys/vbs/cca';
@@ -183,7 +184,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   isCancelled: book.isCancelled,
                   purpose: book.purpose,
                   cca: cca,
-                  conflictRequest: conflicts,
+                  conflictRequestObj: conflicts,
                   status: status,
                 };
 

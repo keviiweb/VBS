@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 import { BookingRequest } from 'types/bookingReq';
 import { CCA } from 'types/cca';
+import { TimeSlot } from 'types/timeslot';
 
 import {
   mapSlotToTiming,
@@ -11,6 +12,7 @@ import {
   checkerArray,
 } from '@constants/sys/helper';
 import { convertDateToUnix } from '@constants/sys/date';
+
 import { currentSession } from '@helper/sys/session';
 import { findCCAbyID, isLeader } from '@helper/sys/vbs/cca';
 import {
@@ -25,43 +27,37 @@ import {
 import { isInstantBook, isVisible } from '@helper/sys/vbs/venue';
 import { sendProgressMail } from '@helper/sys/vbs/email/progress';
 import { createVenueBooking } from '@helper/sys/vbs/booking';
-import { TimeSlot } from 'types/timeslot';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
 
   let result: Result = null;
-  const {
-    emailRes,
-    venueRes,
-    venueNameRes,
-    dateRes,
-    timeSlotsRes,
-    typeRes,
-    purposeRes,
-  } = req.body;
+  const { email, venue, venueName, date, timeSlots, type, purpose } = req.body;
   try {
-    const email = emailRes as string;
-    const venue = venueRes as string;
-    const venueName = venueNameRes as string;
-    const date = dateRes as string;
-    const timeSlots = timeSlotsRes as TimeSlot[];
-    const type = typeRes as string;
-    const purpose = purposeRes as string;
+    const emailField: string = email as string;
+    const venueField: string = venue as string;
+    const venueNameField: string = venueName as string;
+    const dateField: string = date as string;
+    const timeSlotsField: TimeSlot[] = timeSlots as TimeSlot[];
+    const typeField: string = type as string;
+    const purposeField: string = purpose as string;
 
     if (session !== undefined && session !== null) {
       if (
-        checkerString(email) &&
-        checkerString(venue) &&
-        checkerString(venueName) &&
-        checkerString(date) &&
-        checkerArray(timeSlots) &&
-        timeSlots !== [] &&
-        checkerString(type) &&
-        checkerString(purpose)
+        checkerString(emailField) &&
+        checkerString(venueField) &&
+        checkerString(venueNameField) &&
+        checkerString(dateField) &&
+        checkerArray(timeSlotsField) &&
+        timeSlotsField.length > 0 &&
+        checkerString(typeField) &&
+        checkerString(purposeField)
       ) {
-        const convertedDate: number = convertDateToUnix(date);
-        const slots: string = convertSlotToArray(timeSlots, false) as string;
+        const convertedDate: number = convertDateToUnix(dateField);
+        const slots: string = convertSlotToArray(
+          timeSlotsField,
+          false,
+        ) as string;
 
         let bookingID: string = null;
         let cca: string;
@@ -71,8 +67,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         let isInstantBooked = false;
 
         if (type !== 'PERSONAL') {
-          const dbSearch: Result = await findCCAbyID(type);
-          const checkLdr: Result = await isLeader(type, session);
+          const dbSearch: Result = await findCCAbyID(typeField);
+          const checkLdr: Result = await isLeader(typeField, session);
 
           if (checkLdr.status) {
             if (dbSearch && dbSearch.status) {
@@ -95,12 +91,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         if (isALeader) {
           const dataDB: BookingRequest = {
-            email: email,
-            venue: venue,
+            email: emailField,
+            venue: venueField,
             date: convertedDate,
             timeSlots: slots,
-            cca: type,
-            purpose: purpose,
+            cca: typeField,
+            purpose: purposeField,
             sessionEmail: session.user.email,
           };
 
@@ -177,14 +173,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   res.status(200).send(result);
                   res.end();
                 } else {
-                  const timeSlotsField: number[] = convertSlotToArray(
+                  const timeSlotsNum: number[] = convertSlotToArray(
                     bookingRequest.timeSlots,
                     true,
                   ) as number[];
 
                   const createBooking: Result = await createVenueBooking(
                     bookingRequest,
-                    timeSlotsField,
+                    timeSlotsNum,
                     session,
                   );
 

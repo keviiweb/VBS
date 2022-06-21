@@ -1,12 +1,13 @@
 import { chakra, Box, Flex, SimpleGrid } from '@chakra-ui/react';
-import Map from '@components/landing/Map';
 import { motion } from 'framer-motion';
-import { layoutVariant } from '@root/motion';
 import React from 'react';
+
+import Map from '@components/landing/Map';
+import { layoutVariant } from '@root/motion';
 
 const MotionBox = motion(Box);
 
-export default function Feature() {
+export default function Feature({ API_KEY }) {
   const location = {
     address: '1A Kent Ridge Rd, Singapore 119224',
     lat: 1.2925423384337875,
@@ -92,11 +93,7 @@ export default function Feature() {
               alignItems='center'
             >
               <Box w='full'>
-                <Map
-                  location={location}
-                  zoomLevel={21}
-                  apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}
-                />
+                <Map location={location} zoomLevel={21} apiKey={API_KEY} />
               </Box>
             </Flex>
           </SimpleGrid>

@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
+
 import { currentSession } from '@helper/sys/session';
+
 import Layout from '@layout/sys/index';
 import Loading from '@layout/sys/Loading';
-import { useSession } from 'next-auth/react';
 
 export default function Auth({ children, admin }) {
   const { data: session, status } = useSession();

@@ -13,4 +13,5 @@ export type Booking = {
   purpose: string;
   start?: string;
   end?: string;
+  sessionEmail?: string;
 };

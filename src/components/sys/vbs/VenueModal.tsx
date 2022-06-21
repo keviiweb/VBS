@@ -25,7 +25,9 @@ import {
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
+
 import TableWidget from '@components/sys/vbs/TableWidget';
+
 import { Result } from 'types/api';
 
 const MotionSimpleGrid = motion(SimpleGrid);

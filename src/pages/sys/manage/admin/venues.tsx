@@ -15,8 +15,6 @@ import {
   FormLabel,
   Heading,
   Input,
-  InputGroup,
-  InputLeftAddon,
   Icon,
   Text,
   SimpleGrid,
@@ -25,14 +23,16 @@ import {
   useToast,
   VisuallyHidden,
 } from '@chakra-ui/react';
-
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import { cardVariant, parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
+
 import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/vbs/TableWidget';
 import VenueModal from '@components/sys/vbs/VenueModal';
+
 import { timeSlots } from '@constants/sys/timeslot';
+import { checkerNumber, checkerString } from '@constants/sys/helper';
 
 import { Venue } from 'types/venue';
 import { Result } from 'types/api';
@@ -46,9 +46,6 @@ export default function ManageVenues() {
 
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState([]);
-
-  const [filteredData, setFilteredData] = useState(null);
-  const [search, setSearch] = useState('');
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -155,62 +152,37 @@ export default function ManageVenues() {
     openingHoursField: string,
   ) => {
     // super basic validation here
-    if (nameField === '' || nameField === null || nameField === undefined) {
+    if (!checkerString(nameField)) {
       setError('Name must not be empty!');
       return false;
     }
 
-    if (
-      descriptionField === '' ||
-      descriptionField === null ||
-      descriptionField === undefined
-    ) {
+    if (!checkerString(descriptionField)) {
       setError('Description must not be empty!');
       return false;
     }
 
-    if (
-      capacityField === 0 ||
-      capacityField === null ||
-      capacityField === undefined
-    ) {
+    if (checkerNumber(capacityField)) {
       setError('Capacity must not be empty!');
       return false;
     }
 
-    if (
-      isChildVenueField &&
-      (parentVenueField === '' ||
-        parentVenueField === null ||
-        parentVenueField === undefined)
-    ) {
+    if (isChildVenueField && !checkerString(parentVenueField)) {
       setError('Please select a parent venue!');
       return false;
     }
 
-    if (
-      openingHoursField === '' ||
-      openingHoursField === null ||
-      openingHoursField === undefined
-    ) {
+    if (!checkerString(openingHoursField)) {
       setError('Please select the opening hours!');
       return false;
     }
 
-    if (
-      startTimeField === '' ||
-      startTimeField === null ||
-      startTimeField === undefined
-    ) {
+    if (!checkerString(startTimeField)) {
       setError('Please select a start time!');
       return false;
     }
 
-    if (
-      endTimeField === '' ||
-      endTimeField === null ||
-      endTimeField === undefined
-    ) {
+    if (!checkerString(endTimeField)) {
       setError('Please select an end time!');
       return false;
     }
@@ -584,67 +556,42 @@ export default function ManageVenues() {
     endTimeField: string,
     openingHoursField: string,
   ) => {
-    if (idField === '' || idField === null || idField === undefined) {
+    if (!checkerString(idField)) {
       setErrorEdit('ID must not be empty!');
       return false;
     }
 
-    if (nameField === '' || nameField === null || nameField === undefined) {
+    if (!checkerString(nameField)) {
       setErrorEdit('Name must not be empty!');
       return false;
     }
 
-    if (
-      descriptionField === '' ||
-      descriptionField === null ||
-      descriptionField === undefined
-    ) {
+    if (!checkerString(descriptionField)) {
       setErrorEdit('Description must not be empty!');
       return false;
     }
 
-    if (
-      capacityField === 0 ||
-      capacityField === null ||
-      capacityField === undefined
-    ) {
+    if (!checkerNumber(capacityField)) {
       setErrorEdit('Capacity must not be empty!');
       return false;
     }
 
-    if (
-      isChildVenueField &&
-      (parentVenueField === '' ||
-        parentVenueField === null ||
-        parentVenueField === undefined)
-    ) {
+    if (isChildVenueField && !checkerString(parentVenueField)) {
       setErrorEdit('Please select a parent venue!');
       return false;
     }
 
-    if (
-      openingHoursField === '' ||
-      openingHoursField === null ||
-      openingHoursField === undefined
-    ) {
+    if (!checkerString(openingHoursField)) {
       setErrorEdit('Please select the opening hours!');
       return false;
     }
 
-    if (
-      startTimeField === '' ||
-      startTimeField === null ||
-      startTimeField === undefined
-    ) {
+    if (!checkerString(startTimeField)) {
       setErrorEdit('Please select a start time!');
       return false;
     }
 
-    if (
-      endTimeField === '' ||
-      endTimeField === null ||
-      endTimeField === undefined
-    ) {
+    if (!checkerString(endTimeField)) {
       setErrorEdit('Please select an end time!');
       return false;
     }
@@ -744,34 +691,6 @@ export default function ManageVenues() {
     setEndTimeEdit('');
   }, []);
 
-  const handleSearch = (event: { target: { value: string } }) => {
-    const searchInput: string = event.target.value;
-    setSearch(searchInput);
-
-    if (
-      searchInput !== '' &&
-      searchInput !== null &&
-      searchInput !== undefined
-    ) {
-      const filteredDataField: Venue[] = data.filter(
-        (value: Venue) =>
-          value.name.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.description.toLowerCase().includes(searchInput.toLowerCase()) ||
-          value.openingHours
-            .toLowerCase()
-            .includes(searchInput.toLowerCase()) ||
-          value.capacity
-            .toString()
-            .toLowerCase()
-            .includes(searchInput.toLowerCase()),
-      );
-
-      setFilteredData(filteredDataField);
-    } else {
-      setFilteredData(null);
-    }
-  };
-
   const onTableChange = useCallback(
     async ({ pageIndex, pageSize }) => {
       if (
@@ -803,22 +722,10 @@ export default function ManageVenues() {
           ) : (
             <Box minWidth='full' mt={30}>
               <Stack spacing={30} align='center' justify='center'>
-                <InputGroup>
-                  <InputLeftAddon>Search:</InputLeftAddon>
-                  <Input
-                    type='text'
-                    placeholder=''
-                    value={search}
-                    onChange={handleSearch}
-                  />
-                </InputGroup>
-
                 <TableWidget
                   key={1}
                   columns={columns}
-                  data={
-                    filteredData && filteredData.length ? filteredData : data
-                  }
+                  data={data}
                   controlledPageCount={pageCount}
                   dataHandler={onTableChange}
                 />
