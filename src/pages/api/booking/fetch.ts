@@ -68,14 +68,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     ) as string;
                     const timeSplit = await splitHours(bookTimeSlots);
 
-                    const parsedtimeSlots: string = parsed.timeSlot;
+                    const parsedtimeSlots: string = parsed.timeSlots;
                     const parsedtimeSlotsSplit = await splitHours(
                       parsedtimeSlots,
                     );
 
                     if (timeSplit.start === parsedtimeSlotsSplit.end) {
                       duplicate = true;
-                      parsed.timeSlot = `${parsedtimeSlotsSplit.start
+                      parsed.timeSlots = `${parsedtimeSlotsSplit.start
                         .toString()
                         .padStart(4, '0')} - ${timeSplit.end
                         .toString()
@@ -83,7 +83,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
                       const bookedTimeSlotsISO = await splitHoursISO(
                         date,
-                        parsed.timeSlot,
+                        parsed.timeSlots,
                       );
                       const { start, end } = bookedTimeSlotsISO;
 
@@ -91,7 +91,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                       parsed.end = end;
                     } else if (timeSplit.end === parsedtimeSlotsSplit.start) {
                       duplicate = true;
-                      parsed.timeSlot = `${timeSplit.start
+                      parsed.timeSlots = `${timeSplit.start
                         .toString()
                         .padStart(4, '0')} - ${parsedtimeSlotsSplit.end
                         .toString()
@@ -99,7 +99,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
                       const bookedTimeSlotsISO = await splitHoursISO(
                         date,
-                        parsed.timeSlot,
+                        parsed.timeSlots,
                       );
                       const { start, end } = bookedTimeSlotsISO;
 
@@ -146,7 +146,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     venue: venue,
                     date: book.date,
                     dateStr: prettifiedDate,
-                    timeSlot: bookedTimeSlots,
+                    timeSlots: bookedTimeSlots,
                     purpose: book.purpose,
                     cca: cca,
                     startHour: startH,

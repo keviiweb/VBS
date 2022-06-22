@@ -9,6 +9,7 @@ function html({ data }) {
   const cca: string = data.cca ? data.cca : '';
   const timeSlots: string = data.timeSlots ? data.timeSlots : '';
   const purpose: string = data.purpose ? data.purpose : '';
+  const reason: string = data.reason ? data.purpose : '';
 
   return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -266,6 +267,7 @@ function html({ data }) {
                                     <p style="font-size: 14px; line-height: 160%;"><strong>CCA/Personal:&nbsp;</strong>${cca}</p>
                                     <p style="font-size: 14px; line-height: 160%;"><strong>Purpose:&nbsp;</strong>${purpose}</p>
                                     <p style="font-size: 14px; line-height: 160%;">&nbsp;</p>  
+                                    <p style="font-size: 14px; line-height: 160%;"><strong>Reason:&nbsp;</strong>${reason}</p>
                                   </div>
     
                                 </td>
@@ -384,30 +386,34 @@ export const sendRejectMail = async (target: string, data: BookingRequest) => {
     process.env.SEND_EMAIL &&
     (process.env.SEND_EMAIL === '1' || Number(process.env.SEND_EMAIL) === 1)
   ) {
-    const config = {
-      host: process.env.EMAIL_SERVER_HOST,
-      port: Number(process.env.EMAIL_SERVER_PORT),
-      auth: {
-        user: process.env.EMAIL_SERVER_USER,
-        pass: process.env.EMAIL_SERVER_PASSWORD,
-      },
-    };
+    try {
+      const config = {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: Number(process.env.EMAIL_SERVER_PORT),
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      };
 
-    let transporter = nodemailer.createTransport(config);
+      let transporter = nodemailer.createTransport(config);
 
-    transporter.sendMail(
-      {
-        from: process.env.EMAIL_FROM,
-        to: target,
-        subject: 'KEVII VBS: Request Rejected',
-        text: text(),
-        html: html({ data }),
-      },
-      function (err) {
-        if (err) {
-          console.error('Error ' + err);
-        }
-      },
-    );
+      transporter.sendMail(
+        {
+          from: process.env.EMAIL_FROM,
+          to: target,
+          subject: 'KEVII VBS: Request Rejected',
+          text: text(),
+          html: html({ data }),
+        },
+        function (err) {
+          if (err) {
+            console.error('Error ' + err);
+          }
+        },
+      );
+    } catch (error) {
+      console.error(error);
+    }
   }
 };

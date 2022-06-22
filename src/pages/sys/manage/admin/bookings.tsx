@@ -24,6 +24,7 @@ import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/vbs/TableWidget';
 import BookingModal from '@components/sys/vbs/BookingModal';
 import BookingCalendar from '@components/sys/vbs/BookingCalendar';
+import BookingRejectModal from '@components/sys/vbs/BookingRejectModal';
 
 import { parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
@@ -32,6 +33,8 @@ import { Result } from 'types/api';
 import { BookingRequest } from 'types/bookingReq';
 import { Venue } from 'types/venue';
 import { Booking } from 'types/booking';
+
+import { checkerString } from '@constants/sys/helper';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 
@@ -45,6 +48,9 @@ export default function ManageBooking() {
   const PENDING: number = 0;
   const APPROVED: number = 1;
   const REJECTED: number = 2;
+
+  const [rejectModalData, setRejectModalData] = useState(null);
+  const [modalBookingData, setModalBookingData] = useState(null);
 
   const tabIndexData = useRef(0);
 
@@ -70,7 +76,7 @@ export default function ManageBooking() {
 
   const handleApprove = useCallback(
     async (id: string) => {
-      if (id) {
+      if (checkerString(id)) {
         try {
           const rawResponse = await fetch('/api/bookingReq/approve', {
             method: 'POST',
@@ -114,9 +120,10 @@ export default function ManageBooking() {
     [handleTabChange, toast, fetchBookings],
   );
 
-  const handleReject = useCallback(
-    async (id: string) => {
-      if (id) {
+  const handleRejectWReason = useCallback(
+    async (contentField: BookingRequest, reason: string) => {
+      const { id } = contentField;
+      if (checkerString(id)) {
         try {
           const rawResponse = await fetch('/api/bookingReq/reject', {
             method: 'POST',
@@ -126,6 +133,7 @@ export default function ManageBooking() {
             },
             body: JSON.stringify({
               id: id,
+              reason: reason,
             }),
           });
           const content: Result = await rawResponse.json();
@@ -152,12 +160,32 @@ export default function ManageBooking() {
         } catch (error) {
           return false;
         }
+      } else {
+        return false;
       }
-
-      return false;
     },
     [handleTabChange, toast, fetchBookings],
   );
+
+  const dataFromBookingRejectVenueModal = async (
+    reason: string,
+    content: BookingRequest,
+  ) => {
+    if (checkerString(reason)) {
+      await handleRejectWReason(content, reason);
+      return true;
+    }
+    return false;
+  };
+
+  const handleReject = useCallback(async (content: BookingRequest) => {
+    const { id } = content;
+    if (checkerString(id)) {
+      setRejectModalData(content);
+    }
+
+    return false;
+  }, []);
 
   const handleDetails = useCallback((content: BookingRequest) => {
     setModalData(content);
@@ -182,7 +210,7 @@ export default function ManageBooking() {
                 <Button
                   size='sm'
                   leftIcon={<CloseIcon />}
-                  onClick={() => handleReject(content.id)}
+                  onClick={() => handleReject(content)}
                 >
                   Reject
                 </Button>
@@ -244,7 +272,7 @@ export default function ManageBooking() {
                 <Button
                   size='sm'
                   leftIcon={<CloseIcon />}
-                  onClick={() => handleReject(content.id)}
+                  onClick={() => handleReject(content)}
                 >
                   Reject
                 </Button>
@@ -601,6 +629,7 @@ export default function ManageBooking() {
           end: dataField.end,
           extendedProps: {
             description: description,
+            booking: dataField,
           },
         };
 
@@ -658,6 +687,21 @@ export default function ManageBooking() {
           }
         }
       }
+    }
+  };
+
+  const handleEventClick = (info: {
+    event: {
+      extendedProps: {
+        booking: BookingRequest;
+        description: string;
+      };
+      title: string;
+    };
+  }) => {
+    if (info.event.extendedProps.description) {
+      const bookings: BookingRequest = info.event.extendedProps.booking;
+      setModalBookingData(bookings);
     }
   };
 
@@ -756,6 +800,7 @@ export default function ManageBooking() {
             slotMax={endTime}
             slotMin={startTime}
             events={events}
+            eventClick={handleEventClick}
             eventMouseEnter={handleMouseEnter}
             eventMouseLeave={handleMouseLeave}
           />
@@ -814,10 +859,24 @@ export default function ManageBooking() {
             )}
 
             <BookingModal
+              isBookingRequest={false}
+              isOpen={!!modalBookingData}
+              onClose={() => setModalBookingData(null)}
+              modalData={modalBookingData}
+              isAdmin
+            />
+            <BookingModal
+              isBookingRequest
               isOpen={!!modalData}
               onClose={() => setModalData(null)}
               modalData={modalData}
               isAdmin
+            />
+            <BookingRejectModal
+              isOpen={!!rejectModalData}
+              onClose={() => setRejectModalData(null)}
+              modalData={rejectModalData}
+              dataHandler={dataFromBookingRejectVenueModal}
             />
           </Tabs>
         </Box>

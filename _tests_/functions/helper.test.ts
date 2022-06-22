@@ -58,6 +58,8 @@ test('prettifyTiming test 1', async () => {
   expect(prettifyTiming(['hello', 'my', 'name', 'is', 'jeff'])).toStrictEqual(
     'hello, my, name, is, jeff',
   );
+  expect(prettifyTiming(['hello'])).toStrictEqual('hello');
+  expect(prettifyTiming(['1'])).toStrictEqual('1');
 });
 
 test('convertSlotToArray test 1', async () => {
@@ -68,6 +70,9 @@ test('convertSlotToArray test 1', async () => {
   ]);
   expect(convertSlotToArray('1,2,3,4,5', true)).toStrictEqual([1, 2, 3, 4, 5]);
   expect(convertSlotToArray('1,2', true)).toStrictEqual([1, 2]);
+  expect(convertSlotToArray('1', true)).toStrictEqual([1]);
+  expect(convertSlotToArray('5', true)).toStrictEqual([5]);
+  expect(convertSlotToArray('22', true)).toStrictEqual([22]);
   expect(convertSlotToArray('1,23,', true)).toStrictEqual([1, 23]);
   expect(convertSlotToArray('asd21312', true)).toBeNull();
   expect(convertSlotToArray('gjndgjrdfgdf', true)).toBeNull();

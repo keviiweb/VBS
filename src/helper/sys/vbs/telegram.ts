@@ -1,3 +1,4 @@
+import { checkerString } from '@constants/sys/helper';
 import TelegramBot from 'node-telegram-bot-api';
 import { BookingRequest } from 'types/bookingReq';
 
@@ -12,7 +13,7 @@ export const sendMessageToChannel = async (message: string): Promise<void> => {
   ) {
     try {
       const bot = new TelegramBot(token, { polling: true });
-      if (bot.isPolling()) {
+      if (bot.isPolling() && checkerString(message)) {
         bot.sendMessage(channel_id, message).catch((err) => {
           console.error('Channel message not sent', err);
         });
@@ -32,8 +33,17 @@ export const approvalBookingRequestMessageBuilder = (
   const timeSlots: string = bookingRequest.timeSlots;
   const cca: string = bookingRequest.cca;
 
-  const returnMessage: string = `[APPROVED]\nCCA: ${cca}\nVenue: ${venueName}\nDate: ${date}\nTimeslot(s): ${timeSlots}`;
-  return returnMessage;
+  if (
+    checkerString(venueName) &&
+    checkerString(date) &&
+    checkerString(timeSlots) &&
+    checkerString(cca)
+  ) {
+    const returnMessage: string = `[APPROVED]\nCCA: ${cca}\nVenue: ${venueName}\nDate: ${date}\nTimeslot(s): ${timeSlots}`;
+    return returnMessage;
+  } else {
+    return '';
+  }
 };
 
 export const rejectBookingRequestMessageBuilder = (
@@ -43,7 +53,17 @@ export const rejectBookingRequestMessageBuilder = (
   const date: string = bookingRequest.dateStr;
   const timeSlots: string = bookingRequest.timeSlots;
   const cca: string = bookingRequest.cca;
+  const reason: string = bookingRequest.reason;
 
-  const returnMessage: string = `[REJECTED]\nCCA: ${cca}\nVenue: ${venueName}\nDate: ${date}\nTimeslot(s): ${timeSlots}`;
-  return returnMessage;
+  if (
+    checkerString(venueName) &&
+    checkerString(date) &&
+    checkerString(timeSlots) &&
+    checkerString(cca)
+  ) {
+    const returnMessage: string = `[REJECTED]\nCCA: ${cca}\nVenue: ${venueName}\nDate: ${date}\nTimeslot(s): ${timeSlots}\nReason: ${reason}`;
+    return returnMessage;
+  } else {
+    return '';
+  }
 };

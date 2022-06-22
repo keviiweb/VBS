@@ -384,30 +384,34 @@ export const sendApproveMail = async (target: string, data: BookingRequest) => {
     process.env.SEND_EMAIL &&
     (process.env.SEND_EMAIL === '1' || Number(process.env.SEND_EMAIL) === 1)
   ) {
-    const config = {
-      host: process.env.EMAIL_SERVER_HOST,
-      port: Number(process.env.EMAIL_SERVER_PORT),
-      auth: {
-        user: process.env.EMAIL_SERVER_USER,
-        pass: process.env.EMAIL_SERVER_PASSWORD,
-      },
-    };
+    try {
+      const config = {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: Number(process.env.EMAIL_SERVER_PORT),
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      };
 
-    let transporter = nodemailer.createTransport(config);
+      let transporter = nodemailer.createTransport(config);
 
-    transporter.sendMail(
-      {
-        from: process.env.EMAIL_FROM,
-        to: target,
-        subject: 'KEVII VBS: Request Approved',
-        text: text(),
-        html: html({ data }),
-      },
-      function (err) {
-        if (err) {
-          console.error('Error ' + err);
-        }
-      },
-    );
+      transporter.sendMail(
+        {
+          from: process.env.EMAIL_FROM,
+          to: target,
+          subject: 'KEVII VBS: Request Approved',
+          text: text(),
+          html: html({ data }),
+        },
+        function (err) {
+          if (err) {
+            console.error('Error ' + err);
+          }
+        },
+      );
+    } catch (error) {
+      console.error(error);
+    }
   }
 };

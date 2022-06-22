@@ -17,9 +17,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
 
   let result: Result = null;
-  const { id } = req.body;
+  const { id, reason } = req.body;
   if (session !== undefined && session !== null && session.user.admin) {
-    if (checkerString(id)) {
+    if (checkerString(id) && checkerString(reason)) {
       const bookingRequest: BookingRequest = await findBookingByID(id);
 
       if (bookingRequest) {
@@ -52,7 +52,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           res.status(200).send(result);
           res.end();
         } else {
-          const reject: Result = await setReject(bookingRequest, session);
+          const reject: Result = await setReject(
+            bookingRequest,
+            session,
+            reason,
+          );
           if (reject.status) {
             result = {
               status: true,

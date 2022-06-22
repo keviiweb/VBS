@@ -405,6 +405,7 @@ export const setApprove = async (
 export const setReject = async (
   bookingRequest: BookingRequest,
   session: Session,
+  reason: string,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   if (bookingRequest) {
@@ -416,6 +417,7 @@ export const setReject = async (
         isApproved: false,
         isRejected: true,
         isCancelled: false,
+        reason: reason,
       },
     });
 
@@ -446,7 +448,7 @@ export const setReject = async (
           timeSlots: prettifyTiming(slotArray as string[]),
           cca: cca,
           purpose: bookingRequest.purpose,
-          sessionEmail: session.user.email,
+          reason: reason,
         };
 
         try {
@@ -622,13 +624,15 @@ export const setRejectConflicts = async (
 
     if (sameDayVenue) {
       let conflicting: string[] = [];
+      const reason: string =
+        'Conflicting timeslot with another booking request';
 
       for (let key in sameDayVenue) {
         if (sameDayVenue[key]) {
           const request: BookingRequest = sameDayVenue[key];
           if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
             conflicting.push(request.id);
-            const reject: Result = await setReject(request, session);
+            const reject: Result = await setReject(request, session, reason);
             if (!reject.status) {
               console.error(reject.error);
               success = false;

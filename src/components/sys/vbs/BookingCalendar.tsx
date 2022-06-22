@@ -8,6 +8,7 @@ export default function BookingCalendar({
   slotMin,
   slotMax,
   events,
+  eventClick,
   eventMouseEnter,
   eventMouseLeave,
 }) {
@@ -28,6 +29,7 @@ export default function BookingCalendar({
       }}
       eventMouseEnter={eventMouseEnter}
       eventMouseLeave={eventMouseLeave}
+      eventClick={eventClick}
     />
   );
 }

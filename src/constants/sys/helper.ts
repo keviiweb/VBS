@@ -101,24 +101,20 @@ export const convertSlotToArray = (
   if (reverse) {
     try {
       const strSlot = slots as string;
-      if (strSlot.includes(',')) {
-        const stringArr: string[] = strSlot.split(',');
-        const result: number[] = [];
-        for (let key in stringArr) {
-          if (stringArr[key]) {
-            const res = Number(stringArr[key]);
-            if (isNaN(res)) {
-              return null;
-            } else {
-              result[key] = res;
-            }
+      const stringArr: string[] = strSlot.split(',');
+      const result: number[] = [];
+      for (let key in stringArr) {
+        if (stringArr[key]) {
+          const res = Number(stringArr[key]);
+          if (isNaN(res)) {
+            return null;
+          } else {
+            result[key] = res;
           }
         }
-
-        return result;
-      } else {
-        return null;
       }
+
+      return result;
     } catch (error) {
       return null;
     }

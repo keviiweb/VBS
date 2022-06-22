@@ -105,9 +105,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             const book: BookingRequest = bookings[booking];
             const venueReq: Result = await findVenueByID(book.venue);
             const date = convertUnixToDate(book.date as number);
-            const timeSlots = mapSlotToTiming(
-              convertSlotToArray(book.timeSlots, true),
-            ) as string[];
+            const slotArr: number[] = convertSlotToArray(
+              book.timeSlots,
+              true,
+            ) as number[];
+            const timeSlots: string[] = mapSlotToTiming(slotArr) as string[];
 
             if (venueReq.status) {
               const venue = venueReq.msg.name;
@@ -187,6 +189,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   cca: cca,
                   conflictRequestObj: conflicts,
                   status: status,
+                  reason: book.reason,
                 };
 
                 parsedBooking.push(data);

@@ -6,7 +6,7 @@ export type Booking = {
   dateStr?: string;
   cca: string;
   timingSlot?: number;
-  timeSlot?: string;
+  timeSlots?: string;
   startHour?: string;
   endHour?: string;
   title?: string;

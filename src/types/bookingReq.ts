@@ -14,5 +14,6 @@ export type BookingRequest = {
   conflictRequest?: string;
   conflictRequestObj?: BookingRequest[];
   status?: string;
+  reason?: string;
   action?: any;
 };

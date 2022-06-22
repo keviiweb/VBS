@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { cardVariant, parentVariant } from '@root/motion';
+import { parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
 import {
   Box,
@@ -84,11 +84,7 @@ export default function VBS(props: any) {
               result.forEach((item) => {
                 if (item.visible) {
                   cardRes.push(
-                    <MotionBox
-                      id={item.name}
-                      variants={cardVariant}
-                      key={item.id}
-                    >
+                    <MotionBox id={item.name} key={item.id}>
                       <VenueCard product={item} setModalData={setModalData} />
                     </MotionBox>,
                   );

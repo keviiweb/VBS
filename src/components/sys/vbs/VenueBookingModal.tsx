@@ -597,7 +597,7 @@ export default function VenueBookingModal({
             onClick={handleSubmit}
             _hover={{ bg: 'cyan.800' }}
           >
-            Submit
+            Confirm
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -25,10 +25,18 @@ import TableWidget from '@components/sys/vbs/TableWidget';
 import { BookingRequest } from 'types/bookingReq';
 import { Result } from 'types/api';
 
+import { checkerString } from '@constants/sys/helper';
+
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
-export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
+export default function BookingModal({
+  isAdmin,
+  isBookingRequest,
+  isOpen,
+  onClose,
+  modalData,
+}) {
   const [loadingData, setLoadingData] = useState(true);
   const [id, setID] = useState(null);
   const [venue, setVenue] = useState(null);
@@ -39,6 +47,9 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
   const [purpose, setPurpose] = useState(null);
   const [conflict, setConflict] = useState(null);
   const [status, setStatus] = useState(null);
+  const [reason, setReason] = useState(null);
+
+  const pageSize = 10;
 
   const reset = () => {
     setID(null);
@@ -50,6 +61,7 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
     setPurpose(null);
     setConflict(null);
     setStatus(null);
+    setReason(null);
   };
 
   const handleModalCloseButton = () => {
@@ -94,10 +106,15 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
       setStatus(modalData.status);
 
       if (
+        isBookingRequest &&
         modalData.conflictRequestObj &&
         modalData.conflictRequestObj.length > 0
       ) {
         await processConflicts(modalData.conflictRequestObj);
+      }
+
+      if (modalData.reason && checkerString(modalData.reason)) {
+        setReason(modalData.reason);
       }
 
       setLoadingData(false);
@@ -106,7 +123,7 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
     if (modalData) {
       setupData();
     }
-  }, [modalData]);
+  }, [modalData, isBookingRequest]);
 
   const columns = useMemo(
     () => [
@@ -178,68 +195,113 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                       divider={<StackDivider borderColor='gray.200' />}
                     >
                       <Box>
-                        <Text
-                          fontSize={{ base: '16px', lg: '18px' }}
-                          fontWeight='500'
-                          textTransform='uppercase'
-                          mb='4'
-                        >
-                          Booking Request Details
-                        </Text>
+                        {isBookingRequest && (
+                          <Text
+                            fontSize={{ base: '16px', lg: '18px' }}
+                            fontWeight='500'
+                            textTransform='uppercase'
+                            mb='4'
+                          >
+                            Booking Request Details
+                          </Text>
+                        )}
+
+                        {!isBookingRequest && (
+                          <Text
+                            fontSize={{ base: '16px', lg: '18px' }}
+                            fontWeight='500'
+                            textTransform='uppercase'
+                            mb='4'
+                          >
+                            Booking Details
+                          </Text>
+                        )}
 
                         <List spacing={5}>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Reference No:
-                            </Text>{' '}
-                            {id}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Venue:
-                            </Text>{' '}
-                            {venue}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Date:
-                            </Text>{' '}
-                            {date}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Timeslot(s):
-                            </Text>{' '}
-                            {timeSlots}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Contact Email:
-                            </Text>{' '}
-                            {email}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              CCA:
-                            </Text>{' '}
-                            {cca}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Purpose:
-                            </Text>{' '}
-                            {purpose}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Status:
-                            </Text>{' '}
-                            {status}
-                          </ListItem>
+                          {checkerString(id) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Reference No:
+                              </Text>{' '}
+                              {id}
+                            </ListItem>
+                          )}
+
+                          {checkerString(venue) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Venue:
+                              </Text>{' '}
+                              {venue}
+                            </ListItem>
+                          )}
+
+                          {checkerString(date) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Date:
+                              </Text>{' '}
+                              {date}
+                            </ListItem>
+                          )}
+
+                          {checkerString(timeSlots) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Timeslot(s):
+                              </Text>{' '}
+                              {timeSlots}
+                            </ListItem>
+                          )}
+
+                          {checkerString(email) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Contact Email:
+                              </Text>{' '}
+                              {email}
+                            </ListItem>
+                          )}
+
+                          {checkerString(cca) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                CCA:
+                              </Text>{' '}
+                              {cca}
+                            </ListItem>
+                          )}
+
+                          {checkerString(purpose) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Purpose:
+                              </Text>{' '}
+                              {purpose}
+                            </ListItem>
+                          )}
+
+                          {checkerString(status) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Status:
+                              </Text>{' '}
+                              {status}
+                            </ListItem>
+                          )}
+
+                          {checkerString(reason) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Rejected Reason:
+                              </Text>{' '}
+                              {reason}
+                            </ListItem>
+                          )}
                         </List>
                       </Box>
 
-                      {isAdmin && conflict && loadingData && (
+                      {isAdmin && isBookingRequest && conflict && loadingData && (
                         <Box overflow='auto'>
                           <Text
                             fontSize={{ base: '16px', lg: '18px' }}
@@ -253,7 +315,7 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                         </Box>
                       )}
 
-                      {isAdmin && conflict && !loadingData && (
+                      {isAdmin && isBookingRequest && conflict && !loadingData && (
                         <Box overflow='auto'>
                           <Text
                             fontSize={{ base: '16px', lg: '18px' }}
@@ -270,7 +332,11 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                             controlledPageCount={
                               modalData.conflictRequestObj &&
                               modalData.conflictRequestObj.length
-                                ? modalData.conflictRequestObj.length
+                                ? Math.floor(
+                                  modalData.conflictRequestObj.length /
+                                      pageSize +
+                                      1,
+                                )
                                 : 0
                             }
                             dataHandler={null}
@@ -278,7 +344,7 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                         </Box>
                       )}
 
-                      {isAdmin && !conflict && loadingData && (
+                      {isAdmin && isBookingRequest && !conflict && loadingData && (
                         <Box overflow='auto'>
                           <Text
                             fontSize={{ base: '16px', lg: '18px' }}
@@ -292,25 +358,28 @@ export default function BookingModal({ isAdmin, isOpen, onClose, modalData }) {
                         </Box>
                       )}
 
-                      {isAdmin && !conflict && !loadingData && (
-                        <Box overflow='auto'>
-                          <Text
-                            fontSize={{ base: '16px', lg: '18px' }}
-                            fontWeight='500'
-                            textTransform='uppercase'
-                            mb='4'
-                          >
-                            Conflicting Requests
-                          </Text>
-                          <Text
-                            fontSize={{ base: '16px', lg: '18px' }}
-                            fontWeight='500'
-                            textTransform='uppercase'
-                            mb='4'
-                          >
-                            No conflicting requests found
-                          </Text>
-                        </Box>
+                      {isAdmin &&
+                        isBookingRequest &&
+                        !conflict &&
+                        !loadingData && (
+                          <Box overflow='auto'>
+                            <Text
+                              fontSize={{ base: '16px', lg: '18px' }}
+                              fontWeight='500'
+                              textTransform='uppercase'
+                              mb='4'
+                            >
+                              Conflicting Requests
+                            </Text>
+                            <Text
+                              fontSize={{ base: '16px', lg: '18px' }}
+                              fontWeight='500'
+                              textTransform='uppercase'
+                              mb='4'
+                            >
+                              No conflicting requests found
+                            </Text>
+                          </Box>
                       )}
                     </Stack>
                   </Stack>

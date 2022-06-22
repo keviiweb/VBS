@@ -51,9 +51,10 @@ export default function EmailCallBack() {
           <Box textAlign='center' py={10} px={6}>
             <CheckCircleIcon boxSize='50px' color='green.500' />
             <Heading as='h2' size='xl' mt={6} mb={2}>
-              Login successful!
+              Login Successful
             </Heading>
             <Text color='gray.500'>Redirecting you in 10 seconds...</Text>
+            <Text color='gray.500'>Please do not close this window</Text>
           </Box>
         </Box>
       </Stack>

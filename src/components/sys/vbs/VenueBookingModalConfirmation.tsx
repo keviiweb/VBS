@@ -507,6 +507,7 @@ export default function VenueBookingModalConfirmation({
         <ModalFooter>
           {!success && !submitting && (
             <Button
+              disabled={!isSwitch}
               bg='cyan.700'
               color='white'
               w='150px'

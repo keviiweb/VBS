@@ -288,6 +288,7 @@ export default function ManageBooking() {
             onClose={() => setModalData(null)}
             modalData={modalData}
             isAdmin={undefined}
+            isBookingRequest={false}
           />
         </MotionBox>
       </Box>
