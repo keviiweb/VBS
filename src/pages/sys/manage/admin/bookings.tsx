@@ -25,6 +25,7 @@ import TableWidget from '@components/sys/vbs/TableWidget';
 import BookingModal from '@components/sys/vbs/BookingModal';
 import BookingCalendar from '@components/sys/vbs/BookingCalendar';
 import BookingRejectModal from '@components/sys/vbs/BookingRejectModal';
+import LoadingModal from '@components/sys/vbs/LoadingModal';
 
 import { parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
@@ -74,9 +75,13 @@ export default function ManageBooking() {
   const pageSizeDB = useRef(PAGESIZE);
   const pageIndexDB = useRef(PAGEINDEX);
 
+  const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+
   const handleApprove = useCallback(
     async (id: string) => {
       if (checkerString(id)) {
+        setSubmitButtonPressed(true);
+
         try {
           const rawResponse = await fetch('/api/bookingReq/approve', {
             method: 'POST',
@@ -90,6 +95,8 @@ export default function ManageBooking() {
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
+            setSubmitButtonPressed(false);
+
             toast({
               title: 'Request approved.',
               description: 'An email has been sent to the requester',
@@ -100,6 +107,8 @@ export default function ManageBooking() {
             await handleTabChange(tabIndexData.current);
             await fetchBookings(venueIDDB.current);
           } else {
+            setSubmitButtonPressed(false);
+
             toast({
               title: 'Error',
               description: content.error,
@@ -111,6 +120,7 @@ export default function ManageBooking() {
 
           return true;
         } catch (error) {
+          setSubmitButtonPressed(false);
           return false;
         }
       }
@@ -124,6 +134,8 @@ export default function ManageBooking() {
     async (contentField: BookingRequest, reason: string) => {
       const { id } = contentField;
       if (checkerString(id)) {
+        setSubmitButtonPressed(true);
+
         try {
           const rawResponse = await fetch('/api/bookingReq/reject', {
             method: 'POST',
@@ -138,6 +150,8 @@ export default function ManageBooking() {
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
+            setSubmitButtonPressed(false);
+
             toast({
               title: 'Request rejected.',
               description: 'An email has been sent to the requester',
@@ -148,6 +162,8 @@ export default function ManageBooking() {
             await handleTabChange(tabIndexData.current);
             await fetchBookings(venueIDDB.current);
           } else {
+            setSubmitButtonPressed(false);
+
             toast({
               title: 'Error',
               description: content.error,
@@ -158,6 +174,7 @@ export default function ManageBooking() {
           }
           return true;
         } catch (error) {
+          setSubmitButtonPressed(false);
           return false;
         }
       } else {
@@ -203,6 +220,7 @@ export default function ManageBooking() {
                 <Button
                   size='sm'
                   leftIcon={<CheckIcon />}
+                  disabled={submitButtonPressed}
                   onClick={() => handleApprove(content.id)}
                 >
                   Approve
@@ -210,6 +228,7 @@ export default function ManageBooking() {
                 <Button
                   size='sm'
                   leftIcon={<CloseIcon />}
+                  disabled={submitButtonPressed}
                   onClick={() => handleReject(content)}
                 >
                   Reject
@@ -265,6 +284,7 @@ export default function ManageBooking() {
                 <Button
                   size='sm'
                   leftIcon={<CheckIcon />}
+                  disabled={submitButtonPressed}
                   onClick={() => handleApprove(content.id)}
                 >
                   Approve
@@ -272,6 +292,7 @@ export default function ManageBooking() {
                 <Button
                   size='sm'
                   leftIcon={<CloseIcon />}
+                  disabled={submitButtonPressed}
                   onClick={() => handleReject(content)}
                 >
                   Reject
@@ -297,15 +318,19 @@ export default function ManageBooking() {
             </Button>
           );
           return button;
+
         default:
           return button;
       }
     },
-    [handleApprove, handleDetails, handleReject],
+    [handleApprove, handleDetails, handleReject, submitButtonPressed],
   );
 
   const includeActionButton = useCallback(
-    async (content, action: number) => {
+    async (
+      content: { count: number; res: BookingRequest[] },
+      action: number,
+    ) => {
       if (
         (content.count !== undefined || content.count !== null) &&
         (content.res !== undefined || content.res !== null)
@@ -648,24 +673,31 @@ export default function ManageBooking() {
 
   fetchBookings = useCallback(
     async (id: string) => {
-      try {
-        const rawResponse = await fetch('/api/booking/fetch', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: id,
-          }),
-        });
-        const content: Result = await rawResponse.json();
-        if (content.status) {
-          await populateCalendar(content.msg);
+      if (checkerString(id)) {
+        setSubmitButtonPressed(true);
+        try {
+          const rawResponse = await fetch('/api/booking/fetch', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: id,
+            }),
+          });
+          const content: Result = await rawResponse.json();
+          if (content.status) {
+            await populateCalendar(content.msg);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
+
+        setSubmitButtonPressed(false);
+        return true;
       }
+      return false;
     },
     [populateCalendar],
   );
@@ -777,6 +809,11 @@ export default function ManageBooking() {
         initial='initial'
         animate='animate'
       >
+        <LoadingModal
+          isOpen={!!submitButtonPressed}
+          onClose={() => setSubmitButtonPressed(false)}
+        />
+
         <Box
           bg='white'
           borderRadius='lg'

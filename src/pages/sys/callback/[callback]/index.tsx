@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Flex, Box, Stack, Heading, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, Stack, Spinner, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { CheckCircleIcon } from '@chakra-ui/icons';
 
@@ -55,6 +55,7 @@ export default function EmailCallBack() {
             </Heading>
             <Text color='gray.500'>Redirecting you in 10 seconds...</Text>
             <Text color='gray.500'>Please do not close this window</Text>
+            <Spinner mt={5} />
           </Box>
         </Box>
       </Stack>

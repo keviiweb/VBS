@@ -51,7 +51,10 @@ export default function BookingRejectModal({
     }, 200);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: {
+    cancelable: any;
+    preventDefault: () => void;
+  }) => {
     if (e.cancelable) {
       e.preventDefault();
     }

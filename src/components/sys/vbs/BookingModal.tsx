@@ -17,8 +17,6 @@ import {
   StackDivider,
   Text,
 } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
-import { cardVariant, parentVariant } from '@root/motion';
 
 import TableWidget from '@components/sys/vbs/TableWidget';
 
@@ -26,9 +24,6 @@ import { BookingRequest } from 'types/bookingReq';
 import { Result } from 'types/api';
 
 import { checkerString } from '@constants/sys/helper';
-
-const MotionSimpleGrid = motion(SimpleGrid);
-const MotionBox = motion(Box);
 
 export default function BookingModal({
   isAdmin,
@@ -170,16 +165,8 @@ export default function BookingModal({
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
-          <MotionSimpleGrid
-            mt='3'
-            minChildWidth='250px'
-            spacing='2em'
-            minH='full'
-            variants={parentVariant}
-            initial='initial'
-            animate='animate'
-          >
-            <MotionBox variants={cardVariant} key='2'>
+          <SimpleGrid mt='3' minChildWidth='250px' spacing='2em' minH='full'>
+            <Box>
               {modalData && (
                 <Flex
                   w='full'
@@ -385,8 +372,8 @@ export default function BookingModal({
                   </Stack>
                 </Flex>
               )}
-            </MotionBox>
-          </MotionSimpleGrid>
+            </Box>
+          </SimpleGrid>
         </ModalBody>
         <ModalFooter>
           <Button

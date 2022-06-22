@@ -30,6 +30,7 @@ import { motion } from 'framer-motion';
 import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/vbs/TableWidget';
 import VenueModal from '@components/sys/vbs/VenueModal';
+import LoadingModal from '@components/sys/vbs/LoadingModal';
 
 import { timeSlots } from '@constants/sys/timeslot';
 import { checkerNumber, checkerString } from '@constants/sys/helper';
@@ -113,6 +114,8 @@ export default function ManageVenues() {
   const [pageCount, setPageCount] = useState(0);
   const pageSizeDB = useRef(PAGESIZE);
   const pageIndexDB = useRef(PAGEINDEX);
+
+  const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
   const handleDetails = useCallback((content: Venue) => {
     setModalData(content);
@@ -212,6 +215,8 @@ export default function ManageVenues() {
           openingHours,
         )
       ) {
+        setSubmitButtonPressed(true);
+
         const dataField = new FormData();
         dataField.append('image', selectedFileDB.current);
         dataField.append('name', nameDB.current);
@@ -230,6 +235,7 @@ export default function ManageVenues() {
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
+            setSubmitButtonPressed(false);
             await reset();
             toast({
               title: 'Success',
@@ -241,6 +247,7 @@ export default function ManageVenues() {
 
             await fetchData();
           } else {
+            setSubmitButtonPressed(false);
             toast({
               title: 'Error',
               description: content.error,
@@ -250,6 +257,7 @@ export default function ManageVenues() {
             });
           }
         } catch (error) {
+          setSubmitButtonPressed(false);
           console.error(error);
         }
       }
@@ -287,7 +295,7 @@ export default function ManageVenues() {
   };
 
   const includeActionButton = useCallback(
-    async (content) => {
+    async (content: { count: number; res: Venue[] }) => {
       if (
         (content.count !== undefined || content.count !== null) &&
         (content.res !== undefined || content.res !== null)
@@ -716,6 +724,11 @@ export default function ManageVenues() {
         shadow='base'
         overflow='auto'
       >
+        <LoadingModal
+          isOpen={!!submitButtonPressed}
+          onClose={() => setSubmitButtonPressed(false)}
+        />
+
         <MotionBox variants={cardVariant} key='1'>
           {loadingData && !data ? (
             <Text>Loading Please wait...</Text>
@@ -945,6 +958,7 @@ export default function ManageVenues() {
                     type='submit'
                     bg='blue.400'
                     color='white'
+                    disabled={submitButtonPressed}
                     _hover={{
                       bg: 'blue.500',
                     }}
@@ -1100,6 +1114,7 @@ export default function ManageVenues() {
                     type='submit'
                     bg='blue.400'
                     color='white'
+                    disabled={submitButtonPressed}
                     _hover={{
                       bg: 'blue.500',
                     }}

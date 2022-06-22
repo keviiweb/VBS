@@ -13,6 +13,7 @@ import { motion } from 'framer-motion';
 import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/vbs/TableWidget';
 import BookingModal from '@components/sys/vbs/BookingModal';
+import LoadingModal from '@components/sys/vbs/LoadingModal';
 
 import { Result } from 'types/api';
 import { BookingRequest } from 'types/bookingReq';
@@ -38,6 +39,8 @@ export default function ManageBooking() {
   const pageSizeDB = useRef(PAGESIZE);
   const pageIndexDB = useRef(PAGEINDEX);
 
+  const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+
   const handleDetails = useCallback((content: BookingRequest) => {
     setModalData(content);
   }, []);
@@ -45,6 +48,8 @@ export default function ManageBooking() {
   const handleCancel = useCallback(
     async (id: string) => {
       if (checkerString(id)) {
+        setSubmitButtonPressed(true);
+
         try {
           const rawResponse = await fetch('/api/bookingReq/cancel', {
             method: 'POST',
@@ -58,6 +63,8 @@ export default function ManageBooking() {
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
+            setSubmitButtonPressed(false);
+
             toast({
               title: 'Request cancelled.',
               description: 'An email has been sent to the requester',
@@ -67,6 +74,8 @@ export default function ManageBooking() {
             });
             await fetchData();
           } else {
+            setSubmitButtonPressed(false);
+
             toast({
               title: 'Error',
               description: content.error,
@@ -76,6 +85,7 @@ export default function ManageBooking() {
             });
           }
         } catch (error) {
+          setSubmitButtonPressed(false);
           console.error(error);
         }
       }
@@ -84,7 +94,7 @@ export default function ManageBooking() {
   );
 
   const includeActionButton = useCallback(
-    async (content) => {
+    async (content: { count: number; res: BookingRequest[] }) => {
       if (
         (content.count !== undefined || content.count !== null) &&
         (content.res !== undefined || content.res !== null)
@@ -117,6 +127,7 @@ export default function ManageBooking() {
             <Button
               size='sm'
               leftIcon={<CloseIcon />}
+              disabled={submitButtonPressed}
               onClick={() => handleCancel(content.id)}
             >
               Cancel
@@ -143,7 +154,7 @@ export default function ManageBooking() {
       );
       return button;
     },
-    [handleDetails, handleCancel],
+    [handleDetails, handleCancel, submitButtonPressed],
   );
 
   fetchData = useCallback(async () => {
@@ -289,6 +300,10 @@ export default function ManageBooking() {
             modalData={modalData}
             isAdmin={undefined}
             isBookingRequest={false}
+          />
+          <LoadingModal
+            isOpen={!!submitButtonPressed}
+            onClose={() => setSubmitButtonPressed(false)}
           />
         </MotionBox>
       </Box>
