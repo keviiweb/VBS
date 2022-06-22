@@ -39,29 +39,43 @@ import { checkerString } from '@constants/sys/helper';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 
+interface CalendarData {
+  id: string | undefined;
+  title: string | undefined;
+  start: string | undefined;
+  end: string | undefined;
+  extendedProps: {
+    description: string;
+    booking: Booking;
+  };
+}
+
 export default function ManageBooking() {
-  const [modalData, setModalData] = useState(null);
+  const [modalData, setModalData] = useState<BookingRequest | null>(null);
 
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<BookingRequest[]>([]);
   const ALL: number = 3;
   const PENDING: number = 0;
   const APPROVED: number = 1;
   const REJECTED: number = 2;
 
-  const [rejectModalData, setRejectModalData] = useState(null);
-  const [modalBookingData, setModalBookingData] = useState(null);
+  const [rejectModalData, setRejectModalData] = useState<BookingRequest | null>(
+    null,
+  );
+  const [modalBookingData, setModalBookingData] =
+    useState<BookingRequest | null>(null);
 
   const tabIndexData = useRef(0);
 
-  const venueData = useRef([]);
-  const [venueDropdown, setVenueDropdown] = useState([]);
+  const venueData = useRef<Venue[]>([]);
+  const [venueDropdown, setVenueDropdown] = useState<JSX.Element[]>([]);
   const [venueID, setVenueID] = useState('');
   const venueIDDB = useRef('');
   const [selectedVenue, setSelectedVenue] = useState('');
 
-  const [events, setEvents] = useState(null);
+  const [events, setEvents] = useState<CalendarData[]>([]);
   const [startTime, setStartTime] = useState('08:00:00');
   const [endTime, setEndTime] = useState('23:00:00');
 
@@ -133,7 +147,7 @@ export default function ManageBooking() {
   const handleRejectWReason = useCallback(
     async (contentField: BookingRequest, reason: string) => {
       const { id } = contentField;
-      if (checkerString(id)) {
+      if (id !== undefined && checkerString(id)) {
         setSubmitButtonPressed(true);
 
         try {
@@ -197,7 +211,7 @@ export default function ManageBooking() {
 
   const handleReject = useCallback(async (content: BookingRequest) => {
     const { id } = content;
-    if (checkerString(id)) {
+    if (id !== undefined && checkerString(id)) {
       setRejectModalData(content);
     }
 
@@ -210,41 +224,43 @@ export default function ManageBooking() {
 
   const generateActionButton = useCallback(
     async (content: BookingRequest, action: number) => {
-      let button = null;
-
       switch (action) {
-        case ALL:
+        case ALL: {
           if (content.status === 'PENDING') {
-            button = (
-              <Stack direction='column'>
-                <Button
-                  size='sm'
-                  leftIcon={<CheckIcon />}
-                  disabled={submitButtonPressed}
-                  onClick={() => handleApprove(content.id)}
-                >
-                  Approve
-                </Button>
-                <Button
-                  size='sm'
-                  leftIcon={<CloseIcon />}
-                  disabled={submitButtonPressed}
-                  onClick={() => handleReject(content)}
-                >
-                  Reject
-                </Button>
-                <Button
-                  size='sm'
-                  leftIcon={<InfoOutlineIcon />}
-                  onClick={() => handleDetails(content)}
-                >
-                  View Details
-                </Button>
-              </Stack>
-            );
-            return button;
+            const { id } = content;
+            if (id !== undefined) {
+              const button: JSX.Element = (
+                <Stack direction='column'>
+                  <Button
+                    size='sm'
+                    leftIcon={<CheckIcon />}
+                    disabled={submitButtonPressed}
+                    onClick={() => handleApprove(id)}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    size='sm'
+                    leftIcon={<CloseIcon />}
+                    disabled={submitButtonPressed}
+                    onClick={() => handleReject(content)}
+                  >
+                    Reject
+                  </Button>
+                  <Button
+                    size='sm'
+                    leftIcon={<InfoOutlineIcon />}
+                    onClick={() => handleDetails(content)}
+                  >
+                    View Details
+                  </Button>
+                </Stack>
+              );
+              return button;
+            }
+            return null;
           }
-          button = (
+          const button: JSX.Element = (
             <Button
               size='sm'
               leftIcon={<InfoOutlineIcon />}
@@ -254,9 +270,9 @@ export default function ManageBooking() {
             </Button>
           );
           return button;
-
-        case APPROVED:
-          button = (
+        }
+        case APPROVED: {
+          const button2: JSX.Element = (
             <Button
               size='sm'
               leftIcon={<InfoOutlineIcon />}
@@ -265,9 +281,10 @@ export default function ManageBooking() {
               View Details
             </Button>
           );
-          return button;
-        case REJECTED:
-          button = (
+          return button2;
+        }
+        case REJECTED: {
+          const button3: JSX.Element = (
             <Button
               size='sm'
               leftIcon={<InfoOutlineIcon />}
@@ -276,39 +293,44 @@ export default function ManageBooking() {
               View Details
             </Button>
           );
-          return button;
-        case PENDING:
+          return button3;
+        }
+        case PENDING: {
           if (content.status === 'PENDING') {
-            button = (
-              <Stack direction='column'>
-                <Button
-                  size='sm'
-                  leftIcon={<CheckIcon />}
-                  disabled={submitButtonPressed}
-                  onClick={() => handleApprove(content.id)}
-                >
-                  Approve
-                </Button>
-                <Button
-                  size='sm'
-                  leftIcon={<CloseIcon />}
-                  disabled={submitButtonPressed}
-                  onClick={() => handleReject(content)}
-                >
-                  Reject
-                </Button>
-                <Button
-                  size='sm'
-                  leftIcon={<InfoOutlineIcon />}
-                  onClick={() => handleDetails(content)}
-                >
-                  View Details
-                </Button>
-              </Stack>
-            );
-            return button;
+            const { id } = content;
+            if (id !== undefined) {
+              const button: JSX.Element = (
+                <Stack direction='column'>
+                  <Button
+                    size='sm'
+                    leftIcon={<CheckIcon />}
+                    disabled={submitButtonPressed}
+                    onClick={() => handleApprove(id)}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    size='sm'
+                    leftIcon={<CloseIcon />}
+                    disabled={submitButtonPressed}
+                    onClick={() => handleReject(content)}
+                  >
+                    Reject
+                  </Button>
+                  <Button
+                    size='sm'
+                    leftIcon={<InfoOutlineIcon />}
+                    onClick={() => handleDetails(content)}
+                  >
+                    View Details
+                  </Button>
+                </Stack>
+              );
+              return button;
+            }
+            return null;
           }
-          button = (
+          const button: JSX.Element = (
             <Button
               size='sm'
               leftIcon={<InfoOutlineIcon />}
@@ -318,9 +340,10 @@ export default function ManageBooking() {
             </Button>
           );
           return button;
+        }
 
         default:
-          return button;
+          return null;
       }
     },
     [handleApprove, handleDetails, handleReject, submitButtonPressed],
@@ -477,7 +500,7 @@ export default function ManageBooking() {
 
   const fetchAllData = useCallback(async () => {
     setLoadingData(true);
-    setData(null);
+    setData([]);
     try {
       const rawResponse = await fetch(
         `/api/bookingReq/fetch?limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
@@ -501,7 +524,7 @@ export default function ManageBooking() {
 
   const fetchApprovedData = useCallback(async () => {
     setLoadingData(true);
-    setData(null);
+    setData([]);
     try {
       const rawResponse = await fetch(
         `/api/bookingReq/fetch?q=APPROVED&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
@@ -525,7 +548,7 @@ export default function ManageBooking() {
 
   const fetchRejectedData = useCallback(async () => {
     setLoadingData(true);
-    setData(null);
+    setData([]);
 
     try {
       const rawResponse = await fetch(
@@ -549,7 +572,7 @@ export default function ManageBooking() {
 
   const fetchPendingData = useCallback(async () => {
     setLoadingData(true);
-    setData(null);
+    setData([]);
 
     try {
       const rawResponse = await fetch(
@@ -599,7 +622,7 @@ export default function ManageBooking() {
 
   const generateVenueDropdown = useCallback(async (contentRes) => {
     const content: Venue[] = contentRes.res;
-    const selection = [];
+    const selection: JSX.Element[] = [];
     venueData.current = [];
 
     selection.push(<option key='' value='' aria-label='Default' />);
@@ -638,7 +661,7 @@ export default function ManageBooking() {
   }, [generateVenueDropdown]);
 
   const populateCalendar = useCallback(async (content: Booking[]) => {
-    const event = [];
+    const event: CalendarData[] = [];
     let count = 0;
 
     for (let key = 0; key < content.length; key += 1) {
@@ -661,9 +684,14 @@ export default function ManageBooking() {
         event.push(e);
 
         if (count === 0) {
-          setStartTime(dataField.startHour);
-          setEndTime(dataField.endHour);
-          count += 1;
+          const start = dataField.startHour;
+          const end = dataField.endHour;
+
+          if (start !== undefined && end !== undefined) {
+            setStartTime(start);
+            setEndTime(end);
+            count += 1;
+          }
         }
       }
     }

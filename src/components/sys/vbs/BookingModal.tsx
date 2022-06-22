@@ -33,30 +33,30 @@ export default function BookingModal({
   modalData,
 }) {
   const [loadingData, setLoadingData] = useState(true);
-  const [id, setID] = useState(null);
-  const [venue, setVenue] = useState(null);
-  const [date, setDate] = useState(null);
-  const [timeSlots, setTimeSlots] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [cca, setCCA] = useState(null);
-  const [purpose, setPurpose] = useState(null);
-  const [conflict, setConflict] = useState(null);
-  const [status, setStatus] = useState(null);
-  const [reason, setReason] = useState(null);
+  const [id, setID] = useState('');
+  const [venue, setVenue] = useState('');
+  const [date, setDate] = useState('');
+  const [timeSlots, setTimeSlots] = useState('');
+  const [email, setEmail] = useState('');
+  const [cca, setCCA] = useState('');
+  const [purpose, setPurpose] = useState('');
+  const [conflict, setConflict] = useState<BookingRequest[]>([]);
+  const [status, setStatus] = useState('');
+  const [reason, setReason] = useState('');
 
   const pageSize = 10;
 
   const reset = () => {
-    setID(null);
-    setVenue(null);
-    setDate(null);
-    setTimeSlots(null);
-    setEmail(null);
-    setCCA(null);
-    setPurpose(null);
-    setConflict(null);
-    setStatus(null);
-    setReason(null);
+    setID('');
+    setVenue('');
+    setDate('');
+    setTimeSlots('');
+    setEmail('');
+    setCCA('');
+    setPurpose('');
+    setConflict([]);
+    setStatus('');
+    setReason('');
   };
 
   const handleModalCloseButton = () => {
@@ -302,33 +302,36 @@ export default function BookingModal({
                         </Box>
                       )}
 
-                      {isAdmin && isBookingRequest && conflict && !loadingData && (
-                        <Box overflow='auto'>
-                          <Text
-                            fontSize={{ base: '16px', lg: '18px' }}
-                            fontWeight='500'
-                            textTransform='uppercase'
-                            mb='4'
-                          >
-                            Conflicting Requests
-                          </Text>
-                          <TableWidget
-                            key={2}
-                            columns={columns}
-                            data={conflict}
-                            controlledPageCount={
-                              modalData.conflictRequestObj &&
-                              modalData.conflictRequestObj.length
-                                ? Math.floor(
-                                  modalData.conflictRequestObj.length /
-                                      pageSize +
-                                      1,
-                                )
-                                : 0
-                            }
-                            dataHandler={null}
-                          />
-                        </Box>
+                      {isAdmin &&
+                        isBookingRequest &&
+                        conflict.length > 0 &&
+                        !loadingData && (
+                          <Box overflow='auto'>
+                            <Text
+                              fontSize={{ base: '16px', lg: '18px' }}
+                              fontWeight='500'
+                              textTransform='uppercase'
+                              mb='4'
+                            >
+                              Conflicting Requests
+                            </Text>
+                            <TableWidget
+                              key={2}
+                              columns={columns}
+                              data={conflict}
+                              controlledPageCount={
+                                modalData.conflictRequestObj &&
+                                modalData.conflictRequestObj.length
+                                  ? Math.floor(
+                                    modalData.conflictRequestObj.length /
+                                        pageSize +
+                                        1,
+                                  )
+                                  : 0
+                              }
+                              dataHandler={null}
+                            />
+                          </Box>
                       )}
 
                       {isAdmin && isBookingRequest && !conflict && loadingData && (

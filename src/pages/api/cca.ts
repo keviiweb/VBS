@@ -7,7 +7,12 @@ import { findAllCCA } from '@helper/sys/vbs/cca';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
-  let result: Result = null;
+  let result: Result = {
+    status: false,
+    error: null,
+    msg: '',
+  };
+
   const cca: CCA[] = [];
 
   if (session !== undefined && session !== null) {

@@ -26,7 +26,7 @@ export const findAllBookingByVenueID = async (
     return bookings;
   } catch (error) {
     console.error(error);
-    return null;
+    return [];
   }
 };
 

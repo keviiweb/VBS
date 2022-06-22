@@ -31,7 +31,12 @@ import { createVenueBooking } from '@helper/sys/vbs/booking';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
 
-  let result: Result = null;
+  let result: Result = {
+    status: false,
+    error: null,
+    msg: '',
+  };
+
   const { email, venue, venueName, date, timeSlots, type, purpose } = req.body;
   try {
     const emailField: string = email as string;
@@ -59,8 +64,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           false,
         ) as string;
 
-        let bookingID: string = null;
-        let cca: string;
+        let bookingID: string = '';
+        let cca: string = '';
 
         let isALeader = true;
         let isBookingCreated = false;
@@ -120,11 +125,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             res.status(200).send(result);
             res.end();
           } else {
-            const bookingRequest: BookingRequest =
+            const bookingRequest: BookingRequest | null =
               await createVenueBookingRequest(dataDB);
-            if (bookingRequest !== null || bookingRequest !== undefined) {
-              bookingID = bookingRequest.id;
-              isBookingCreated = true;
+            if (bookingRequest !== null && bookingRequest !== undefined) {
+              if (bookingRequest.id !== undefined) {
+                bookingID = bookingRequest.id;
+                isBookingCreated = true;
+              }
             } else {
               result = {
                 status: false,
@@ -135,7 +142,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               res.end();
             }
 
-            if (isBookingCreated) {
+            if (isBookingCreated && bookingRequest !== null) {
               isInstantBooked = await isInstantBook(venue);
               if (isInstantBooked) {
                 const isRequestApproved: boolean = await isApproved(

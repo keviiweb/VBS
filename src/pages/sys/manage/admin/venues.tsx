@@ -42,11 +42,11 @@ const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
 export default function ManageVenues() {
-  const [modalData, setModalData] = useState(null);
+  const [modalData, setModalData] = useState<Venue | null>(null);
   const toast = useToast();
 
   const [loadingData, setLoadingData] = useState(true);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Venue[]>([]);
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -62,17 +62,19 @@ export default function ManageVenues() {
   const isChildVenueDB = useRef(false);
   const visibleDB = useRef(true);
 
-  const [parentVenueDropdown, setParentVenueDropdown] = useState([]);
+  const [parentVenueDropdown, setParentVenueDropdown] = useState<JSX.Element[]>(
+    [],
+  );
   const parentVenue = useRef('');
 
   const startTimeDB = useRef('');
   const endTimeDB = useRef('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [startTimeDropdown, setStartTimeDropdown] = useState([]);
-  const [endTimeDropdown, setEndTimeDropdown] = useState([]);
+  const [startTimeDropdown, setStartTimeDropdown] = useState<JSX.Element[]>([]);
+  const [endTimeDropdown, setEndTimeDropdown] = useState<JSX.Element[]>([]);
 
-  const selectedFileDB = useRef(null);
+  const selectedFileDB = useRef<string | Blob | null>(null);
   const [fileName, setFileName] = useState(null);
 
   const [errorMsg, setError] = useState('');
@@ -97,10 +99,10 @@ export default function ManageVenues() {
   const [startTimeEdit, setStartTimeEdit] = useState('');
   const [endTimeEdit, setEndTimeEdit] = useState('');
 
-  const [venueDropdown, setVenueDropdown] = useState([]);
+  const [venueDropdown, setVenueDropdown] = useState<JSX.Element[]>([]);
   const [venueIDEdit, setVenueIDEdit] = useState('');
   const venueIDDBEdit = useRef('');
-  const venueData = useRef([]);
+  const venueData = useRef<Venue[]>([]);
 
   const [errorEdit, setErrorEdit] = useState('');
 
@@ -129,7 +131,7 @@ export default function ManageVenues() {
     instantBookDB.current = false;
     isChildVenueDB.current = false;
     visibleDB.current = false;
-    parentVenue.current = null;
+    parentVenue.current = '';
     startTimeDB.current = '';
     endTimeDB.current = '';
 
@@ -200,7 +202,7 @@ export default function ManageVenues() {
 
   const handleSubmit = useCallback(
     async (event: { preventDefault: () => void }) => {
-      setError(null);
+      setError('');
       event.preventDefault();
       const openingHours: string = `${startTimeDB.current} - ${endTimeDB.current}`;
       if (
@@ -216,49 +218,50 @@ export default function ManageVenues() {
         )
       ) {
         setSubmitButtonPressed(true);
+        if (selectedFileDB.current !== null) {
+          const dataField = new FormData();
+          dataField.append('image', selectedFileDB.current);
+          dataField.append('name', nameDB.current);
+          dataField.append('description', descriptionDB.current);
+          dataField.append('capacity', capacityDB.current.toString());
+          dataField.append('isInstantBook', instantBookDB.current.toString());
+          dataField.append('visible', visibleDB.current.toString());
+          dataField.append('isChildVenue', isChildVenueDB.current.toString());
+          dataField.append('parentVenue', parentVenue.current);
+          dataField.append('openingHours', openingHours);
 
-        const dataField = new FormData();
-        dataField.append('image', selectedFileDB.current);
-        dataField.append('name', nameDB.current);
-        dataField.append('description', descriptionDB.current);
-        dataField.append('capacity', capacityDB.current.toString());
-        dataField.append('isInstantBook', instantBookDB.current.toString());
-        dataField.append('visible', visibleDB.current.toString());
-        dataField.append('isChildVenue', isChildVenueDB.current.toString());
-        dataField.append('parentVenue', parentVenue.current);
-        dataField.append('openingHours', openingHours);
-
-        try {
-          const rawResponse = await fetch('/api/venue/create', {
-            method: 'POST',
-            body: dataField,
-          });
-          const content: Result = await rawResponse.json();
-          if (content.status) {
-            setSubmitButtonPressed(false);
-            await reset();
-            toast({
-              title: 'Success',
-              description: content.msg,
-              status: 'success',
-              duration: 5000,
-              isClosable: true,
+          try {
+            const rawResponse = await fetch('/api/venue/create', {
+              method: 'POST',
+              body: dataField,
             });
+            const content: Result = await rawResponse.json();
+            if (content.status) {
+              setSubmitButtonPressed(false);
+              await reset();
+              toast({
+                title: 'Success',
+                description: content.msg,
+                status: 'success',
+                duration: 5000,
+                isClosable: true,
+              });
 
-            await fetchData();
-          } else {
+              await fetchData();
+            } else {
+              setSubmitButtonPressed(false);
+              toast({
+                title: 'Error',
+                description: content.error,
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+              });
+            }
+          } catch (error) {
             setSubmitButtonPressed(false);
-            toast({
-              title: 'Error',
-              description: content.error,
-              status: 'error',
-              duration: 5000,
-              isClosable: true,
-            });
+            console.error(error);
           }
-        } catch (error) {
-          setSubmitButtonPressed(false);
-          console.error(error);
         }
       }
     },
@@ -301,8 +304,8 @@ export default function ManageVenues() {
         (content.res !== undefined || content.res !== null)
       ) {
         const contentRes: Venue[] = content.res;
-        const selection = [];
-        const selectionEdit = [];
+        const selection: JSX.Element[] = [];
+        const selectionEdit: JSX.Element[] = [];
         let count = 0;
         const allVenues: Venue[] = [];
         selectionEdit.push(<option key='' value='' aria-label='Default' />);
@@ -318,8 +321,10 @@ export default function ManageVenues() {
               );
 
               if (count === 0) {
-                parentVenue.current = dataField.id;
-                count += 1;
+                if (dataField.id !== undefined) {
+                  parentVenue.current = dataField.id;
+                  count += 1;
+                }
               }
             }
 
@@ -348,9 +353,7 @@ export default function ManageVenues() {
 
   generateActionButton = useCallback(
     async (content: Venue) => {
-      let button = null;
-
-      button = (
+      const button: JSX.Element = (
         <Button
           size='sm'
           leftIcon={<InfoOutlineIcon />}
@@ -367,7 +370,7 @@ export default function ManageVenues() {
 
   fetchData = useCallback(async () => {
     setLoadingData(true);
-    setData(null);
+    setData([]);
     try {
       const rawResponse = await fetch(
         `/api/venue/fetch?limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
@@ -409,8 +412,8 @@ export default function ManageVenues() {
   }, [includeActionButton]);
 
   const generateTimeSlots = useCallback(async () => {
-    const start = [];
-    const end = [];
+    const start: JSX.Element[] = [];
+    const end: JSX.Element[] = [];
 
     start.push(<option key='start' value='' aria-label='Default' />);
     end.push(<option key='end' value='' aria-label='Default' />);
@@ -614,7 +617,7 @@ export default function ManageVenues() {
 
   const handleSubmitEdit = useCallback(
     async (event: { preventDefault: () => void }) => {
-      setErrorEdit(null);
+      setErrorEdit('');
       event.preventDefault();
 
       const openingHours: string = `${startTimeDBEdit.current} - ${endTimeDBEdit.current}`;
@@ -684,9 +687,9 @@ export default function ManageVenues() {
     instantBookDBEdit.current = false;
     isChildVenueDBEdit.current = false;
     visibleDBEdit.current = false;
-    parentVenueEdit.current = null;
-    startTimeDBEdit.current = null;
-    endTimeDBEdit.current = null;
+    parentVenueEdit.current = '';
+    startTimeDBEdit.current = '';
+    endTimeDBEdit.current = '';
 
     setVenueIDEdit('');
     setNameEdit('');
@@ -947,7 +950,7 @@ export default function ManageVenues() {
                   </Flex>
                 </FormControl>
 
-                {errorMsg && (
+                {checkerString(errorMsg) && (
                   <Stack align='center'>
                     <Text>{errorMsg}</Text>
                   </Stack>
@@ -1103,7 +1106,7 @@ export default function ManageVenues() {
                   </Stack>
                 )}
 
-                {errorEdit && (
+                {checkerString(errorEdit) && (
                   <Stack align='center'>
                     <Text>{errorEdit}</Text>
                   </Stack>

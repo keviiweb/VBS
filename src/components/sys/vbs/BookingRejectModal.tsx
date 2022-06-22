@@ -31,7 +31,7 @@ export default function BookingRejectModal({
   const [timeSlots, setTimeSlots] = useState('');
   const [cca, setCCA] = useState('');
 
-  const [errorMsg, setErrorMsg] = useState(null);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const reset = () => {
     setReason('');
@@ -39,7 +39,7 @@ export default function BookingRejectModal({
     setVenue('');
     setTimeSlots('');
     setCCA('');
-    setErrorMsg(null);
+    setErrorMsg('');
 
     reasonDB.current = '';
   };
@@ -60,7 +60,7 @@ export default function BookingRejectModal({
     }
 
     if (checkerString(reasonDB.current)) {
-      setErrorMsg(null);
+      setErrorMsg('');
       await dataHandler(reasonDB.current, modalData);
 
       setTimeout(() => {

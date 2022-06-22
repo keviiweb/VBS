@@ -14,7 +14,7 @@ export const convertDateToUnix = (date: string): number => {
   }
 };
 
-export const convertUnixToDate = (date: number): Date => {
+export const convertUnixToDate = (date: number): Date | null => {
   if (date < 0) {
     return null;
   }
@@ -34,10 +34,15 @@ export const convertUnixToDate = (date: number): Date => {
 
 export const compareDate = (comparedDate: number, number: number): boolean => {
   let compared = convertUnixToDate(comparedDate);
-  let date = new Date();
-  date.setDate(date.getDate() + Number(number));
 
-  return date <= compared;
+  if (compared !== null) {
+    let date = new Date();
+    date.setDate(date.getDate() + Number(number));
+
+    return date <= compared;
+  } else {
+    return false;
+  }
 };
 
 export const isValidDate = (d: Date): boolean => {

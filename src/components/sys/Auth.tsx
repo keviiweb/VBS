@@ -6,13 +6,14 @@ import { currentSession } from '@helper/sys/session';
 
 import Layout from '@layout/sys/index';
 import Loading from '@layout/sys/Loading';
+import { Session } from 'next-auth/core/types';
 
 export default function Auth({ children, admin }) {
   const { data: session, status } = useSession();
   const loading: boolean = status === 'loading';
   const hasUser: boolean = !!session?.user;
   const router = useRouter();
-  const devSession = useRef(null);
+  const devSession = useRef<Session | null>(null);
   const isAdmin: boolean = !!admin;
 
   useEffect(() => {
@@ -20,12 +21,16 @@ export default function Auth({ children, admin }) {
       try {
         if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
           devSession.current = await currentSession();
-          if (isAdmin && !devSession.current.user.admin) {
+          if (
+            isAdmin &&
+            devSession.current !== null &&
+            !devSession.current.user.admin
+          ) {
             router.push('/unauthorized');
           }
         } else if (!loading && !hasUser) {
           router.push('/sys/signin');
-        } else if (isAdmin && !session.user.admin) {
+        } else if (isAdmin && session !== null && !session.user.admin) {
           router.push('/unauthorized');
         }
       } catch (error) {

@@ -19,12 +19,16 @@ import { createVenueBooking } from '@helper/sys/vbs/booking';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
 
-  let result: Result = null;
+  let result: Result = {
+    status: false,
+    error: null,
+    msg: '',
+  };
+
   const { id } = req.body;
   if (session !== undefined && session !== null && session.user.admin) {
     if (checkerString(id)) {
-      const bookingRequest: BookingRequest = await findBookingByID(id);
-
+      const bookingRequest: BookingRequest | null = await findBookingByID(id);
       if (bookingRequest !== null && bookingRequest !== undefined) {
         const isRequestApproved: boolean = await isApproved(bookingRequest);
         const isRequestCancelled: boolean = await isCancelled(bookingRequest);

@@ -21,7 +21,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const { bookings } = req.body;
 
-  let result: Result = null;
+  let result: Result = {
+    status: false,
+    error: null,
+    msg: '',
+  };
+
   if (session !== undefined && session !== null && session.user.admin) {
     const parsedBooking: BookingRequest[] = [];
     const bookingsRes: BookingRequest[] = bookings as BookingRequest[];
@@ -32,16 +37,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           if (bookingsRes[booking]) {
             const book: BookingRequest = bookingsRes[booking];
             const venueReq: Result = await findVenueByID(book.venue);
-            const date = convertUnixToDate(book.date);
-            const timeSlots: string[] = mapSlotToTiming(
-              convertSlotToArray(book.timeSlots, true),
-            ) as string[];
+
+            let date: Date | null = null;
+            let timeSlots: string[] = [];
+
+            if (book.date !== undefined) {
+              date = convertUnixToDate(book.date);
+              const converted = convertSlotToArray(book.timeSlots, true);
+              if (converted !== null) {
+                timeSlots = mapSlotToTiming(converted) as string[];
+              }
+            }
 
             if (venueReq.status) {
               const venueReqMsg: Venue = venueReq.msg;
               const venue = venueReqMsg.name;
 
-              let cca: string = null;
+              let cca: string = '';
               if (book.cca === 'PERSONAL') {
                 cca = 'PERSONAL';
               } else {
@@ -54,7 +66,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 }
               }
 
-              let status: string = null;
+              let status: string = '';
 
               if (!book.isApproved && !book.isCancelled && !book.isRejected) {
                 status = 'Pending';
@@ -80,11 +92,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 status = 'Unknown';
               }
 
+              let prettified: string = '';
+              if (date !== null) {
+                prettified = prettifyDate(date);
+              }
+
               const data: BookingRequest = {
                 id: book.id,
                 email: book.email,
                 venue: venue,
-                dateStr: prettifyDate(date),
+                dateStr: prettified,
                 timeSlots: prettifyTiming(timeSlots),
                 isApproved: book.isApproved,
                 isRejected: book.isRejected,

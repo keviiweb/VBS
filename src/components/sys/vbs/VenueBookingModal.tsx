@@ -25,7 +25,7 @@ import { cardVariant, parentVariant } from '@root/motion';
 import moment from 'moment-timezone';
 
 import { isValidDate, prettifyDate } from '@constants/sys/date';
-import { checkerArray } from '@constants/sys/helper';
+import { checkerArray, checkerString } from '@constants/sys/helper';
 
 import { Venue } from 'types/venue';
 import { TimeSlot } from 'types/timeslot';
@@ -42,10 +42,10 @@ export default function VenueBookingModal({
   calendarMin,
   calendarMax,
 }) {
-  const [selectedDate, changeDate] = useState(null);
-  const date = useRef(null);
-  const rawDate = useRef(null);
-  const dateParsed = useRef(null);
+  const [selectedDate, changeDate] = useState('');
+  const date = useRef('');
+  const rawDate = useRef<Date | null>(null);
+  const dateParsed = useRef('');
 
   const [id, setID] = useState('');
   const [name, setName] = useState('Venue');
@@ -56,21 +56,21 @@ export default function VenueBookingModal({
     modalData && modalData.isChildVenue ? modalData.isChildVenue : false;
 
   const [hasChildVenue, setHasChildVenue] = useState(false);
-  const [childVenueDrop, setChildVenueDrop] = useState(null);
-  const [rawChildVenue, setRawChildVenue] = useState([]);
-  const [displayedVenue, setDisplayedVenue] = useState(null);
+  const [childVenueDrop, setChildVenueDrop] = useState<JSX.Element[]>([]);
+  const [rawChildVenue, setRawChildVenue] = useState<Venue[]>([]);
+  const [displayedVenue, setDisplayedVenue] = useState('');
   const selectedVenue = useRef('');
 
-  const [timeSlots, setTimeSlots] = useState([]);
-  const [displayedSlots, setDisplayedSlots] = useState(null);
+  const [timeSlots, setTimeSlots] = useState<JSX.Element[]>([]);
+  const [displayedSlots, setDisplayedSlots] = useState('');
 
-  const rawVenue = useRef([]);
-  const rawSlots = useRef([]);
-  const selectedTimeSlots = useRef([]);
+  const rawVenue = useRef<Venue[]>([]);
+  const rawSlots = useRef<TimeSlot[]>([]);
+  const selectedTimeSlots = useRef<TimeSlot[]>([]);
 
-  const [errorMsg, setError] = useState(null);
+  const [errorMsg, setError] = useState('');
 
-  const check = (timeSlotsField) => {
+  const check = (timeSlotsField: TimeSlot[]) => {
     if (timeSlotsField.length === 0) {
       return false;
     }
@@ -86,36 +86,40 @@ export default function VenueBookingModal({
     return false;
   };
 
-  const validateFields = (venueField, dateField, timeSlotsField) => {
+  const validateFields = (
+    venueField: string,
+    dateField: string,
+    timeSlotsField: TimeSlot[],
+  ) => {
     // simple validation for now
-    if (!venueField) {
+    if (!checkerString(venueField)) {
       setError('Please select a venue');
       return false;
     }
 
-    if (!dateField) {
+    if (!checkerString(dateField)) {
       setError('Please select a date');
       return false;
     }
 
-    if (!timeSlotsField || !check(timeSlotsField)) {
+    if (timeSlotsField === null || !check(timeSlotsField)) {
       setError('Please select your timeslot(s)');
       return false;
     }
 
-    setError(null);
+    setError('');
     return true;
   };
 
   const reset = () => {
-    changeDate(null);
+    changeDate('');
     setHasChildVenue(false);
-    setChildVenueDrop(null);
+    setChildVenueDrop([]);
     setRawChildVenue([]);
-    setDisplayedVenue(null);
-    setDisplayedSlots(null);
+    setDisplayedVenue('');
+    setDisplayedSlots('');
     setTimeSlots([]);
-    setError(null);
+    setError('');
     selectedTimeSlots.current = [];
     rawSlots.current = [];
     selectedVenue.current = '';
@@ -155,7 +159,7 @@ export default function VenueBookingModal({
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    setError(null);
+    setError('');
     if (
       validateFields(
         selectedVenue.current,
@@ -179,7 +183,7 @@ export default function VenueBookingModal({
 
   const buildChildVenueDropdown = useCallback(
     async (content: Venue[]) => {
-      const selection = [];
+      const selection: JSX.Element[] = [];
       rawVenue.current = [];
 
       if (modalData) {
@@ -287,21 +291,25 @@ export default function VenueBookingModal({
 
       setDisplayedSlots(text);
     } else {
-      setDisplayedSlots(null);
+      setDisplayedSlots('');
     }
   };
 
   const handleClickTimeSlots = async (idField: number) => {
-    setError(null);
+    setError('');
 
     if (idField) {
-      const slots = selectedTimeSlots.current;
+      const slots: TimeSlot[] = selectedTimeSlots.current;
       if (rawSlots.current) {
         const rawS: TimeSlot[] = rawSlots.current as TimeSlot[];
         const slot: TimeSlot = rawS[idField];
         if (!slot.booked) {
           if (slots[idField]) {
-            slots[idField] = null;
+            slots[idField] = {
+              id: undefined,
+              slot: undefined,
+              booked: undefined,
+            };
           } else {
             slots[idField] = slot;
           }
@@ -313,7 +321,7 @@ export default function VenueBookingModal({
   };
 
   const buildTimeSlot = (content: TimeSlot[]) => {
-    const buttons = [];
+    const buttons: JSX.Element[] = [];
     if (checkerArray(content)) {
       try {
         for (let key = 0; key < content.length; key += 1) {
@@ -356,7 +364,7 @@ export default function VenueBookingModal({
   };
 
   const handleDate = async (dateObj: Date) => {
-    setError(null);
+    setError('');
     const day: string = dateObj.getDate().toString().padStart(2, '0');
     const month: string = (dateObj.getMonth() + 1).toString().padStart(2, '0');
     const year: number = dateObj.getFullYear();
@@ -365,7 +373,7 @@ export default function VenueBookingModal({
     rawDate.current = dateObj;
 
     if (isValidDate(dateObj)) {
-      setDisplayedSlots(null);
+      setDisplayedSlots('');
       selectedTimeSlots.current = [];
       const prettified: string = prettifyDate(dateObj);
       date.current = prettified;
@@ -405,15 +413,17 @@ export default function VenueBookingModal({
 
   // Child venue generation
   const onChildVenueChange = (event: { target: { value: string } }) => {
-    setError(null);
+    setError('');
 
     if (event.target.value) {
       selectedVenue.current = event.target.value;
 
-      if (isValidDate(rawDate.current)) {
-        handleDate(rawDate.current);
-        selectedTimeSlots.current = [];
-        displaySlots(null);
+      if (rawDate.current !== null) {
+        if (isValidDate(rawDate.current)) {
+          handleDate(rawDate.current);
+          selectedTimeSlots.current = [];
+          displaySlots([]);
+        }
       }
 
       for (let key = 0; key < rawVenue.current.length; key += 1) {

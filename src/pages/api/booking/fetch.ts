@@ -27,7 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = { status: false, error: '', msg: '' };
   if (session !== undefined && session !== null) {
     if (checkerString(id)) {
-      let bookings: Booking[] = null;
+      let bookings: Booking[] = [];
       if (session.user.admin) {
         bookings = await findAllBookingByVenueID(id);
 
@@ -36,10 +36,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           for (let booking = 0; booking < bookings.length; booking += 1) {
             if (bookings[booking]) {
               const book: Booking = bookings[booking];
-              const date: Date = convertUnixToDate(book.date);
-              const prettifiedDate: string = prettifyDate(date);
+              const date: Date | null = convertUnixToDate(book.date);
+              let prettifiedDate: string = '';
+              if (date !== null) {
+                prettifiedDate = prettifyDate(date);
+              }
 
-              let cca: string = null;
+              let cca: string = '';
               if (book.cca === 'PERSONAL') {
                 cca = 'PERSONAL';
               } else {
@@ -57,54 +60,89 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 if (parsedBooking[pB]) {
                   const parsed: Booking = parsedBooking[pB];
 
+                  let bookedTimeSlotsISO: {
+                    start: string | null;
+                    end: string | null;
+                  } = { start: null, end: null };
+
                   if (
                     parsed.email === book.email &&
                     parsed.dateStr === prettifiedDate &&
                     parsed.purpose === book.purpose &&
                     parsed.cca === cca
                   ) {
-                    const bookTimeSlots: string = mapSlotToTiming(
-                      book.timingSlot,
-                    ) as string;
-                    const timeSplit = await splitHours(bookTimeSlots);
+                    let bookTimeSlots: string = '';
+                    let timeSplit: {
+                      start: number | null;
+                      end: number | null;
+                    } = { start: null, end: null };
 
-                    const parsedtimeSlots: string = parsed.timeSlots;
-                    const parsedtimeSlotsSplit = await splitHours(
-                      parsedtimeSlots,
-                    );
+                    if (book.timingSlot !== undefined) {
+                      bookTimeSlots = mapSlotToTiming(
+                        book.timingSlot,
+                      ) as string;
+                      timeSplit = await splitHours(bookTimeSlots);
+                    }
 
-                    if (timeSplit.start === parsedtimeSlotsSplit.end) {
-                      duplicate = true;
-                      parsed.timeSlots = `${parsedtimeSlotsSplit.start
-                        .toString()
-                        .padStart(4, '0')} - ${timeSplit.end
-                        .toString()
-                        .padStart(4, '0')}`;
+                    let parsedtimeSlots: string = '';
+                    let parsedtimeSlotsSplit: {
+                      start: number | null;
+                      end: number | null;
+                    } = { start: null, end: null };
 
-                      const bookedTimeSlotsISO = await splitHoursISO(
-                        date,
-                        parsed.timeSlots,
-                      );
-                      const { start, end } = bookedTimeSlotsISO;
+                    if (parsed.timeSlots !== undefined) {
+                      parsedtimeSlots = parsed.timeSlots;
+                      parsedtimeSlotsSplit = await splitHours(parsedtimeSlots);
+                    }
 
-                      parsed.start = start;
-                      parsed.end = end;
-                    } else if (timeSplit.end === parsedtimeSlotsSplit.start) {
-                      duplicate = true;
-                      parsed.timeSlots = `${timeSplit.start
-                        .toString()
-                        .padStart(4, '0')} - ${parsedtimeSlotsSplit.end
-                        .toString()
-                        .padStart(4, '0')}`;
+                    if (
+                      timeSplit.start !== null &&
+                      timeSplit.end !== null &&
+                      parsedtimeSlotsSplit.start !== null &&
+                      parsedtimeSlotsSplit.end !== null
+                    ) {
+                      if (timeSplit.start === parsedtimeSlotsSplit.end) {
+                        duplicate = true;
+                        parsed.timeSlots = `${parsedtimeSlotsSplit.start
+                          .toString()
+                          .padStart(4, '0')} - ${timeSplit.end
+                          .toString()
+                          .padStart(4, '0')}`;
 
-                      const bookedTimeSlotsISO = await splitHoursISO(
-                        date,
-                        parsed.timeSlots,
-                      );
-                      const { start, end } = bookedTimeSlotsISO;
+                        if (date !== null) {
+                          bookedTimeSlotsISO = await splitHoursISO(
+                            date,
+                            parsed.timeSlots,
+                          );
+                        }
 
-                      parsed.start = start;
-                      parsed.end = end;
+                        const { start, end } = bookedTimeSlotsISO;
+                        if (start !== null && end !== null) {
+                          parsed.start = start;
+                          parsed.end = end;
+                        }
+                      } else if (timeSplit.end === parsedtimeSlotsSplit.start) {
+                        duplicate = true;
+                        parsed.timeSlots = `${timeSplit.start
+                          .toString()
+                          .padStart(4, '0')} - ${parsedtimeSlotsSplit.end
+                          .toString()
+                          .padStart(4, '0')}`;
+
+                        if (date !== null) {
+                          bookedTimeSlotsISO = await splitHoursISO(
+                            date,
+                            parsed.timeSlots,
+                          );
+                        }
+
+                        const { start, end } = bookedTimeSlotsISO;
+
+                        if (start !== null && end !== null) {
+                          parsed.start = start;
+                          parsed.end = end;
+                        }
+                      }
                     }
                   }
                 }
@@ -119,26 +157,56 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   const openingHours = await splitOpeningHours(
                     venueReqMsg.openingHours,
                   );
-                  const startHour: string = await findSlotsByID(
-                    openingHours.start,
-                  );
-                  const endHour: string = await findSlotsByID(openingHours.end);
 
-                  const startH: string = `${startHour
-                    .toString()
-                    .slice(0, 2)}:${startHour.slice(2)}:00`;
-                  const endH: string = `${endHour
-                    .toString()
-                    .slice(0, 2)}:${endHour.slice(2)}:00`;
+                  let startHour: string | null = '';
+                  let endHour: string | null = '';
+                  if (
+                    openingHours.start !== null &&
+                    openingHours.end !== null
+                  ) {
+                    startHour = await findSlotsByID(openingHours.start);
+                    endHour = await findSlotsByID(openingHours.end);
+                  }
 
-                  const bookedTimeSlots: string = mapSlotToTiming(
-                    book.timingSlot,
-                  ) as string;
-                  const bookedTimeSlotsISO = await splitHoursISO(
-                    date,
-                    bookedTimeSlots,
-                  );
+                  let startH: string = '';
+                  let endH: string = '';
+
+                  if (startHour !== null && endHour !== null) {
+                    startH = `${startHour
+                      .toString()
+                      .slice(0, 2)}:${startHour.slice(2)}:00`;
+                    endH = `${endHour.toString().slice(0, 2)}:${endHour.slice(
+                      2,
+                    )}:00`;
+                  }
+
+                  let bookedTimeSlots: string = '';
+                  if (book.timingSlot !== undefined) {
+                    bookedTimeSlots = mapSlotToTiming(
+                      book.timingSlot,
+                    ) as string;
+                  }
+
+                  let bookedTimeSlotsISO: {
+                    start: string | null;
+                    end: string | null;
+                  } = { start: null, end: null };
+
+                  if (date !== null) {
+                    bookedTimeSlotsISO = await splitHoursISO(
+                      date,
+                      bookedTimeSlots,
+                    );
+                  }
+
                   const { start, end } = bookedTimeSlotsISO;
+                  let s: string = '';
+                  let e: string = '';
+
+                  if (start !== null && end !== null) {
+                    s = start;
+                    e = end;
+                  }
 
                   const data: Booking = {
                     id: book.id,
@@ -152,8 +220,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     startHour: startH,
                     endHour: endH,
                     title: book.purpose,
-                    start: start,
-                    end: end,
+                    start: s,
+                    end: e,
                   };
 
                   parsedBooking.push(data);

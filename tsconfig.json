@@ -10,7 +10,8 @@
       "@layout/*": ["src/layout/*"],
       "@public/*": ["public/*"],
       "@pages/*": ["src/pages/*"],
-      "types/*": ["src/types/*"]
+      "types/*": ["src/types/*"],
+      "@tests/*": ["_tests_/*"]
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -25,7 +26,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "strictNullChecks": true
   },
   "include": ["next-env.d.ts", "motion.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

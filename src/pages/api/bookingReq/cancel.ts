@@ -20,13 +20,18 @@ import { deleteVenueBooking } from '@helper/sys/vbs/booking';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
 
-  let result: Result = null;
+  let result: Result = {
+    status: false,
+    error: null,
+    msg: '',
+  };
+
   const { id } = req.body;
   if (session !== undefined && session !== null) {
     if (checkerString(id)) {
-      const bookingRequest: BookingRequest = await findBookingByID(id);
+      const bookingRequest: BookingRequest | null = await findBookingByID(id);
 
-      if (bookingRequest !== null || bookingRequest !== undefined) {
+      if (bookingRequest !== null && bookingRequest !== undefined) {
         const isRequestCancelled: boolean = await isCancelled(bookingRequest);
         const isRequestRejected: boolean = await isRejected(bookingRequest);
         const isRequestByOwner: boolean = await isOwner(

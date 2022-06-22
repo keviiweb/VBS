@@ -16,7 +16,11 @@ export const config = {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
-  let result: Result = null;
+  let result: Result = {
+    status: false,
+    error: null,
+    msg: '',
+  };
 
   if (session !== undefined && session !== null && session.user.admin) {
     const data: { fields: formidable.Fields; files: formidable.Files } =
@@ -40,12 +44,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const isChildVenue: boolean = data.fields.isChildVenue === 'true';
       const parentVenue: string = isChildVenue
         ? (data.fields.parentVenue as string)
-        : null;
+        : '';
 
       const openingHours: string = data.fields.openingHours as string;
 
       const imageFile: formidable.File = data.files.image as formidable.File;
-      let venuePath: string = null;
+      let venuePath: string = '';
 
       if (imageFile !== null && imageFile !== undefined) {
         const imagePath = imageFile.filepath;

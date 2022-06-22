@@ -53,19 +53,29 @@ export default function Event() {
         initial='initial'
         animate='animate'
       >
-        {content.map((slide, sid) => (
-          <MotionBox key={sid} variants={cardVariant}>
-            <Card
-              key={sid}
-              title={slide.title}
-              description={slide.description}
-              img={slide.img}
-              link={slide.link}
-              buttonLink={null}
-              buttonText={null}
-            />
-          </MotionBox>
-        ))}
+        {content.map(
+          (
+            slide: {
+              img: string;
+              title: string;
+              description: string;
+              link: string;
+            },
+            sid,
+          ) => (
+            <MotionBox key={sid} variants={cardVariant}>
+              <Card
+                key={sid}
+                title={slide.title}
+                description={slide.description}
+                img={slide.img}
+                link={slide.link}
+                buttonLink={null}
+                buttonText={null}
+              />
+            </MotionBox>
+          ),
+        )}
       </MotionSimpleGrid>
     </Landing>
   );

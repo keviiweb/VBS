@@ -16,13 +16,18 @@ import { checkerString } from '@constants/sys/helper';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
 
-  let result: Result = null;
+  let result: Result = {
+    status: false,
+    error: null,
+    msg: '',
+  };
+
   const { id, reason } = req.body;
   if (session !== undefined && session !== null && session.user.admin) {
     if (checkerString(id) && checkerString(reason)) {
-      const bookingRequest: BookingRequest = await findBookingByID(id);
+      const bookingRequest: BookingRequest | null = await findBookingByID(id);
 
-      if (bookingRequest) {
+      if (bookingRequest !== null) {
         const isRequestApproved = await isApproved(bookingRequest);
         const isRequestCancelled = await isCancelled(bookingRequest);
         const isRequestRejected = await isRejected(bookingRequest);

@@ -19,7 +19,7 @@ export default function SignIn(props) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const emailDB = useRef('');
-  const [errorMsg, setError] = useState(null);
+  const [errorMsg, setError] = useState('');
 
   const [url, setURL] = useState('https://vbs-kevii.vercel.app'); // default
 
@@ -37,7 +37,7 @@ export default function SignIn(props) {
     event.preventDefault();
     if (checkerString(emailDB.current) && emailDB.current.includes('@')) {
       try {
-        setError(null);
+        setError('');
         setLoading(true);
         await signIn('email', {
           email: email,
@@ -62,7 +62,7 @@ export default function SignIn(props) {
           </Text>
         </Stack>
 
-        {errorMsg && (
+        {checkerString(errorMsg) && (
           <Stack align='center'>
             <Text>{errorMsg}</Text>
           </Stack>

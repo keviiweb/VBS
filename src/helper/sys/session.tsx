@@ -3,10 +3,10 @@ import { Session } from 'next-auth/core/types';
 import { NextApiRequest } from 'next';
 
 export const currentSession = async (
-  req: NextApiRequest = null,
-): Promise<Session> => {
+  req: NextApiRequest | null = null,
+): Promise<Session | null> => {
   if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-    let session = null;
+    let session: Session | null = null;
     session = {
       expires: '1',
       user: {
@@ -20,7 +20,7 @@ export const currentSession = async (
     return session;
   } else {
     const isServer = typeof window === 'undefined';
-    let session = null;
+    let session: Session | null = null;
     if (isServer && req) {
       session = await getSession({ req });
       return session;

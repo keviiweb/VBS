@@ -15,7 +15,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const limitQuery = req.query.limit;
   const skipQuery = req.query.skip;
 
-  let result: Result = null;
+  let result: Result = {
+    status: false,
+    error: null,
+    msg: '',
+  };
+
   if (session !== null && session !== undefined) {
     const limit: number = limitQuery !== undefined ? Number(limitQuery) : 100;
     const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
@@ -32,7 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           if (venueData[ven]) {
             const venue: Venue = venueData[ven];
 
-            let parentVenueName: string = null;
+            let parentVenueName: string = '';
             if (venue.isChildVenue) {
               const venueReq = await findVenueByID(venue.parentVenue);
               if (venueReq && venueReq.status) {

@@ -84,7 +84,7 @@ export const findVenueByID = async (id: string): Promise<Result> => {
 
 export const fetchOpeningHours = async (
   id: string,
-): Promise<{ start: number; end: number }> => {
+): Promise<{ start: number | null; end: number | null }> => {
   try {
     const locations: Venue = await prisma.venue.findFirst({
       where: { id: id },
@@ -93,10 +93,10 @@ export const fetchOpeningHours = async (
     if (locations) {
       const opening: string = locations.openingHours;
       const hours: string[] = opening.split('-');
-      const start: string = await findSlots(hours[0].trim(), true);
-      const end: string = await findSlots(hours[1].trim(), false);
+      const start: string | null = await findSlots(hours[0].trim(), true);
+      const end: string | null = await findSlots(hours[1].trim(), false);
 
-      if (start && end) {
+      if (start !== null && end != null) {
         return { start: Number(start), end: Number(end) };
       } else {
         return { start: null, end: null };
@@ -112,7 +112,7 @@ export const fetchOpeningHours = async (
 
 export const splitHours = async (
   opening: string,
-): Promise<{ start: number; end: number }> => {
+): Promise<{ start: number | null; end: number | null }> => {
   try {
     if (opening) {
       if (!opening.includes('-')) {
@@ -144,7 +144,7 @@ export const splitHours = async (
 export const splitHoursISO = async (
   date: Date,
   timeSlot: string,
-): Promise<{ start: string; end: string }> => {
+): Promise<{ start: string | null; end: string | null }> => {
   try {
     if (!isValidDate(date)) {
       return { start: null, end: null };
@@ -196,14 +196,14 @@ export const splitHoursISO = async (
 
 export const splitOpeningHours = async (
   opening: string,
-): Promise<{ start: number; end: number }> => {
+): Promise<{ start: number | null; end: number | null }> => {
   try {
     if (opening) {
       const hours: string[] = opening.split('-');
-      const start: string = await findSlots(hours[0].trim(), true);
-      const end: string = await findSlots(hours[1].trim(), false);
+      const start: string | null = await findSlots(hours[0].trim(), true);
+      const end: string | null = await findSlots(hours[1].trim(), false);
 
-      if (start && end) {
+      if (start !== null && end !== null) {
         return { start: Number(start), end: Number(end) };
       } else {
         return { start: null, end: null };

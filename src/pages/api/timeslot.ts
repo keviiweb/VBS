@@ -16,16 +16,25 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const slots: TimeSlot[] = [];
   const { venue, date } = req.body;
-  let result: Result = null;
+  let result: Result = {
+    status: false,
+    error: null,
+    msg: '',
+  };
 
   if (session !== undefined && session !== null) {
     if (checkerString(venue) && checkerString(date)) {
       const convertedDate: number = convertDateToUnix(date);
       const openingHours = await fetchOpeningHours(venue);
-      const startHour: number = openingHours.start;
-      const endHour: number = openingHours.end;
+      const startHour: number | null = openingHours.start;
+      const endHour: number | null = openingHours.end;
 
-      if (checkerNumber(startHour) && checkerNumber(endHour)) {
+      if (
+        startHour !== null &&
+        endHour !== null &&
+        checkerNumber(startHour) &&
+        checkerNumber(endHour)
+      ) {
         const bookedTimeSlots: Result = await fetchBookedTimeSlots(
           venue,
           convertedDate,
@@ -55,11 +64,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
           const timeslot = bookedTimeSlots.msg;
           timeslot.forEach((item: Booking) => {
-            slots[item.timingSlot] = {
-              id: Number(item.timingSlot),
-              slot: timingSlotNumberToTimingMapping[item.timingSlot],
-              booked: true,
-            };
+            if (item.timingSlot !== undefined) {
+              slots[item.timingSlot] = {
+                id: Number(item.timingSlot),
+                slot: timingSlotNumberToTimingMapping[item.timingSlot],
+                booked: true,
+              };
+            }
           });
         } else {
           for (

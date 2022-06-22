@@ -34,6 +34,7 @@ import { checkerString, checkerNumber } from '@constants/sys/helper';
 import { TimeSlot } from 'types/timeslot';
 import { isValidDate } from '@constants/sys/date';
 import { Result } from 'types/api';
+import { CCA } from 'types/cca';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -50,13 +51,13 @@ export default function VenueBookingModalConfirmation({
   const [email, setEmail] = useState('');
   const [purpose, setPurpose] = useState('');
   const [type, setType] = useState('1');
-  const [errorMsg, setError] = useState(null);
+  const [errorMsg, setError] = useState('');
   const [success, setSuccessBooking] = useState(false);
   const [ccaSelection, setCCASelection] = useState('');
 
-  const [ccaList, setCCAList] = useState(null);
+  const [ccaList, setCCAList] = useState<JSX.Element[]>([]);
   const [showCCAs, setShowCCAs] = useState(false);
-  const CCALIST = useRef([]);
+  const CCALIST = useRef<CCA[]>([]);
 
   const [isSwitch, setIsSwitch] = useState(false);
   const isSwitchDB = useRef(false);
@@ -67,7 +68,7 @@ export default function VenueBookingModalConfirmation({
   const emailDB = useRef('');
   const venueNameDB = useRef('');
   const venueDB = useRef('');
-  const timeSlotsDB = useRef([]);
+  const timeSlotsDB = useRef<TimeSlot[]>([]);
   const typeDB = useRef('PERSONAL');
   const purposeDB = useRef('');
 
@@ -75,7 +76,7 @@ export default function VenueBookingModalConfirmation({
 
   const [submitting, setSubmitting] = useState(false);
 
-  const timeouts = useRef([]);
+  const timeouts = useRef<NodeJS.Timeout[]>([]);
 
   const check = (timeSlotsField: TimeSlot[]): boolean => {
     if (timeSlotsField.length === 0) {
@@ -84,9 +85,11 @@ export default function VenueBookingModalConfirmation({
 
     for (let key = 0; key < timeSlotsField.length; key += 1) {
       if (timeSlotsField[key]) {
-        const slot = timeSlotsField[key];
-        if (!checkerNumber(slot.id)) {
-          return false;
+        const slot: TimeSlot | null = timeSlotsField[key];
+        if (slot.id !== undefined) {
+          if (!checkerNumber(slot.id)) {
+            return false;
+          }
         }
       }
     }
@@ -108,7 +111,9 @@ export default function VenueBookingModalConfirmation({
       setError('Please include an email.');
       return false;
     }
-    if (!emailField.includes('@u.nus.edu')) {
+    if (
+      !(emailField.includes('@u.nus.edu') || emailField.includes('@nus.edu.sg'))
+    ) {
       setError('Please use your school email.');
       return false;
     }
@@ -158,30 +163,30 @@ export default function VenueBookingModalConfirmation({
       return false;
     }
 
-    setError(null);
+    setError('');
     return true;
   };
 
   const reset = () => {
-    setVenue(null);
-    setDate(null);
-    setTimeSlots(null);
+    setVenue('');
+    setDate('');
+    setTimeSlots('');
     setEmail('');
     setPurpose('');
     setType('1');
-    setError(null);
-    setCCAList(null);
+    setError('');
+    setCCAList([]);
     setShowCCAs(false);
     setSuccessBooking(false);
     setIsSwitch(false);
     setCCASelection('');
 
-    emailDB.current = null;
-    venueNameDB.current = null;
-    venueDB.current = null;
-    timeSlotsDB.current = null;
+    emailDB.current = '';
+    venueNameDB.current = '';
+    venueDB.current = '';
+    timeSlotsDB.current = [];
     typeDB.current = 'PERSONAL';
-    purposeDB.current = null;
+    purposeDB.current = '';
     isSwitchDB.current = false;
   };
 
@@ -261,7 +266,7 @@ export default function VenueBookingModalConfirmation({
   };
 
   const handleSubmit = async () => {
-    setError(null);
+    setError('');
     if (!isSwitchDB.current) {
       setError('Please toggle the confirmation switch.');
       return;
@@ -290,13 +295,19 @@ export default function VenueBookingModalConfirmation({
     }
   };
 
-  const buildText = async (modalDataField) => {
+  const buildText = async (modalDataField: {
+    venueName: string;
+    dateParsed: string;
+    timeSlots: TimeSlot[];
+  }) => {
     setVenue(modalDataField.venueName);
     setDate(modalDataField.dateParsed);
     let str = '';
     for (let key = 0; key < modalDataField.timeSlots.length; key += 1) {
       if (modalDataField.timeSlots[key]) {
-        str += `\n${modalDataField.timeSlots[key].slot}`;
+        if (modalDataField.timeSlots[key].slot !== undefined) {
+          str += `\n${modalDataField.timeSlots[key].slot}`;
+        }
       }
     }
 
@@ -304,7 +315,7 @@ export default function VenueBookingModalConfirmation({
   };
 
   const buildCCAList = async () => {
-    const selection = [];
+    const selection: JSX.Element[] = [];
     try {
       const rawResponse = await fetch('/api/cca', {
         headers: {
@@ -315,7 +326,7 @@ export default function VenueBookingModalConfirmation({
       const content: Result = await rawResponse.json();
       if (content.status && content.msg.length > 0) {
         CCALIST.current = [];
-        const ccaContent = content.msg;
+        const ccaContent: CCA[] = content.msg;
 
         selection.push(<option key='' value='' aria-label='default' />);
 
@@ -344,12 +355,19 @@ export default function VenueBookingModalConfirmation({
 
   useEffect(() => {
     async function fetchData() {
-      await buildText(modalData);
-      await buildCCAList();
-      venueNameDB.current = modalData ? modalData.venueName : null;
-      venueDB.current = modalData ? modalData.venue : null;
-      timeSlotsDB.current = modalData ? modalData.timeSlots : null;
-      dateParsed.current = modalData ? modalData.dateParsed : null;
+      if (
+        modalData.venueName !== null &&
+        modalData.venue !== null &&
+        modalData.timeSlots !== null &&
+        modalData.dateParsed !== null
+      ) {
+        await buildText(modalData);
+        await buildCCAList();
+        venueNameDB.current = modalData ? modalData.venueName : null;
+        venueDB.current = modalData ? modalData.venue : null;
+        timeSlotsDB.current = modalData ? modalData.timeSlots : null;
+        dateParsed.current = modalData ? modalData.dateParsed : null;
+      }
     }
 
     if (modalData) {

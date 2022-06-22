@@ -30,15 +30,20 @@ const MotionBox = motion(Box);
 
 export default function VBS(props: any) {
   const [modalData, setModalData] = useState(null);
-  const [modalDataConfirm, setModalDataConfirm] = useState(null);
+  const [modalDataConfirm, setModalDataConfirm] = useState<{
+    venue: null | string;
+    venueName: null | string;
+    timeSlots: TimeSlot[] | null;
+    dateParsed: string | null;
+  }>({ venue: null, venueName: null, timeSlots: null, dateParsed: null });
   const [isLoading, setIsLoading] = useState(false);
 
-  const [cards, setCards] = useState([]);
+  const [cards, setCards] = useState<JSX.Element[]>([]);
   const minDate = useRef(3);
   const maxDate = useRef(30);
 
   const [search, setSearch] = useState('');
-  const [filteredData, setFilteredData] = useState(null);
+  const [filteredData, setFilteredData] = useState<JSX.Element[]>([]);
 
   const dataFromVenueModal = (
     venue: string,
@@ -58,6 +63,7 @@ export default function VBS(props: any) {
         timeSlots: timeSlots,
         dateParsed: dateParsed,
       };
+
       setModalDataConfirm(data);
     }
   };
@@ -80,7 +86,7 @@ export default function VBS(props: any) {
           if (res.status) {
             const result: Venue[] = res.msg;
             if (result !== [] && result !== null && result !== undefined) {
-              const cardRes = [];
+              const cardRes: JSX.Element[] = [];
               result.forEach((item) => {
                 if (item.visible) {
                   cardRes.push(
@@ -111,7 +117,7 @@ export default function VBS(props: any) {
 
       setFilteredData(filteredDataField);
     } else {
-      setFilteredData(null);
+      setFilteredData([]);
     }
   };
 
@@ -162,8 +168,19 @@ export default function VBS(props: any) {
               calendarMax={maxDate.current}
             />
             <VenueBookingModalConfirmation
-              isOpen={!!modalDataConfirm}
-              onClose={() => setModalDataConfirm(null)}
+              isOpen={
+                modalDataConfirm.dateParsed !== null &&
+                modalDataConfirm.timeSlots !== null &&
+                modalDataConfirm.venue !== null &&
+                modalDataConfirm.venueName !== null
+              }
+              onClose={() =>
+                setModalDataConfirm({
+                  venue: null,
+                  venueName: null,
+                  timeSlots: null,
+                  dateParsed: null,
+                })}
               modalData={modalDataConfirm}
             />
           </Box>

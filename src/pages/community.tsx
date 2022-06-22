@@ -84,19 +84,30 @@ export default function Cultural() {
         initial='initial'
         animate='animate'
       >
-        {content.map((slide, sid) => (
-          <MotionBox key={sid} variants={cardVariant}>
-            <Card
-              key={sid}
-              title={slide.title}
-              description={slide.description}
-              img={slide.img}
-              buttonText={slide.buttonText}
-              buttonLink={slide.buttonLink}
-              link={null}
-            />
-          </MotionBox>
-        ))}
+        {content.map(
+          (
+            slide: {
+              img: string;
+              title: string;
+              description: string;
+              buttonText: string;
+              buttonLink: string;
+            },
+            sid,
+          ) => (
+            <MotionBox key={sid} variants={cardVariant}>
+              <Card
+                key={sid}
+                title={slide.title}
+                description={slide.description}
+                img={slide.img}
+                buttonText={slide.buttonText}
+                buttonLink={slide.buttonLink}
+                link={null}
+              />
+            </MotionBox>
+          ),
+        )}
       </MotionSimpleGrid>
     </Landing>
   );

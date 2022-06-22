@@ -75,25 +75,21 @@ export default function TableWidget({
     >
       <Table {...getTableProps()}>
         <Thead>
-          {headerGroups.map((headerGroup, i) => (
-            <Tr key={i} {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column, id) => (
-                <Th key={id} {...column.getHeaderProps()}>
-                  {column.render('Header')}
-                </Th>
+          {headerGroups.map((headerGroup) => (
+            <Tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column) => (
+                <Th {...column.getHeaderProps()}>{column.render('Header')}</Th>
               ))}
             </Tr>
           ))}
         </Thead>
         <Tbody {...getTableBodyProps()}>
-          {page.map((row, idx) => {
+          {page.map((row) => {
             prepareRow(row);
             return (
-              <Tr key={idx} {...row.getRowProps()}>
-                {row.cells.map((cell, idxx) => (
-                  <Td key={idxx} {...cell.getCellProps()}>
-                    {cell.render('Cell')}
-                  </Td>
+              <Tr {...row.getRowProps()}>
+                {row.cells.map((cell) => (
+                  <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
                 ))}
               </Tr>
             );

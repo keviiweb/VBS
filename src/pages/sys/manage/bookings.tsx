@@ -23,11 +23,11 @@ import { checkerString } from '@constants/sys/helper';
 const MotionBox = motion(Box);
 
 export default function ManageBooking() {
-  const [modalData, setModalData] = useState(null);
+  const [modalData, setModalData] = useState<BookingRequest | null>(null);
 
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<BookingRequest[]>([]);
 
   let generateActionButton;
   let fetchData;
@@ -119,31 +119,33 @@ export default function ManageBooking() {
 
   generateActionButton = useCallback(
     async (content: BookingRequest) => {
-      let button = null;
-
       if (content.status === 'PENDING' || content.status === 'APPROVED') {
-        button = (
-          <Stack direction='column'>
-            <Button
-              size='sm'
-              leftIcon={<CloseIcon />}
-              disabled={submitButtonPressed}
-              onClick={() => handleCancel(content.id)}
-            >
-              Cancel
-            </Button>
-            <Button
-              size='sm'
-              leftIcon={<InfoOutlineIcon />}
-              onClick={() => handleDetails(content)}
-            >
-              View Details
-            </Button>
-          </Stack>
-        );
-        return button;
+        if (content.id !== undefined) {
+          const { id } = content;
+          const button: JSX.Element = (
+            <Stack direction='column'>
+              <Button
+                size='sm'
+                leftIcon={<CloseIcon />}
+                disabled={submitButtonPressed}
+                onClick={() => handleCancel(id)}
+              >
+                Cancel
+              </Button>
+              <Button
+                size='sm'
+                leftIcon={<InfoOutlineIcon />}
+                onClick={() => handleDetails(content)}
+              >
+                View Details
+              </Button>
+            </Stack>
+          );
+          return button;
+        }
+        return null;
       }
-      button = (
+      const button: JSX.Element = (
         <Button
           size='sm'
           leftIcon={<InfoOutlineIcon />}
@@ -159,7 +161,7 @@ export default function ManageBooking() {
 
   fetchData = useCallback(async () => {
     setLoadingData(true);
-    setData(null);
+    setData([]);
     try {
       const rawResponse = await fetch(
         `/api/bookingReq/fetch?q=USER&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
@@ -299,8 +301,9 @@ export default function ManageBooking() {
             onClose={() => setModalData(null)}
             modalData={modalData}
             isAdmin={undefined}
-            isBookingRequest={false}
+            isBookingRequest
           />
+
           <LoadingModal
             isOpen={!!submitButtonPressed}
             onClose={() => setSubmitButtonPressed(false)}

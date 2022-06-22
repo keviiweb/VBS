@@ -10,7 +10,11 @@ import { findVenueByID, fetchChildVenue } from '@helper/sys/vbs/venue';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
 
-  let result: Result = null;
+  let result: Result = {
+    status: false,
+    error: null,
+    msg: '',
+  };
   const { venue } = req.body;
   if (session !== undefined && session !== null) {
     if (checkerString(venue)) {
@@ -24,7 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             if (childVenue[ven]) {
               const venueField: Venue = childVenue[ven];
 
-              let parentVenueName: string = null;
+              let parentVenueName: string = '';
               if (venueField.isChildVenue) {
                 const venueReq: Result = await findVenueByID(
                   venueField.parentVenue,

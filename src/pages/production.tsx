@@ -47,19 +47,21 @@ export default function Production() {
         initial='initial'
         animate='animate'
       >
-        {content.map((slide, sid) => (
-          <MotionBox key={sid} variants={cardVariant}>
-            <Card
-              key={sid}
-              title={slide.title}
-              description={slide.description}
-              img={slide.img}
-              buttonLink={null}
-              buttonText={null}
-              link={null}
-            />
-          </MotionBox>
-        ))}
+        {content.map(
+          (slide: { title: string; description: string; img: string }, sid) => (
+            <MotionBox key={sid} variants={cardVariant}>
+              <Card
+                key={sid}
+                title={slide.title}
+                description={slide.description}
+                img={slide.img}
+                buttonLink={null}
+                buttonText={null}
+                link={null}
+              />
+            </MotionBox>
+          ),
+        )}
       </MotionSimpleGrid>
     </Landing>
   );

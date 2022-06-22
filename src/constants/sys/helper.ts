@@ -97,7 +97,7 @@ export const prettifyTiming = (data: string[]): string => {
 export const convertSlotToArray = (
   slots: string | TimeSlot[],
   reverse: boolean = false,
-): number[] | string => {
+): number[] | string | null => {
   if (reverse) {
     try {
       const strSlot = slots as string;
@@ -120,15 +120,22 @@ export const convertSlotToArray = (
     }
   } else {
     try {
-      const result = [];
+      const result: number[] = [];
       const slotArr = slots as TimeSlot[];
       for (let key in slotArr) {
         if (slotArr[key]) {
           const id = slotArr[key].id;
-          if (isNaN(id) || id === null || id === undefined) {
-            return null;
+          if (id === null || id === undefined) {
+            continue;
           } else {
-            result.push(slotArr[key].id);
+            if (isNaN(id)) {
+              return null;
+            } else {
+              const resID: TimeSlot = slotArr[key];
+              if (resID.id !== undefined) {
+                result.push(resID.id);
+              }
+            }
           }
         }
       }
@@ -143,7 +150,7 @@ export const convertSlotToArray = (
 export const findSlots = async (
   slot: string,
   isStart: boolean,
-): Promise<string> => {
+): Promise<string | null> => {
   const num = Number(slot);
   if (isNaN(num)) {
     return null;
@@ -167,7 +174,7 @@ export const findSlots = async (
   }
 };
 
-export const findSlotsByID = async (slot: number): Promise<string> => {
+export const findSlotsByID = async (slot: number): Promise<string | null> => {
   if (
     slot !== null &&
     slot !== undefined &&

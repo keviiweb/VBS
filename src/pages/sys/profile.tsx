@@ -77,9 +77,9 @@ r='7.1'/%3E%3Ccircle cx='1037.3' cy='148.9' r='7.1'/%3E%3Cpath d='M1508.7 297.2c
 7.2-1.1 2.7-2.1 3.2-4.8 3.1-6.6-.1-3.2-2-6.4-4.8-8.3C1326.7 547.5 1317.7 545.6 1311 546.7z'/%3E%3C/g%3E%3C/svg%3E")`;
 
 export default function Profile() {
-  const [studentID, setStudentID] = useState(null);
-  const [username, setUsername] = useState(null);
-  const [email, setEmail] = useState(null);
+  const [studentID, setStudentID] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
 
   const [loading, setLoading] = useState(false);
 

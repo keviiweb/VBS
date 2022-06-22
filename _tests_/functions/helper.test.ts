@@ -43,7 +43,6 @@ test('mapSlotToTiming test 2', async () => {
   ]);
   expect(mapSlotToTiming([3])).toStrictEqual(['0800 - 0830']);
   expect(mapSlotToTiming([1, 2])).toStrictEqual(['0700 - 0730', '0730 - 0800']);
-  expect(mapSlotToTiming([, 2])).toStrictEqual(['0730 - 0800']);
   expect(mapSlotToTiming([0, 2])).toStrictEqual(['0730 - 0800']);
 });
 
@@ -105,15 +104,15 @@ test('convertSlotToArray test 2', async () => {
   const res4: TimeSlot[] = [
     { id: 1, slot: '0700 - 0800', booked: false },
     { id: 2, slot: '0700 - 0800', booked: false },
-    { id: null, slot: '0700 - 0800', booked: false },
+    { id: undefined, slot: '0700 - 0800', booked: false },
   ];
-  expect(convertSlotToArray(res4, false)).toBeNull();
+  expect(convertSlotToArray(res4, false)).toStrictEqual('1,2');
   const res5: TimeSlot[] = [
     { id: 1, slot: '0700 - 0800', booked: false },
-    { id: undefined, slot: '0700 - 0800', booked: false },
+    { id: undefined, slot: undefined, booked: undefined },
     { id: 3, slot: '0700 - 0800', booked: false },
   ];
-  expect(convertSlotToArray(res5, false)).toBeNull();
+  expect(convertSlotToArray(res5, false)).toStrictEqual('1,3');
 });
 
 test('findSlots test 1', async () => {
@@ -166,13 +165,9 @@ test('checkerString test 1', async () => {
   expect(checkerString('null')).toStrictEqual(true);
   expect(checkerString('123456')).toStrictEqual(true);
   expect(checkerString('h e l o')).toStrictEqual(true);
-  expect(checkerString(null)).toStrictEqual(false);
-  expect(checkerString(undefined)).toStrictEqual(false);
 });
 
 test('checkerArray test 1', async () => {
-  expect(checkerArray(null)).toStrictEqual(false);
-  expect(checkerArray(undefined)).toStrictEqual(false);
   expect(checkerArray([1234])).toStrictEqual(true);
   expect(checkerArray([1, 2, 3, 4, 5])).toStrictEqual(true);
   expect(checkerArray(['1', '2', 3])).toStrictEqual(true);
@@ -184,6 +179,4 @@ test('checkerNumber test 1', async () => {
   expect(checkerNumber(Number('1234'))).toStrictEqual(true);
   expect(checkerNumber(Number('dsafougfouegr'))).toStrictEqual(false);
   expect(checkerNumber(12345)).toStrictEqual(true);
-  expect(checkerNumber(null)).toStrictEqual(false);
-  expect(checkerNumber(undefined)).toStrictEqual(false);
 });

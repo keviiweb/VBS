@@ -4,6 +4,7 @@ const createJestConfig = nextJest({
   dir: './',
 });
 const customJestConfig = {
+  clearMocks: true,
   moduleDirectories: ['node_modules', '<rootDir>/'],
   testEnvironment: 'jest-environment-jsdom',
   preset: 'ts-jest',
@@ -18,6 +19,7 @@ const customJestConfig = {
     '^@public/(.*)$': '<rootDir>/public/$1',
     '^@pages/(.*)$': '<rootDir>/src/pages/$1',
     '^types/(.*)$': '<rootDir>/src/types/$1',
+    '^@tests/(.*)$': '<rootDir>/_tests_/$1',
   },
 };
 module.exports = createJestConfig(customJestConfig);

@@ -125,7 +125,7 @@ export const findBookingByUser = async (
     return bookings;
   } catch (error) {
     console.error(error);
-    return null;
+    return [];
   }
 };
 
@@ -153,7 +153,7 @@ export const findApprovedBooking = async (
     return bookings;
   } catch (error) {
     console.error(error);
-    return null;
+    return [];
   }
 };
 
@@ -181,7 +181,7 @@ export const findRejectedBooking = async (
     return bookings;
   } catch (error) {
     console.error(error);
-    return null;
+    return [];
   }
 };
 
@@ -209,7 +209,7 @@ export const findPendingBooking = async (
     return bookings;
   } catch (error) {
     console.error(error);
-    return null;
+    return [];
   }
 };
 
@@ -232,11 +232,13 @@ export const findAllBooking = async (
     return bookings;
   } catch (error) {
     console.error(error);
-    return null;
+    return [];
   }
 };
 
-export const findBookingByID = async (id: string): Promise<BookingRequest> => {
+export const findBookingByID = async (
+  id: string,
+): Promise<BookingRequest | null> => {
   try {
     const bookingRequest: BookingRequest =
       await prisma.venueBookingRequest.findFirst({
@@ -256,7 +258,11 @@ export const isApproved = async (
   bookingRequest: BookingRequest,
 ): Promise<boolean> => {
   try {
-    return bookingRequest.isApproved;
+    if (bookingRequest.isApproved !== undefined) {
+      return bookingRequest.isApproved;
+    } else {
+      return false;
+    }
   } catch (error) {
     console.error(error);
     return true;
@@ -267,7 +273,11 @@ export const isCancelled = async (
   bookingRequest: BookingRequest,
 ): Promise<boolean> => {
   try {
-    return bookingRequest.isCancelled;
+    if (bookingRequest.isCancelled !== undefined) {
+      return bookingRequest.isCancelled;
+    } else {
+      return false;
+    }
   } catch (error) {
     console.error(error);
     return true;
@@ -278,7 +288,11 @@ export const isRejected = async (
   bookingRequest: BookingRequest,
 ): Promise<boolean> => {
   try {
-    return bookingRequest.isRejected;
+    if (bookingRequest.isRejected !== undefined) {
+      return bookingRequest.isRejected;
+    } else {
+      return false;
+    }
   } catch (error) {
     console.error(error);
     return true;
@@ -290,7 +304,14 @@ export const isOwner = async (
   session: Session,
 ): Promise<boolean> => {
   try {
-    return bookingRequest.sessionEmail === session.user.email;
+    if (
+      bookingRequest.sessionEmail !== undefined &&
+      session.user.email !== undefined
+    ) {
+      return bookingRequest.sessionEmail === session.user.email;
+    } else {
+      return false;
+    }
   } catch (error) {
     console.error(error);
     return false;
@@ -341,6 +362,7 @@ export const setApprove = async (
         isApproved: true,
         isRejected: false,
         isCancelled: false,
+        updated_at: new Date().toISOString(),
       },
     });
 
@@ -351,11 +373,18 @@ export const setApprove = async (
       ) as number[];
       const slotArray: string[] = mapSlotToTiming(slotArrayMsg) as string[];
       const venueReq: Result = await findVenueByID(bookingRequest.venue);
-      let date: Date = convertUnixToDate(bookingRequest.date);
-      let prettifiedDate: string = prettifyDate(date);
+      let date: Date | null = null;
+      if (bookingRequest.date !== undefined) {
+        date = convertUnixToDate(bookingRequest.date);
+      }
+
+      let prettifiedDate: string = '';
+      if (date !== null) {
+        prettifiedDate = prettifyDate(date);
+      }
 
       if (venueReq && venueReq.status) {
-        let cca: string = undefined;
+        let cca: string = '';
         if (bookingRequest.cca === 'PERSONAL') {
           cca = 'PERSONAL';
         } else {
@@ -418,6 +447,7 @@ export const setReject = async (
         isRejected: true,
         isCancelled: false,
         reason: reason,
+        updated_at: new Date().toISOString(),
       },
     });
 
@@ -428,11 +458,15 @@ export const setReject = async (
       ) as number[];
       slotArray = mapSlotToTiming(slotArray);
       const venueReq: Result = await findVenueByID(bookingRequest.venue);
-      let date: Date = convertUnixToDate(bookingRequest.date as number);
-      let prettifiedDate: string = prettifyDate(date);
+      let date: Date | null = convertUnixToDate(bookingRequest.date as number);
+
+      let prettifiedDate: string = '';
+      if (date !== null) {
+        prettifiedDate = prettifyDate(date);
+      }
 
       if (venueReq && venueReq.status) {
-        let cca: string = undefined;
+        let cca: string = '';
         if (bookingRequest.cca === 'PERSONAL') {
           cca = 'PERSONAL';
         } else {
@@ -494,6 +528,7 @@ export const setCancel = async (
         isApproved: false,
         isRejected: false,
         isCancelled: true,
+        updated_at: new Date().toISOString(),
       },
     });
 
@@ -504,10 +539,14 @@ export const setCancel = async (
       ) as number[];
       slotArray = mapSlotToTiming(slotArray);
       const venueReq: Result = await findVenueByID(bookingRequest.venue);
-      let date: Date = convertUnixToDate(bookingRequest.date as number);
-      let prettifiedDate: string = prettifyDate(date);
+      let date: Date | null = convertUnixToDate(bookingRequest.date as number);
 
-      let cca: string = undefined;
+      let prettifiedDate: string = '';
+      if (date !== null) {
+        prettifiedDate = prettifyDate(date);
+      }
+
+      let cca: string = '';
       if (bookingRequest.cca === 'PERSONAL') {
         cca = 'PERSONAL';
       } else {
@@ -631,11 +670,13 @@ export const setRejectConflicts = async (
         if (sameDayVenue[key]) {
           const request: BookingRequest = sameDayVenue[key];
           if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
-            conflicting.push(request.id);
-            const reject: Result = await setReject(request, session, reason);
-            if (!reject.status) {
-              console.error(reject.error);
-              success = false;
+            if (request.id !== undefined) {
+              conflicting.push(request.id);
+              const reject: Result = await setReject(request, session, reason);
+              if (!reject.status) {
+                console.error(reject.error);
+                success = false;
+              }
             }
           }
         }
@@ -676,6 +717,7 @@ export const updateConflictingIDs = async (
       },
       data: {
         conflictRequest: conflict.toString(),
+        updated_at: new Date().toISOString(),
       },
     });
 
@@ -697,7 +739,7 @@ export const updateConflictingIDs = async (
 
 export const createVenueBookingRequest = async (
   data: BookingRequest,
-): Promise<BookingRequest> => {
+): Promise<BookingRequest | null> => {
   try {
     const bookedTimeSlots = await prisma.venueBookingRequest.create({
       data: data,
@@ -719,19 +761,26 @@ export const notifyConflicts = async (
   if (bookingRequest) {
     if (bookingRequest.conflictRequest) {
       const conflicts: string[] = bookingRequest.conflictRequest.split(',');
-      for (let key = 0; key < conflicts.length; key += 1) {
-        if (conflicts[key]) {
-          const conflictID: string = conflicts[key];
-          const sameDayVenue: BookingRequest = await findBookingByID(
-            conflictID,
-          );
-          const email: Result = await notifyConflictsEmail(
-            sameDayVenue,
-            session,
-          );
-          if (!email.status) {
-            console.error(email.error);
-            success = false;
+      if (conflicts.length > 0) {
+        for (let key = 0; key < conflicts.length; key += 1) {
+          if (conflicts[key]) {
+            const conflictID: string = conflicts[key];
+            const sameDayVenue: BookingRequest | null = await findBookingByID(
+              conflictID,
+            );
+
+            if (sameDayVenue !== null) {
+              const email: Result = await notifyConflictsEmail(
+                sameDayVenue,
+                session,
+              );
+              if (!email.status) {
+                console.error(email.error);
+                success = false;
+              }
+            } else {
+              success = false;
+            }
           }
         }
       }
@@ -764,17 +813,21 @@ export const notifyConflictsEmail = async (
   let result: Result = { status: false, error: null, msg: '' };
 
   if (bookingRequest) {
-    let slotArray: string | number[] | string[] = convertSlotToArray(
+    const slotArr: number[] = convertSlotToArray(
       bookingRequest.timeSlots,
       true,
     ) as number[];
-    slotArray = mapSlotToTiming(slotArray);
+    const slotArray: string[] = mapSlotToTiming(slotArr) as string[];
     const venueReq: Result = await findVenueByID(bookingRequest.venue);
-    let date: Date = convertUnixToDate(bookingRequest.date as number);
-    let prettifiedDate: string = prettifyDate(date);
+    let date: Date | null = convertUnixToDate(bookingRequest.date as number);
+
+    let prettifiedDate: string = '';
+    if (date !== null) {
+      prettifiedDate = prettifyDate(date);
+    }
 
     if (venueReq && venueReq.status) {
-      let cca: string = undefined;
+      let cca: string = '';
       if (bookingRequest.cca === 'PERSONAL') {
         cca = 'PERSONAL';
       } else {
@@ -793,10 +846,9 @@ export const notifyConflictsEmail = async (
         email: bookingRequest.email,
         venue: venueReq.msg.name,
         dateStr: prettifiedDate,
-        timeSlots: prettifyTiming(slotArray as string[]),
+        timeSlots: prettifyTiming(slotArray),
         cca: cca,
         purpose: bookingRequest.purpose,
-        sessionEmail: session.user.email,
       };
 
       try {

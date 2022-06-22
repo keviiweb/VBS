@@ -40,9 +40,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const limitQuery = req.query.limit;
   const skipQuery = req.query.skip;
 
-  let result: Result = null;
+  let result: Result = {
+    status: false,
+    error: null,
+    msg: '',
+  };
+
   if (session !== undefined && session !== null) {
-    let bookings: BookingRequest[] = null;
+    let bookings: BookingRequest[] = [];
     let count: number = 0;
 
     const limit: number = limitQuery !== undefined ? Number(limitQuery) : 10;
@@ -99,7 +104,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const parsedBooking: BookingRequest[] = [];
     if (successBooking) {
-      if (count > 0) {
+      if (count > 0 && bookings !== null && bookings.length > 0) {
         for (let booking = 0; booking < bookings.length; booking += 1) {
           if (bookings[booking]) {
             const book: BookingRequest = bookings[booking];
@@ -114,7 +119,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             if (venueReq.status) {
               const venue = venueReq.msg.name;
 
-              let cca: string = null;
+              let cca: string = '';
               if (book.cca === 'PERSONAL') {
                 cca = 'PERSONAL';
               } else {
@@ -136,7 +141,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 conflicts = conflictsRequest.msg;
               }
 
-              let status: string = null;
+              let status: string = '';
               const bookingDate: number = book.date as number;
               const minDay: number = process.env.CANCEL_MIN_DAY
                 ? Number(process.env.CANCEL_MIN_DAY)
@@ -175,12 +180,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 status = 'UNKNOWN';
               }
 
+              let prettified: string = '';
+              if (date !== null) {
+                prettified = prettifyDate(date);
+              }
+
               if (success) {
                 const data: BookingRequest = {
                   id: book.id,
                   email: book.email,
                   venue: venue,
-                  dateStr: prettifyDate(date),
+                  dateStr: prettified,
                   timeSlots: prettifyTiming(timeSlots),
                   isApproved: book.isApproved,
                   isRejected: book.isRejected,
