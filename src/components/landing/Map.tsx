@@ -13,6 +13,7 @@ import {
 import React, { useCallback } from 'react';
 
 import { PopoverTriggerProps } from 'types/popover';
+import { checkerString } from '@constants/sys/helper';
 
 const PopoverTriggerNew: React.FC<
   React.PropsWithChildren<PopoverTriggerProps>
@@ -71,14 +72,16 @@ export default function Map({ location, zoomLevel, apiKey }) {
   return (
     <div className='map'>
       <div className='google-map'>
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: apiKey }}
-          defaultCenter={location}
-          defaultZoom={zoomLevel}
-          options={getMapOptions}
-        >
-          <LocationPin text={location.address} />
-        </GoogleMapReact>
+        {checkerString(apiKey) && (
+          <GoogleMapReact
+            bootstrapURLKeys={{ key: apiKey }}
+            defaultCenter={location}
+            defaultZoom={zoomLevel}
+            options={getMapOptions}
+          >
+            <LocationPin text={location.address} />
+          </GoogleMapReact>
+        )}
       </div>
     </div>
   );
