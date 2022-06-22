@@ -19,5 +19,5 @@ export default function Index({ API_KEY }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => ({
-  props: { API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY },
+  props: { API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || null },
 });
