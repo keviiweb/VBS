@@ -237,7 +237,6 @@ export default function ManageVenues() {
             });
             const content: Result = await rawResponse.json();
             if (content.status) {
-              setSubmitButtonPressed(false);
               await reset();
               toast({
                 title: 'Success',
@@ -249,7 +248,6 @@ export default function ManageVenues() {
 
               await fetchData();
             } else {
-              setSubmitButtonPressed(false);
               toast({
                 title: 'Error',
                 description: content.error,
@@ -259,10 +257,10 @@ export default function ManageVenues() {
               });
             }
           } catch (error) {
-            setSubmitButtonPressed(false);
             console.error(error);
           }
         }
+        setSubmitButtonPressed(false);
       }
     },
     [fetchData, reset, toast],
@@ -634,6 +632,8 @@ export default function ManageVenues() {
           openingHours,
         )
       ) {
+        setSubmitButtonPressed(true);
+
         const dataField = new FormData();
         dataField.append('id', venueIDDBEdit.current);
         dataField.append('name', nameDBEdit.current);
@@ -674,6 +674,8 @@ export default function ManageVenues() {
         } catch (error) {
           console.error(error);
         }
+
+        setSubmitButtonPressed(false);
       }
     },
     [fetchData, resetEdit, toast],

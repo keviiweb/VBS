@@ -29,6 +29,7 @@ import { cardVariant, parentVariant } from '@root/motion';
 import TableWidget from '@components/sys/vbs/TableWidget';
 
 import { Result } from 'types/api';
+import { Venue } from 'types/venue';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -44,7 +45,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
   const [capacity, setCapacity] = useState(null);
   const [isAvailable, setIsAvailable] = useState(null);
   const [instantBook, setInstantBook] = useState(null);
-  const [childVenues, setChildVenues] = useState(null);
+  const [childVenues, setChildVenues] = useState<Venue[] | null>(null);
 
   const pageIndexDB = useRef(0);
   const pageSizeDB = useRef(10);
@@ -286,7 +287,9 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                       key={2}
                       columns={columns}
                       data={childVenues}
-                      controlledPageCount={pageIndexDB.current}
+                      controlledPageCount={
+                        Math.floor(childVenues.length / pageSizeDB.current) + 1
+                      }
                       dataHandler={onTableChange}
                     />
                   </Box>

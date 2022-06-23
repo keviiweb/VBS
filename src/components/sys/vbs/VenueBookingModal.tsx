@@ -504,7 +504,7 @@ export default function VenueBookingModal({
                 shadow='lg'
                 borderWidth='1px'
               >
-                {selectedDate && timeSlots && (
+                {selectedDate && timeSlots.length > 0 && (
                   <Box
                     w='100%'
                     h='full'
@@ -526,7 +526,7 @@ export default function VenueBookingModal({
                   </Box>
                 )}
 
-                {!selectedDate && !timeSlots && (
+                {!selectedDate && timeSlots.length === 0 && (
                   <Box>
                     <Stack spacing={600} align='center'>
                       <Text>Please select a date</Text>
@@ -534,7 +534,7 @@ export default function VenueBookingModal({
                   </Box>
                 )}
 
-                {selectedDate && !timeSlots && (
+                {selectedDate && timeSlots.length === 0 && (
                   <Box
                     w='100%'
                     h='full'
@@ -578,7 +578,7 @@ export default function VenueBookingModal({
             </Box>
           )}
 
-          {errorMsg && (
+          {checkerString(errorMsg) && (
             <Box>
               <Flex
                 w='full'

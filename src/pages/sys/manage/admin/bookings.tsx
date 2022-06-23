@@ -458,6 +458,7 @@ export default function ManageBooking() {
 
   const tableChange = useCallback(
     async (index: number) => {
+      setSubmitButtonPressed(true);
       switch (index) {
         case PENDING:
           await fetchPendingDataTable();
@@ -474,6 +475,7 @@ export default function ManageBooking() {
         default:
           break;
       }
+      setSubmitButtonPressed(false);
     },
     [
       fetchPendingDataTable,
@@ -596,6 +598,7 @@ export default function ManageBooking() {
 
   handleTabChange = useCallback(
     async (index: number) => {
+      setSubmitButtonPressed(true);
       tabIndexData.current = index;
       pageIndexDB.current = PAGEINDEX;
       pageSizeDB.current = PAGESIZE;
@@ -616,6 +619,7 @@ export default function ManageBooking() {
         default:
           break;
       }
+      setSubmitButtonPressed(false);
     },
     [fetchPendingData, fetchApprovedData, fetchAllData, fetchRejectedData],
   );
