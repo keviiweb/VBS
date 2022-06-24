@@ -62,7 +62,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         } catch (error) {
           console.log(error);
         }
-        
+
         const venueData: Venue = {
           capacity: capacity,
           name: name,
