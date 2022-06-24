@@ -57,8 +57,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         venuePath = `/sys/venue/${imageFile.originalFilename?.trim()}`;
         const pathToWriteImage = `public${venuePath}`;
         const image = await fs.readFile(imagePath);
-        await fs.writeFile(pathToWriteImage, image);
-
+        try {
+          await fs.writeFile(pathToWriteImage, image);
+        } catch (error) {
+          console.log(error);
+        }
+        
         const venueData: Venue = {
           capacity: capacity,
           name: name,
