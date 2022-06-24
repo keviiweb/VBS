@@ -47,9 +47,11 @@ export default function SignIn(props) {
         console.log(error);
         setLoading(false);
       }
-    } else {
-      setError('Please enter a valid email');
+
+      return true;
     }
+    setError('Please enter a valid email');
+    return false;
   };
 
   return (

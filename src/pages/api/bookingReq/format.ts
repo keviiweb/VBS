@@ -9,6 +9,7 @@ import {
   convertSlotToArray,
   prettifyTiming,
   checkerArray,
+  PERSONAL,
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
 
@@ -54,8 +55,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               const venue = venueReqMsg.name;
 
               let cca: string = '';
-              if (book.cca === 'PERSONAL') {
-                cca = 'PERSONAL';
+              if (book.cca === PERSONAL) {
+                cca = PERSONAL;
               } else {
                 const ccaReq: Result = await findCCAbyID(book.cca);
                 if (ccaReq.status) {

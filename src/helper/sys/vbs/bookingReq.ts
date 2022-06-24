@@ -7,6 +7,7 @@ import {
   convertSlotToArray,
   isInside,
   mapSlotToTiming,
+  PERSONAL,
   prettifyTiming,
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
@@ -348,6 +349,55 @@ export const isConflict = async (
   }
 };
 
+export const isThereExisting = async (
+  bookingRequest: BookingRequest,
+  session: Session,
+): Promise<boolean> => {
+  try {
+    let anyExisting: BookingRequest[] | null = null;
+
+    if (bookingRequest.cca !== PERSONAL) {
+      anyExisting = await prisma.venueBookingRequest.findMany({
+        where: {
+          date: bookingRequest.date,
+          venue: bookingRequest.venue,
+          cca: bookingRequest.cca,
+          isApproved: false,
+          isRejected: false,
+          isCancelled: false,
+        },
+      });
+    } else {
+      anyExisting = await prisma.venueBookingRequest.findMany({
+        where: {
+          date: bookingRequest.date,
+          venue: bookingRequest.venue,
+          isApproved: false,
+          isRejected: false,
+          isCancelled: false,
+          sessionEmail: session.user.email,
+        },
+      });
+    }
+
+    if (anyExisting !== null && anyExisting.length > 0) {
+      for (let key = 0; key < anyExisting.length; key += 1) {
+        if (anyExisting[key]) {
+          const book: BookingRequest = anyExisting[key];
+          if (isInside(bookingRequest.timeSlots, book.timeSlots)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  } catch (error) {
+    console.error(error);
+    return true;
+  }
+};
+
 export const setApprove = async (
   bookingRequest: BookingRequest,
   session: Session,
@@ -385,8 +435,8 @@ export const setApprove = async (
 
       if (venueReq && venueReq.status) {
         let cca: string = '';
-        if (bookingRequest.cca === 'PERSONAL') {
-          cca = 'PERSONAL';
+        if (bookingRequest.cca === PERSONAL) {
+          cca = PERSONAL;
         } else {
           const ccaReq: Result = await findCCAbyID(bookingRequest.cca);
           cca = ccaReq.msg.name;
@@ -467,8 +517,8 @@ export const setReject = async (
 
       if (venueReq && venueReq.status) {
         let cca: string = '';
-        if (bookingRequest.cca === 'PERSONAL') {
-          cca = 'PERSONAL';
+        if (bookingRequest.cca === PERSONAL) {
+          cca = PERSONAL;
         } else {
           const ccaReq: Result = await findCCAbyID(bookingRequest.cca);
           cca = ccaReq.msg.name;
@@ -547,8 +597,8 @@ export const setCancel = async (
       }
 
       let cca: string = '';
-      if (bookingRequest.cca === 'PERSONAL') {
-        cca = 'PERSONAL';
+      if (bookingRequest.cca === PERSONAL) {
+        cca = PERSONAL;
       } else {
         const ccaReq: Result = await findCCAbyID(bookingRequest.cca);
         cca = ccaReq.msg.name;
@@ -607,7 +657,7 @@ export const getConflictingRequest = async (
       });
 
     if (sameDayVenue) {
-      for (let key in sameDayVenue) {
+      for (let key = 0; key < sameDayVenue.length; key += 1) {
         if (sameDayVenue[key]) {
           const request: BookingRequest = sameDayVenue[key];
           if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
@@ -666,7 +716,7 @@ export const setRejectConflicts = async (
       const reason: string =
         'Conflicting timeslot with another booking request';
 
-      for (let key in sameDayVenue) {
+      for (let key = 0; key < sameDayVenue.length; key += 1) {
         if (sameDayVenue[key]) {
           const request: BookingRequest = sameDayVenue[key];
           if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
@@ -828,8 +878,8 @@ export const notifyConflictsEmail = async (
 
     if (venueReq && venueReq.status) {
       let cca: string = '';
-      if (bookingRequest.cca === 'PERSONAL') {
-        cca = 'PERSONAL';
+      if (bookingRequest.cca === PERSONAL) {
+        cca = PERSONAL;
       } else {
         const ccaReq: Result = await findCCAbyID(bookingRequest.cca);
 

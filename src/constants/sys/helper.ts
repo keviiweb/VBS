@@ -5,6 +5,8 @@ import {
 
 import { TimeSlot } from 'types/timeslot';
 
+export const PERSONAL = 'PERSONAL';
+
 export const checkerString = (data: string): boolean => {
   if (data !== null && data !== undefined) {
     const res = data.trim();
@@ -30,15 +32,17 @@ export const checkerNumber = (data: number): boolean => {
   }
 };
 
-export const isInside = (want: string, check: string): boolean => {
-  const wantArr = convertSlotToArray(want, true) as number[];
-  const checkArr = convertSlotToArray(check, true) as number[];
+export const isInside = (
+  checkInThis: string,
+  checkIfInside: string,
+): boolean => {
+  const wantArr = convertSlotToArray(checkInThis, true) as number[];
+  const checkArr = convertSlotToArray(checkIfInside, true) as number[];
 
   if (checkerArray(wantArr) && checkerArray(checkArr)) {
-    for (let obj in wantArr) {
-      let i = checkArr.length;
-      while (i--) {
-        if (Number(checkArr[i]) === Number(wantArr[obj])) {
+    for (let obj = 0; obj < wantArr.length; obj += 1) {
+      for (let i = 0; i < checkArr.length; i += 1) {
+        if (checkArr[i] === wantArr[obj]) {
           return true;
         }
       }

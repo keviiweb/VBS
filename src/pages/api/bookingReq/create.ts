@@ -10,14 +10,16 @@ import {
   prettifyTiming,
   checkerString,
   checkerArray,
+  PERSONAL,
 } from '@constants/sys/helper';
 import { convertDateToUnix } from '@constants/sys/date';
 
 import { currentSession } from '@helper/sys/session';
 import { findCCAbyID, isLeader } from '@helper/sys/vbs/cca';
 import {
-  isConflict,
   createVenueBookingRequest,
+  isThereExisting,
+  isConflict,
   isApproved,
   isCancelled,
   isRejected,
@@ -71,7 +73,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         let isBookingCreated = false;
         let isInstantBooked = false;
 
-        if (type !== 'PERSONAL') {
+        if (type !== PERSONAL) {
           const dbSearch: Result = await findCCAbyID(typeField);
           const checkLdr: Result = await isLeader(typeField, session);
 
@@ -80,7 +82,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               const ccaNameMsg: CCA = dbSearch.msg;
               cca = ccaNameMsg.name;
             } else {
-              cca = 'PERSONAL';
+              cca = PERSONAL;
             }
 
             if (!checkLdr.msg) {
@@ -91,7 +93,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             isALeader = false;
           }
         } else {
-          cca = 'PERSONAL';
+          cca = PERSONAL;
         }
 
         if (isALeader) {
@@ -107,6 +109,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
           const isThereConflict: boolean = await isConflict(dataDB);
           const visible: boolean = await isVisible(venue);
+          const isThereExistingBookingRequest = await isThereExisting(
+            dataDB,
+            session,
+          );
 
           if (isThereConflict) {
             result = {
@@ -120,6 +126,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: 'Venue is not available for booking',
+              msg: '',
+            };
+            res.status(200).send(result);
+            res.end();
+          } else if (isThereExistingBookingRequest) {
+            result = {
+              status: false,
+              error: 'There is already a booking in progress',
               msg: '',
             };
             res.status(200).send(result);

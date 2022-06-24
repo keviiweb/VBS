@@ -8,6 +8,7 @@ import {
   convertSlotToArray,
   prettifyTiming,
   checkerString,
+  PERSONAL,
 } from '@constants/sys/helper';
 import {
   convertUnixToDate,
@@ -83,6 +84,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             }
 
             successBooking = true;
+          } else {
+            successBooking = false;
           }
         } else {
           count = await countAllBooking();
@@ -120,8 +123,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               const venue = venueReq.msg.name;
 
               let cca: string = '';
-              if (book.cca === 'PERSONAL') {
-                cca = 'PERSONAL';
+              if (book.cca === PERSONAL) {
+                cca = PERSONAL;
               } else {
                 const ccaReq: Result = await findCCAbyID(book.cca);
                 if (ccaReq.status) {
@@ -214,6 +217,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         error: null,
         msg: { count: count, res: parsedBooking },
       };
+
       res.status(200).send(result);
       res.end();
     } else {

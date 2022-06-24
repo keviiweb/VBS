@@ -30,7 +30,7 @@ import { cardVariant, parentVariant } from '@root/motion';
 
 import Loading from '@components/sys/vbs/Loading';
 
-import { checkerString, checkerNumber } from '@constants/sys/helper';
+import { checkerString, checkerNumber, PERSONAL } from '@constants/sys/helper';
 import { TimeSlot } from 'types/timeslot';
 import { isValidDate } from '@constants/sys/date';
 import { Result } from 'types/api';
@@ -69,7 +69,7 @@ export default function VenueBookingModalConfirmation({
   const venueNameDB = useRef('');
   const venueDB = useRef('');
   const timeSlotsDB = useRef<TimeSlot[]>([]);
-  const typeDB = useRef('PERSONAL');
+  const typeDB = useRef(PERSONAL);
   const purposeDB = useRef('');
 
   const dateParsed = useRef('');
@@ -143,7 +143,7 @@ export default function VenueBookingModalConfirmation({
       return false;
     }
 
-    if (typeField !== 'PERSONAL') {
+    if (typeField !== PERSONAL) {
       let found = false;
 
       for (let i = 0; i < CCALIST.current.length; i += 1) {
@@ -185,7 +185,7 @@ export default function VenueBookingModalConfirmation({
     venueNameDB.current = '';
     venueDB.current = '';
     timeSlotsDB.current = [];
-    typeDB.current = 'PERSONAL';
+    typeDB.current = PERSONAL;
     purposeDB.current = '';
     isSwitchDB.current = false;
   };
@@ -381,7 +381,7 @@ export default function VenueBookingModalConfirmation({
         typeDB.current = '';
         setShowCCAs(true);
       } else {
-        typeDB.current = 'PERSONAL';
+        typeDB.current = PERSONAL;
         setShowCCAs(false);
       }
 
@@ -460,7 +460,7 @@ export default function VenueBookingModalConfirmation({
                           name={venue}
                         >
                           <Stack direction='row'>
-                            <Radio value='1'>Personal</Radio>
+                            <Radio value='1'>{PERSONAL}</Radio>
                             <Radio value='2'>CCA</Radio>
                           </Stack>
                         </RadioGroup>

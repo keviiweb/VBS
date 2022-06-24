@@ -9,10 +9,8 @@ import {
   Button,
   Box,
   FormLabel,
+  Heading,
   Text,
-  Tabs,
-  TabList,
-  Tab,
   SimpleGrid,
   Stack,
   Select,
@@ -35,7 +33,7 @@ import { BookingRequest } from 'types/bookingReq';
 import { Venue } from 'types/venue';
 import { Booking } from 'types/booking';
 
-import { checkerString } from '@constants/sys/helper';
+import { checkerNumber, checkerString } from '@constants/sys/helper';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 
@@ -50,24 +48,25 @@ interface CalendarData {
   };
 }
 
+const levels = {
+  PENDING: 1,
+  APPROVED: 2,
+  REJECTED: 3,
+  ALL: 4,
+};
+
 export default function ManageBooking() {
   const [modalData, setModalData] = useState<BookingRequest | null>(null);
 
   const toast = useToast();
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState<BookingRequest[]>([]);
-  const ALL: number = 3;
-  const PENDING: number = 0;
-  const APPROVED: number = 1;
-  const REJECTED: number = 2;
 
   const [rejectModalData, setRejectModalData] = useState<BookingRequest | null>(
     null,
   );
   const [modalBookingData, setModalBookingData] =
     useState<BookingRequest | null>(null);
-
-  const tabIndexData = useRef(0);
 
   const venueData = useRef<Venue[]>([]);
   const [venueDropdown, setVenueDropdown] = useState<JSX.Element[]>([]);
@@ -79,8 +78,9 @@ export default function ManageBooking() {
   const [startTime, setStartTime] = useState('08:00:00');
   const [endTime, setEndTime] = useState('23:00:00');
 
-  let handleTabChange;
-  let fetchBookings;
+  let fetchBookings: any;
+  let handleTabChange: any;
+  const bookingChoiceDB = useRef(0);
 
   const PAGESIZE: number = 10;
   const PAGEINDEX: number = 0;
@@ -90,6 +90,11 @@ export default function ManageBooking() {
   const pageIndexDB = useRef(PAGEINDEX);
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+
+  const [bookingChoice, setBookingChoice] = useState(0);
+  const [bookingChoiceDropdown, setBookingChoiceDropdown] = useState<
+    JSX.Element[]
+  >([]);
 
   const handleApprove = useCallback(
     async (id: string) => {
@@ -118,7 +123,7 @@ export default function ManageBooking() {
               duration: 5000,
               isClosable: true,
             });
-            await handleTabChange(tabIndexData.current);
+            await handleTabChange(bookingChoiceDB.current);
             await fetchBookings(venueIDDB.current);
           } else {
             setSubmitButtonPressed(false);
@@ -173,7 +178,7 @@ export default function ManageBooking() {
               duration: 5000,
               isClosable: true,
             });
-            await handleTabChange(tabIndexData.current);
+            await handleTabChange(bookingChoiceDB.current);
             await fetchBookings(venueIDDB.current);
           } else {
             setSubmitButtonPressed(false);
@@ -198,16 +203,16 @@ export default function ManageBooking() {
     [handleTabChange, toast, fetchBookings],
   );
 
-  const dataFromBookingRejectVenueModal = async (
-    reason: string,
-    content: BookingRequest,
-  ) => {
-    if (checkerString(reason)) {
-      await handleRejectWReason(content, reason);
-      return true;
-    }
-    return false;
-  };
+  const dataFromBookingRejectVenueModal = useCallback(
+    async (reason: string, content: BookingRequest) => {
+      if (checkerString(reason)) {
+        await handleRejectWReason(content, reason);
+        return true;
+      }
+      return false;
+    },
+    [handleRejectWReason],
+  );
 
   const handleReject = useCallback(async (content: BookingRequest) => {
     const { id } = content;
@@ -225,7 +230,7 @@ export default function ManageBooking() {
   const generateActionButton = useCallback(
     async (content: BookingRequest, action: number) => {
       switch (action) {
-        case ALL: {
+        case levels.ALL: {
           if (content.status === 'PENDING') {
             const { id } = content;
             if (id !== undefined) {
@@ -271,7 +276,7 @@ export default function ManageBooking() {
           );
           return button;
         }
-        case APPROVED: {
+        case levels.APPROVED: {
           const button2: JSX.Element = (
             <Button
               size='sm'
@@ -283,7 +288,7 @@ export default function ManageBooking() {
           );
           return button2;
         }
-        case REJECTED: {
+        case levels.REJECTED: {
           const button3: JSX.Element = (
             <Button
               size='sm'
@@ -295,7 +300,7 @@ export default function ManageBooking() {
           );
           return button3;
         }
-        case PENDING: {
+        case levels.PENDING: {
           if (content.status === 'PENDING') {
             const { id } = content;
             if (id !== undefined) {
@@ -376,7 +381,7 @@ export default function ManageBooking() {
     [generateActionButton],
   );
 
-  const fetchAllDataTable = useCallback(async () => {
+  const fetchAllData = useCallback(async () => {
     try {
       const rawResponse = await fetch(
         `/api/bookingReq/fetch?limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
@@ -389,14 +394,14 @@ export default function ManageBooking() {
       );
       const content: Result = await rawResponse.json();
       if (content.status) {
-        await includeActionButton(content.msg, ALL);
+        await includeActionButton(content.msg, levels.ALL);
       }
     } catch (error) {
       console.error(error);
     }
   }, [includeActionButton]);
 
-  const fetchApprovedDataTable = useCallback(async () => {
+  const fetchApprovedData = useCallback(async () => {
     try {
       const rawResponse = await fetch(
         `/api/bookingReq/fetch?q=APPROVED&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
@@ -409,14 +414,14 @@ export default function ManageBooking() {
       );
       const content: Result = await rawResponse.json();
       if (content.status) {
-        await includeActionButton(content.msg, APPROVED);
+        await includeActionButton(content.msg, levels.APPROVED);
       }
     } catch (error) {
       console.error(error);
     }
   }, [includeActionButton]);
 
-  const fetchRejectedDataTable = useCallback(async () => {
+  const fetchRejectedData = useCallback(async () => {
     try {
       const rawResponse = await fetch(
         `/api/bookingReq/fetch?q=REJECTED&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
@@ -429,14 +434,15 @@ export default function ManageBooking() {
       );
       const content: Result = await rawResponse.json();
       if (content.status) {
-        await includeActionButton(content.msg, REJECTED);
+        await includeActionButton(content.msg, levels.REJECTED);
       }
     } catch (error) {
       console.error(error);
     }
   }, [includeActionButton]);
 
-  const fetchPendingDataTable = useCallback(async () => {
+  const fetchPendingData = useCallback(async () => {
+    console.log('CALLED');
     try {
       const rawResponse = await fetch(
         `/api/bookingReq/fetch?q=PENDING&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
@@ -449,7 +455,7 @@ export default function ManageBooking() {
       );
       const content: Result = await rawResponse.json();
       if (content.status) {
-        await includeActionButton(content.msg, PENDING);
+        await includeActionButton(content.msg, levels.PENDING);
       }
     } catch (error) {
       console.error(error);
@@ -459,30 +465,27 @@ export default function ManageBooking() {
   const tableChange = useCallback(
     async (index: number) => {
       setSubmitButtonPressed(true);
+
       switch (index) {
-        case PENDING:
-          await fetchPendingDataTable();
+        case levels.PENDING:
+          await fetchPendingData();
           break;
-        case APPROVED:
-          await fetchApprovedDataTable();
+        case levels.APPROVED:
+          await fetchApprovedData();
           break;
-        case REJECTED:
-          await fetchRejectedDataTable();
+        case levels.REJECTED:
+          await fetchRejectedData();
           break;
-        case ALL:
-          await fetchAllDataTable();
+        case levels.ALL:
+          await fetchAllData();
           break;
         default:
           break;
       }
+
       setSubmitButtonPressed(false);
     },
-    [
-      fetchPendingDataTable,
-      fetchApprovedDataTable,
-      fetchRejectedDataTable,
-      fetchAllDataTable,
-    ],
+    [fetchPendingData, fetchApprovedData, fetchRejectedData, fetchAllData],
   );
 
   const onTableChange = useCallback(
@@ -494,134 +497,60 @@ export default function ManageBooking() {
         pageSizeDB.current = pageSize;
         pageIndexDB.current = pageIndex;
 
-        await tableChange(tabIndexData.current);
+        await tableChange(bookingChoiceDB.current);
       }
     },
     [tableChange],
   );
 
-  const fetchAllData = useCallback(async () => {
-    setLoadingData(true);
-    setData([]);
-    try {
-      const rawResponse = await fetch(
-        `/api/bookingReq/fetch?limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      const content: Result = await rawResponse.json();
-      if (content.status) {
-        await includeActionButton(content.msg, ALL);
+  const onBookingChoiceChange = useCallback(
+    async (event: { target: { value: string } }) => {
+      if (event.target.value) {
+        const { value } = event.target;
+        if (
+          checkerNumber(Number(value)) &&
+          Number(value) !== bookingChoiceDB.current
+        ) {
+          setSubmitButtonPressed(true);
+          setBookingChoice(Number(value));
+          bookingChoiceDB.current = Number(value);
+
+          pageIndexDB.current = PAGEINDEX;
+          pageSizeDB.current = PAGESIZE;
+
+          await handleTabChange(Number(value));
+          setSubmitButtonPressed(false);
+        }
       }
-
-      setLoadingData(false);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [includeActionButton]);
-
-  const fetchApprovedData = useCallback(async () => {
-    setLoadingData(true);
-    setData([]);
-    try {
-      const rawResponse = await fetch(
-        `/api/bookingReq/fetch?q=APPROVED&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      const content: Result = await rawResponse.json();
-      if (content.status) {
-        await includeActionButton(content.msg, APPROVED);
-      }
-
-      setLoadingData(false);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [includeActionButton]);
-
-  const fetchRejectedData = useCallback(async () => {
-    setLoadingData(true);
-    setData([]);
-
-    try {
-      const rawResponse = await fetch(
-        `/api/bookingReq/fetch?q=REJECTED&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      const content: Result = await rawResponse.json();
-      if (content.status) {
-        await includeActionButton(content.msg, REJECTED);
-      }
-      setLoadingData(false);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [includeActionButton]);
-
-  const fetchPendingData = useCallback(async () => {
-    setLoadingData(true);
-    setData([]);
-
-    try {
-      const rawResponse = await fetch(
-        `/api/bookingReq/fetch?q=PENDING&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      const content: Result = await rawResponse.json();
-      if (content.status) {
-        await includeActionButton(content.msg, PENDING);
-      }
-      setLoadingData(false);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [includeActionButton]);
+    },
+    [handleTabChange],
+  );
 
   handleTabChange = useCallback(
-    async (index: number) => {
-      setSubmitButtonPressed(true);
-      tabIndexData.current = index;
-      pageIndexDB.current = PAGEINDEX;
-      pageSizeDB.current = PAGESIZE;
+    async (id: number) => {
+      setLoadingData(true);
+      setData([]);
 
-      switch (index) {
-        case PENDING:
+      switch (id) {
+        case levels.PENDING:
           await fetchPendingData();
           break;
-        case APPROVED:
+        case levels.APPROVED:
           await fetchApprovedData();
           break;
-        case REJECTED:
+        case levels.REJECTED:
           await fetchRejectedData();
           break;
-        case ALL:
+        case levels.ALL:
           await fetchAllData();
           break;
         default:
           break;
       }
-      setSubmitButtonPressed(false);
+
+      setLoadingData(false);
     },
-    [fetchPendingData, fetchApprovedData, fetchAllData, fetchRejectedData],
+    [fetchPendingData, fetchApprovedData, fetchRejectedData, fetchAllData],
   );
 
   const generateVenueDropdown = useCallback(async (contentRes) => {
@@ -825,10 +754,25 @@ export default function ManageBooking() {
     [],
   );
 
+  const createBookingChoiceDropDownMenu = useCallback(() => {
+    const selection: JSX.Element[] = [];
+    selection.push(<option key='' value='' aria-label='Default' />);
+
+    Object.keys(levels).forEach((key) => {
+      selection.push(
+        <option key={levels[key]} value={levels[key]}>
+          {key}
+        </option>,
+      );
+    });
+
+    setBookingChoiceDropdown(selection);
+  }, []);
+
   useEffect(() => {
-    fetchPendingData();
+    createBookingChoiceDropDownMenu();
     fetchVenue();
-  }, [fetchPendingData, fetchVenue]);
+  }, [fetchVenue, createBookingChoiceDropDownMenu]);
 
   return (
     <Auth admin>
@@ -854,6 +798,9 @@ export default function ManageBooking() {
           color='gray.700'
           shadow='base'
         >
+          <Heading size='sm' mb={4}>
+            Booking Calendar
+          </Heading>
           {selectedVenue && <Text>Selected Venue: {selectedVenue}</Text>}
 
           {venueDropdown && (
@@ -865,14 +812,16 @@ export default function ManageBooking() {
             </Stack>
           )}
 
-          <BookingCalendar
-            slotMax={endTime}
-            slotMin={startTime}
-            events={events}
-            eventClick={handleEventClick}
-            eventMouseEnter={handleMouseEnter}
-            eventMouseLeave={handleMouseLeave}
-          />
+          {selectedVenue && (
+            <BookingCalendar
+              slotMax={endTime}
+              slotMin={startTime}
+              events={events}
+              eventClick={handleEventClick}
+              eventMouseEnter={handleMouseEnter}
+              eventMouseLeave={handleMouseLeave}
+            />
+          )}
         </Box>
 
         <Box
@@ -883,71 +832,71 @@ export default function ManageBooking() {
           color='gray.700'
           shadow='base'
         >
-          <Tabs
-            onChange={handleTabChange}
-            size='sm'
-            isManual
-            isLazy
-            isFitted
-            variant='enclosed'
-          >
-            <TabList>
-              <Tab>Pending Approval</Tab>
-              <Tab>Approved</Tab>
-              <Tab>Rejected</Tab>
-              <Tab>All Bookings</Tab>
-            </TabList>
-            {loadingData && !data && (
-              <Box mt={30}>
-                <Stack align='center' justify='center'>
-                  <Text>Loading Please wait...</Text>
-                </Stack>
-              </Box>
-            )}
+          <Heading size='sm' mb={4}>
+            Booking Table
+          </Heading>
 
-            {!loadingData && data && data.length === 0 && (
-              <Box mt={30}>
-                <Stack align='center' justify='center'>
-                  <Text>No bookings found</Text>
-                </Stack>
-              </Box>
-            )}
+          <Stack spacing={2} w='full' mb='10'>
+            <FormLabel>Select Bookings</FormLabel>
+            <Select
+              value={bookingChoice}
+              onChange={onBookingChoiceChange}
+              size='sm'
+            >
+              {bookingChoiceDropdown}
+            </Select>
+          </Stack>
 
-            {!loadingData && data && data !== [] && data.length > 0 && (
-              <Box w='full' mt={30} overflow='auto'>
-                <Stack align='center' justify='center' spacing={30}>
-                  <TableWidget
-                    key={1}
-                    columns={columns}
-                    data={data}
-                    controlledPageCount={pageCount}
-                    dataHandler={onTableChange}
-                  />
-                </Stack>
-              </Box>
-            )}
+          {loadingData && !data && (
+            <Box mt={30}>
+              <Stack align='center' justify='center'>
+                <Text>Loading Please wait...</Text>
+              </Stack>
+            </Box>
+          )}
 
-            <BookingModal
-              isBookingRequest={false}
-              isOpen={!!modalBookingData}
-              onClose={() => setModalBookingData(null)}
-              modalData={modalBookingData}
-              isAdmin
-            />
-            <BookingModal
-              isBookingRequest
-              isOpen={!!modalData}
-              onClose={() => setModalData(null)}
-              modalData={modalData}
-              isAdmin
-            />
-            <BookingRejectModal
-              isOpen={!!rejectModalData}
-              onClose={() => setRejectModalData(null)}
-              modalData={rejectModalData}
-              dataHandler={dataFromBookingRejectVenueModal}
-            />
-          </Tabs>
+          {!loadingData && data && data.length === 0 && (
+            <Box mt={30}>
+              <Stack align='center' justify='center'>
+                <Text>No bookings found</Text>
+              </Stack>
+            </Box>
+          )}
+
+          {!loadingData && data && data !== [] && data.length > 0 && (
+            <Box w='full' mt={30} overflow='auto'>
+              <Stack align='center' justify='center' spacing={30}>
+                <TableWidget
+                  key={1}
+                  columns={columns}
+                  data={data}
+                  controlledPageCount={pageCount}
+                  dataHandler={onTableChange}
+                />
+              </Stack>
+            </Box>
+          )}
+
+          <BookingModal
+            isBookingRequest={false}
+            isOpen={!!modalBookingData}
+            onClose={() => setModalBookingData(null)}
+            modalData={modalBookingData}
+            isAdmin
+          />
+          <BookingModal
+            isBookingRequest
+            isOpen={!!modalData}
+            onClose={() => setModalData(null)}
+            modalData={modalData}
+            isAdmin
+          />
+          <BookingRejectModal
+            isOpen={!!rejectModalData}
+            onClose={() => setRejectModalData(null)}
+            modalData={rejectModalData}
+            dataHandler={dataFromBookingRejectVenueModal}
+          />
         </Box>
       </MotionSimpleGrid>
     </Auth>
