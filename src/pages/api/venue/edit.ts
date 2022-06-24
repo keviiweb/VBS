@@ -35,17 +35,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
 
     try {
-      const id: string = data.fields.id as string;
+      const id: string = (data.fields.id as string).trim();
       const capacity: number = Number(data.fields.capacity);
-      const name: string = data.fields.name as string;
-      const description: string = data.fields.description as string;
+      const name: string = (data.fields.name as string).trim();
+      const description: string = (data.fields.description as string).trim();
       const isInstantBook: boolean = data.fields.isInstantBook === 'true';
       const visible: boolean = data.fields.visible === 'true';
       const isChildVenue: boolean = data.fields.isChildVenue === 'true';
       const parentVenue: string = isChildVenue
-        ? (data.fields.parentVenue as string)
+        ? (data.fields.parentVenue as string).trim()
         : '';
-      const openingHours: string = data.fields.openingHours as string;
+      const openingHours: string = (data.fields.openingHours as string).trim();
 
       const venueData: Venue = {
         id: id,

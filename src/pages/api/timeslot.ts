@@ -24,8 +24,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (session !== undefined && session !== null) {
     if (checkerString(venue) && checkerString(date)) {
-      const convertedDate: number = convertDateToUnix(date);
-      const openingHours = await fetchOpeningHours(venue);
+      const venueID: string = (venue as string).trim();
+      const dateID: string = (date as string).trim();
+
+      const convertedDate: number = convertDateToUnix(dateID);
+      const openingHours = await fetchOpeningHours(venueID);
       const startHour: number | null = openingHours.start;
       const endHour: number | null = openingHours.end;
 

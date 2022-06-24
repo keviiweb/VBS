@@ -28,9 +28,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = { status: false, error: '', msg: '' };
   if (session !== undefined && session !== null) {
     if (checkerString(id)) {
+      const venueID: string = (id as string).trim();
       let bookings: Booking[] = [];
       if (session.user.admin) {
-        bookings = await findAllBookingByVenueID(id);
+        bookings = await findAllBookingByVenueID(venueID);
 
         if (bookings !== [] && bookings !== undefined && bookings !== null) {
           const parsedBooking: Booking[] = [];

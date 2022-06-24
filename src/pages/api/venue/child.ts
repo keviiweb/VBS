@@ -18,7 +18,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { venue } = req.body;
   if (session !== undefined && session !== null) {
     if (checkerString(venue)) {
-      const venueDB: Result = await fetchChildVenue(venue);
+      const venueID: string = (venue as string).trim();
+      const venueDB: Result = await fetchChildVenue(venueID);
       const parsedVenue: Venue[] = [];
 
       if (venueDB.status) {

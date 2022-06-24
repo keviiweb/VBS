@@ -41,13 +41,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const { email, venue, venueName, date, timeSlots, type, purpose } = req.body;
   try {
-    const emailField: string = email as string;
-    const venueField: string = venue as string;
-    const venueNameField: string = venueName as string;
-    const dateField: string = date as string;
+    const emailField: string = (email as string).trim();
+    const venueField: string = (venue as string).trim();
+    const venueNameField: string = (venueName as string).trim();
+    const dateField: string = (date as string).trim();
     const timeSlotsField: TimeSlot[] = timeSlots as TimeSlot[];
-    const typeField: string = type as string;
-    const purposeField: string = purpose as string;
+    const typeField: string = (type as string).trim();
+    const purposeField: string = (purpose as string).trim();
 
     if (session !== undefined && session !== null) {
       if (
@@ -274,12 +274,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
               const data: BookingRequest = {
                 id: bookingID,
-                email: email,
-                venue: venueName,
-                dateStr: date,
+                email: emailField,
+                venue: venueNameField,
+                dateStr: dateField,
                 timeSlots: prettifyTiming(slotArrayStr),
                 cca: cca,
-                purpose: purpose,
+                purpose: purposeField,
                 sessionEmail: session.user.email,
               };
 

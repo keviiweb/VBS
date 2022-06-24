@@ -36,7 +36,7 @@ import {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req);
-  const query = req.query.q as string;
+  const query = (req.query.q as string).trim();
 
   const limitQuery = req.query.limit;
   const skipQuery = req.query.skip;
