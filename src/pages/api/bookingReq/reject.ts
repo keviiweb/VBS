@@ -27,7 +27,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (checkerString(id) && checkerString(reason)) {
       const bookingID: string = (id as string).trim();
       const reasonField: string = (reason as string).trim();
-      const bookingRequest: BookingRequest | null = await findBookingByID(bookingID);
+      const bookingRequest: BookingRequest | null = await findBookingByID(
+        bookingID,
+      );
 
       if (bookingRequest !== null) {
         const isRequestApproved = await isApproved(bookingRequest);

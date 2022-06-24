@@ -30,7 +30,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (session !== undefined && session !== null) {
     if (checkerString(id)) {
       const bookingID: string = (id as string).trim();
-      const bookingRequest: BookingRequest | null = await findBookingByID(bookingID);
+      const bookingRequest: BookingRequest | null = await findBookingByID(
+        bookingID,
+      );
 
       if (bookingRequest !== null && bookingRequest !== undefined) {
         const isRequestCancelled: boolean = await isCancelled(bookingRequest);
