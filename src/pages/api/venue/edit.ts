@@ -57,7 +57,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         isChildVenue: isChildVenue,
         parentVenue: parentVenue,
         openingHours: openingHours,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
 
       const editVenueRequest: Result = await editVenue(venueData);
