@@ -14,4 +14,5 @@ export type Venue = {
   childVenue?: string;
   instantBook?: string;
   action?: any;
+  updated_at?: string;
 };

@@ -14,4 +14,5 @@ export type Booking = {
   start?: string;
   end?: string;
   sessionEmail?: string;
+  updated_at?: string;
 };

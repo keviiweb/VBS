@@ -16,4 +16,5 @@ export type BookingRequest = {
   status?: string;
   reason?: string;
   action?: any;
+  updated_at?: string;
 };
