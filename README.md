@@ -15,10 +15,12 @@ This repo holds source code for King Edward VII's Website. Project is built on t
     npm run build - Builds static assets into out folder
     npm run start - Serves static assets from out folder
     npm run prettier - Prettify code
-    npm run lint - Checks code for correct formating
+    npm run code - Checks code for correct formating
+    npm run test - Tests the code using Jest
 
 ## Project Structure
 
+* \_tests\_ - Test cases
 * public - Public / static assets for images etc...
 * src/components - Basic & reusable components like cards, text, icon etc...
 * src/pages - Individual website pages. \_app is a special file for editing global settings
@@ -26,6 +28,7 @@ This repo holds source code for King Edward VII's Website. Project is built on t
 * src/constants - Any constants that are not stored in the database
 * src/helper - Helper functions such as calls to database, prettify strings etc.
 * src/styles - Certain styling files such as the one used for calendars
+* src/types - TypeScript definitions
 
 ## Tech Stack
 
@@ -46,6 +49,7 @@ Further add ons as necessary
 * Nodemailer - Library to send out emails
 * React - Frontend necessity
 * Safe-JSON-Stringify - Prevent from throwing errors on getters
+* Moment and Moment-Timezone - Timezone and Date manipulation library
 
 **Styling**
 * Chakra-UI - Component Library 
@@ -65,6 +69,9 @@ Further add ons as necessary
 * ESlint - Code formatter and checker
 * Sharp - High-performance image processing
 * SWR - React-Hooks library for data fetching
+* Jest - Testing library
+* Husky - Pre-commit commands
+* @testing-library - Testing library for React components
 ## Contributing
 
 * Fork this repository to your own profile
