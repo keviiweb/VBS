@@ -366,29 +366,6 @@ export default function ManageVenues() {
     [handleDetails],
   );
 
-  fetchData = useCallback(async () => {
-    setLoadingData(true);
-    setData([]);
-    try {
-      const rawResponse = await fetch(
-        `/api/venue/fetch?limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      const content: Result = await rawResponse.json();
-      if (content.status) {
-        await includeActionButton(content.msg);
-      }
-      setLoadingData(false);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [includeActionButton]);
-
   const fetchDataTable = useCallback(async () => {
     try {
       const rawResponse = await fetch(
@@ -408,6 +385,14 @@ export default function ManageVenues() {
       console.error(error);
     }
   }, [includeActionButton]);
+
+  fetchData = useCallback(async () => {
+    setLoadingData(true);
+    setData([]);
+
+    await fetchDataTable();
+    setLoadingData(false);
+  }, [fetchDataTable]);
 
   const generateTimeSlots = useCallback(async () => {
     const start: JSX.Element[] = [];

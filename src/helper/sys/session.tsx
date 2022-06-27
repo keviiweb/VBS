@@ -14,6 +14,7 @@ export const currentSession = async (
         email: 'testing@test.com',
         admin: true,
         studentID: 'A7654321',
+        roomNum: 'C124',
       },
     };
 

@@ -13,7 +13,7 @@ export default function Error404() {
 
   return (
     <Flex minH='100vh' align='center' justify='center' bg='gray.50'>
-      <Stack mx='auto' maxW='lg' py={12} px={6}>
+      <Stack mx='auto' maxW='lg' py={12} px={6} textAlign='center'>
         <Box rounded='lg' bg='white' boxShadow='lg' p={8}>
           <Stack align='center'>
             <Heading fontSize='4xl'>Page not found</Heading>

@@ -11,7 +11,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { BsPerson } from 'react-icons/bs';
-import { MdOutlineEmail, MdAccountBox } from 'react-icons/md';
+import { MdOutlineEmail, MdAccountBox, MdLocationOn } from 'react-icons/md';
 
 import Auth from '@components/sys/Auth';
 import Loading from '@components/sys/vbs/Loading';
@@ -80,6 +80,7 @@ export default function Profile() {
   const [studentID, setStudentID] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [room, setRoom] = useState('');
 
   const [loading, setLoading] = useState(false);
 
@@ -92,10 +93,13 @@ export default function Profile() {
         session && session.user.username ? session.user.username : 'Test User';
       const emailField: string =
         session && session.user.email ? session.user.email : 'test@test.com';
+      const roomField: string =
+        session && session.user.roomNum ? session.user.roomNum : 'C308';
 
       setStudentID(studentIDField);
       setUsername(usernameField);
       setEmail(emailField);
+      setRoom(roomField);
 
       setLoading(true);
     }
@@ -118,11 +122,11 @@ export default function Profile() {
         >
           <Box
             borderRadius='lg'
-            m={{ base: 5, md: 16, lg: 10 }}
-            p={{ base: 5, lg: 16 }}
+            m={{ base: 5, md: 5, lg: 5 }}
+            p={{ base: 5, lg: 7 }}
           >
             <Box>
-              <VStack spacing={{ base: 4, md: 8, lg: 16 }}>
+              <VStack spacing={{ base: 4, md: 8, lg: 10 }}>
                 <Heading
                   fontSize={{
                     base: '4xl',
@@ -184,6 +188,22 @@ export default function Profile() {
                           name='studentID'
                           placeholder='Your Student ID'
                           value={studentID}
+                        />
+                      </InputGroup>
+                    </FormControl>
+
+                    <FormControl isDisabled>
+                      <FormLabel>Room Number</FormLabel>
+
+                      <InputGroup>
+                        <InputLeftElement>
+                          <MdLocationOn />
+                        </InputLeftElement>
+                        <Input
+                          type='text'
+                          name='roomNum'
+                          placeholder='Your Room Number'
+                          value={room}
                         />
                       </InputGroup>
                     </FormControl>

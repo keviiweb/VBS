@@ -3,7 +3,7 @@ import { Box, Flex } from '@chakra-ui/react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function Card({ product }) {
+export default function LinkCard({ product }) {
   const { img, title, link } = product;
 
   return (

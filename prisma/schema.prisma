@@ -35,6 +35,7 @@ model Users {
   updated_at DateTime @default(now()) @db.DateTime(0)
   admin      Boolean  @default(false)
   studentID  String   @unique(map: "studentID")
+  roomNum   String?    @unique
 }
 
 model VerificationToken {
@@ -114,3 +115,12 @@ model CCALeader {
   created_at DateTime @default(now()) @db.DateTime(0)
   updated_at DateTime @default(now()) @db.DateTime(0)
 }  
+
+model Announcement {
+  id    String    @id @default(cuid())
+  description   String
+  image       String
+  sessionEmail    String   
+  created_at DateTime @default(now()) @db.DateTime(0)
+  updated_at DateTime @default(now()) @db.DateTime(0)
+}

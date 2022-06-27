@@ -11,6 +11,7 @@ declare module 'next-auth' {
       username: string;
       studentID: string;
       admin: boolean;
+      roomNum: string;
     };
   }
 }

@@ -42,8 +42,9 @@ export default function Auth({ children, admin }) {
   }, [loading, hasUser, isAdmin, router, session]);
 
   if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-    return <Layout session={session}>{children}</Layout>;
+    return <Layout session={devSession.current}>{children}</Layout>;
   }
+
   if (loading || !hasUser) {
     return <Loading />;
   }

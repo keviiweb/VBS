@@ -63,8 +63,6 @@ export default function ManageBooking() {
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
-            setSubmitButtonPressed(false);
-
             toast({
               title: 'Request cancelled.',
               description: 'An email has been sent to the requester',
@@ -74,8 +72,6 @@ export default function ManageBooking() {
             });
             await fetchData();
           } else {
-            setSubmitButtonPressed(false);
-
             toast({
               title: 'Error',
               description: content.error,
@@ -85,9 +81,10 @@ export default function ManageBooking() {
             });
           }
         } catch (error) {
-          setSubmitButtonPressed(false);
           console.error(error);
         }
+
+        setSubmitButtonPressed(false);
       }
     },
     [toast, fetchData],
@@ -159,49 +156,36 @@ export default function ManageBooking() {
     [handleDetails, handleCancel, submitButtonPressed],
   );
 
+  const fetchDataFromDB = useCallback(async () => {
+    try {
+      const rawResponse = await fetch(
+        `/api/bookingReq/fetch?q=USER&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      const content: Result = await rawResponse.json();
+      if (content.status) {
+        await includeActionButton(content.msg);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [includeActionButton]);
+
   fetchData = useCallback(async () => {
     setLoadingData(true);
+    setSubmitButtonPressed(true);
     setData([]);
-    try {
-      const rawResponse = await fetch(
-        `/api/bookingReq/fetch?q=USER&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      const content: Result = await rawResponse.json();
-      if (content.status) {
-        await includeActionButton(content.msg);
-      }
 
-      setLoadingData(false);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [includeActionButton]);
+    await fetchDataFromDB();
 
-  const fetchDataTable = useCallback(async () => {
-    try {
-      const rawResponse = await fetch(
-        `/api/bookingReq/fetch?q=USER&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      const content: Result = await rawResponse.json();
-      if (content.status) {
-        await includeActionButton(content.msg);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }, [includeActionButton]);
+    setLoadingData(false);
+    setSubmitButtonPressed(false);
+  }, [fetchDataFromDB]);
 
   const onTableChange = useCallback(
     async ({ pageIndex, pageSize }) => {
@@ -212,10 +196,10 @@ export default function ManageBooking() {
         pageSizeDB.current = pageSize;
         pageIndexDB.current = pageIndex;
 
-        await fetchDataTable();
+        await fetchDataFromDB();
       }
     },
-    [fetchDataTable],
+    [fetchDataFromDB],
   );
 
   useEffect(() => {

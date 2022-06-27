@@ -496,6 +496,7 @@ const options = {
             newSession.user.username = userFromDB.name;
             newSession.user.studentID = userFromDB.studentID;
             newSession.user.admin = userFromDB.admin;
+            newSession.user.roomNum = userFromDB.roomNum;
 
             return newSession;
           }
