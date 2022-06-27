@@ -14,13 +14,17 @@ import { Session } from 'next-auth/core/types';
 
 import { parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
+
 import CCACard from '@components/sys/cca/CCACard';
+import LeaderModalComponent from '@components/sys/cca/LeaderModal';
+import MemberModalComponent from '@components/sys/cca/MemberModal';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
 export default function CCA(props: any) {
-  const [modalData, setModalData] = useState(null);
+  const [leaderModalData, setLeaderModalData] = useState(null);
+  const [memberModalData, setMemberModalData] = useState(null);
 
   const [leaderCards, setLeaderCards] = useState<JSX.Element[]>([]);
   const [memberCards, setMemberCards] = useState<JSX.Element[]>([]);
@@ -40,13 +44,19 @@ export default function CCA(props: any) {
                 if (item.leader) {
                   leaderRes.push(
                     <MotionBox id={item.ccaID} key={item.id}>
-                      <CCACard product={item} setModalData={setModalData} />
+                      <CCACard
+                        product={item}
+                        setModalData={setLeaderModalData}
+                      />
                     </MotionBox>,
                   );
                 } else {
                   memberRes.push(
                     <MotionBox id={item.ccaID} key={item.id}>
-                      <CCACard product={item} setModalData={setModalData} />
+                      <CCACard
+                        product={item}
+                        setModalData={setMemberModalData}
+                      />
                     </MotionBox>,
                   );
                 }
@@ -118,7 +128,16 @@ export default function CCA(props: any) {
         </Box>
       )}
 
-      {modalData}
+      <LeaderModalComponent
+        isOpen={leaderModalData}
+        onClose={() => setLeaderModalData(null)}
+        modalData={leaderModalData}
+      />
+      <MemberModalComponent
+        isOpen={memberModalData}
+        onClose={() => setMemberModalData(null)}
+        modalData={memberModalData}
+      />
     </Auth>
   );
 }

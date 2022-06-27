@@ -53,13 +53,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: announcementDB.error,
-        msg: '',
+        msg: [],
       };
       res.status(200).send(result);
       res.end();
     }
   } else {
-    result = { status: false, error: 'Unauthenticated', msg: '' };
+    result = { status: false, error: 'Unauthenticated', msg: [] };
     res.status(200).send(result);
     res.end();
   }

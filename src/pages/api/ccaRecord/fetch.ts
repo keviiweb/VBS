@@ -57,7 +57,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: ccaDB.error,
-        msg: '',
+        msg: [],
       };
       res.status(200).send(result);
       res.end();

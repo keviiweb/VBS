@@ -32,7 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: ccaList.error,
-        msg: '',
+        msg: [],
       };
     }
 
@@ -42,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: '',
+      msg: [],
     };
     res.status(200).send(result);
     res.end();

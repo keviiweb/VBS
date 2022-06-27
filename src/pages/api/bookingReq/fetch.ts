@@ -224,13 +224,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Cannot get all bookings',
-        msg: '',
+        msg: { count: 0, res: [] },
       };
       res.status(200).send(result);
       res.end();
     }
   } else {
-    result = { status: false, error: 'Unauthenticated', msg: '' };
+    result = {
+      status: false,
+      error: 'Unauthenticated',
+      msg: { count: 0, res: [] },
+    };
     res.status(200).send(result);
     res.end();
   }

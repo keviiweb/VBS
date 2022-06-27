@@ -135,7 +135,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Missing information',
-        msg: '',
+        msg: [],
       };
 
       res.status(200).send(result);
@@ -145,7 +145,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: '',
+      msg: [],
     };
 
     res.status(200).send(result);
