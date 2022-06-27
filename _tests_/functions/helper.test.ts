@@ -9,7 +9,7 @@ import {
   checkerArray,
   checkerNumber,
 } from '@constants/sys/helper';
-import { TimeSlot } from 'types/timeslot';
+import { TimeSlot } from 'types/vbs/timeslot';
 
 test('isInside test 1', async () => {
   expect(isInside('1,2,3,4', '1,2')).toStrictEqual(true);

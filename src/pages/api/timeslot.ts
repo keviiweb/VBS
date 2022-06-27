@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
-import { Booking } from 'types/booking';
-import { TimeSlot } from 'types/timeslot';
+import { Booking } from 'types/vbs/booking';
+import { TimeSlot } from 'types/vbs/timeslot';
 
 import { checkerNumber, checkerString } from '@constants/sys/helper';
 import { timingSlotNumberToTimingMapping } from '@constants/sys/timeslot';

@@ -1,8 +1,9 @@
 import { Result } from 'types/api';
-import { CCA } from 'types/cca';
+import { CCA } from 'types/cca/cca';
+import { CCARecord } from 'types/cca/ccaRecord';
 
-import { prisma } from '@constants/sys/db';
 import { Session } from 'next-auth/core/types';
+import { prisma } from '@constants/sys/db';
 
 export const findCCAbyName = async (name: string): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
@@ -67,10 +68,11 @@ export const isLeader = async (
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
-    const ldr: CCA = await prisma.cCALeader.findFirst({
+    const ldr: CCARecord = await prisma.cCARecord.findFirst({
       where: {
         ccaID: ccaID,
         sessionEmail: session.user.email,
+        leader: true,
       },
     });
 

@@ -16,7 +16,7 @@ import BookingModal from '@components/sys/vbs/BookingModal';
 import LoadingModal from '@components/sys/vbs/LoadingModal';
 
 import { Result } from 'types/api';
-import { BookingRequest } from 'types/bookingReq';
+import { BookingRequest } from 'types/vbs/bookingReq';
 
 import { checkerString } from '@constants/sys/helper';
 

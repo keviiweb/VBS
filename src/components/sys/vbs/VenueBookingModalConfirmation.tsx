@@ -31,10 +31,10 @@ import { cardVariant, parentVariant } from '@root/motion';
 import Loading from '@components/sys/vbs/Loading';
 
 import { checkerString, checkerNumber, PERSONAL } from '@constants/sys/helper';
-import { TimeSlot } from 'types/timeslot';
+import { TimeSlot } from 'types/vbs/timeslot';
 import { isValidDate } from '@constants/sys/date';
 import { Result } from 'types/api';
-import { CCA } from 'types/cca';
+import { CCA } from 'types/cca/cca';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);

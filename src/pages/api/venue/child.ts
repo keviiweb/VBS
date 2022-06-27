@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
-import { Venue } from 'types/venue';
+import { Venue } from 'types/vbs/venue';
 
 import { checkerString } from '@constants/sys/helper';
 

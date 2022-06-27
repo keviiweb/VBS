@@ -1,6 +1,6 @@
 import { checkerString } from '@constants/sys/helper';
 import TelegramBot from 'node-telegram-bot-api';
-import { BookingRequest } from 'types/bookingReq';
+import { BookingRequest } from 'types/vbs/bookingReq';
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const channel_id = process.env.TELEGRAM_BOT_CHANNEL_ID;

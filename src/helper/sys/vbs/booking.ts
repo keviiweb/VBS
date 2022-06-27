@@ -1,8 +1,8 @@
 import { prisma } from '@constants/sys/db';
 
-import { BookingRequest } from 'types/bookingReq';
+import { BookingRequest } from 'types/vbs/bookingReq';
 import { Result } from 'types/api';
-import { Booking } from 'types/booking';
+import { Booking } from 'types/vbs/booking';
 import { Session } from 'next-auth/core/types';
 
 export const findAllBookingByVenueID = async (

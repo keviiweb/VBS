@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
-import { Venue } from 'types/venue';
-import { Booking } from 'types/booking';
+import { Venue } from 'types/vbs/venue';
+import { Booking } from 'types/vbs/booking';
 
 import {
   mapSlotToTiming,
@@ -18,7 +18,7 @@ import {
   splitOpeningHours,
   splitHoursISO,
 } from '@helper/sys/vbs/venue';
-import { findCCAbyID } from '@helper/sys/vbs/cca';
+import { findCCAbyID } from '@helper/sys/cca/cca';
 import { findAllBookingByVenueID } from '@helper/sys/vbs/booking';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

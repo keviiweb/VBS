@@ -22,8 +22,8 @@ import safeJsonStringify from 'safe-json-stringify';
 import { GetServerSideProps } from 'next';
 
 import { Result } from 'types/api';
-import { Venue } from 'types/venue';
-import { TimeSlot } from 'types/timeslot';
+import { Venue } from 'types/vbs/venue';
+import { TimeSlot } from 'types/vbs/timeslot';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);

@@ -20,7 +20,7 @@ import {
 
 import TableWidget from '@components/sys/vbs/TableWidget';
 
-import { BookingRequest } from 'types/bookingReq';
+import { BookingRequest } from 'types/vbs/bookingReq';
 import { Result } from 'types/api';
 
 import { checkerString } from '@constants/sys/helper';

@@ -1,4 +1,4 @@
-import { Booking } from 'types/booking';
+import { Booking } from 'types/vbs/booking';
 import { Result } from 'types/api';
 
 import { prisma } from '@constants/sys/db';

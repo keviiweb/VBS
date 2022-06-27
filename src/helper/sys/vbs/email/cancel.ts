@@ -1,4 +1,4 @@
-import { BookingRequest } from 'types/bookingReq';
+import { BookingRequest } from 'types/vbs/bookingReq';
 import nodemailer from 'nodemailer';
 
 function html({ data }) {

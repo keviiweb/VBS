@@ -29,7 +29,7 @@ import { cardVariant, parentVariant } from '@root/motion';
 import TableWidget from '@components/sys/vbs/TableWidget';
 
 import { Result } from 'types/api';
-import { Venue } from 'types/venue';
+import { Venue } from 'types/vbs/venue';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);

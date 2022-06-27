@@ -3,7 +3,7 @@ import {
   timeSlots,
 } from '@constants/sys/timeslot';
 
-import { TimeSlot } from 'types/timeslot';
+import { TimeSlot } from 'types/vbs/timeslot';
 
 export const PERSONAL = 'PERSONAL';
 

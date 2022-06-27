@@ -1,5 +1,5 @@
 import { Result } from 'types/api';
-import { BookingRequest } from 'types/bookingReq';
+import { BookingRequest } from 'types/vbs/bookingReq';
 import { Session } from 'next-auth/core/types';
 
 import { prisma } from '@constants/sys/db';
@@ -13,7 +13,7 @@ import {
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
 
 import { findVenueByID } from '@helper/sys/vbs/venue';
-import { findCCAbyID } from '@helper/sys/vbs/cca';
+import { findCCAbyID } from '@helper/sys/cca/cca';
 import { sendApproveMail } from '@helper/sys/vbs/email/approve';
 import { sendCancelMail } from '@helper/sys/vbs/email/cancel';
 import { sendRejectMail } from '@helper/sys/vbs/email/reject';

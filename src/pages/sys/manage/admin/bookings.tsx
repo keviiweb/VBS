@@ -29,9 +29,9 @@ import { parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
 
 import { Result } from 'types/api';
-import { BookingRequest } from 'types/bookingReq';
-import { Venue } from 'types/venue';
-import { Booking } from 'types/booking';
+import { BookingRequest } from 'types/vbs/bookingReq';
+import { Venue } from 'types/vbs/venue';
+import { Booking } from 'types/vbs/booking';
 
 import { checkerNumber, checkerString } from '@constants/sys/helper';
 

@@ -35,7 +35,7 @@ import LoadingModal from '@components/sys/vbs/LoadingModal';
 import { timeSlots } from '@constants/sys/timeslot';
 import { checkerNumber, checkerString } from '@constants/sys/helper';
 
-import { Venue } from 'types/venue';
+import { Venue } from 'types/vbs/venue';
 import { Result } from 'types/api';
 
 const MotionSimpleGrid = motion(SimpleGrid);

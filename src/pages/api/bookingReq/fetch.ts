@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
-import { BookingRequest } from 'types/bookingReq';
-import { CCA } from 'types/cca';
+import { BookingRequest } from 'types/vbs/bookingReq';
+import { CCA } from 'types/cca/cca';
 
 import {
   mapSlotToTiming,
@@ -18,7 +18,7 @@ import {
 
 import { currentSession } from '@helper/sys/session';
 import { findVenueByID } from '@helper/sys/vbs/venue';
-import { findCCAbyID } from '@helper/sys/vbs/cca';
+import { findCCAbyID } from '@helper/sys/cca/cca';
 import {
   BOOKINGS,
   countAllBooking,

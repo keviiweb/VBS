@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
-import { BookingRequest } from 'types/bookingReq';
-import { CCA } from 'types/cca';
-import { TimeSlot } from 'types/timeslot';
+import { BookingRequest } from 'types/vbs/bookingReq';
+import { CCA } from 'types/cca/cca';
+import { TimeSlot } from 'types/vbs/timeslot';
 
 import {
   mapSlotToTiming,
@@ -15,7 +15,7 @@ import {
 import { convertDateToUnix } from '@constants/sys/date';
 
 import { currentSession } from '@helper/sys/session';
-import { findCCAbyID, isLeader } from '@helper/sys/vbs/cca';
+import { findCCAbyID, isLeader } from '@helper/sys/cca/cca';
 import {
   createVenueBookingRequest,
   isThereExisting,

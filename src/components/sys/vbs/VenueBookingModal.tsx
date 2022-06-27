@@ -27,8 +27,8 @@ import moment from 'moment-timezone';
 import { isValidDate, prettifyDate } from '@constants/sys/date';
 import { checkerArray, checkerString } from '@constants/sys/helper';
 
-import { Venue } from 'types/venue';
-import { TimeSlot } from 'types/timeslot';
+import { Venue } from 'types/vbs/venue';
+import { TimeSlot } from 'types/vbs/timeslot';
 import { Result } from 'types/api';
 
 const MotionSimpleGrid = motion(SimpleGrid);
