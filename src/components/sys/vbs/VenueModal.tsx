@@ -26,7 +26,7 @@ import {
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 
-import TableWidget from '@components/sys/vbs/TableWidget';
+import TableWidget from '@components/sys/misc/TableWidget';
 
 import { Result } from 'types/api';
 import { Venue } from 'types/vbs/venue';

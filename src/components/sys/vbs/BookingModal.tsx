@@ -18,7 +18,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import TableWidget from '@components/sys/vbs/TableWidget';
+import TableWidget from '@components/sys/misc/TableWidget';
 
 import { BookingRequest } from 'types/vbs/bookingReq';
 import { Result } from 'types/api';

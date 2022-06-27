@@ -28,7 +28,7 @@ import { cardVariant, parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
 
 import Auth from '@components/sys/Auth';
-import TableWidget from '@components/sys/vbs/TableWidget';
+import TableWidget from '@components/sys/misc/TableWidget';
 import VenueModal from '@components/sys/vbs/VenueModal';
 import LoadingModal from '@components/sys/vbs/LoadingModal';
 

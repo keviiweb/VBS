@@ -28,7 +28,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 
 import Auth from '@components/sys/Auth';
-import TableWidget from '@components/sys/vbs/TableWidget';
+import TableWidget from '@components/sys/misc/TableWidget';
 import LoadingModal from '@components/sys/vbs/LoadingModal';
 
 import { checkerString } from '@constants/sys/helper';

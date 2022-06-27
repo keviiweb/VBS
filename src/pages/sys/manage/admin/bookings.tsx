@@ -19,7 +19,7 @@ import {
 import { CheckIcon, CloseIcon, InfoOutlineIcon } from '@chakra-ui/icons';
 
 import Auth from '@components/sys/Auth';
-import TableWidget from '@components/sys/vbs/TableWidget';
+import TableWidget from '@components/sys/misc/TableWidget';
 import BookingModal from '@components/sys/vbs/BookingModal';
 import BookingCalendar from '@components/sys/vbs/BookingCalendar';
 import BookingRejectModal from '@components/sys/vbs/BookingRejectModal';
