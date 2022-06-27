@@ -426,7 +426,7 @@ export default function ManageVenues() {
         initial='initial'
         animate='animate'
       >
-        <MotionBox>
+        <MotionBox key='submit-form'>
           {' '}
           <Stack
             spacing={4}
@@ -438,7 +438,7 @@ export default function ManageVenues() {
             p={6}
             my={12}
           >
-            <Heading size='md'>Create new venue</Heading>
+            <Heading size='md'>Create new announcement</Heading>
             <form onSubmit={handleSubmit}>
               <Stack spacing={4}>
                 <FormControl id='description'>
@@ -547,7 +547,7 @@ export default function ManageVenues() {
           </Stack>
         </MotionBox>
 
-        <MotionBox>
+        <MotionBox key='edit-form'>
           <Stack
             spacing={4}
             w='full'
@@ -558,7 +558,7 @@ export default function ManageVenues() {
             p={6}
             my={12}
           >
-            <Heading size='md'>Edit existing venue</Heading>
+            <Heading size='md'>Edit existing announcement</Heading>
             <form onSubmit={handleSubmitEdit}>
               <Stack spacing={4}>
                 {announceDropdown && (

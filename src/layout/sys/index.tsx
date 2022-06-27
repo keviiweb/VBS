@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from '@components/sys/vbs/Header';
-import Sidebar from '@components/sys/vbs/Sidebar';
+import Header from '@components/sys/misc/Header';
+import Sidebar from '@components/sys/misc/Sidebar';
 
 import { Box, Drawer, DrawerContent, useDisclosure } from '@chakra-ui/react';
 

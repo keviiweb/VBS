@@ -3,7 +3,7 @@ import { Result } from 'types/api';
 import { Venue } from 'types/vbs/venue';
 
 import { createVenue } from '@helper/sys/vbs/venue';
-import { currentSession } from '@helper/sys/session';
+import { currentSession } from '@helper/sys/sessionServer';
 
 import formidable, { IncomingForm } from 'formidable';
 import { promises as fs } from 'fs';
@@ -15,7 +15,7 @@ export const config = {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await currentSession(req);
+  const session = await currentSession(req, res, null);
   let result: Result = {
     status: false,
     error: null,

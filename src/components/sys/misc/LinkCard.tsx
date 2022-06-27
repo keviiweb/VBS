@@ -4,45 +4,55 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export default function LinkCard({ product }) {
-  const { img, title, link } = product;
+  const img = (product && product.img) || null;
+  const title = (product && product.title) || null;
+  const link = (product && product.link) || null;
 
   return (
-    <Link href={link}>
-      <Flex
-        w='full'
-        h='full'
-        alignItems='center'
-        justifyContent='center'
-        cursor='pointer'
-        bg='white'
-        rounded='xl'
-        shadow='lg'
-        borderWidth='1px'
-      >
-        <Box w='full' h='full'>
-          <Box
-            w='100%'
-            height='200px'
-            position='relative'
-            overflow='hidden'
-            roundedTop='lg'
+    <Box>
+      {link && (
+        <Link href={link}>
+          <Flex
+            w='full'
+            h='full'
+            alignItems='center'
+            justifyContent='center'
+            cursor='pointer'
+            bg='white'
+            rounded='xl'
+            shadow='lg'
+            borderWidth='1px'
           >
-            <Image
-              src={img}
-              priority
-              objectFit='cover'
-              alt='image'
-              layout='fill'
-            />
-          </Box>
+            <Box w='full' h='full'>
+              {img && (
+                <Box
+                  w='100%'
+                  height='200px'
+                  position='relative'
+                  overflow='hidden'
+                  roundedTop='lg'
+                >
+                  <Image
+                    src={img}
+                    priority
+                    objectFit='cover'
+                    alt='image'
+                    layout='fill'
+                  />
+                </Box>
+              )}
 
-          <Box p='6'>
-            <Box fontWeight='semibold' as='h4' lineHeight='tight'>
-              {title}
+              {title && (
+                <Box p='6'>
+                  <Box fontWeight='semibold' as='h4' lineHeight='tight'>
+                    {title}
+                  </Box>
+                </Box>
+              )}
             </Box>
-          </Box>
-        </Box>
-      </Flex>
-    </Link>
+          </Flex>
+        </Link>
+      )}
+    </Box>
   );
 }

@@ -3,7 +3,7 @@ import { IconButton, Flex, Text } from '@chakra-ui/react';
 import { FiMenu } from 'react-icons/fi';
 import Link from 'next/link';
 
-import UserProfile from '@components/sys/vbs/UserProfile';
+import UserProfile from '@components/sys/misc/UserProfile';
 
 export default function Header({ onOpen, ...rest }) {
   return (

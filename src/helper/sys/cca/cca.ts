@@ -60,31 +60,3 @@ export const findAllCCA = async (): Promise<Result> => {
 
   return result;
 };
-
-export const isLeader = async (
-  ccaID: string,
-  session: Session,
-): Promise<Result> => {
-  let result: Result = { status: false, error: null, msg: '' };
-
-  try {
-    const ldr: CCARecord = await prisma.cCARecord.findFirst({
-      where: {
-        ccaID: ccaID,
-        sessionEmail: session.user.email,
-        leader: true,
-      },
-    });
-
-    if (ldr) {
-      result = { status: true, error: null, msg: true };
-    } else {
-      result = { status: true, error: null, msg: false };
-    }
-  } catch (error) {
-    console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
-  }
-
-  return result;
-};

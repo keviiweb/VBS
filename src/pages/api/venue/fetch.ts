@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 import { Venue } from 'types/vbs/venue';
 
-import { currentSession } from '@helper/sys/session';
+import { currentSession } from '@helper/sys/sessionServer';
 import {
   findVenueByID,
   fetchAllVenue,
@@ -10,7 +10,7 @@ import {
 } from '@helper/sys/vbs/venue';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await currentSession(req);
+  const session = await currentSession(req, res, null);
 
   const limitQuery = req.query.limit;
   const skipQuery = req.query.skip;

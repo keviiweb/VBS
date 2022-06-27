@@ -13,12 +13,12 @@ import {
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
 
-import { currentSession } from '@helper/sys/session';
+import { currentSession } from '@helper/sys/sessionServer';
 import { findVenueByID } from '@helper/sys/vbs/venue';
 import { findCCAbyID } from '@helper/sys/cca/cca';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await currentSession(req);
+  const session = await currentSession(req, res, null);
 
   const { bookings } = req.body;
 

@@ -2,11 +2,11 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 import { Announcement } from 'types/announcement';
 
-import { currentSession } from '@helper/sys/session';
+import { currentSession } from '@helper/sys/sessionServer';
 import { fetchAllAnnouncements } from '@helper/sys/announcement';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await currentSession(req);
+  const session = await currentSession(req, res, null);
 
   const limitQuery = req.query.limit;
   const skipQuery = req.query.skip;

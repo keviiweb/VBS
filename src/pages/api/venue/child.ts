@@ -4,11 +4,11 @@ import { Venue } from 'types/vbs/venue';
 
 import { checkerString } from '@constants/sys/helper';
 
-import { currentSession } from '@helper/sys/session';
+import { currentSession } from '@helper/sys/sessionServer';
 import { findVenueByID, fetchChildVenue } from '@helper/sys/vbs/venue';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await currentSession(req);
+  const session = await currentSession(req, res, null);
 
   let result: Result = {
     status: false,

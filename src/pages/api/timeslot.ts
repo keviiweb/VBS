@@ -7,12 +7,12 @@ import { checkerNumber, checkerString } from '@constants/sys/helper';
 import { timingSlotNumberToTimingMapping } from '@constants/sys/timeslot';
 import { convertDateToUnix } from '@constants/sys/date';
 
-import { currentSession } from '@helper/sys/session';
+import { currentSession } from '@helper/sys/sessionServer';
 import { fetchOpeningHours } from '@helper/sys/vbs/venue';
 import { fetchBookedTimeSlots } from '@helper/sys/vbs/timeslot';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await currentSession(req);
+  const session = await currentSession(req, res, null);
 
   const slots: TimeSlot[] = [];
   const { venue, date } = req.body;

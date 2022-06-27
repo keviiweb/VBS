@@ -11,7 +11,7 @@ import {
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
 
-import { currentSession } from '@helper/sys/session';
+import { currentSession } from '@helper/sys/sessionServer';
 import {
   findVenueByID,
   splitHours,
@@ -22,7 +22,7 @@ import { findCCAbyID } from '@helper/sys/cca/cca';
 import { findAllBookingByVenueID } from '@helper/sys/vbs/booking';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await currentSession(req);
+  const session = await currentSession(req, res, null);
   const { id } = req.body;
 
   let result: Result = { status: false, error: '', msg: '' };

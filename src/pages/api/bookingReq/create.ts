@@ -14,8 +14,9 @@ import {
 } from '@constants/sys/helper';
 import { convertDateToUnix } from '@constants/sys/date';
 
-import { currentSession } from '@helper/sys/session';
-import { findCCAbyID, isLeader } from '@helper/sys/cca/cca';
+import { currentSession } from '@helper/sys/sessionServer';
+import { findCCAbyID } from '@helper/sys/cca/cca';
+import { isLeader } from '@helper/sys/cca/ccaRecord';
 import {
   createVenueBookingRequest,
   isThereExisting,
@@ -31,7 +32,7 @@ import { sendProgressMail } from '@helper/sys/vbs/email/progress';
 import { createVenueBooking } from '@helper/sys/vbs/booking';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await currentSession(req);
+  const session = await currentSession(req, res, null);
 
   let result: Result = {
     status: false,

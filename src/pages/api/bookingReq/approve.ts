@@ -13,11 +13,11 @@ import {
   setApprove,
   setRejectConflicts,
 } from '@helper/sys/vbs/bookingReq';
-import { currentSession } from '@helper/sys/session';
+import { currentSession } from '@helper/sys/sessionServer';
 import { createVenueBooking } from '@helper/sys/vbs/booking';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await currentSession(req);
+  const session = await currentSession(req, res, null);
 
   let result: Result = {
     status: false,

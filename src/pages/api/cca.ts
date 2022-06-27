@@ -2,11 +2,11 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 import { CCA } from 'types/cca/cca';
 
-import { currentSession } from '@helper/sys/session';
+import { currentSession } from '@helper/sys/sessionServer';
 import { findAllCCA } from '@helper/sys/cca/cca';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await currentSession(req);
+  const session = await currentSession(req, res, null);
   let result: Result = {
     status: false,
     error: null,
