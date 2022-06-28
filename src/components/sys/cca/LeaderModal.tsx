@@ -78,10 +78,13 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
     }, 200);
   };
 
-  const handleDetails = useCallback((content: CCARecord) => {
-    setSpecificMemberData(content);
-    console.log(specificMemberData);
-  }, [specificMemberData]);
+  const handleDetails = useCallback(
+    (content: CCARecord) => {
+      setSpecificMemberData(content);
+      console.log(specificMemberData);
+    },
+    [specificMemberData],
+  );
 
   const generateActionButton = useCallback(
     async (content: CCARecord, action: number) => {
