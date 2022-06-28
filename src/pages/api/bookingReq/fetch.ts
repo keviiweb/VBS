@@ -36,7 +36,11 @@ import {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
-  const query = (req.query.q as string).trim();
+  let query: string | undefined;
+
+  if (req.query.q !== undefined) {
+    query = (req.query.q as string).trim();
+  }
 
   const limitQuery = req.query.limit;
   const skipQuery = req.query.skip;
@@ -55,7 +59,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
     let successBooking: boolean = false;
 
-    if (checkerString(query) && query === 'USER') {
+    if (query !== undefined && checkerString(query) && query === 'USER') {
       count = await countBookingByUser(session);
       bookings = await findBookingByUser(session, limit, skip);
 

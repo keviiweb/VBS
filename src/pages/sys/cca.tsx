@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, SimpleGrid, Text } from '@chakra-ui/react';
+import { Box, Flex, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 
 import safeJsonStringify from 'safe-json-stringify';
 import { GetServerSideProps } from 'next';
@@ -18,6 +18,7 @@ import { motion } from 'framer-motion';
 import CCACard from '@components/sys/cca/CCACard';
 import LeaderModalComponent from '@components/sys/cca/LeaderModal';
 import MemberModalComponent from '@components/sys/cca/MemberModal';
+import LoadingModal from '@components/sys/vbs/LoadingModal';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -29,8 +30,12 @@ export default function CCA(props: any) {
   const [leaderCards, setLeaderCards] = useState<JSX.Element[]>([]);
   const [memberCards, setMemberCards] = useState<JSX.Element[]>([]);
 
+  const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+
   useEffect(() => {
     async function generate(propsField: any) {
+      setSubmitButtonPressed(true);
+
       const propRes = await propsField;
       if (propRes.data) {
         const res: Result = propRes.data;
@@ -68,6 +73,8 @@ export default function CCA(props: any) {
           }
         }
       }
+
+      setSubmitButtonPressed(false);
     }
 
     generate(props);
@@ -75,6 +82,11 @@ export default function CCA(props: any) {
 
   return (
     <Auth admin={undefined}>
+      <LoadingModal
+        isOpen={!!submitButtonPressed}
+        onClose={() => setSubmitButtonPressed(false)}
+      />
+
       {leaderCards.length > 0 && (
         <Box>
           <Text
@@ -126,6 +138,32 @@ export default function CCA(props: any) {
             {memberCards}
           </MotionSimpleGrid>{' '}
         </Box>
+      )}
+
+      {leaderCards.length === 0 && memberCards.length === 0 && (
+        <Flex bg='gray.100' align='center' justify='center' id='cca'>
+          <Box
+            borderRadius='lg'
+            m={{ base: 5, md: 16, lg: 10 }}
+            p={{ base: 5, lg: 16 }}
+          >
+            <Box>
+              <VStack spacing={{ base: 4, md: 8, lg: 20 }}>
+                <Box
+                  bg='white'
+                  borderRadius='lg'
+                  p={8}
+                  color='gray.700'
+                  shadow='base'
+                >
+                  <VStack spacing={5}>
+                    <Text>You are not in any CCAs...</Text>
+                  </VStack>
+                </Box>
+              </VStack>
+            </Box>
+          </Box>
+        </Flex>
       )}
 
       <LeaderModalComponent

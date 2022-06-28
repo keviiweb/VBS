@@ -78,7 +78,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
     );
 
     setSelectedDropDown(selection);
-  }, [modalData]);
+  }, []);
 
   useEffect(() => {
     async function setupData() {
@@ -94,7 +94,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
       setData([]);
       setupData();
     }
-  }, [buildDropDownMenu]);
+  }, [modalData, buildDropDownMenu]);
 
   const columns = useMemo(
     () => [
@@ -157,6 +157,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
               </Text>
             </Box>
           </Stack>
+
           <MotionSimpleGrid
             columns={{ base: 1, md: 1, lg: 2, xl: 2 }}
             minChildWidth={{ base: 'full', md: '200px', lg: '400px' }}
@@ -177,7 +178,16 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
                   alignItems='center'
                   justifyContent='center'
                 >
-                  <Stack spacing={5} w='full' align='center'>
+                  <Stack spacing={5} w='full' align='left'>
+                    <Text
+                      textTransform='uppercase'
+                      lineHeight='5'
+                      fontWeight='bold'
+                      letterSpacing='tight'
+                      color='gray.900'
+                    >
+                      Select View
+                    </Text>
                     <Select
                       onChange={onSelectionChange}
                       size='sm'

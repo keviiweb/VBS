@@ -9,7 +9,7 @@ import {
   FiSettings,
   FiCalendar,
   FiMapPin,
-  FiAlertCircle,
+  //  FiAlertCircle,
 } from 'react-icons/fi';
 
 import NavLink from '@components/sys/misc/NavLink';
@@ -33,11 +33,6 @@ const adminMenu = [
     label: 'MANAGE BOOKINGS',
     icon: FiCalendar,
     href: '/sys/manage/bookings',
-  },
-  {
-    label: 'MANAGE ANNOUNCEMENTS',
-    icon: FiAlertCircle,
-    href: '/sys/manage/announcement',
   },
 ];
 

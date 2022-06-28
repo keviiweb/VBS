@@ -706,6 +706,20 @@ export default function ManageVenues() {
 
   return (
     <Auth admin>
+      <Text
+        mt={2}
+        mb={6}
+        textTransform='uppercase'
+        fontSize={{ base: '2xl', sm: '2xl', lg: '2xl' }}
+        lineHeight='5'
+        fontWeight='bold'
+        letterSpacing='tight'
+        color='gray.900'
+      >
+        Notice: Uploading of Image doesnt work in production, to be replaced
+        with Amazon S3
+      </Text>
+
       <Box
         bg='white'
         borderRadius='lg'
@@ -718,7 +732,6 @@ export default function ManageVenues() {
           isOpen={!!submitButtonPressed}
           onClose={() => setSubmitButtonPressed(false)}
         />
-
         <MotionBox variants={cardVariant} key='1'>
           {loadingData && !data ? (
             <Text>Loading Please wait...</Text>
