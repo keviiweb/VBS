@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
-import { Announcement } from 'types/announcement';
+import { Announcement } from 'types/misc/announcement';
 
-import { createAnnouncement } from '@helper/sys/announcement';
+import { createAnnouncement } from '@helper/sys/misc/announcement';
 import { currentSession } from '@helper/sys/sessionServer';
 
 import formidable, { IncomingForm } from 'formidable';

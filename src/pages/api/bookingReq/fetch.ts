@@ -55,7 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let bookings: BookingRequest[] = [];
     let count: number = 0;
 
-    const limit: number = limitQuery !== undefined ? Number(limitQuery) : 10;
+    const limit: number = limitQuery !== undefined ? Number(limitQuery) : 200;
     const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
     let successBooking: boolean = false;
 

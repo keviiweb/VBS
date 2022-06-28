@@ -1,6 +1,6 @@
 import { prisma } from '@constants/sys/db';
 
-import { Announcement } from 'types/announcement';
+import { Announcement } from 'types/misc/announcement';
 import { Result } from 'types/api';
 
 export const fetchAllAnnouncements = async (

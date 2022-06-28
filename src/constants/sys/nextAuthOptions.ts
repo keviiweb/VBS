@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
 import { prisma } from '@constants/sys/db';
+import { User } from 'types/misc/user';
 
 function html({ newURL, email }) {
   const escapedEmail = `${email.replace(/\./g, '&#8203;.')}`;
@@ -481,7 +482,7 @@ export const options = {
     async session({ session, user }) {
       try {
         if (!session.user.username) {
-          const userFromDB = await prisma.users.findUnique({
+          const userFromDB: User = await prisma.users.findUnique({
             where: {
               email: user.email,
             },

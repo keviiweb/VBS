@@ -26,6 +26,32 @@ export const fetchAllCCARecordByUser = async (
   return result;
 };
 
+export const fetchAllCCARecordByID = async (
+  id: string,
+  limit: number,
+  skip: number,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    const query: CCARecord[] = await prisma.cCARecord.findMany({
+      where: {
+        ccaID: id,
+      },
+      skip: skip * limit,
+      take: limit,
+      distinct: ['sessionEmail'],
+    });
+
+    result = { status: true, error: null, msg: query };
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: error.toString(), msg: '' };
+  }
+
+  return result;
+};
+
 export const isLeader = async (
   ccaID: string,
   session: Session,

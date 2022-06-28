@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
-import { Announcement } from 'types/announcement';
+import { Announcement } from 'types/misc/announcement';
 
 import { currentSession } from '@helper/sys/sessionServer';
-import { fetchAllAnnouncements } from '@helper/sys/announcement';
+import { fetchAllAnnouncements } from '@helper/sys/misc/announcement';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);

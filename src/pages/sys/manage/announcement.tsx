@@ -34,7 +34,7 @@ import LoadingModal from '@components/sys/vbs/LoadingModal';
 import { checkerString } from '@constants/sys/helper';
 
 import { Result } from 'types/api';
-import { Announcement } from '@root/src/types/announcement';
+import { Announcement } from 'types/misc/announcement';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);

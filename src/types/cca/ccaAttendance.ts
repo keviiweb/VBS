@@ -1,8 +1,8 @@
-export type Announcement = {
+export type CCAAttendance = {
   id?: string;
   sessionID?: string;
   ccaID: string;
-  ccaAttendance: string;
+  ccaAttendance: number;
   sessionEmail?: string;
   updated_at?: string;
 };
