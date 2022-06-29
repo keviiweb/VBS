@@ -47,7 +47,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const ccaAttendanceHours: number =
             await countTotalSessionHoursByCCAID(ccaID);
 
-          totalCCAAttendance = `${userAttendanceHours} out of ${ccaAttendanceHours}`;
+          if (userAttendanceHours > ccaAttendanceHours) {
+            totalCCAAttendance = `${ccaAttendanceHours} out of ${ccaAttendanceHours}`;
+          } else {
+            totalCCAAttendance = `${userAttendanceHours} out of ${ccaAttendanceHours}`;
+          }
 
           result = {
             status: true,

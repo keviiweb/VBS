@@ -12,6 +12,7 @@ import {
 import { splitHours } from '@helper/sys/vbs/venue';
 
 import { convertUnixToDate, dateISO } from '@constants/sys/date';
+import moment from 'moment';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
@@ -56,8 +57,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 const { time } = record;
                 const { start, end } = await splitHours(time);
                 if (start !== null && end !== null) {
-                  const duration: number =
-                    Math.round(((end - start) / 60) * 10) / 10;
+                  const s: string = start.toString().padStart(4, '0');
+                  const e: string = end.toString().padStart(4, '0');
+
+                  const startH = `${s.toString().slice(0, 2)}:${s
+                    .toString()
+                    .slice(2)}:00`;
+                  const endH = `${e.toString().slice(0, 2)}:${e
+                    .toString()
+                    .slice(2)}:00`;
+
+                  const startTimeM = moment(startH, 'HH:mm:ss');
+                  const endTimeM = moment(endH, 'HH:mm:ss');
+                  const durationH = moment.duration(endTimeM.diff(startTimeM));
+                  const duration = durationH.asHours();
+
                   const dateObj: Date | null = convertUnixToDate(record.date);
                   let dateStr: string = '';
 

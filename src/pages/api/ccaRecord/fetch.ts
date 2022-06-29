@@ -82,10 +82,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                         );
                       let rate: string = '100%';
                       if (ccaAttendanceHours !== 0) {
-                        rate = `${(
-                          (userAttendanceHours / ccaAttendanceHours) *
-                          100
-                        ).toFixed(1)}%`;
+                        if (userAttendanceHours > ccaAttendanceHours) {
+                          rate = '100%';
+                        } else {
+                          rate = `${(
+                            (userAttendanceHours / ccaAttendanceHours) *
+                            100
+                          ).toFixed(1)}%`;
+                        }
                       } else {
                         rate = 'No sessions found';
                       }
@@ -161,10 +165,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   );
                   let rate: string = '100%';
                   if (ccaAttendanceHours !== 0) {
-                    rate = `${(
-                      (userAttendanceHours / ccaAttendanceHours) *
-                      100
-                    ).toFixed(1)}%`;
+                    if (userAttendanceHours > ccaAttendanceHours) {
+                      rate = '100%';
+                    } else {
+                      rate = `${(
+                        (userAttendanceHours / ccaAttendanceHours) *
+                        100
+                      ).toFixed(1)}%`;
+                    }
                   } else {
                     rate = 'No sessions found';
                   }

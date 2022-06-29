@@ -37,6 +37,7 @@ import TableWidget from '@components/sys/misc/TableWidget';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 import LeaderStudentModalComponent from '@components/sys/cca/LeaderStudentModal';
 import SessionModal from '@components/sys/cca/SessionModal';
+import SessionEditModal from '@components/sys/cca/SessionEditModal';
 
 import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
@@ -66,6 +67,10 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
   const [specificCCAData, setSpecificCCAData] = useState<CCASession | null>(
     null,
   );
+  const [specificSession, setSpecificSessionData] = useState<CCASession | null>(
+    null,
+  );
+
   const [loadingData, setLoadingData] = useState(true);
 
   const ccaRecordIDDB = useRef('');
@@ -116,6 +121,10 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
     setSpecificCCAData(content);
   }, []);
 
+  const handleEditSession = useCallback((content: CCASession) => {
+    setSpecificSessionData(content);
+  }, []);
+
   const generateActionButtonRecord = useCallback(
     async (content: CCARecord) => {
       const button: JSX.Element = (
@@ -163,6 +172,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
                 size='md'
                 isDisabled={submitButtonPressed}
                 leftIcon={<EditIcon />}
+                onClick={() => handleEditSession(content)}
               >
                 Edit
               </Button>
@@ -207,7 +217,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
 
       return button;
     },
-    [submitButtonPressed, handleDetailsSession],
+    [submitButtonPressed, handleDetailsSession, handleEditSession],
   );
 
   const includeActionButton = useCallback(
@@ -401,7 +411,11 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
         accessor: 'dateStr',
       },
       {
-        Header: 'Duration',
+        Header: 'Time',
+        accessor: 'time',
+      },
+      {
+        Header: 'Duration (Hours)',
         accessor: 'duration',
       },
       {
@@ -453,6 +467,12 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
+          <SessionEditModal
+            isOpen={specificSession}
+            onClose={() => setSpecificSessionData(null)}
+            modalData={specificSession}
+          />
+
           <LeaderStudentModalComponent
             isOpen={specificMemberData}
             onClose={() => setSpecificMemberData(null)}

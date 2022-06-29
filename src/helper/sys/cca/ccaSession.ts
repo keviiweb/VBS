@@ -81,12 +81,14 @@ export const countTotalSessionHoursByCCAID = async (
       for (let key = 0; key < query.length; key += 1) {
         if (query[key]) {
           const session: CCASession = query[key];
-          const sessionAttendanceHourStr: string = session.time;
-          const { start, end } = await splitHours(sessionAttendanceHourStr);
-          if (start !== null && end !== null) {
-            const sessionDuration: number =
-              Math.round(((end - start) / 60) * 10) / 10;
-            count += sessionDuration;
+          if (session.optional !== undefined && !session.optional) {
+            const sessionAttendanceHourStr: string = session.time;
+            const { start, end } = await splitHours(sessionAttendanceHourStr);
+            if (start !== null && end !== null) {
+              const sessionDuration: number =
+                Math.round(((end - start) / 60) * 10) / 10;
+              count += sessionDuration;
+            }
           }
         }
       }

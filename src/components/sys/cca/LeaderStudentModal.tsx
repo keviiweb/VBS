@@ -50,6 +50,13 @@ export default function LeaderStudentModalComponent({
   const reset = () => {
     setData([]);
     setSessionUserName('');
+    setSessionUserStudentID('');
+    setPageCount(0);
+
+    ccaRecordIDDB.current = '';
+    sessionEmailDB.current = '';
+    pageSizeDB.current = PAGESIZE;
+    pageIndexDB.current = PAGEINDEX;
   };
 
   const handleModalCloseButton = () => {

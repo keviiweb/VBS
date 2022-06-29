@@ -21,13 +21,18 @@ import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 
 import { CCASession } from 'types/cca/ccaSession';
+import SessionEditModal from './SessionEditModal';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
 export default function SessionModal({ isOpen, onClose, leader, modalData }) {
   const [loadingData, setLoadingData] = useState(true);
+  const [specificSession, setSpecificSessionData] = useState<CCASession | null>(
+    null,
+  );
 
+  const [ccaName, setCCAName] = useState('');
   const [dateStr, setDateStr] = useState('');
   const [time, setTime] = useState('');
   const [optionalStr, setOptionalStr] = useState('');
@@ -40,6 +45,12 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
     setOptionalStr('');
     setRemarks('');
     setLdrNotes('');
+  };
+
+  const handleDelete = () => {};
+
+  const handleEdit = () => {
+    setSpecificSessionData(modalData);
   };
 
   const handleModalCloseButton = () => {
@@ -67,12 +78,15 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
         modalDataField && modalDataField.ldrNotes
           ? modalDataField.ldrNotes
           : '';
+      const ccaNameField =
+        modalDataField && modalDataField.ccaName ? modalDataField.ccaName : '';
 
       setDateStr(dateStrField);
       setTime(timeStrField);
       setOptionalStr(optionalStrField);
       setRemarks(remarksField);
       setLdrNotes(ldrNotesField);
+      setCCAName(ccaNameField);
 
       setLoadingData(false);
     }
@@ -97,6 +111,29 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
+          <SessionEditModal
+            isOpen={specificSession}
+            onClose={() => setSpecificSessionData(null)}
+            modalData={specificSession}
+          />
+
+          <Stack spacing={5} w='full' align='center'>
+            <Box>
+              <Text
+                mt={2}
+                mb={6}
+                textTransform='uppercase'
+                fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
+                lineHeight='5'
+                fontWeight='bold'
+                letterSpacing='tight'
+                color='gray.900'
+              >
+                {ccaName}
+              </Text>
+            </Box>
+          </Stack>
+
           <MotionSimpleGrid
             mt='3'
             minChildWidth={{ base: 'full', md: 'full' }}
@@ -162,7 +199,7 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
                           </ListItem>
 
                           <ListItem>
-                            <Stack direction='row'>
+                            <Stack direction='column'>
                               <Text
                                 textTransform='uppercase'
                                 letterSpacing='tight'
@@ -176,7 +213,7 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
 
                           {leader && (
                             <ListItem>
-                              <Stack direction='row'>
+                              <Stack direction='column'>
                                 <Text
                                   textTransform='uppercase'
                                   letterSpacing='tight'
@@ -190,6 +227,31 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
                           )}
                         </List>
                       </Box>
+
+                      {leader && (
+                        <Stack direction='row'>
+                          <Button
+                            bg='gray.400'
+                            color='white'
+                            w='150px'
+                            size='lg'
+                            onClick={handleDelete}
+                            _hover={{ bg: 'cyan.800' }}
+                          >
+                            Delete
+                          </Button>
+                          <Button
+                            bg='red.700'
+                            color='white'
+                            w='150px'
+                            size='lg'
+                            onClick={handleEdit}
+                            _hover={{ bg: 'cyan.800' }}
+                          >
+                            Edit
+                          </Button>
+                        </Stack>
+                      )}
                     </Stack>
                   </Stack>
                 </Flex>
