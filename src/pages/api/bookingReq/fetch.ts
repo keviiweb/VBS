@@ -104,7 +104,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         successBooking = true;
       }
     } else {
-      result = { status: false, error: 'Unauthorized access', msg: '' };
+      result = {
+        status: false,
+        error: 'Unauthorized access',
+        msg: { count: 0, res: [] },
+      };
       res.status(200).send(result);
       res.end();
     }

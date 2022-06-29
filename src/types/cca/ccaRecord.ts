@@ -5,6 +5,7 @@ export type CCARecord = {
   image?: string;
   sessionEmail?: string;
   sessionName?: string;
+  sessionStudentID?: string;
   leader?: boolean;
   rate?: string;
   action?: any;

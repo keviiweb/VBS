@@ -3,16 +3,22 @@ import { CCAAttendance } from 'types/cca/ccaAttendance';
 
 import { prisma } from '@constants/sys/db';
 
-export const fetchAllCCAAttendanceByUserEmail = async (
+export const fetchSpecificCCAAttendanceByUserEmail = async (
+  ccaID: string,
   email: string,
+  limit: number = 1000,
+  skip: number = 0,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCAAttendance[] = await prisma.cCAAttendance.findMany({
       where: {
+        ccaID: ccaID,
         sessionEmail: email,
       },
+      skip: skip * limit,
+      take: limit,
     });
 
     result = { status: true, error: null, msg: query };

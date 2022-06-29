@@ -9,7 +9,10 @@ export type CCASession = {
   duration?: number;
   editable?: boolean;
   optional?: boolean;
+  editableStr?: string;
+  optionalStr?: string;
   remarks?: string;
   ldrNotes?: string;
+  action?: any;
   updated_at?: string;
 };

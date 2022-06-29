@@ -14,10 +14,10 @@ import {
 import { findCCAbyID } from '@helper/sys/cca/cca';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
 import {
-  fetchAllCCAAttendanceByCCA,
-  fetchAllCCAAttendanceByUserEmail,
+  fetchSpecificCCAAttendanceByUserEmail,
   countTotalAttendanceHours,
 } from '@helper/sys/cca/ccaAttendance';
+import { countTotalSessionHoursByCCAID } from '@helper/sys/cca/ccaSession';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
@@ -46,17 +46,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const ccaDetailsRes: Result = await findCCAbyID(ccaIDRes);
       if (ccaDetailsRes.status && ccaDetailsRes.msg) {
-        const ccaAttendance: Result = await fetchAllCCAAttendanceByCCA(
-          ccaIDRes,
-        );
         const ccaDetails: CCA = ccaDetailsRes.msg;
         const ccaDB: Result = await fetchAllCCARecordByID(
           ccaIDRes,
           limit,
           skip,
         );
-        if (ccaDB.status && ccaAttendance.status) {
+        if (ccaDB.status) {
           const ccaData: CCARecord[] = ccaDB.msg;
+          const ccaAttendanceHours: number =
+            await countTotalSessionHoursByCCAID(ccaIDRes);
+
           if (ccaData && ccaData.length > 0) {
             for (let ven = 0; ven < ccaData.length; ven += 1) {
               if (ccaData[ven]) {
@@ -68,12 +68,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   if (userResult.status && userResult.msg) {
                     const user: User = userResult.msg;
                     const userAttendance: Result =
-                      await fetchAllCCAAttendanceByUserEmail(user.email);
+                      await fetchSpecificCCAAttendanceByUserEmail(
+                        ccaIDRes,
+                        user.email,
+                      );
                     if (userAttendance.status) {
-                      const ccaAttendanceHours =
-                        await countTotalAttendanceHours(
-                          ccaAttendance.msg as CCAAttendance[],
-                        );
                       const userAttendanceHours =
                         await countTotalAttendanceHours(
                           userAttendance.msg as CCAAttendance[],
@@ -81,8 +80,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                       let rate: string = '100%';
                       if (ccaAttendanceHours !== 0) {
                         rate = `${(
-                          userAttendanceHours / ccaAttendanceHours
+                          (userAttendanceHours / ccaAttendanceHours) *
+                          100
                         ).toFixed(1)}%`;
+                      } else {
+                        rate = 'No sessions found';
                       }
 
                       const data: CCARecord = {
@@ -91,6 +93,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                         leader: record.leader,
                         sessionEmail: record.sessionEmail,
                         sessionName: user.name,
+                        sessionStudentID: user.studentID,
                         ccaName: ccaDetails.name,
                         image: ccaDetails.image,
                         rate: rate,
@@ -139,17 +142,41 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               const record: CCARecord = ccaData[ven];
               const { ccaID } = record;
               const ccaDetailsRes: Result = await findCCAbyID(ccaID);
-              if (ccaDetailsRes.status) {
+              if (ccaDetailsRes.status && ccaDetailsRes.msg) {
                 const ccaDetails: CCA = ccaDetailsRes.msg;
-                const data: CCARecord = {
-                  id: record.id,
-                  ccaID: record.ccaID,
-                  leader: record.leader,
-                  ccaName: ccaDetails.name,
-                  image: ccaDetails.image,
-                };
 
-                parsedCCARecord.push(data);
+                const ccaAttendanceHours: number =
+                  await countTotalSessionHoursByCCAID(record.ccaID);
+                const userAttendance: Result =
+                  await fetchSpecificCCAAttendanceByUserEmail(
+                    record.ccaID,
+                    session.user.email,
+                  );
+                if (userAttendance.status) {
+                  const userAttendanceHours = await countTotalAttendanceHours(
+                    userAttendance.msg as CCAAttendance[],
+                  );
+                  let rate: string = '100%';
+                  if (ccaAttendanceHours !== 0) {
+                    rate = `${(
+                      (userAttendanceHours / ccaAttendanceHours) *
+                      100
+                    ).toFixed(1)}%`;
+                  } else {
+                    rate = 'No sessions found';
+                  }
+
+                  const data: CCARecord = {
+                    id: record.id,
+                    ccaID: record.ccaID,
+                    leader: record.leader,
+                    ccaName: ccaDetails.name,
+                    rate: rate,
+                    image: ccaDetails.image,
+                  };
+
+                  parsedCCARecord.push(data);
+                }
               } else {
                 console.error(ccaDetailsRes.error);
               }
@@ -175,7 +202,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     }
   } else {
-    result = { status: false, error: 'Unauthenticated', msg: '' };
+    result = { status: false, error: 'Unauthenticated', msg: [] };
     res.status(200).send(result);
     res.end();
   }

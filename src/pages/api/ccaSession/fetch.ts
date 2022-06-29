@@ -52,13 +52,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 const { time } = record;
                 const { start, end } = await splitHours(time);
                 if (start !== null && end !== null) {
-                  const duration: number = (end - start) / 60;
+                  const duration: number =
+                    Math.round(((end - start) / 60) * 10) / 10;
                   const dateObj: Date | null = convertUnixToDate(record.date);
                   let dateStr: string = '';
 
                   if (dateObj !== null) {
                     dateStr = dateISO(dateObj);
                   }
+
+                  const editableStr: string = record.editable ? 'Yes' : 'No';
+                  const optionalStr: string = record.optional ? 'Yes' : 'No';
 
                   const data: CCASession = {
                     id: record.id,
@@ -71,6 +75,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     duration: duration,
                     editable: record.editable,
                     optional: record.optional,
+                    editableStr: editableStr,
+                    optionalStr: optionalStr,
                     remarks: record.remarks,
                     ldrNotes: record.ldrNotes,
                   };
@@ -116,7 +122,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.end();
     }
   } else {
-    result = { status: false, error: 'Unauthenticated', msg: '' };
+    result = { status: false, error: 'Unauthenticated', msg: [] };
     res.status(200).send(result);
     res.end();
   }

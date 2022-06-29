@@ -15,21 +15,32 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
+  Popover,
+  PopoverContent,
   SimpleGrid,
   Stack,
   Select,
   Text,
+  usePopoverContext,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { InfoOutlineIcon } from '@chakra-ui/icons';
+import {
+  BellIcon,
+  DeleteIcon,
+  EditIcon,
+  InfoOutlineIcon,
+} from '@chakra-ui/icons';
 import { parentVariant } from '@root/motion';
 
 import { checkerString } from '@constants/sys/helper';
 import TableWidget from '@components/sys/misc/TableWidget';
 import LoadingModal from '@components/sys/vbs/LoadingModal';
+import LeaderStudentModalComponent from '@components/sys/cca/LeaderStudentModal';
 
 import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
+import { PopoverTriggerProps } from 'types/popover';
+import { CCASession } from 'types/cca/ccaSession';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -39,13 +50,22 @@ const choice = {
   SESSION: 2,
 };
 
+const PopoverTriggerNew: React.FC<
+  React.PropsWithChildren<PopoverTriggerProps>
+> = (props) => {
+  // enforce a single child
+  const child: any = React.Children.only(props.children);
+  const { getTriggerProps } = usePopoverContext();
+  return React.cloneElement(child, getTriggerProps(child.props, child.ref));
+};
+
 export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
   const [specificMemberData, setSpecificMemberData] =
     useState<CCARecord | null>(null);
   const [loadingData, setLoadingData] = useState(true);
 
   const ccaRecordIDDB = useRef('');
-  const [ccaName, setCCAName] = useState(null);
+  const [ccaName, setCCAName] = useState('');
 
   const [selectionDropDown, setSelectedDropDown] = useState<JSX.Element[]>([]);
   const [selectedChoice, setSelectedChoice] = useState(0);
@@ -64,11 +84,16 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
 
   const reset = () => {
     setSelectedChoice(0);
+    setSelectedDropDown([]);
     setData([]);
-    setCCAName(null);
+    setCCAName('');
+    setSpecificMemberData(null);
+    setPageCount(0);
 
     ccaRecordIDDB.current = '';
     selectionChoiceDB.current = 0;
+    pageSizeDB.current = PAGESIZE;
+    pageIndexDB.current = PAGEINDEX;
   };
 
   const handleModalCloseButton = () => {
@@ -78,60 +103,138 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
     }, 200);
   };
 
-  const handleDetails = useCallback(
-    (content: CCARecord) => {
-      setSpecificMemberData(content);
-      console.log(specificMemberData);
-    },
-    [specificMemberData],
-  );
+  const handleDetails = useCallback((content: CCARecord) => {
+    setSpecificMemberData(content);
+  }, []);
 
-  const generateActionButton = useCallback(
-    async (content: CCARecord, action: number) => {
-      switch (action) {
-        case choice.MEMBER: {
-          const button: JSX.Element = (
-            <Button
-              size='sm'
-              isDisabled={submitButtonPressed}
-              leftIcon={<InfoOutlineIcon />}
-              onClick={() => handleDetails(content)}
-            >
-              View Details
-            </Button>
-          );
-          return button;
-        }
-        case choice.SESSION:
-          return null;
-        default:
-          return null;
-      }
+  const generateActionButtonRecord = useCallback(
+    async (content: CCARecord) => {
+      const button: JSX.Element = (
+        <Button
+          size='sm'
+          isDisabled={submitButtonPressed}
+          leftIcon={<InfoOutlineIcon />}
+          onClick={() => handleDetails(content)}
+        >
+          View Details
+        </Button>
+      );
+      return button;
     },
     [submitButtonPressed, handleDetails],
   );
 
+  const generateActionButtonSession = useCallback(
+    async (content: CCASession) => {
+      if (content.editable) {
+        const button: JSX.Element = (
+          <Popover>
+            <PopoverTriggerNew>
+              <Button
+                size='sm'
+                isDisabled={submitButtonPressed}
+                leftIcon={<InfoOutlineIcon />}
+              >
+                Options
+              </Button>
+            </PopoverTriggerNew>
+            <PopoverContent w='10vw' maxW='sm'>
+              <Button
+                py={5}
+                size='sm'
+                isDisabled={submitButtonPressed}
+                leftIcon={<BellIcon />}
+              >
+                Details
+              </Button>
+              <Button
+                mt={1}
+                py={5}
+                size='sm'
+                isDisabled={submitButtonPressed}
+                leftIcon={<EditIcon />}
+              >
+                Edit
+              </Button>
+              <Button
+                py={5}
+                mt={1}
+                size='sm'
+                isDisabled={submitButtonPressed}
+                leftIcon={<DeleteIcon />}
+              >
+                Delete
+              </Button>
+            </PopoverContent>
+          </Popover>
+        );
+
+        return button;
+      }
+      const button: JSX.Element = (
+        <Popover>
+          <PopoverTriggerNew>
+            <Button
+              size='sm'
+              isDisabled={submitButtonPressed}
+              leftIcon={<InfoOutlineIcon />}
+            >
+              Options
+            </Button>
+          </PopoverTriggerNew>
+          <PopoverContent w='10vw' maxW='sm'>
+            <Button
+              py={5}
+              size='sm'
+              isDisabled={submitButtonPressed}
+              leftIcon={<BellIcon />}
+            >
+              Details
+            </Button>
+          </PopoverContent>
+        </Popover>
+      );
+
+      return button;
+    },
+    [submitButtonPressed],
+  );
+
   const includeActionButton = useCallback(
-    async (content: CCARecord[], action: number) => {
+    async (content: CCARecord[] | CCASession[], action: number) => {
       if (content !== []) {
         for (let key = 0; key < content.length; key += 1) {
           if (content[key]) {
-            const dataField: CCARecord = content[key];
-            const buttons = await generateActionButton(dataField, action);
-            dataField.action = buttons;
+            switch (action) {
+              case choice.MEMBER: {
+                const dataField: CCARecord = content[key] as CCARecord;
+
+                const buttons = await generateActionButtonRecord(dataField);
+                dataField.action = buttons;
+                break;
+              }
+              case choice.SESSION: {
+                const dataField: CCASession = content[key] as CCASession;
+
+                const buttons = await generateActionButtonSession(dataField);
+                dataField.action = buttons;
+                break;
+              }
+              default:
+                break;
+            }
           }
         }
         setData(content);
         setPageCount(Math.floor(content.length / pageSizeDB.current) + 1);
       }
     },
-    [generateActionButton],
+    [generateActionButtonRecord, generateActionButtonSession],
   );
 
   const fetchSession = useCallback(
     async (id: string) => {
       if (checkerString(id)) {
-        setSubmitButtonPressed(true);
         try {
           const rawResponse = await fetch('/api/ccaSession/fetch', {
             method: 'POST',
@@ -153,7 +256,6 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           console.error(error);
         }
 
-        setSubmitButtonPressed(false);
         return true;
       }
       return false;
@@ -164,7 +266,6 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
   const fetchMembers = useCallback(
     async (id: string) => {
       if (checkerString(id)) {
-        setSubmitButtonPressed(true);
         try {
           const rawResponse = await fetch('/api/ccaRecord/fetch', {
             method: 'POST',
@@ -186,7 +287,6 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           console.error(error);
         }
 
-        setSubmitButtonPressed(false);
         return true;
       }
       return false;
@@ -263,8 +363,12 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
   useEffect(() => {
     async function setupData() {
       if (modalData) {
-        setCCAName(modalData.ccaName);
-        ccaRecordIDDB.current = modalData.ccaID;
+        const ccaNameField: string =
+          modalData && modalData.ccaName ? modalData.ccaName : '';
+        setCCAName(ccaNameField);
+
+        ccaRecordIDDB.current =
+          modalData && modalData.ccaID ? modalData.ccaID : '';
 
         await buildDropDownMenu();
       }
@@ -280,11 +384,19 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
     () => [
       {
         Header: 'Date',
-        accessor: 'date',
+        accessor: 'dateStr',
       },
       {
         Header: 'Duration',
         accessor: 'duration',
+      },
+      {
+        Header: 'Optional',
+        accessor: 'optionalStr',
+      },
+      {
+        Header: 'Editable',
+        accessor: 'editableStr',
       },
       {
         Header: 'Actions',
@@ -327,6 +439,12 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
+          <LeaderStudentModalComponent
+            isOpen={specificMemberData}
+            onClose={() => setSpecificMemberData(null)}
+            modalData={specificMemberData}
+          />
+
           <LoadingModal
             isOpen={!!submitButtonPressed}
             onClose={() => setSubmitButtonPressed(false)}
