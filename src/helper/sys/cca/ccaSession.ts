@@ -29,6 +29,24 @@ export const fetchAllCCASessionByCCAID = async (
   return result;
 };
 
+export const countAllCCASessionByCCAID = async (
+  id: string,
+): Promise<number> => {
+  let count = 0;
+
+  try {
+    count = await prisma.cCASessions.count({
+      where: {
+        ccaID: id,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+  }
+
+  return count;
+};
+
 export const findCCASessionByID = async (id: string): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 

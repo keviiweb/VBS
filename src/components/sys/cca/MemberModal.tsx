@@ -1,26 +1,61 @@
-import React, { useEffect } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+} from 'react';
 import {
+  Button,
   Box,
-  Flex,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalCloseButton,
-  SimpleGrid,
   Stack,
-  StackDivider,
   Text,
 } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
-import { cardVariant, parentVariant } from '@root/motion';
+import { InfoOutlineIcon } from '@chakra-ui/icons';
+import { checkerString } from '@constants/sys/helper';
+import TableWidget from '@components/sys/misc/TableWidget';
+import LoadingModal from '@components/sys/misc/LoadingModal';
 
-const MotionSimpleGrid = motion(SimpleGrid);
-const MotionBox = motion(Box);
+import { Result } from 'types/api';
+import { CCASession } from 'types/cca/ccaSession';
 
-export default function MemberModalComponent({ isOpen, onClose, modalData }) {
-  const reset = () => {};
+export default function LeaderStudentModalComponent({
+  isOpen,
+  onClose,
+  modalData,
+}) {
+  const [specificCCAData, setSpecificCCASession] = useState<CCASession | null>(
+    null,
+  );
+
+  const [loadingData, setLoadingData] = useState(true);
+
+  const [ccaName, setCCAName] = useState('');
+  const [attendance, setAttendance] = useState('');
+
+  const [data, setData] = useState<CCASession[]>([]);
+
+  const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+
+  const PAGESIZE: number = 10;
+  const PAGEINDEX: number = 0;
+
+  const [pageCount, setPageCount] = useState(0);
+  const pageSizeDB = useRef(PAGESIZE);
+  const pageIndexDB = useRef(PAGEINDEX);
+
+  const ccaRecordIDDB = useRef('');
+  const ccaNameDB = useRef('');
+
+  const reset = () => {
+    setData([]);
+  };
 
   const handleModalCloseButton = () => {
     setTimeout(() => {
@@ -29,15 +64,178 @@ export default function MemberModalComponent({ isOpen, onClose, modalData }) {
     }, 200);
   };
 
+  const handleDetails = useCallback(
+    (content: CCASession) => {
+      setSpecificCCASession(content);
+      console.log(specificCCAData);
+    },
+    [specificCCAData],
+  );
+
+  const generateActionButtonSession = useCallback(
+    async (content: CCASession) => {
+      const button: JSX.Element = (
+        <Button
+          size='sm'
+          isDisabled={submitButtonPressed}
+          leftIcon={<InfoOutlineIcon />}
+          onClick={() => handleDetails(content)}
+        >
+          View Details
+        </Button>
+      );
+      return button;
+    },
+    [submitButtonPressed, handleDetails],
+  );
+
+  const includeActionButton = useCallback(
+    async (content: { count: number; res: CCASession[] }) => {
+      if (content.res !== [] && content.count > 0) {
+        for (let key = 0; key < content.res.length; key += 1) {
+          if (content.res[key]) {
+            const dataField: CCASession = content.res[key] as CCASession;
+
+            const buttons = await generateActionButtonSession(dataField);
+            dataField.action = buttons;
+          }
+        }
+        setData(content.res);
+        setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
+      }
+    },
+    [generateActionButtonSession],
+  );
+
+  const fetchAttendance = useCallback(
+    async (id: string) => {
+      if (checkerString(id)) {
+        setSubmitButtonPressed(true);
+
+        try {
+          const rawResponse = await fetch('/api/ccaAttendance/member', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: id,
+            }),
+          });
+          const content: Result = await rawResponse.json();
+          if (content.status) {
+            setAttendance(content.msg as string);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+
+        setSubmitButtonPressed(false);
+        return true;
+      }
+      return false;
+    },
+    [],
+  );
+
+  const fetchSession = useCallback(
+    async (id: string) => {
+      if (checkerString(id)) {
+        try {
+          const rawResponse = await fetch('/api/ccaSession/fetch', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: id,
+              limit: pageSizeDB.current,
+              skip: pageIndexDB.current,
+            }),
+          });
+          const content: Result = await rawResponse.json();
+          if (content.status) {
+            await includeActionButton(content.msg);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+
+        return true;
+      }
+      return false;
+    },
+    [includeActionButton],
+  );
+
+  const tableChange = useCallback(async () => {
+    setSubmitButtonPressed(true);
+    setLoadingData(true);
+
+    await fetchSession(ccaRecordIDDB.current);
+
+    setSubmitButtonPressed(false);
+    setLoadingData(false);
+  }, [fetchSession]);
+
+  const onTableChange = useCallback(
+    async ({ pageIndex, pageSize }) => {
+      if (
+        pageSize !== pageSizeDB.current ||
+        pageIndex !== pageIndexDB.current
+      ) {
+        pageSizeDB.current = pageSize;
+        pageIndexDB.current = pageIndex;
+
+        await tableChange();
+      }
+    },
+    [tableChange],
+  );
+
   useEffect(() => {
     async function setupData() {
-      console.log('hi');
+      if (modalData) {
+        const ccaRecordField: string =
+          modalData && modalData.ccaID ? modalData.ccaID : '';
+        ccaRecordIDDB.current = ccaRecordField;
+
+        const ccaNameField: string =
+          modalData && modalData.ccaName ? modalData.ccaName : '';
+        ccaNameDB.current = ccaNameField;
+
+        setCCAName(ccaNameField);
+
+        await tableChange();
+        await fetchAttendance(ccaRecordField);
+      }
     }
 
     if (modalData) {
+      setData([]);
       setupData();
     }
-  }, [modalData]);
+  }, [modalData, tableChange, fetchAttendance]);
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Date',
+        accessor: 'dateStr',
+      },
+      {
+        Header: 'Duration',
+        accessor: 'time',
+      },
+      {
+        Header: 'Action',
+        accessor: 'action',
+      },
+    ],
+    [],
+  );
 
   return (
     <Modal
@@ -54,45 +252,61 @@ export default function MemberModalComponent({ isOpen, onClose, modalData }) {
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
-          <MotionSimpleGrid
-            mt='3'
-            minChildWidth={{ base: 'full', md: 'full' }}
-            spacing='2em'
-            minH='full'
-            variants={parentVariant}
-            initial='initial'
-            animate='animate'
-          >
-            <MotionBox variants={cardVariant} key='2'>
-              {modalData && (
-                <Flex
-                  w='full'
-                  h='full'
-                  alignItems='center'
-                  justifyContent='center'
-                >
-                  <Stack spacing={{ base: 6, md: 10 }}>
-                    <Stack
-                      spacing={{ base: 4, sm: 6 }}
-                      direction='column'
-                      divider={<StackDivider borderColor='gray.200' />}
-                    >
-                      <Box>
-                        <Text
-                          fontSize={{ base: '16px', lg: '18px' }}
-                          fontWeight='500'
-                          textTransform='uppercase'
-                          mb='4'
-                        >
-                          Venue Details
-                        </Text>
-                      </Box>
-                    </Stack>
-                  </Stack>
-                </Flex>
-              )}
-            </MotionBox>
-          </MotionSimpleGrid>
+          <LoadingModal
+            isOpen={!!submitButtonPressed}
+            onClose={() => setSubmitButtonPressed(false)}
+          />
+
+          <Stack spacing={5} w='full' align='center'>
+            <Box>
+              <Text
+                mt={2}
+                mb={6}
+                textTransform='uppercase'
+                fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
+                lineHeight='5'
+                fontWeight='bold'
+                letterSpacing='tight'
+                color='gray.900'
+              >
+                {ccaName}
+              </Text>
+            </Box>
+          </Stack>
+
+          <Box>
+            <Stack direction='row'>
+              <Text
+                textTransform='uppercase'
+                fontWeight='bold'
+                letterSpacing='tight'
+                color='gray.900'
+              >
+                Attendance
+              </Text>
+              <Text>{attendance}</Text>
+            </Stack>
+          </Box>
+
+          {!loadingData && data.length > 0 && (
+            <Box overflow='auto'>
+              <TableWidget
+                key='table-widget-session'
+                columns={columns}
+                data={data}
+                controlledPageCount={pageCount}
+                dataHandler={onTableChange}
+              />
+            </Box>
+          )}
+
+          {!loadingData && data.length === 0 && (
+            <Box mt={30}>
+              <Stack align='center' justify='center'>
+                <Text>No sessions found</Text>
+              </Stack>
+            </Box>
+          )}
         </ModalBody>
       </ModalContent>
     </Modal>

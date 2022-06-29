@@ -13,7 +13,7 @@ import { motion } from 'framer-motion';
 import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/misc/TableWidget';
 import BookingModal from '@components/sys/vbs/BookingModal';
-import LoadingModal from '@components/sys/vbs/LoadingModal';
+import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { Result } from 'types/api';
 import { BookingRequest } from 'types/vbs/bookingReq';

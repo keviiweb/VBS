@@ -29,7 +29,7 @@ import { useRouter } from 'next/router';
 
 import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/misc/TableWidget';
-import LoadingModal from '@components/sys/vbs/LoadingModal';
+import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { checkerString } from '@constants/sys/helper';
 

@@ -34,7 +34,7 @@ import { parentVariant } from '@root/motion';
 
 import { checkerString } from '@constants/sys/helper';
 import TableWidget from '@components/sys/misc/TableWidget';
-import LoadingModal from '@components/sys/vbs/LoadingModal';
+import LoadingModal from '@components/sys/misc/LoadingModal';
 import LeaderStudentModalComponent from '@components/sys/cca/LeaderStudentModal';
 
 import { Result } from 'types/api';
@@ -201,20 +201,23 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
   );
 
   const includeActionButton = useCallback(
-    async (content: CCARecord[] | CCASession[], action: number) => {
-      if (content !== []) {
-        for (let key = 0; key < content.length; key += 1) {
-          if (content[key]) {
+    async (
+      content: { count: number; res: CCARecord[] | CCASession[] },
+      action: number,
+    ) => {
+      if (content.res !== [] && content.count > 0) {
+        for (let key = 0; key < content.res.length; key += 1) {
+          if (content.res[key]) {
             switch (action) {
               case choice.MEMBER: {
-                const dataField: CCARecord = content[key] as CCARecord;
+                const dataField: CCARecord = content.res[key] as CCARecord;
 
                 const buttons = await generateActionButtonRecord(dataField);
                 dataField.action = buttons;
                 break;
               }
               case choice.SESSION: {
-                const dataField: CCASession = content[key] as CCASession;
+                const dataField: CCASession = content.res[key] as CCASession;
 
                 const buttons = await generateActionButtonSession(dataField);
                 dataField.action = buttons;
@@ -225,8 +228,8 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
             }
           }
         }
-        setData(content);
-        setPageCount(Math.floor(content.length / pageSizeDB.current) + 1);
+        setData(content.res);
+        setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
       }
     },
     [generateActionButtonRecord, generateActionButtonSession],
@@ -249,6 +252,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
             }),
           });
           const content: Result = await rawResponse.json();
+
           if (content.status) {
             await includeActionButton(content.msg, choice.SESSION);
           }

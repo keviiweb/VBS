@@ -28,7 +28,7 @@ import { CheckCircleIcon } from '@chakra-ui/icons';
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 
-import Loading from '@components/sys/vbs/Loading';
+import Loading from '@components/sys/misc/Loading';
 
 import { checkerString, checkerNumber, PERSONAL } from '@constants/sys/helper';
 import { TimeSlot } from 'types/vbs/timeslot';

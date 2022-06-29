@@ -5,7 +5,10 @@ import { CCA } from 'types/cca/cca';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { findCCAbyID } from '@helper/sys/cca/cca';
-import { fetchAllCCASessionByCCAID } from '@helper/sys/cca/ccaSession';
+import {
+  countAllCCASessionByCCAID,
+  fetchAllCCASessionByCCAID,
+} from '@helper/sys/cca/ccaSession';
 import { splitHours } from '@helper/sys/vbs/venue';
 
 import { convertUnixToDate, dateISO } from '@constants/sys/date';
@@ -43,6 +46,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           limit,
           skip,
         );
+        const totalCount: number = await countAllCCASessionByCCAID(ccaID);
         if (ccaDB.status) {
           const ccaData: CCASession[] = ccaDB.msg;
           if (ccaData && ccaData.length > 0) {
@@ -90,7 +94,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: true,
             error: null,
-            msg: parsedCCASession,
+            msg: { count: totalCount, res: parsedCCASession },
           };
           res.status(200).send(result);
           res.end();
@@ -98,7 +102,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: ccaDB.error,
-            msg: [],
+            msg: { count: 0, res: [] },
           };
           res.status(200).send(result);
           res.end();
@@ -107,7 +111,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: ccaDetailsRes.error,
-          msg: [],
+          msg: { count: 0, res: [] },
         };
         res.status(200).send(result);
         res.end();
@@ -116,13 +120,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Incomplete information',
-        msg: [],
+        msg: { count: 0, res: [] },
       };
       res.status(200).send(result);
       res.end();
     }
   } else {
-    result = { status: false, error: 'Unauthenticated', msg: [] };
+    result = {
+      status: false,
+      error: 'Unauthenticated',
+      msg: { count: 0, res: [] },
+    };
     res.status(200).send(result);
     res.end();
   }

@@ -23,7 +23,7 @@ import TableWidget from '@components/sys/misc/TableWidget';
 import BookingModal from '@components/sys/vbs/BookingModal';
 import BookingCalendar from '@components/sys/vbs/BookingCalendar';
 import BookingRejectModal from '@components/sys/vbs/BookingRejectModal';
-import LoadingModal from '@components/sys/vbs/LoadingModal';
+import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';

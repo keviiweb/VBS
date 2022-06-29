@@ -18,7 +18,7 @@ import { motion } from 'framer-motion';
 import CCACard from '@components/sys/cca/CCACard';
 import LeaderModalComponent from '@components/sys/cca/LeaderModal';
 import MemberModalComponent from '@components/sys/cca/MemberModal';
-import LoadingModal from '@components/sys/vbs/LoadingModal';
+import LoadingModal from '@components/sys/misc/LoadingModal';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -39,37 +39,30 @@ export default function CCA(props: any) {
       const propRes = await propsField;
       if (propRes.data) {
         const res: Result = propRes.data;
-        if (res.msg.length > 0) {
-          if (res.status) {
-            const result: CCARecord[] = res.msg;
-            if (result !== [] && result !== null && result !== undefined) {
-              const leaderRes: JSX.Element[] = [];
-              const memberRes: JSX.Element[] = [];
-              result.forEach((item) => {
-                if (item.leader) {
-                  leaderRes.push(
-                    <MotionBox id={item.ccaID} key={item.id}>
-                      <CCACard
-                        product={item}
-                        setModalData={setLeaderModalData}
-                      />
-                    </MotionBox>,
-                  );
-                } else {
-                  memberRes.push(
-                    <MotionBox id={item.ccaID} key={item.id}>
-                      <CCACard
-                        product={item}
-                        setModalData={setMemberModalData}
-                      />
-                    </MotionBox>,
-                  );
-                }
-              });
+        if (res.status && res.msg.count > 0) {
+          const resField: { count: number; res: CCARecord[] } = res.msg;
+          const result: CCARecord[] = resField.res;
+          if (result !== [] && result !== null && result !== undefined) {
+            const leaderRes: JSX.Element[] = [];
+            const memberRes: JSX.Element[] = [];
+            result.forEach((item) => {
+              if (item.leader) {
+                leaderRes.push(
+                  <MotionBox id={item.ccaID} key={`leader_${item.id}`}>
+                    <CCACard product={item} setModalData={setLeaderModalData} />
+                  </MotionBox>,
+                );
+              } else {
+                memberRes.push(
+                  <MotionBox id={item.ccaID} key={`member_${item.id}`}>
+                    <CCACard product={item} setModalData={setMemberModalData} />
+                  </MotionBox>,
+                );
+              }
+            });
 
-              setLeaderCards(leaderRes);
-              setMemberCards(memberRes);
-            }
+            setLeaderCards(leaderRes);
+            setMemberCards(memberRes);
           }
         }
       }

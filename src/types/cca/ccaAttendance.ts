@@ -7,5 +7,6 @@ export type CCAAttendance = {
   ccaID: string;
   ccaAttendance: number;
   sessionEmail?: string;
+  action?: any;
   updated_at?: string;
 };

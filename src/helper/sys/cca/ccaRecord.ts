@@ -52,6 +52,22 @@ export const fetchAllCCARecordByID = async (
   return result;
 };
 
+export const countAllCCARecordByID = async (id: string): Promise<number> => {
+  let count: number = 0;
+
+  try {
+    count = await prisma.cCARecord.count({
+      where: {
+        ccaID: id,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+  }
+
+  return count;
+};
+
 export const isLeader = async (
   ccaID: string,
   session: Session,

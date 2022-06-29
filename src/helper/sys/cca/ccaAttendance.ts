@@ -3,6 +3,26 @@ import { CCAAttendance } from 'types/cca/ccaAttendance';
 
 import { prisma } from '@constants/sys/db';
 
+export const countSpecificCCAAttendanceByUserEmail = async (
+  ccaID: string,
+  email: string,
+): Promise<number> => {
+  let count = 0;
+
+  try {
+    count = await prisma.cCAAttendance.count({
+      where: {
+        ccaID: ccaID,
+        sessionEmail: email,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+  }
+
+  return count;
+};
+
 export const fetchSpecificCCAAttendanceByUserEmail = async (
   ccaID: string,
   email: string,

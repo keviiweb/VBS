@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import CalendarWidget from '@components/sys/vbs/CalendarWidget';
 import TimeSlotButton from '@components/sys/vbs/TimeSlotButton';
-import Loading from '@components/sys/vbs/Loading';
+import Loading from '@components/sys/misc/Loading';
 
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';

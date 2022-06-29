@@ -30,7 +30,7 @@ import { motion } from 'framer-motion';
 import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/misc/TableWidget';
 import VenueModal from '@components/sys/vbs/VenueModal';
-import LoadingModal from '@components/sys/vbs/LoadingModal';
+import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { timeSlots } from '@constants/sys/timeslot';
 import { checkerNumber, checkerString } from '@constants/sys/helper';

@@ -13,7 +13,7 @@ import Auth from '@components/sys/Auth';
 import VenueCard from '@components/sys/vbs/VenueCard';
 import VenueBookingModal from '@components/sys/vbs/VenueBookingModal';
 import VenueBookingModalConfirmation from '@components/sys/vbs/VenueBookingModalConfirmation';
-import Loading from '@components/sys/vbs/Loading';
+import Loading from '@components/sys/misc/Loading';
 
 import { fetchVenue } from '@helper/sys/vbs/venue';
 import { checkerString, checkerArray } from '@constants/sys/helper';

@@ -14,7 +14,7 @@ import { BsPerson } from 'react-icons/bs';
 import { MdOutlineEmail, MdAccountBox, MdLocationOn } from 'react-icons/md';
 
 import Auth from '@components/sys/Auth';
-import Loading from '@components/sys/vbs/Loading';
+import Loading from '@components/sys/misc/Loading';
 
 import { currentSession } from '@helper/sys/session';
 

@@ -9,6 +9,7 @@ import { currentSession } from '@helper/sys/sessionServer';
 import {
   fetchAllCCARecordByUser,
   fetchAllCCARecordByID,
+  countAllCCARecordByID,
 } from '@helper/sys/cca/ccaRecord';
 
 import { findCCAbyID } from '@helper/sys/cca/cca';
@@ -52,6 +53,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           limit,
           skip,
         );
+
+        const totalCount: number = await countAllCCARecordByID(ccaIDRes);
         if (ccaDB.status) {
           const ccaData: CCARecord[] = ccaDB.msg;
           const ccaAttendanceHours: number =
@@ -110,7 +113,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: true,
             error: null,
-            msg: parsedCCARecord,
+            msg: { count: totalCount, res: parsedCCARecord },
           };
           res.status(200).send(result);
           res.end();
@@ -118,7 +121,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: ccaDB.error,
-            msg: [],
+            msg: { count: 0, res: [] },
           };
           res.status(200).send(result);
           res.end();
@@ -127,7 +130,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: ccaDetailsRes.error,
-          msg: [],
+          msg: { count: 0, res: [] },
         };
         res.status(200).send(result);
         res.end();
@@ -187,7 +190,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: true,
           error: null,
-          msg: parsedCCARecord,
+          msg: { count: parsedCCARecord.length, res: parsedCCARecord },
         };
         res.status(200).send(result);
         res.end();
@@ -202,7 +205,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     }
   } else {
-    result = { status: false, error: 'Unauthenticated', msg: [] };
+    result = {
+      status: false,
+      error: 'Unauthenticated',
+      msg: { count: 0, res: [] },
+    };
     res.status(200).send(result);
     res.end();
   }

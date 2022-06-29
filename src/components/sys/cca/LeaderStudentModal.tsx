@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { checkerString } from '@constants/sys/helper';
 import TableWidget from '@components/sys/misc/TableWidget';
-import LoadingModal from '@components/sys/vbs/LoadingModal';
+import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
@@ -59,23 +59,21 @@ export default function LeaderStudentModalComponent({
     }, 200);
   };
 
-  const includeActionButton = useCallback(async (content: CCARecord[]) => {
-    if (content !== []) {
-      for (let key = 0; key < content.length; key += 1) {
-        if (content[key]) {
-          // const dataField: CCARecord = content[key];
-        }
+  const includeActionButton = useCallback(
+    async (content: { count: number; res: CCARecord[] }) => {
+      if (content.res !== [] && content.count > 0) {
+        setData(content.res);
+        setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
       }
-      setData(content);
-      setPageCount(Math.floor(content.length / pageSizeDB.current) + 1);
-    }
-  }, []);
+    },
+    [],
+  );
 
   const fetchMemberSession = useCallback(
     async (ccaID: string, userEmail: string) => {
       if (checkerString(ccaID) && checkerString(userEmail)) {
         try {
-          const rawResponse = await fetch('/api/ccaAttendance/member', {
+          const rawResponse = await fetch('/api/ccaAttendance/fetch', {
             method: 'POST',
             headers: {
               Accept: 'application/json',
