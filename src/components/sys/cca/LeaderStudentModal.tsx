@@ -90,8 +90,6 @@ export default function LeaderStudentModalComponent({
           if (content.status) {
             await includeActionButton(content.msg);
           }
-
-          console.log(content);
         } catch (error) {
           console.error(error);
         }

@@ -36,6 +36,7 @@ import { checkerString } from '@constants/sys/helper';
 import TableWidget from '@components/sys/misc/TableWidget';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 import LeaderStudentModalComponent from '@components/sys/cca/LeaderStudentModal';
+import SessionModal from '@components/sys/cca/SessionModal';
 
 import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
@@ -62,6 +63,9 @@ const PopoverTriggerNew: React.FC<
 export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
   const [specificMemberData, setSpecificMemberData] =
     useState<CCARecord | null>(null);
+  const [specificCCAData, setSpecificCCAData] = useState<CCASession | null>(
+    null,
+  );
   const [loadingData, setLoadingData] = useState(true);
 
   const ccaRecordIDDB = useRef('');
@@ -87,6 +91,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
     setSelectedDropDown([]);
     setData([]);
     setCCAName('');
+    setSpecificCCAData(null);
     setSpecificMemberData(null);
     setPageCount(0);
 
@@ -105,6 +110,10 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
 
   const handleDetails = useCallback((content: CCARecord) => {
     setSpecificMemberData(content);
+  }, []);
+
+  const handleDetailsSession = useCallback((content: CCASession) => {
+    setSpecificCCAData(content);
   }, []);
 
   const generateActionButtonRecord = useCallback(
@@ -131,26 +140,27 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           <Popover>
             <PopoverTriggerNew>
               <Button
-                size='sm'
+                size='md'
                 isDisabled={submitButtonPressed}
                 leftIcon={<InfoOutlineIcon />}
               >
                 Options
               </Button>
             </PopoverTriggerNew>
-            <PopoverContent w='10vw' maxW='sm'>
+            <PopoverContent w='22vw' maxW='md'>
               <Button
                 py={5}
-                size='sm'
+                size='md'
                 isDisabled={submitButtonPressed}
                 leftIcon={<BellIcon />}
+                onClick={() => handleDetailsSession(content)}
               >
                 Details
               </Button>
               <Button
                 mt={1}
                 py={5}
-                size='sm'
+                size='md'
                 isDisabled={submitButtonPressed}
                 leftIcon={<EditIcon />}
               >
@@ -159,7 +169,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
               <Button
                 py={5}
                 mt={1}
-                size='sm'
+                size='md'
                 isDisabled={submitButtonPressed}
                 leftIcon={<DeleteIcon />}
               >
@@ -197,7 +207,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
 
       return button;
     },
-    [submitButtonPressed],
+    [submitButtonPressed, handleDetailsSession],
   );
 
   const includeActionButton = useCallback(
@@ -447,6 +457,13 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
             isOpen={specificMemberData}
             onClose={() => setSpecificMemberData(null)}
             modalData={specificMemberData}
+          />
+
+          <SessionModal
+            isOpen={specificCCAData}
+            onClose={() => setSpecificCCAData(null)}
+            modalData={specificCCAData}
+            leader
           />
 
           <LoadingModal

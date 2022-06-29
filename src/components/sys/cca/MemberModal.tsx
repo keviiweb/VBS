@@ -24,13 +24,14 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { Result } from 'types/api';
 import { CCASession } from 'types/cca/ccaSession';
+import SessionModal from '@components/sys/cca/SessionModal';
 
 export default function LeaderStudentModalComponent({
   isOpen,
   onClose,
   modalData,
 }) {
-  const [specificCCAData, setSpecificCCASession] = useState<CCASession | null>(
+  const [specificCCAData, setSpecificCCAData] = useState<CCASession | null>(
     null,
   );
 
@@ -55,6 +56,16 @@ export default function LeaderStudentModalComponent({
 
   const reset = () => {
     setData([]);
+    setSpecificCCAData(null);
+    setCCAName('');
+    setAttendance('');
+
+    ccaRecordIDDB.current = '';
+    ccaNameDB.current = '';
+
+    setPageCount(0);
+    pageSizeDB.current = PAGESIZE;
+    pageIndexDB.current = PAGEINDEX;
   };
 
   const handleModalCloseButton = () => {
@@ -64,20 +75,15 @@ export default function LeaderStudentModalComponent({
     }, 200);
   };
 
-  const handleDetails = useCallback(
-    (content: CCASession) => {
-      setSpecificCCASession(content);
-      console.log(specificCCAData);
-    },
-    [specificCCAData],
-  );
+  const handleDetails = useCallback((content: CCASession) => {
+    setSpecificCCAData(content);
+  }, []);
 
   const generateActionButtonSession = useCallback(
     async (content: CCASession) => {
       const button: JSX.Element = (
         <Button
           size='sm'
-          isDisabled={submitButtonPressed}
           leftIcon={<InfoOutlineIcon />}
           onClick={() => handleDetails(content)}
         >
@@ -86,7 +92,7 @@ export default function LeaderStudentModalComponent({
       );
       return button;
     },
-    [submitButtonPressed, handleDetails],
+    [handleDetails],
   );
 
   const includeActionButton = useCallback(
@@ -107,37 +113,31 @@ export default function LeaderStudentModalComponent({
     [generateActionButtonSession],
   );
 
-  const fetchAttendance = useCallback(
-    async (id: string) => {
-      if (checkerString(id)) {
-        setSubmitButtonPressed(true);
-
-        try {
-          const rawResponse = await fetch('/api/ccaAttendance/member', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              id: id,
-            }),
-          });
-          const content: Result = await rawResponse.json();
-          if (content.status) {
-            setAttendance(content.msg as string);
-          }
-        } catch (error) {
-          console.error(error);
+  const fetchAttendance = useCallback(async (id: string) => {
+    if (checkerString(id)) {
+      try {
+        const rawResponse = await fetch('/api/ccaAttendance/member', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: id,
+          }),
+        });
+        const content: Result = await rawResponse.json();
+        if (content.status) {
+          setAttendance(content.msg as string);
         }
-
-        setSubmitButtonPressed(false);
-        return true;
+      } catch (error) {
+        console.error(error);
       }
-      return false;
-    },
-    [],
-  );
+
+      return true;
+    }
+    return false;
+  }, []);
 
   const fetchSession = useCallback(
     async (id: string) => {
@@ -196,26 +196,28 @@ export default function LeaderStudentModalComponent({
   );
 
   useEffect(() => {
-    async function setupData() {
+    async function setupData(modalDataField: CCASession) {
       if (modalData) {
         const ccaRecordField: string =
-          modalData && modalData.ccaID ? modalData.ccaID : '';
+          modalDataField && modalDataField.ccaID ? modalDataField.ccaID : '';
         ccaRecordIDDB.current = ccaRecordField;
 
         const ccaNameField: string =
-          modalData && modalData.ccaName ? modalData.ccaName : '';
+          modalDataField && modalDataField.ccaName
+            ? modalDataField.ccaName
+            : '';
         ccaNameDB.current = ccaNameField;
 
         setCCAName(ccaNameField);
 
-        await tableChange();
         await fetchAttendance(ccaRecordField);
+        await tableChange();
       }
     }
 
     if (modalData) {
       setData([]);
-      setupData();
+      setupData(modalData);
     }
   }, [modalData, tableChange, fetchAttendance]);
 
@@ -252,6 +254,13 @@ export default function LeaderStudentModalComponent({
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
+          <SessionModal
+            isOpen={specificCCAData}
+            onClose={() => setSpecificCCAData(null)}
+            modalData={specificCCAData}
+            leader={false}
+          />
+
           <LoadingModal
             isOpen={!!submitButtonPressed}
             onClose={() => setSubmitButtonPressed(false)}
