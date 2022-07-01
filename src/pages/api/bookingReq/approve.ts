@@ -70,10 +70,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
           if (!isThereConflict) {
             const approve: Result = await setApprove(bookingRequest, session);
-            const cancel: Result = await setRejectConflicts(
-              bookingRequest,
-              session,
-            );
+            const cancel: Result = await setRejectConflicts(bookingRequest);
 
             if (approve.status && cancel.status) {
               const createBooking = await createVenueBooking(

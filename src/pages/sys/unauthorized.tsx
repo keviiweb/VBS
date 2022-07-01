@@ -7,7 +7,7 @@ export default function Unauthorized() {
 
   useEffect(() => {
     setTimeout(() => {
-      router.push('/sys');
+      router.push('/');
     }, 5000);
   }, [router]);
 

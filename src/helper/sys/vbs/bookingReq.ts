@@ -483,7 +483,6 @@ export const setApprove = async (
 
 export const setReject = async (
   bookingRequest: BookingRequest,
-  session: Session,
   reason: string,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
@@ -691,7 +690,6 @@ export const getConflictingRequest = async (
 
 export const setRejectConflicts = async (
   bookingRequest: BookingRequest,
-  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   let success = true;
@@ -722,7 +720,7 @@ export const setRejectConflicts = async (
           if (isInside(bookingRequest.timeSlots, request.timeSlots)) {
             if (request.id !== undefined) {
               conflicting.push(request.id);
-              const reject: Result = await setReject(request, session, reason);
+              const reject: Result = await setReject(request, reason);
               if (!reject.status) {
                 console.error(reject.error);
                 success = false;

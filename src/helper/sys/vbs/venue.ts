@@ -259,7 +259,11 @@ export const createVenue = async (data: Venue): Promise<Result> => {
     });
 
     if (venue) {
-      result = { status: true, error: '', msg: 'Successfully created venue' };
+      result = {
+        status: true,
+        error: '',
+        msg: `Successfully created ${venue.name}`,
+      };
     } else {
       result = { status: false, error: 'Failed to create venue', msg: '' };
     }
@@ -274,7 +278,7 @@ export const createVenue = async (data: Venue): Promise<Result> => {
 export const editVenue = async (data: Venue): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
-    const venue = await prisma.venue.update({
+    const venue: Venue = await prisma.venue.update({
       where: {
         id: data.id,
       },
@@ -282,7 +286,11 @@ export const editVenue = async (data: Venue): Promise<Result> => {
     });
 
     if (venue) {
-      result = { status: true, error: '', msg: 'Successfully updated venue' };
+      result = {
+        status: true,
+        error: '',
+        msg: `Successfully updated ${venue.name}`,
+      };
     } else {
       result = { status: false, error: 'Failed to update venue', msg: '' };
     }

@@ -38,6 +38,7 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
   const [optionalStr, setOptionalStr] = useState('');
   const [remarks, setRemarks] = useState('');
   const [ldrNotes, setLdrNotes] = useState('');
+  const [editable, setEditable] = useState(false);
 
   const reset = () => {
     setDateStr('');
@@ -45,6 +46,7 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
     setOptionalStr('');
     setRemarks('');
     setLdrNotes('');
+    setEditable(false);
   };
 
   const handleDelete = () => {};
@@ -64,22 +66,26 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
     async function setupData(modalDataField: CCASession) {
       setLoadingData(true);
 
-      const dateStrField =
+      const dateStrField: string =
         modalDataField && modalDataField.dateStr ? modalDataField.dateStr : '';
-      const timeStrField =
+      const timeStrField: string =
         modalDataField && modalDataField.time ? modalDataField.time : '';
-      const optionalStrField =
+      const optionalStrField: string =
         modalDataField && modalDataField.optionalStr
           ? modalDataField.optionalStr
           : '';
-      const remarksField =
+      const remarksField: string =
         modalDataField && modalDataField.remarks ? modalDataField.remarks : '';
-      const ldrNotesField =
+      const ldrNotesField: string =
         modalDataField && modalDataField.ldrNotes
           ? modalDataField.ldrNotes
           : '';
-      const ccaNameField =
+      const ccaNameField: string =
         modalDataField && modalDataField.ccaName ? modalDataField.ccaName : '';
+      const editableField: boolean =
+        modalDataField && modalDataField.editable
+          ? modalDataField.editable
+          : false;
 
       setDateStr(dateStrField);
       setTime(timeStrField);
@@ -87,6 +93,7 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
       setRemarks(remarksField);
       setLdrNotes(ldrNotesField);
       setCCAName(ccaNameField);
+      setEditable(editableField);
 
       setLoadingData(false);
     }
@@ -240,16 +247,18 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
                           >
                             Delete
                           </Button>
-                          <Button
-                            bg='red.700'
-                            color='white'
-                            w='150px'
-                            size='lg'
-                            onClick={handleEdit}
-                            _hover={{ bg: 'cyan.800' }}
-                          >
-                            Edit
-                          </Button>
+                          {editable && (
+                            <Button
+                              bg='red.700'
+                              color='white'
+                              w='150px'
+                              size='lg'
+                              onClick={handleEdit}
+                              _hover={{ bg: 'cyan.800' }}
+                            >
+                              Edit
+                            </Button>
+                          )}
                         </Stack>
                       )}
                     </Stack>

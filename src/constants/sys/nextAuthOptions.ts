@@ -459,9 +459,11 @@ export const options = {
         ) {
           isAllowedToSignIn = false;
 
+          const email: string = (user.email as string).trim().toLowerCase();
+
           const doesUserExist = await prisma.users.findUnique({
             where: {
-              email: user.email,
+              email: email,
             },
           });
 

@@ -61,11 +61,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           res.status(200).send(result);
           res.end();
         } else {
-          const reject: Result = await setReject(
-            bookingRequest,
-            session,
-            reasonField,
-          );
+          const reject: Result = await setReject(bookingRequest, reasonField);
           if (reject.status) {
             result = {
               status: true,

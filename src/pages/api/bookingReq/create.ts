@@ -40,9 +40,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     msg: '',
   };
 
-  const { email, venue, venueName, date, timeSlots, type, purpose } = req.body;
+  const { venue, venueName, date, timeSlots, type, purpose } = req.body;
   try {
-    const emailField: string = (email as string).trim();
     const venueField: string = (venue as string).trim();
     const venueNameField: string = (venueName as string).trim();
     const dateField: string = (date as string).trim();
@@ -52,7 +51,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (session !== undefined && session !== null) {
       if (
-        checkerString(emailField) &&
         checkerString(venueField) &&
         checkerString(venueNameField) &&
         checkerString(dateField) &&
@@ -99,7 +97,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         if (isALeader) {
           const dataDB: BookingRequest = {
-            email: emailField,
+            email: session.user.email,
             venue: venueField,
             date: convertedDate,
             timeSlots: slots,
@@ -221,7 +219,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     );
                     const cancel: Result = await setRejectConflicts(
                       bookingRequest,
-                      session,
                     );
 
                     if (approve.status && cancel.status) {
@@ -275,7 +272,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
               const data: BookingRequest = {
                 id: bookingID,
-                email: emailField,
+                email: session.user.email,
                 venue: venueNameField,
                 dateStr: dateField,
                 timeSlots: prettifyTiming(slotArrayStr),
@@ -285,7 +282,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               };
 
               try {
-                await sendProgressMail(email, data);
+                await sendProgressMail(session.user.email, data);
               } catch (error) {
                 console.error(error);
               }

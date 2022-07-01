@@ -4,7 +4,6 @@ import {
   Box,
   Flex,
   Heading,
-  Input,
   InputGroup,
   InputLeftAddon,
   Modal,
@@ -48,7 +47,6 @@ export default function VenueBookingModalConfirmation({
   const [venue, setVenue] = useState('');
   const [date, setDate] = useState('');
   const [timeSlots, setTimeSlots] = useState('');
-  const [email, setEmail] = useState('');
   const [purpose, setPurpose] = useState('');
   const [type, setType] = useState('1');
   const [errorMsg, setError] = useState('');
@@ -65,7 +63,6 @@ export default function VenueBookingModalConfirmation({
   const toast = useToast();
 
   // variable for db
-  const emailDB = useRef('');
   const venueNameDB = useRef('');
   const venueDB = useRef('');
   const timeSlotsDB = useRef<TimeSlot[]>([]);
@@ -98,7 +95,6 @@ export default function VenueBookingModalConfirmation({
   };
 
   const validateFields = (
-    emailField: string,
     venueField: string,
     venueNameField: string,
     dateField: string,
@@ -107,17 +103,6 @@ export default function VenueBookingModalConfirmation({
     purposeField: string,
   ) => {
     // super basic validation here
-    if (!checkerString(emailField)) {
-      setError('Please include an email.');
-      return false;
-    }
-    if (
-      !(emailField.includes('@u.nus.edu') || emailField.includes('@nus.edu.sg'))
-    ) {
-      setError('Please use your school email.');
-      return false;
-    }
-
     if (!checkerString(dateField) || !isValidDate(new Date(dateField))) {
       setError('No date found');
       return false;
@@ -171,7 +156,6 @@ export default function VenueBookingModalConfirmation({
     setVenue('');
     setDate('');
     setTimeSlots('');
-    setEmail('');
     setPurpose('');
     setType('1');
     setError('');
@@ -181,7 +165,6 @@ export default function VenueBookingModalConfirmation({
     setIsSwitch(false);
     setCCASelection('');
 
-    emailDB.current = '';
     venueNameDB.current = '';
     venueDB.current = '';
     timeSlotsDB.current = [];
@@ -205,7 +188,6 @@ export default function VenueBookingModalConfirmation({
   };
 
   const submitBookingRequest = async (
-    emailField: string,
     venueIDField: string,
     venueNameField: string,
     dateField: string,
@@ -222,7 +204,6 @@ export default function VenueBookingModalConfirmation({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: emailField,
           venue: venueIDField,
           venueName: venueNameField,
           date: dateField,
@@ -274,7 +255,6 @@ export default function VenueBookingModalConfirmation({
 
     if (
       validateFields(
-        emailDB.current,
         venueDB.current,
         venueNameDB.current,
         dateParsed.current,
@@ -284,7 +264,6 @@ export default function VenueBookingModalConfirmation({
       )
     ) {
       await submitBookingRequest(
-        emailDB.current,
         venueDB.current,
         venueNameDB.current,
         dateParsed.current,
@@ -475,19 +454,6 @@ export default function VenueBookingModalConfirmation({
                           </Select>
                         )}
 
-                        <InputGroup>
-                          <InputLeftAddon>Email </InputLeftAddon>
-                          <Input
-                            isRequired
-                            value={email}
-                            onChange={(event) => {
-                              setEmail(event.currentTarget.value);
-                              emailDB.current = event.currentTarget.value;
-                            }}
-                            type='email'
-                            placeholder='Enter your email here'
-                          />
-                        </InputGroup>
                         <InputGroup>
                           <InputLeftAddon>Purpose </InputLeftAddon>
                           <Textarea
