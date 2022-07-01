@@ -44,7 +44,7 @@ export default function LinkCard({ product }) {
 
               {title && (
                 <Box p='6'>
-                  <Box fontWeight='semibold' as='h4' lineHeight='tight'>
+                  <Box fontWeight='semibold' as='h5' lineHeight='tight'>
                     {title}
                   </Box>
                 </Box>

@@ -46,16 +46,29 @@ export default function CCA(props: any) {
             const leaderRes: JSX.Element[] = [];
             const memberRes: JSX.Element[] = [];
             result.forEach((item) => {
-              if (item.leader) {
+              const itemField: CCARecord = item;
+              if (itemField.leader) {
                 leaderRes.push(
-                  <MotionBox id={item.ccaID} key={`leader_${item.id}`}>
-                    <CCACard product={item} setModalData={setLeaderModalData} />
+                  <MotionBox
+                    id={itemField.ccaID}
+                    key={`leader_${itemField.id}`}
+                  >
+                    <CCACard
+                      product={itemField}
+                      setModalData={setLeaderModalData}
+                    />
                   </MotionBox>,
                 );
               } else {
                 memberRes.push(
-                  <MotionBox id={item.ccaID} key={`member_${item.id}`}>
-                    <CCACard product={item} setModalData={setMemberModalData} />
+                  <MotionBox
+                    id={itemField.ccaID}
+                    key={`member_${itemField.id}`}
+                  >
+                    <CCACard
+                      product={itemField}
+                      setModalData={setMemberModalData}
+                    />
                   </MotionBox>,
                 );
               }
@@ -122,7 +135,7 @@ export default function CCA(props: any) {
           </Text>
           <MotionSimpleGrid
             mt='3'
-            minChildWidth={{ base: 'full', md: '500px', lg: '500px' }}
+            minChildWidth={{ base: 'full', md: '300px', lg: '300px' }}
             minH='full'
             variants={parentVariant}
             initial='initial'

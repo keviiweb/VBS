@@ -66,25 +66,25 @@ export default function AnnouncementComponent() {
         </Text>
       )}
 
-      <MotionSimpleGrid
-        columns={{ base: 1, md: 1, lg: 2, xl: 3 }}
-        pos='relative'
-        gap={{ base: 8, sm: 10 }}
-        px={5}
-        py={6}
-        p={{ sm: 8 }}
-        variants={parentVariant}
-        initial='initial'
-        animate='animate'
-      >
-        {!loading &&
-          slides.length > 0 &&
-          slides.map((slide, sid) => (
+      {!loading && slides.length > 0 && (
+        <MotionSimpleGrid
+          columns={{ base: 1, md: 1, lg: 2, xl: 3 }}
+          pos='relative'
+          gap={{ base: 8, sm: 10 }}
+          px={5}
+          py={6}
+          p={{ sm: 8 }}
+          variants={parentVariant}
+          initial='initial'
+          animate='animate'
+        >
+          {slides.map((slide, sid) => (
             <MotionBox key={sid} variants={cardVariant}>
               <AnnouncementCard product={slide} />
             </MotionBox>
           ))}
-      </MotionSimpleGrid>
+        </MotionSimpleGrid>
+      )}
 
       {!loading && slides.length === 0 && (
         <MotionSimpleGrid

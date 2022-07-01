@@ -15,16 +15,16 @@ import { signIn } from 'next-auth/react';
 
 import { checkerString } from '@constants/sys/helper';
 
-export default function SignIn(props) {
+export default function SignIn(props: any) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const emailDB = useRef('');
   const [errorMsg, setError] = useState('');
 
-  const [url, setURL] = useState('https://vbs-kevii.vercel.app'); // default
+  const [url, setURL] = useState('https://kevii.azurewebsites.net'); // default
 
   useEffect(() => {
-    async function fetchData(propsField) {
+    async function fetchData(propsField: any) {
       const propRes = await propsField;
       if (checkerString(propRes.data)) {
         setURL(propRes.data);

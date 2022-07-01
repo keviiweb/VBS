@@ -12,7 +12,7 @@ export default function CCACard({ product, setModalData }) {
 
   return (
     <Flex
-      w='full'
+      w={{ base: 'full', md: '500px', lg: '500px' }}
       h='full'
       alignItems='center'
       justifyContent='center'

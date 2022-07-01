@@ -1,9 +1,8 @@
 import { Result } from 'types/api';
 import { CCA } from 'types/cca/cca';
-import { CCARecord } from 'types/cca/ccaRecord';
 
-import { Session } from 'next-auth/core/types';
 import { prisma } from '@constants/sys/db';
+import moment from 'moment';
 
 export const findCCAbyName = async (name: string): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
@@ -59,4 +58,24 @@ export const findAllCCA = async (): Promise<Result> => {
   }
 
   return result;
+};
+
+export const calculateDuration = async (
+  start: number,
+  end: number,
+): Promise<number> => {
+  let duration: number = 0;
+
+  const s: string = start.toString().padStart(4, '0');
+  const e: string = end.toString().padStart(4, '0');
+
+  const startH = `${s.toString().slice(0, 2)}:${s.toString().slice(2)}:00`;
+  const endH = `${e.toString().slice(0, 2)}:${e.toString().slice(2)}:00`;
+
+  const startTimeM = moment(startH, 'HH:mm:ss');
+  const endTimeM = moment(endH, 'HH:mm:ss');
+  const durationH = moment.duration(endTimeM.diff(startTimeM));
+  duration = durationH.asHours();
+
+  return duration;
 };

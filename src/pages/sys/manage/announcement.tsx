@@ -65,9 +65,9 @@ export default function ManageVenues() {
 
   const announceData = useRef<Announcement[]>([]);
 
-  let generateActionButton;
-  let fetchData;
-  let resetEdit;
+  let generateActionButton: any;
+  let fetchData: any;
+  let resetEdit: any;
 
   const PAGESIZE: number = 10;
   const PAGEINDEX: number = 0;
@@ -77,6 +77,48 @@ export default function ManageVenues() {
   const pageIndexDB = useRef(PAGEINDEX);
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+
+  const handleDelete = useCallback(async () => {
+    setErrorEdit('');
+    if (checkerString(announceIDDBEdit.current)) {
+      setSubmitButtonPressed(true);
+
+      const dataField = new FormData();
+      dataField.append('id', announceIDDBEdit.current);
+
+      try {
+        const rawResponse = await fetch('/api/announcement/delete', {
+          method: 'POST',
+          body: dataField,
+        });
+        const content: Result = await rawResponse.json();
+        if (content.status) {
+          await resetEdit();
+          toast({
+            title: 'Success',
+            description: content.msg,
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          await fetchData();
+        } else {
+          toast({
+            title: 'Error',
+            description: content.error,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      setSubmitButtonPressed(false);
+    }
+  }, [fetchData, resetEdit, toast]);
 
   const reset = useCallback(async () => {
     selectedFileDB.current = null;
@@ -594,7 +636,7 @@ export default function ManageVenues() {
                   </Stack>
                 )}
 
-                <Stack spacing={10}>
+                <Stack spacing={5}>
                   <Button
                     type='submit'
                     bg='blue.400'
@@ -605,6 +647,17 @@ export default function ManageVenues() {
                     }}
                   >
                     Update
+                  </Button>
+                  <Button
+                    bg='red.400'
+                    color='white'
+                    disabled={submitButtonPressed}
+                    _hover={{
+                      bg: 'red.500',
+                    }}
+                    onClick={() => handleDelete()}
+                  >
+                    Delete
                   </Button>
                 </Stack>
               </Stack>

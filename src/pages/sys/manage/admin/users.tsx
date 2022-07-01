@@ -73,8 +73,8 @@ export default function ManageUsers() {
   const [userIDEdit, setUserIDEdit] = useState('');
   const userIDDBEdit = useRef('');
 
-  let generateActionButton;
-  let fetchData;
+  let generateActionButton: any;
+  let fetchData: any;
 
   const [userDropdown, setUserDropdown] = useState<JSX.Element[]>([]);
   const userData = useRef<User[]>([]);

@@ -3,6 +3,7 @@ import { CCASession } from 'types/cca/ccaSession';
 
 import { prisma } from '@constants/sys/db';
 import { splitHours } from '@helper/sys/vbs/venue';
+import { calculateDuration } from '@helper/sys/cca/cca';
 
 export const fetchAllCCASessionByCCAID = async (
   id: string,
@@ -85,8 +86,10 @@ export const countTotalSessionHoursByCCAID = async (
             const sessionAttendanceHourStr: string = session.time;
             const { start, end } = await splitHours(sessionAttendanceHourStr);
             if (start !== null && end !== null) {
-              const sessionDuration: number =
-                Math.round(((end - start) / 60) * 10) / 10;
+              const sessionDuration: number = await calculateDuration(
+                start,
+                end,
+              );
               count += sessionDuration;
             }
           }

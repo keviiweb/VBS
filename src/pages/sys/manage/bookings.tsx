@@ -29,8 +29,8 @@ export default function ManageBooking() {
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState<BookingRequest[]>([]);
 
-  let generateActionButton;
-  let fetchData;
+  let generateActionButton: any;
+  let fetchData: any;
 
   const PAGESIZE: number = 10;
   const PAGEINDEX: number = 0;

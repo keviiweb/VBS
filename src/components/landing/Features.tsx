@@ -85,17 +85,19 @@ export default function Feature({ API_KEY }) {
                 </chakra.a>
               </Box>
             </Flex>
-            <Flex
-              bg='#F9FAFB'
-              p={{ base: 4, md: 8, lg: 12, xl: 17 }}
-              w='auto'
-              justifyContent='center'
-              alignItems='center'
-            >
-              <Box w='full'>
-                <Map location={location} zoomLevel={21} apiKey={API_KEY} />
-              </Box>
-            </Flex>
+            {API_KEY && (
+              <Flex
+                bg='#F9FAFB'
+                p={{ base: 4, md: 8, lg: 12, xl: 17 }}
+                w='auto'
+                justifyContent='center'
+                alignItems='center'
+              >
+                <Box w='full'>
+                  <Map location={location} zoomLevel={21} apiKey={API_KEY} />
+                </Box>
+              </Flex>
+            )}
           </SimpleGrid>
         </Flex>
       </MotionBox>

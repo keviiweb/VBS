@@ -106,9 +106,8 @@ export default function ManageVenues() {
 
   const [errorEdit, setErrorEdit] = useState('');
 
-  let generateActionButton;
-  let fetchData;
-  let resetEdit;
+  let generateActionButton: any;
+  let fetchData: any;
 
   const PAGESIZE: number = 10;
   const PAGEINDEX: number = 0;
@@ -144,6 +143,29 @@ export default function ManageVenues() {
     setFileName(null);
     setStartTime('');
     setEndTime('');
+  }, []);
+
+  const resetEdit = useCallback(async () => {
+    venueIDDBEdit.current = '';
+    nameDBEdit.current = '';
+    descriptionDBEdit.current = '';
+    capacityDBEdit.current = 0;
+    instantBookDBEdit.current = false;
+    isChildVenueDBEdit.current = false;
+    visibleDBEdit.current = false;
+    parentVenueEdit.current = '';
+    startTimeDBEdit.current = '';
+    endTimeDBEdit.current = '';
+
+    setVenueIDEdit('');
+    setNameEdit('');
+    setDescriptionEdit('');
+    setCapacityEdit(0);
+    setInstantBookEdit(false);
+    setIsChildVenueEdit(false);
+    setVisibleEdit(true);
+    setStartTimeEdit('');
+    setEndTimeEdit('');
   }, []);
 
   const validateFields = (
@@ -665,29 +687,6 @@ export default function ManageVenues() {
     },
     [fetchData, resetEdit, toast],
   );
-
-  resetEdit = useCallback(async () => {
-    venueIDDBEdit.current = '';
-    nameDBEdit.current = '';
-    descriptionDBEdit.current = '';
-    capacityDBEdit.current = 0;
-    instantBookDBEdit.current = false;
-    isChildVenueDBEdit.current = false;
-    visibleDBEdit.current = false;
-    parentVenueEdit.current = '';
-    startTimeDBEdit.current = '';
-    endTimeDBEdit.current = '';
-
-    setVenueIDEdit('');
-    setNameEdit('');
-    setDescriptionEdit('');
-    setCapacityEdit(0);
-    setInstantBookEdit(false);
-    setIsChildVenueEdit(false);
-    setVisibleEdit(true);
-    setStartTimeEdit('');
-    setEndTimeEdit('');
-  }, []);
 
   const onTableChange = useCallback(
     async ({ pageIndex, pageSize }) => {

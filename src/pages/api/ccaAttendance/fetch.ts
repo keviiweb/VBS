@@ -4,7 +4,7 @@ import { CCAAttendance } from 'types/cca/ccaAttendance';
 import { CCASession } from 'types/cca/ccaSession';
 
 import { currentSession } from '@helper/sys/sessionServer';
-import { findCCAbyID } from '@helper/sys/cca/cca';
+import { calculateDuration, findCCAbyID } from '@helper/sys/cca/cca';
 import {
   countSpecificCCAAttendanceByUserEmail,
   fetchSpecificCCAAttendanceByUserEmail,
@@ -85,8 +85,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                       sessionAttendanceHourStr,
                     );
                     if (start !== null && end !== null) {
-                      const sessionDuration: number =
-                        Math.round(((end - start) / 60) * 10) / 10;
+                      const sessionDuration: number = await calculateDuration(
+                        start,
+                        end,
+                      );
+
                       const userDuration: number = attendance.ccaAttendance;
 
                       const durationStr: string = `${userDuration} out of ${sessionDuration}`;
