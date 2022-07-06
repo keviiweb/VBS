@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Box,
   Button,
@@ -25,6 +25,8 @@ import { Result } from 'types/api';
 
 import { checkerString } from '@constants/sys/helper';
 
+import { InfoOutlineIcon } from '@chakra-ui/icons';
+
 export default function BookingModal({
   isAdmin,
   isBookingRequest,
@@ -43,8 +45,13 @@ export default function BookingModal({
   const [conflict, setConflict] = useState<BookingRequest[]>([]);
   const [status, setStatus] = useState('');
   const [reason, setReason] = useState('');
+  const [userName, setUserName] = useState('');
 
   const pageSize = 10;
+
+  const [pageCount, setPageCount] = useState(0);
+
+  let generateData: any;
 
   const reset = () => {
     setID('');
@@ -57,7 +64,15 @@ export default function BookingModal({
     setConflict([]);
     setStatus('');
     setReason('');
+    setUserName('');
   };
+
+  const handleDetails = useCallback(
+    (content: BookingRequest) => {
+      generateData(content);
+    },
+    [generateData],
+  );
 
   const handleModalCloseButton = () => {
     setTimeout(() => {
@@ -65,6 +80,38 @@ export default function BookingModal({
       onClose();
     }, 200);
   };
+
+  const generateActionButton = useCallback(
+    async (content: BookingRequest) => {
+      const button: JSX.Element = (
+        <Button
+          size='sm'
+          leftIcon={<InfoOutlineIcon />}
+          onClick={() => handleDetails(content)}
+        >
+          View Details
+        </Button>
+      );
+
+      return button;
+    },
+    [handleDetails],
+  );
+
+  const includeActionButton = useCallback(
+    async (content: BookingRequest[]) => {
+      for (let key = 0; key < content.length; key += 1) {
+        if (content[key]) {
+          const dataField: BookingRequest = content[key];
+          const buttons = await generateActionButton(dataField);
+          dataField.action = buttons;
+        }
+      }
+
+      setConflict(content);
+    },
+    [generateActionButton],
+  );
 
   const processConflicts = async (conflicts: BookingRequest[]) => {
     try {
@@ -80,7 +127,7 @@ export default function BookingModal({
       });
       const content: Result = await rawResponse.json();
       if (content.status) {
-        setConflict(content.msg);
+        await includeActionButton(content.msg);
       }
 
       return true;
@@ -89,36 +136,101 @@ export default function BookingModal({
     }
   };
 
+  generateData = async (modalDataField: BookingRequest) => {
+    if (modalDataField.id && checkerString(modalDataField.id)) {
+      setID(modalDataField.id);
+    } else {
+      setID('');
+    }
+
+    if (modalDataField.venue && checkerString(modalDataField.venue)) {
+      setVenue(modalDataField.venue);
+    } else {
+      setVenue('');
+    }
+
+    if (modalDataField.dateStr && checkerString(modalDataField.dateStr)) {
+      setDate(modalDataField.dateStr);
+    } else {
+      setDate('');
+    }
+
+    if (modalDataField.timeSlots && checkerString(modalDataField.timeSlots)) {
+      setTimeSlots(modalDataField.timeSlots);
+    } else {
+      setTimeSlots('');
+    }
+
+    if (modalDataField.email && checkerString(modalDataField.email)) {
+      setEmail(modalDataField.email);
+    } else {
+      setEmail('');
+    }
+
+    if (modalDataField.cca && checkerString(modalDataField.cca)) {
+      setCCA(modalDataField.cca);
+    } else {
+      setCCA('');
+    }
+
+    if (modalDataField.purpose && checkerString(modalDataField.purpose)) {
+      setPurpose(modalDataField.purpose);
+    } else {
+      setPurpose('');
+    }
+
+    if (modalDataField.status && checkerString(modalDataField.status)) {
+      setStatus(modalDataField.status);
+    } else {
+      setStatus('');
+    }
+
+    if (modalDataField.userName && checkerString(modalDataField.userName)) {
+      setUserName(modalDataField.userName);
+    } else {
+      setUserName('');
+    }
+
+    if (
+      isBookingRequest &&
+      modalDataField.conflictRequestObj &&
+      modalDataField.conflictRequestObj.length > 0
+    ) {
+      if (modalData.conflictRequestObj.length % pageSize === 0) {
+        setPageCount(
+          Math.floor(modalData.conflictRequestObj.length / pageSize),
+        );
+      } else {
+        setPageCount(
+          Math.floor(modalData.conflictRequestObj.length / pageSize) + 1,
+        );
+      }
+
+      await processConflicts(modalDataField.conflictRequestObj);
+    } else if (
+      isBookingRequest &&
+      modalDataField.conflictRequestObj?.length === 0
+    ) {
+      setConflict([]);
+    }
+
+    if (modalDataField.reason && checkerString(modalDataField.reason)) {
+      setReason(modalDataField.reason);
+    } else {
+      setReason('');
+    }
+
+    setLoadingData(false);
+  };
   useEffect(() => {
-    async function setupData() {
-      setID(modalData.id);
-      setVenue(modalData.venue);
-      setDate(modalData.dateStr);
-      setTimeSlots(modalData.timeSlots);
-      setEmail(modalData.email);
-      setCCA(modalData.cca);
-      setPurpose(modalData.purpose);
-      setStatus(modalData.status);
-
-      if (
-        isBookingRequest &&
-        modalData.conflictRequestObj &&
-        modalData.conflictRequestObj.length > 0
-      ) {
-        await processConflicts(modalData.conflictRequestObj);
-      }
-
-      if (modalData.reason && checkerString(modalData.reason)) {
-        setReason(modalData.reason);
-      }
-
-      setLoadingData(false);
+    async function setupData(modalDataField: BookingRequest) {
+      await generateData(modalDataField);
     }
 
     if (modalData) {
-      setupData();
+      setupData(modalData);
     }
-  }, [modalData, isBookingRequest]);
+  }, [modalData, isBookingRequest, generateData]);
 
   const columns = useMemo(
     () => [
@@ -145,6 +257,10 @@ export default function BookingModal({
       {
         Header: 'Status',
         accessor: 'status',
+      },
+      {
+        Header: 'Action',
+        accessor: 'action',
       },
     ],
     [],
@@ -244,6 +360,15 @@ export default function BookingModal({
                           {checkerString(email) && (
                             <ListItem>
                               <Text as='span' fontWeight='bold'>
+                                Contact Name:
+                              </Text>{' '}
+                              {userName}
+                            </ListItem>
+                          )}
+
+                          {checkerString(email) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
                                 Contact Email:
                               </Text>{' '}
                               {email}
@@ -319,16 +444,7 @@ export default function BookingModal({
                               key={2}
                               columns={columns}
                               data={conflict}
-                              controlledPageCount={
-                                modalData.conflictRequestObj &&
-                                modalData.conflictRequestObj.length
-                                  ? Math.floor(
-                                    modalData.conflictRequestObj.length /
-                                        pageSize +
-                                        1,
-                                  )
-                                  : 0
-                              }
+                              controlledPageCount={pageCount}
                               dataHandler={null}
                             />
                           </Box>

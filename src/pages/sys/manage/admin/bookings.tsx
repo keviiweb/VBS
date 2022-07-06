@@ -265,6 +265,28 @@ export default function ManageBooking() {
             }
             return null;
           }
+          if (content.status === 'APPROVED') {
+            const button2: JSX.Element = (
+              <Stack direction='column'>
+                <Button
+                  size='sm'
+                  leftIcon={<CloseIcon />}
+                  disabled={submitButtonPressed}
+                  onClick={() => handleReject(content)}
+                >
+                  Reject
+                </Button>
+                <Button
+                  size='sm'
+                  leftIcon={<InfoOutlineIcon />}
+                  onClick={() => handleDetails(content)}
+                >
+                  View Details
+                </Button>
+              </Stack>
+            );
+            return button2;
+          }
           const button: JSX.Element = (
             <Button
               size='sm'
@@ -278,13 +300,23 @@ export default function ManageBooking() {
         }
         case levels.APPROVED: {
           const button2: JSX.Element = (
-            <Button
-              size='sm'
-              leftIcon={<InfoOutlineIcon />}
-              onClick={() => handleDetails(content)}
-            >
-              View Details
-            </Button>
+            <Stack direction='column'>
+              <Button
+                size='sm'
+                leftIcon={<CloseIcon />}
+                disabled={submitButtonPressed}
+                onClick={() => handleReject(content)}
+              >
+                Reject
+              </Button>
+              <Button
+                size='sm'
+                leftIcon={<InfoOutlineIcon />}
+                onClick={() => handleDetails(content)}
+              >
+                View Details
+              </Button>
+            </Stack>
           );
           return button2;
         }
@@ -375,7 +407,11 @@ export default function ManageBooking() {
           setData(booking);
         }
 
-        setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
+        if (content.count % pageSizeDB.current === 0) {
+          setPageCount(Math.floor(content.count / pageSizeDB.current));
+        } else {
+          setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
+        }
       }
     },
     [generateActionButton],
@@ -794,13 +830,29 @@ export default function ManageBooking() {
           bg='white'
           borderRadius='lg'
           width={{ base: 'full', md: 'full', lg: 'full' }}
+          p={4}
+          color='gray.900'
+          shadow='base'
+        >
+          <Text>
+            Select between different dropdown menu items to retrieve the latest
+            data
+          </Text>
+        </Box>
+
+        <Box
+          bg='white'
+          borderRadius='lg'
+          width={{ base: 'full', md: 'full', lg: 'full' }}
           p={8}
           color='gray.700'
           shadow='base'
         >
-          <Heading size='sm' mb={4}>
-            Booking Calendar
-          </Heading>
+          <Stack direction='row'>
+            <Heading size='sm' mb={4}>
+              Booking Calendar
+            </Heading>
+          </Stack>
           {selectedVenue && <Text>Selected Venue: {selectedVenue}</Text>}
 
           {venueDropdown && (
@@ -832,9 +884,11 @@ export default function ManageBooking() {
           color='gray.700'
           shadow='base'
         >
-          <Heading size='sm' mb={4}>
-            Booking Table
-          </Heading>
+          <Stack direction='row'>
+            <Heading size='sm' mb={4}>
+              Booking Table
+            </Heading>
+          </Stack>
 
           <Stack spacing={2} w='full' mb='10'>
             <FormLabel>Select Bookings</FormLabel>

@@ -10,8 +10,9 @@ import {
   isRejected,
   setReject,
 } from '@helper/sys/vbs/bookingReq';
+import { deleteVenueBooking } from '@helper/sys/vbs/booking';
 
-import { checkerString } from '@constants/sys/helper';
+import { checkerString, convertSlotToArray } from '@constants/sys/helper';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
@@ -37,13 +38,44 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const isRequestRejected = await isRejected(bookingRequest);
 
         if (isRequestApproved) {
-          result = {
-            status: false,
-            error: 'Request already approved!',
-            msg: '',
-          };
-          res.status(200).send(result);
-          res.end();
+          const timeSlots: number[] = convertSlotToArray(
+            bookingRequest.timeSlots,
+            true,
+          ) as number[];
+
+          const deleteBooking = await deleteVenueBooking(
+            bookingRequest,
+            timeSlots,
+          );
+
+          if (!deleteBooking.status) {
+            result = {
+              status: false,
+              error: deleteBooking.error,
+              msg: '',
+            };
+            res.status(200).send(result);
+            res.end();
+          } else {
+            const reject: Result = await setReject(bookingRequest, reasonField);
+            if (reject.status) {
+              result = {
+                status: true,
+                error: null,
+                msg: 'Booking request rejected',
+              };
+              res.status(200).send(result);
+              res.end();
+            } else {
+              result = {
+                status: false,
+                error: reject.error,
+                msg: '',
+              };
+              res.status(200).send(result);
+              res.end();
+            }
+          }
         } else if (isRequestCancelled) {
           result = {
             status: false,

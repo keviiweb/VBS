@@ -249,7 +249,12 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           }
         }
         setData(content.res);
-        setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
+
+        if (content.count % pageSizeDB.current === 0) {
+          setPageCount(Math.floor(content.count / pageSizeDB.current));
+        } else {
+          setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
+        }
       }
     },
     [generateActionButtonRecord, generateActionButtonSession],

@@ -219,7 +219,11 @@ export default function ManageVenues() {
         announceData.current = allAnnouncement;
         setData(contentRes);
 
-        setPageCount(Math.floor(content.length / pageSizeDB.current) + 1);
+        if (contentRes.length % pageSizeDB.current === 0) {
+          setPageCount(Math.floor(contentRes.length / pageSizeDB.current));
+        } else {
+          setPageCount(Math.floor(contentRes.length / pageSizeDB.current) + 1);
+        }
       }
     },
     [generateActionButton],

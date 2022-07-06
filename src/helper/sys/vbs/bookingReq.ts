@@ -4,6 +4,7 @@ import { Session } from 'next-auth/core/types';
 
 import { prisma } from '@constants/sys/db';
 import {
+  checkerString,
   convertSlotToArray,
   isInside,
   mapSlotToTiming,
@@ -486,7 +487,7 @@ export const setReject = async (
   reason: string,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
-  if (bookingRequest) {
+  if (bookingRequest && checkerString(reason)) {
     const update: BookingRequest = await prisma.venueBookingRequest.update({
       where: {
         id: bookingRequest.id,
@@ -556,6 +557,8 @@ export const setReject = async (
     } else {
       result = { status: false, error: 'Error in updating', msg: '' };
     }
+  } else if (bookingRequest) {
+    result = { status: false, error: 'No reason found', msg: '' };
   } else {
     result = { status: false, error: 'No booking ID found', msg: '' };
   }

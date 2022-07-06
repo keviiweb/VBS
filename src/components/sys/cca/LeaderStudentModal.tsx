@@ -70,7 +70,12 @@ export default function LeaderStudentModalComponent({
     async (content: { count: number; res: CCARecord[] }) => {
       if (content.res !== [] && content.count > 0) {
         setData(content.res);
-        setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
+
+        if (content.count % pageSizeDB.current === 0) {
+          setPageCount(Math.floor(content.count / pageSizeDB.current));
+        } else {
+          setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
+        }
       }
     },
     [],

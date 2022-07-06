@@ -1,6 +1,7 @@
 export type BookingRequest = {
   id?: string;
   email: string;
+  userName?: string;
   venue: string;
   date?: number;
   dateStr?: string;

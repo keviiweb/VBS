@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 import { BookingRequest } from 'types/vbs/bookingReq';
 import { CCA } from 'types/cca/cca';
+import { User } from 'types/misc/user';
 
 import {
   mapSlotToTiming,
@@ -33,6 +34,7 @@ import {
   findPendingBooking,
   findAllBooking,
 } from '@helper/sys/vbs/bookingReq';
+import { fetchUserByEmail } from '@helper/sys/misc/user';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
@@ -197,6 +199,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               }
 
               if (success) {
+                const userRes: Result = await fetchUserByEmail(book.email);
+                const user: User = userRes.msg;
+                let username: string = '';
+                if (user && checkerString(user.name)) {
+                  username = user.name;
+                }
+
                 const data: BookingRequest = {
                   id: book.id,
                   email: book.email,
@@ -211,6 +220,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   conflictRequestObj: conflicts,
                   status: status,
                   reason: book.reason,
+                  userName: username,
                 };
 
                 parsedBooking.push(data);

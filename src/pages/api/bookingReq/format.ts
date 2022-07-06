@@ -3,6 +3,7 @@ import { Result } from 'types/api';
 import { BookingRequest } from 'types/vbs/bookingReq';
 import { CCA } from 'types/cca/cca';
 import { Venue } from 'types/vbs/venue';
+import { User } from 'types/misc/user';
 
 import {
   mapSlotToTiming,
@@ -10,12 +11,15 @@ import {
   prettifyTiming,
   checkerArray,
   PERSONAL,
+  checkerString,
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { findVenueByID } from '@helper/sys/vbs/venue';
 import { findCCAbyID } from '@helper/sys/cca/cca';
+import { fetchUserByEmail } from '@helper/sys/misc/user';
+import { getConflictingRequest } from '@helper/sys/vbs/bookingReq';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
@@ -98,6 +102,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 prettified = prettifyDate(date);
               }
 
+              const userRes: Result = await fetchUserByEmail(book.email);
+              const user: User = userRes.msg;
+              let username: string = '';
+              if (user && checkerString(user.name)) {
+                username = user.name;
+              }
+
+              const conflictsRequest: Result = await getConflictingRequest(
+                book,
+              );
+
+              let conflicts: BookingRequest[] = [];
+              if (conflictsRequest.status) {
+                conflicts = conflictsRequest.msg;
+              }
+
               const data: BookingRequest = {
                 id: book.id,
                 email: book.email,
@@ -110,6 +130,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 purpose: book.purpose,
                 cca: cca,
                 status: status,
+                conflictRequestObj: conflicts,
+                reason: book.reason,
+                userName: username,
               };
 
               parsedBooking.push(data);

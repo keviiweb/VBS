@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
-import { Announcement } from 'types/misc/announcement';
 
 import { deleteAnnouncement } from '@helper/sys/misc/announcement';
 import { currentSession } from '@helper/sys/sessionServer';

@@ -288,7 +288,11 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                       columns={columns}
                       data={childVenues}
                       controlledPageCount={
-                        Math.floor(childVenues.length / pageSizeDB.current) + 1
+                        childVenues.length % pageSizeDB.current === 0
+                          ? Math.floor(childVenues.length / pageSizeDB.current)
+                          : Math.floor(
+                            childVenues.length / pageSizeDB.current,
+                          ) + 1
                       }
                       dataHandler={onTableChange}
                     />

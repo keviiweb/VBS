@@ -82,7 +82,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               const deleteBooking = await deleteVenueBooking(
                 bookingRequest,
                 timeSlots,
-                session,
               );
 
               if (!deleteBooking.status) {

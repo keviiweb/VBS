@@ -84,7 +84,6 @@ export const createVenueBooking = async (
 export const deleteVenueBooking = async (
   bookingRequest: BookingRequest,
   timeSlots: number[],
-  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   let success = true;
@@ -98,7 +97,6 @@ export const deleteVenueBooking = async (
           timingSlot: timeSlots[i],
           cca: bookingRequest.cca,
           purpose: bookingRequest.purpose,
-          sessionEmail: session.user.email,
         },
       });
 
