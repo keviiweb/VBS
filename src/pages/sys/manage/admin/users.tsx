@@ -596,9 +596,17 @@ export default function ManageUsers(props: any) {
           onClose={() => setSubmitButtonPressed(false)}
         />
         <MotionBox variants={cardVariant} key='1'>
-          {loadingData && !data ? (
-            <Text>Loading Please wait...</Text>
-          ) : (
+          {loadingData && !data && <Text>Loading Please wait...</Text>}
+
+          {!loadingData && data && data.length === 0 && (
+            <Box mt={30}>
+              <Stack align='center' justify='center'>
+                <Text>No venues found</Text>
+              </Stack>
+            </Box>
+          )}
+
+          {!loadingData && data && data.length > 0 && (
             <Box minWidth='full' mt={30}>
               <Stack spacing={30} align='center' justify='center'>
                 <TableWidget

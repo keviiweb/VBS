@@ -10,6 +10,7 @@ import {
   fetchAllCCARecordByUser,
   fetchAllCCARecordByID,
   countAllCCARecordByID,
+  isLeader,
 } from '@helper/sys/cca/ccaRecord';
 
 import { findCCAbyID } from '@helper/sys/cca/cca';
@@ -40,91 +41,103 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (ccaIDRes !== undefined) {
-      const limitQuery = req.body.limit;
-      const skipQuery = req.body.skip;
-      const limit: number = limitQuery !== undefined ? Number(limitQuery) : 100;
-      const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
+      const checkLdr: Result = await isLeader(ccaIDRes, session);
+      if (checkLdr.status && checkLdr.msg) {
+        const limitQuery = req.body.limit;
+        const skipQuery = req.body.skip;
+        const limit: number =
+          limitQuery !== undefined ? Number(limitQuery) : 100;
+        const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
-      const ccaDetailsRes: Result = await findCCAbyID(ccaIDRes);
-      if (ccaDetailsRes.status && ccaDetailsRes.msg) {
-        const ccaDetails: CCA = ccaDetailsRes.msg;
-        const ccaDB: Result = await fetchAllCCARecordByID(
-          ccaIDRes,
-          limit,
-          skip,
-        );
+        const ccaDetailsRes: Result = await findCCAbyID(ccaIDRes);
+        if (ccaDetailsRes.status && ccaDetailsRes.msg) {
+          const ccaDetails: CCA = ccaDetailsRes.msg;
+          const ccaDB: Result = await fetchAllCCARecordByID(
+            ccaIDRes,
+            limit,
+            skip,
+          );
 
-        const totalCount: number = await countAllCCARecordByID(ccaIDRes);
-        if (ccaDB.status) {
-          const ccaData: CCARecord[] = ccaDB.msg;
-          const ccaAttendanceHours: number =
-            await countTotalSessionHoursByCCAID(ccaIDRes);
+          const totalCount: number = await countAllCCARecordByID(ccaIDRes);
+          if (ccaDB.status) {
+            const ccaData: CCARecord[] = ccaDB.msg;
+            const ccaAttendanceHours: number =
+              await countTotalSessionHoursByCCAID(ccaIDRes);
 
-          if (ccaData && ccaData.length > 0) {
-            for (let ven = 0; ven < ccaData.length; ven += 1) {
-              if (ccaData[ven]) {
-                const record: CCARecord = ccaData[ven];
-                if (record.sessionEmail !== undefined) {
-                  const userResult: Result = await fetchUserByEmail(
-                    record.sessionEmail,
-                  );
-                  if (userResult.status && userResult.msg) {
-                    const user: User = userResult.msg;
-                    const userAttendance: Result =
-                      await fetchSpecificCCAAttendanceByUserEmail(
-                        ccaIDRes,
-                        user.email,
-                      );
-                    if (userAttendance.status) {
-                      const userAttendanceHours =
-                        await countTotalAttendanceHours(
-                          userAttendance.msg as CCAAttendance[],
+            if (ccaData && ccaData.length > 0) {
+              for (let ven = 0; ven < ccaData.length; ven += 1) {
+                if (ccaData[ven]) {
+                  const record: CCARecord = ccaData[ven];
+                  if (record.sessionEmail !== undefined) {
+                    const userResult: Result = await fetchUserByEmail(
+                      record.sessionEmail,
+                    );
+                    if (userResult.status && userResult.msg) {
+                      const user: User = userResult.msg;
+                      const userAttendance: Result =
+                        await fetchSpecificCCAAttendanceByUserEmail(
+                          ccaIDRes,
+                          user.email,
                         );
-                      let rate: string = '100%';
-                      if (ccaAttendanceHours !== 0) {
-                        if (userAttendanceHours > ccaAttendanceHours) {
-                          rate = '100%';
+                      if (userAttendance.status) {
+                        const userAttendanceHours =
+                          await countTotalAttendanceHours(
+                            userAttendance.msg as CCAAttendance[],
+                          );
+                        let rate: string = '100%';
+                        if (ccaAttendanceHours !== 0) {
+                          if (userAttendanceHours > ccaAttendanceHours) {
+                            rate = '100%';
+                          } else {
+                            rate = `${(
+                              (userAttendanceHours / ccaAttendanceHours) *
+                              100
+                            ).toFixed(1)}%`;
+                          }
                         } else {
-                          rate = `${(
-                            (userAttendanceHours / ccaAttendanceHours) *
-                            100
-                          ).toFixed(1)}%`;
+                          rate = 'No sessions found';
                         }
-                      } else {
-                        rate = 'No sessions found';
+
+                        const data: CCARecord = {
+                          id: record.id,
+                          ccaID: record.ccaID,
+                          leader: record.leader,
+                          sessionEmail: record.sessionEmail,
+                          sessionName: user.name,
+                          sessionStudentID: user.studentID,
+                          ccaName: ccaDetails.name,
+                          image: ccaDetails.image,
+                          rate: rate,
+                        };
+
+                        parsedCCARecord.push(data);
                       }
-
-                      const data: CCARecord = {
-                        id: record.id,
-                        ccaID: record.ccaID,
-                        leader: record.leader,
-                        sessionEmail: record.sessionEmail,
-                        sessionName: user.name,
-                        sessionStudentID: user.studentID,
-                        ccaName: ccaDetails.name,
-                        image: ccaDetails.image,
-                        rate: rate,
-                      };
-
-                      parsedCCARecord.push(data);
                     }
                   }
                 }
               }
             }
-          }
 
-          result = {
-            status: true,
-            error: null,
-            msg: { count: totalCount, res: parsedCCARecord },
-          };
-          res.status(200).send(result);
-          res.end();
+            result = {
+              status: true,
+              error: null,
+              msg: { count: totalCount, res: parsedCCARecord },
+            };
+            res.status(200).send(result);
+            res.end();
+          } else {
+            result = {
+              status: false,
+              error: ccaDB.error,
+              msg: { count: 0, res: [] },
+            };
+            res.status(200).send(result);
+            res.end();
+          }
         } else {
           result = {
             status: false,
-            error: ccaDB.error,
+            error: ccaDetailsRes.error,
             msg: { count: 0, res: [] },
           };
           res.status(200).send(result);
@@ -133,7 +146,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       } else {
         result = {
           status: false,
-          error: ccaDetailsRes.error,
+          error: 'Not a CCA leader',
           msg: { count: 0, res: [] },
         };
         res.status(200).send(result);
