@@ -32,13 +32,21 @@ import { checkerString } from '@constants/sys/helper';
 
 import { User } from 'types/misc/user';
 import { Result } from 'types/api';
+import { levels } from '@root/src/constants/sys/admin';
+
+import { Session } from 'next-auth/core/types';
+
+import { GetServerSideProps } from 'next';
+import { currentSession } from '@root/src/helper/sys/sessionServer';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
-export default function ManageUsers() {
+export default function ManageUsers(props: any) {
   const [modalData, setModalData] = useState<User | null>(null);
   const toast = useToast();
+
+  const [level, setLevel] = useState(levels.USER);
 
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState<User[]>([]);
@@ -306,12 +314,15 @@ export default function ManageUsers() {
   }, [fetchDataTable]);
 
   useEffect(() => {
-    async function generate() {
+    async function generate(propsField: any) {
+      const propRes = await propsField;
+      setLevel(propRes.data);
+
       await fetchData();
     }
 
-    generate();
-  }, [fetchData]);
+    generate(props);
+  }, [fetchData, props]);
 
   const columns = useMemo(
     () => [
@@ -348,13 +359,16 @@ export default function ManageUsers() {
     setEmailEdit(dataField.email);
     setStudentIDEdit(dataField.studentID);
     setRoomNumEdit(dataField.roomNum);
-    setAdminEdit(dataField.admin);
+
+    const ad: boolean =
+      dataField.admin === levels.OWNER || dataField.admin === levels.ADMIN;
+    setAdminEdit(ad);
 
     nameDBEdit.current = dataField.name;
     emailDBEdit.current = dataField.email;
     studentIDDBEdit.current = dataField.studentID;
     roomNumDBEdit.current = dataField.roomNum;
-    adminDBEdit.current = dataField.admin;
+    adminDBEdit.current = ad;
   };
 
   const validateFieldsEdit = (
@@ -543,112 +557,114 @@ export default function ManageUsers() {
         initial='initial'
         animate='animate'
       >
-        <MotionBox>
-          {' '}
-          <Stack
-            spacing={4}
-            w='full'
-            maxW='md'
-            bg='white'
-            rounded='xl'
-            boxShadow='lg'
-            p={6}
-            my={12}
-          >
-            <Heading size='md'>Create new user</Heading>
-            <form onSubmit={handleSubmit}>
-              <Stack spacing={4}>
-                <FormControl id='name'>
-                  <FormLabel>Name</FormLabel>
-                  <Input
-                    type='text'
-                    placeholder='Name'
-                    value={name}
-                    size='lg'
-                    onChange={(event) => {
-                      setName(event.currentTarget.value);
-                      nameDB.current = event.currentTarget.value;
-                    }}
-                  />
-                </FormControl>
+        {level === levels.OWNER && (
+          <MotionBox>
+            {' '}
+            <Stack
+              spacing={4}
+              w='full'
+              maxW='md'
+              bg='white'
+              rounded='xl'
+              boxShadow='lg'
+              p={6}
+              my={12}
+            >
+              <Heading size='md'>Create new user</Heading>
+              <form onSubmit={handleSubmit}>
+                <Stack spacing={4}>
+                  <FormControl id='name'>
+                    <FormLabel>Name</FormLabel>
+                    <Input
+                      type='text'
+                      placeholder='Name'
+                      value={name}
+                      size='lg'
+                      onChange={(event) => {
+                        setName(event.currentTarget.value);
+                        nameDB.current = event.currentTarget.value;
+                      }}
+                    />
+                  </FormControl>
 
-                <FormControl id='email'>
-                  <FormLabel>Email</FormLabel>
-                  <Input
-                    type='email'
-                    placeholder='Email'
-                    value={email}
-                    size='lg'
-                    onChange={(event) => {
-                      setEmail(event.currentTarget.value);
-                      emailDB.current = event.currentTarget.value;
-                    }}
-                  />
-                </FormControl>
+                  <FormControl id='email'>
+                    <FormLabel>Email</FormLabel>
+                    <Input
+                      type='email'
+                      placeholder='Email'
+                      value={email}
+                      size='lg'
+                      onChange={(event) => {
+                        setEmail(event.currentTarget.value);
+                        emailDB.current = event.currentTarget.value;
+                      }}
+                    />
+                  </FormControl>
 
-                <FormControl id='studentID'>
-                  <FormLabel>Student ID</FormLabel>
-                  <Input
-                    type='text'
-                    placeholder='Student ID'
-                    value={studentID}
-                    size='lg'
-                    onChange={(event) => {
-                      setStudentID(event.currentTarget.value);
-                      studentIDDB.current = event.currentTarget.value;
-                    }}
-                  />
-                </FormControl>
+                  <FormControl id='studentID'>
+                    <FormLabel>Student ID</FormLabel>
+                    <Input
+                      type='text'
+                      placeholder='Student ID'
+                      value={studentID}
+                      size='lg'
+                      onChange={(event) => {
+                        setStudentID(event.currentTarget.value);
+                        studentIDDB.current = event.currentTarget.value;
+                      }}
+                    />
+                  </FormControl>
 
-                <FormControl id='roomNum'>
-                  <FormLabel>Room Num</FormLabel>
-                  <Input
-                    type='text'
-                    placeholder='Room Num'
-                    value={roomNum}
-                    size='lg'
-                    onChange={(event) => {
-                      setRoomNum(event.currentTarget.value);
-                      roomNumDB.current = event.currentTarget.value;
-                    }}
-                  />
-                </FormControl>
+                  <FormControl id='roomNum'>
+                    <FormLabel>Room Num</FormLabel>
+                    <Input
+                      type='text'
+                      placeholder='Room Num'
+                      value={roomNum}
+                      size='lg'
+                      onChange={(event) => {
+                        setRoomNum(event.currentTarget.value);
+                        roomNumDB.current = event.currentTarget.value;
+                      }}
+                    />
+                  </FormControl>
 
-                <Stack spacing={5} direction='row'>
-                  <Checkbox
-                    isChecked={admin}
-                    onChange={(event) => {
-                      setAdmin(event.target.checked);
-                      adminDB.current = event.target.checked;
-                    }}
-                  >
-                    Admin
-                  </Checkbox>
-                </Stack>
-
-                {checkerString(errorMsg) && (
-                  <Stack align='center'>
-                    <Text>{errorMsg}</Text>
+                  <Stack spacing={5} direction='row'>
+                    <Checkbox
+                      isChecked={admin}
+                      onChange={(event) => {
+                        setAdmin(event.target.checked);
+                        adminDB.current = event.target.checked;
+                      }}
+                    >
+                      Admin
+                    </Checkbox>
                   </Stack>
-                )}
 
-                <Stack spacing={10}>
-                  <Button
-                    type='submit'
-                    bg='blue.400'
-                    color='white'
-                    disabled={submitButtonPressed}
-                    _hover={{
-                      bg: 'blue.500',
-                    }}
-                  >
-                    Create
-                  </Button>
+                  {checkerString(errorMsg) && (
+                    <Stack align='center'>
+                      <Text>{errorMsg}</Text>
+                    </Stack>
+                  )}
+
+                  <Stack spacing={10}>
+                    <Button
+                      type='submit'
+                      bg='blue.400'
+                      color='white'
+                      disabled={submitButtonPressed}
+                      _hover={{
+                        bg: 'blue.500',
+                      }}
+                    >
+                      Create
+                    </Button>
+                  </Stack>
                 </Stack>
-              </Stack>
-            </form>
-          </Stack>
-        </MotionBox>
+              </form>
+            </Stack>
+          </MotionBox>
+        )}
 
         <MotionBox>
           <Stack
@@ -772,3 +788,24 @@ export default function ManageUsers() {
     </Auth>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (cont) => ({
+  props: (async function Props() {
+    try {
+      const session: Session | null = await currentSession(null, null, cont);
+      if (session !== null) {
+        return {
+          data: session.user.admin,
+        };
+      }
+      return {
+        data: levels.USER,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        data: levels.USER,
+      };
+    }
+  })(),
+});

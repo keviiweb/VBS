@@ -34,16 +34,23 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { timeSlots } from '@constants/sys/timeslot';
 import { checkerNumber, checkerString } from '@constants/sys/helper';
+import { levels } from '@constants/sys/admin';
 
 import { Venue } from 'types/vbs/venue';
 import { Result } from 'types/api';
+import { Session } from 'next-auth/core/types';
+
+import { GetServerSideProps } from 'next';
+import { currentSession } from '@root/src/helper/sys/sessionServer';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
-export default function ManageVenues() {
+export default function ManageVenues(props: any) {
   const [modalData, setModalData] = useState<Venue | null>(null);
   const toast = useToast();
+
+  const [level, setLevel] = useState(levels.USER);
 
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState<Venue[]>([]);
@@ -449,13 +456,16 @@ export default function ManageVenues() {
   }, []);
 
   useEffect(() => {
-    async function generate() {
+    async function generate(propsField: any) {
+      const propRes = await propsField;
+      setLevel(propRes.data);
+
       await fetchData();
       await generateTimeSlots();
     }
 
-    generate();
-  }, [fetchData, generateTimeSlots]);
+    generate(props);
+  }, [fetchData, generateTimeSlots, props]);
 
   const columns = useMemo(
     () => [
@@ -709,20 +719,6 @@ export default function ManageVenues() {
 
   return (
     <Auth admin>
-      <Text
-        mt={2}
-        mb={6}
-        textTransform='uppercase'
-        fontSize={{ base: '2xl', sm: '2xl', lg: '2xl' }}
-        lineHeight='5'
-        fontWeight='bold'
-        letterSpacing='tight'
-        color='gray.900'
-      >
-        Notice: Uploading of Image doesnt work in production, to be replaced
-        with Amazon S3
-      </Text>
-
       <Box
         bg='white'
         borderRadius='lg'
@@ -767,215 +763,217 @@ export default function ManageVenues() {
         initial='initial'
         animate='animate'
       >
-        <MotionBox>
-          {' '}
-          <Stack
-            spacing={4}
-            w='full'
-            maxW='md'
-            bg='white'
-            rounded='xl'
-            boxShadow='lg'
-            p={6}
-            my={12}
-          >
-            <Heading size='md'>Create new venue</Heading>
-            <form onSubmit={handleSubmit}>
-              <Stack spacing={4}>
-                <FormControl id='name'>
-                  <FormLabel>Name</FormLabel>
-                  <Input
-                    type='text'
-                    placeholder='Name'
-                    value={name}
-                    size='lg'
-                    onChange={(event) => {
-                      setName(event.currentTarget.value);
-                      nameDB.current = event.currentTarget.value;
-                    }}
-                  />
-                </FormControl>
-                <FormControl id='description'>
-                  <FormLabel>Description</FormLabel>
-                  <Input
-                    type='text'
-                    placeholder='Description'
-                    value={description}
-                    size='lg'
-                    onChange={(event) => {
-                      setDescription(event.currentTarget.value);
-                      descriptionDB.current = event.currentTarget.value;
-                    }}
-                  />
-                </FormControl>
-                <FormControl id='capacity'>
-                  <FormLabel>Capacity</FormLabel>
-                  <Input
-                    type='number'
-                    placeholder='Capacity'
-                    value={capacity}
-                    size='lg'
-                    onChange={(event) => {
-                      setCapacity(Number(event.currentTarget.value));
-                      capacityDB.current = Number(event.currentTarget.value);
-                    }}
-                  />
-                </FormControl>
-                {startTimeDropdown && (
-                  <Stack w='full'>
-                    <FormLabel>Start Time</FormLabel>
-                    <Select
-                      value={startTime}
-                      onChange={onStartTimeChange}
-                      size='sm'
-                    >
-                      {endTimeDropdown}
-                    </Select>
-                  </Stack>
-                )}
-
-                {endTimeDropdown && (
-                  <Stack w='full'>
-                    <FormLabel>End Time</FormLabel>
-                    <Select
-                      value={endTime}
-                      onChange={onEndTimeChange}
-                      size='sm'
-                    >
-                      {endTimeDropdown}
-                    </Select>
-                  </Stack>
-                )}
-
-                <Stack spacing={5} direction='row'>
-                  <Checkbox
-                    isChecked={visible}
-                    onChange={(event) => {
-                      setVisible(event.target.checked);
-                      visibleDB.current = event.target.checked;
-                    }}
-                  >
-                    Visible
-                  </Checkbox>
-                  <Checkbox
-                    isChecked={instantBook}
-                    onChange={(event) => {
-                      setInstantBook(event.target.checked);
-                      instantBookDB.current = event.target.checked;
-                    }}
-                  >
-                    Instant Book
-                  </Checkbox>
-                  <Checkbox
-                    isChecked={isChildVenue}
-                    onChange={(event) => {
-                      setIsChildVenue(event.target.checked);
-                      isChildVenueDB.current = event.target.checked;
-                    }}
-                  >
-                    Child Venue
-                  </Checkbox>
-                </Stack>
-                {isChildVenue && (
-                  <Stack spacing={5} w='full'>
-                    <Text>Select Venue</Text>
-                    <Select onChange={onParentVenueChange} size='sm'>
-                      {parentVenueDropdown}
-                    </Select>
-                  </Stack>
-                )}
-
-                <FormControl>
-                  <FormLabel fontSize='sm' fontWeight='md' color='gray.700'>
-                    Venue Photo
-                  </FormLabel>
-                  {fileName && <Text>File uploaded: {fileName}</Text>}
-                  <Flex
-                    mt={1}
-                    justify='center'
-                    px={6}
-                    pt={5}
-                    pb={6}
-                    borderWidth={2}
-                    borderColor='gray.300'
-                    borderStyle='dashed'
-                    rounded='md'
-                  >
-                    <Stack spacing={1} textAlign='center'>
-                      <Icon
-                        mx='auto'
-                        boxSize={12}
-                        color='gray.400'
-                        stroke='currentColor'
-                        fill='none'
-                        viewBox='0 0 48 48'
-                        aria-hidden='true'
+        {level === levels.OWNER && (
+          <MotionBox>
+            {' '}
+            <Stack
+              spacing={4}
+              w='full'
+              maxW='md'
+              bg='white'
+              rounded='xl'
+              boxShadow='lg'
+              p={6}
+              my={12}
+            >
+              <Heading size='md'>Create new venue</Heading>
+              <form onSubmit={handleSubmit}>
+                <Stack spacing={4}>
+                  <FormControl id='name'>
+                    <FormLabel>Name</FormLabel>
+                    <Input
+                      type='text'
+                      placeholder='Name'
+                      value={name}
+                      size='lg'
+                      onChange={(event) => {
+                        setName(event.currentTarget.value);
+                        nameDB.current = event.currentTarget.value;
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl id='description'>
+                    <FormLabel>Description</FormLabel>
+                    <Input
+                      type='text'
+                      placeholder='Description'
+                      value={description}
+                      size='lg'
+                      onChange={(event) => {
+                        setDescription(event.currentTarget.value);
+                        descriptionDB.current = event.currentTarget.value;
+                      }}
+                    />
+                  </FormControl>
+                  <FormControl id='capacity'>
+                    <FormLabel>Capacity</FormLabel>
+                    <Input
+                      type='number'
+                      placeholder='Capacity'
+                      value={capacity}
+                      size='lg'
+                      onChange={(event) => {
+                        setCapacity(Number(event.currentTarget.value));
+                        capacityDB.current = Number(event.currentTarget.value);
+                      }}
+                    />
+                  </FormControl>
+                  {startTimeDropdown && (
+                    <Stack w='full'>
+                      <FormLabel>Start Time</FormLabel>
+                      <Select
+                        value={startTime}
+                        onChange={onStartTimeChange}
+                        size='sm'
                       >
-                        <path
-                          d='M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02'
-                          strokeWidth='2'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                        />
-                      </Icon>
-                      <Flex
-                        fontSize='sm'
-                        color='gray.600'
-                        alignItems='baseline'
-                      >
-                        <chakra.label
-                          htmlFor='file-upload'
-                          cursor='pointer'
-                          rounded='md'
-                          fontSize='md'
-                          color='brand.600'
-                          pos='relative'
-                          _hover={{
-                            color: 'brand.400',
-                          }}
-                        >
-                          <span>Upload a file</span>
-                          <VisuallyHidden>
-                            <input
-                              id='file-upload'
-                              name='file-upload'
-                              type='file'
-                              onChange={onFileChange}
-                            />
-                          </VisuallyHidden>
-                        </chakra.label>
-                        <Text pl={1}>or drag and drop</Text>
-                      </Flex>
-                      <Text fontSize='xs' color='gray.500'>
-                        PNG, JPG, GIF up to 10MB
-                      </Text>
+                        {endTimeDropdown}
+                      </Select>
                     </Stack>
-                  </Flex>
-                </FormControl>
+                  )}
 
-                {checkerString(errorMsg) && (
-                  <Stack align='center'>
-                    <Text>{errorMsg}</Text>
+                  {endTimeDropdown && (
+                    <Stack w='full'>
+                      <FormLabel>End Time</FormLabel>
+                      <Select
+                        value={endTime}
+                        onChange={onEndTimeChange}
+                        size='sm'
+                      >
+                        {endTimeDropdown}
+                      </Select>
+                    </Stack>
+                  )}
+
+                  <Stack spacing={5} direction='row'>
+                    <Checkbox
+                      isChecked={visible}
+                      onChange={(event) => {
+                        setVisible(event.target.checked);
+                        visibleDB.current = event.target.checked;
+                      }}
+                    >
+                      Visible
+                    </Checkbox>
+                    <Checkbox
+                      isChecked={instantBook}
+                      onChange={(event) => {
+                        setInstantBook(event.target.checked);
+                        instantBookDB.current = event.target.checked;
+                      }}
+                    >
+                      Instant Book
+                    </Checkbox>
+                    <Checkbox
+                      isChecked={isChildVenue}
+                      onChange={(event) => {
+                        setIsChildVenue(event.target.checked);
+                        isChildVenueDB.current = event.target.checked;
+                      }}
+                    >
+                      Child Venue
+                    </Checkbox>
                   </Stack>
-                )}
+                  {isChildVenue && (
+                    <Stack spacing={5} w='full'>
+                      <Text>Select Venue</Text>
+                      <Select onChange={onParentVenueChange} size='sm'>
+                        {parentVenueDropdown}
+                      </Select>
+                    </Stack>
+                  )}
 
-                <Stack spacing={10}>
-                  <Button
-                    type='submit'
-                    bg='blue.400'
-                    color='white'
-                    disabled={submitButtonPressed}
-                    _hover={{
-                      bg: 'blue.500',
-                    }}
-                  >
-                    Create
-                  </Button>
+                  <FormControl>
+                    <FormLabel fontSize='sm' fontWeight='md' color='gray.700'>
+                      Venue Photo
+                    </FormLabel>
+                    {fileName && <Text>File uploaded: {fileName}</Text>}
+                    <Flex
+                      mt={1}
+                      justify='center'
+                      px={6}
+                      pt={5}
+                      pb={6}
+                      borderWidth={2}
+                      borderColor='gray.300'
+                      borderStyle='dashed'
+                      rounded='md'
+                    >
+                      <Stack spacing={1} textAlign='center'>
+                        <Icon
+                          mx='auto'
+                          boxSize={12}
+                          color='gray.400'
+                          stroke='currentColor'
+                          fill='none'
+                          viewBox='0 0 48 48'
+                          aria-hidden='true'
+                        >
+                          <path
+                            d='M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02'
+                            strokeWidth='2'
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                          />
+                        </Icon>
+                        <Flex
+                          fontSize='sm'
+                          color='gray.600'
+                          alignItems='baseline'
+                        >
+                          <chakra.label
+                            htmlFor='file-upload'
+                            cursor='pointer'
+                            rounded='md'
+                            fontSize='md'
+                            color='brand.600'
+                            pos='relative'
+                            _hover={{
+                              color: 'brand.400',
+                            }}
+                          >
+                            <span>Upload a file</span>
+                            <VisuallyHidden>
+                              <input
+                                id='file-upload'
+                                name='file-upload'
+                                type='file'
+                                onChange={onFileChange}
+                              />
+                            </VisuallyHidden>
+                          </chakra.label>
+                          <Text pl={1}>or drag and drop</Text>
+                        </Flex>
+                        <Text fontSize='xs' color='gray.500'>
+                          PNG, JPG, GIF up to 10MB
+                        </Text>
+                      </Stack>
+                    </Flex>
+                  </FormControl>
+
+                  {checkerString(errorMsg) && (
+                    <Stack align='center'>
+                      <Text>{errorMsg}</Text>
+                    </Stack>
+                  )}
+
+                  <Stack spacing={10}>
+                    <Button
+                      type='submit'
+                      bg='blue.400'
+                      color='white'
+                      disabled={submitButtonPressed}
+                      _hover={{
+                        bg: 'blue.500',
+                      }}
+                    >
+                      Create
+                    </Button>
+                  </Stack>
                 </Stack>
-              </Stack>
-            </form>
-          </Stack>
-        </MotionBox>
+              </form>
+            </Stack>
+          </MotionBox>
+        )}
 
         <MotionBox>
           <Stack
@@ -1136,3 +1134,24 @@ export default function ManageVenues() {
     </Auth>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (cont) => ({
+  props: (async function Props() {
+    try {
+      const session: Session | null = await currentSession(null, null, cont);
+      if (session !== null) {
+        return {
+          data: session.user.admin,
+        };
+      }
+      return {
+        data: levels.USER,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        data: levels.USER,
+      };
+    }
+  })(),
+});

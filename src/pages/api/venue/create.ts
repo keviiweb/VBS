@@ -7,6 +7,7 @@ import { currentSession } from '@helper/sys/sessionServer';
 
 import formidable, { IncomingForm } from 'formidable';
 import { promises as fs } from 'fs';
+import { levels } from '@constants/sys/admin';
 
 export const config = {
   api: {
@@ -22,7 +23,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     msg: '',
   };
 
-  if (session !== undefined && session !== null && session.user.admin) {
+  if (
+    session !== undefined &&
+    session !== null &&
+    session.user.admin === levels.OWNER
+  ) {
     const data: { fields: formidable.Fields; files: formidable.Files } =
       await new Promise((resolve, reject) => {
         const form = new IncomingForm();

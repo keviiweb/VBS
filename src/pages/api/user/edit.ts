@@ -3,6 +3,7 @@ import { Result } from 'types/api';
 import { User } from 'types/misc/user';
 
 import { checkerString } from '@constants/sys/helper';
+import { levels } from '@constants/sys/admin';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { editUser } from '@helper/sys/misc/user';
@@ -18,7 +19,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const { id, name, email, roomNum, studentID, admin } = req.body;
 
-  if (session !== undefined && session !== null && session.user.admin) {
+  if (
+    session !== undefined &&
+    session !== null &&
+    (session.user.admin === levels.ADMIN || session.user.admin === levels.OWNER)
+  ) {
     if (
       checkerString(id) &&
       checkerString(name) &&
@@ -31,7 +36,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const emailField: string = (email as string).trim().toLowerCase();
       const roomNumField: string = (roomNum as string).trim();
       const studentIDField: string = (studentID as string).trim();
-      const adminField: boolean = (admin as boolean) === true;
+      const adminField: number =
+        (admin as boolean) === true ? levels.ADMIN : levels.OWNER;
 
       const user: User = {
         id: idField,

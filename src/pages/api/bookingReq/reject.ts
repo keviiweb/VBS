@@ -13,6 +13,7 @@ import {
 import { deleteVenueBooking } from '@helper/sys/vbs/booking';
 
 import { checkerString, convertSlotToArray } from '@constants/sys/helper';
+import { levels } from '@constants/sys/admin';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
@@ -24,7 +25,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   };
 
   const { id, reason } = req.body;
-  if (session !== undefined && session !== null && session.user.admin) {
+  if (
+    session !== undefined &&
+    session !== null &&
+    (session.user.admin === levels.ADMIN || session.user.admin === levels.OWNER)
+  ) {
     if (checkerString(id) && checkerString(reason)) {
       const bookingID: string = (id as string).trim();
       const reasonField: string = (reason as string).trim();

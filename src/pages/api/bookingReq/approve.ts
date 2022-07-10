@@ -15,6 +15,7 @@ import {
 } from '@helper/sys/vbs/bookingReq';
 import { currentSession } from '@helper/sys/sessionServer';
 import { createVenueBooking } from '@helper/sys/vbs/booking';
+import { levels } from '@constants/sys/admin';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
@@ -26,7 +27,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   };
 
   const { id } = req.body;
-  if (session !== undefined && session !== null && session.user.admin) {
+  if (
+    session !== undefined &&
+    session !== null &&
+    (session.user.admin === levels.ADMIN || session.user.admin === levels.OWNER)
+  ) {
     if (checkerString(id)) {
       const bookingID: string = (id as string).trim();
       const bookingRequest: BookingRequest | null = await findBookingByID(

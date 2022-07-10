@@ -1,6 +1,7 @@
 import { Session } from 'next-auth/core/types';
 import { options } from '@constants/sys/nextAuthOptions';
 import { unstable_getServerSession } from 'next-auth/next';
+import { levels } from '@constants/sys/admin';
 
 export const currentSession = async (
   request: any = null,
@@ -14,7 +15,7 @@ export const currentSession = async (
       user: {
         username: 'Test user',
         email: 'testing@test.com',
-        admin: true,
+        admin: levels.OWNER,
         studentID: 'A7654321',
         roomNum: 'C124',
       },

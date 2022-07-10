@@ -7,6 +7,7 @@ import { currentSession } from '@helper/sys/session';
 import Layout from '@layout/sys/index';
 import Loading from '@layout/sys/Loading';
 import { Session } from 'next-auth/core/types';
+import { levels } from '@constants/sys/admin';
 
 export default function Auth({ children, admin }) {
   const { data: session, status } = useSession();
@@ -30,7 +31,14 @@ export default function Auth({ children, admin }) {
           }
         } else if (!loading && !hasUser) {
           router.push('/sys/signin');
-        } else if (isAdmin && session !== null && !session.user.admin) {
+        } else if (
+          isAdmin &&
+          session !== null &&
+          !(
+            session.user.admin === levels.ADMIN ||
+            session.user.admin === levels.OWNER
+          )
+        ) {
           router.push('/unauthorized');
         }
       } catch (error) {

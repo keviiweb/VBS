@@ -30,6 +30,7 @@ import TableWidget from '@components/sys/misc/TableWidget';
 
 import { Result } from 'types/api';
 import { Venue } from 'types/vbs/venue';
+import { checkerNumber, checkerString } from '@constants/sys/helper';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -37,14 +38,14 @@ const MotionBox = motion(Box);
 export default function VenueModal({ isOpen, onClose, modalData }) {
   const [loadingData, setLoadingData] = useState(true);
 
-  const [id, setID] = useState(null);
-  const [name, setName] = useState(null);
-  const [description, setDescription] = useState(null);
-  const [openingHours, setOpeningHours] = useState(null);
-  const [childVenue, setChildVenue] = useState(null);
-  const [capacity, setCapacity] = useState(null);
-  const [isAvailable, setIsAvailable] = useState(null);
-  const [instantBook, setInstantBook] = useState(null);
+  const [id, setID] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [openingHours, setOpeningHours] = useState('');
+  const [childVenue, setChildVenue] = useState('');
+  const [capacity, setCapacity] = useState(0);
+  const [isAvailable, setIsAvailable] = useState('');
+  const [instantBook, setInstantBook] = useState('');
   const [childVenues, setChildVenues] = useState<Venue[] | null>(null);
 
   const pageIndexDB = useRef(0);
@@ -56,14 +57,14 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
   }, []);
 
   const reset = () => {
-    setID(null);
-    setName(null);
-    setDescription(null);
-    setOpeningHours(null);
-    setChildVenue(null);
-    setCapacity(null);
-    setIsAvailable(null);
-    setInstantBook(null);
+    setID('');
+    setName('');
+    setDescription('');
+    setOpeningHours('');
+    setChildVenue('');
+    setCapacity(0);
+    setIsAvailable('');
+    setInstantBook('');
     setChildVenues(null);
   };
 
@@ -96,25 +97,79 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
   };
 
   useEffect(() => {
-    async function setupData() {
-      setID(modalData.id);
-      setName(modalData.name);
-      setDescription(modalData.description);
-      setOpeningHours(modalData.openingHours);
-      setCapacity(modalData.capacity);
-      setChildVenue(modalData.childVenue);
-      setIsAvailable(modalData.isAvailable);
-      setInstantBook(modalData.instantBook);
+    async function setupData(modalDataField: Venue) {
+      if (modalDataField.id && checkerString(modalDataField.id)) {
+        setID(modalDataField.id);
+      } else {
+        setID('');
+      }
 
-      if (!modalData.isChildVenue && modalData.id) {
-        await processChildVenue(modalData.id);
+      if (modalDataField.name && checkerString(modalDataField.name)) {
+        setName(modalDataField.name);
+      } else {
+        setName('');
+      }
+
+      if (
+        modalDataField.description &&
+        checkerString(modalDataField.description)
+      ) {
+        setDescription(modalDataField.description);
+      } else {
+        setDescription('');
+      }
+
+      if (
+        modalDataField.openingHours &&
+        checkerString(modalDataField.openingHours)
+      ) {
+        setOpeningHours(modalDataField.openingHours);
+      } else {
+        setOpeningHours('');
+      }
+
+      if (modalDataField.capacity && checkerNumber(modalDataField.capacity)) {
+        setCapacity(modalDataField.capacity);
+      } else {
+        setCapacity(0);
+      }
+
+      if (
+        modalDataField.childVenue &&
+        checkerString(modalDataField.childVenue)
+      ) {
+        setChildVenue(modalDataField.childVenue);
+      } else {
+        setChildVenue('');
+      }
+
+      if (
+        modalDataField.isAvailable &&
+        checkerString(modalDataField.isAvailable)
+      ) {
+        setIsAvailable(modalDataField.isAvailable);
+      } else {
+        setIsAvailable('');
+      }
+
+      if (
+        modalDataField.instantBook &&
+        checkerString(modalDataField.instantBook)
+      ) {
+        setInstantBook(modalDataField.instantBook);
+      } else {
+        setInstantBook('');
+      }
+
+      if (!modalDataField.isChildVenue && modalDataField.id) {
+        await processChildVenue(modalDataField.id);
       }
 
       setLoadingData(false);
     }
 
     if (modalData) {
-      setupData();
+      setupData(modalData);
     }
   }, [modalData]);
 
@@ -197,54 +252,70 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                         </Text>
 
                         <List spacing={5}>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Venue ID:
-                            </Text>{' '}
-                            {id}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Name:
-                            </Text>{' '}
-                            {name}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Description:
-                            </Text>{' '}
-                            {description}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Opening Hours:
-                            </Text>{' '}
-                            {openingHours}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Capacity:
-                            </Text>{' '}
-                            {capacity}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Child Venue:
-                            </Text>{' '}
-                            {childVenue}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Instant Book:
-                            </Text>{' '}
-                            {instantBook}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Available for Booking:
-                            </Text>{' '}
-                            {isAvailable}
-                          </ListItem>
+                          {checkerString(id) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Venue ID:
+                              </Text>{' '}
+                              {id}
+                            </ListItem>
+                          )}
+                          {checkerString(name) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Name:
+                              </Text>{' '}
+                              {name}
+                            </ListItem>
+                          )}
+                          {checkerString(description) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Description:
+                              </Text>{' '}
+                              {description}
+                            </ListItem>
+                          )}
+                          {checkerString(openingHours) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Opening Hours:
+                              </Text>{' '}
+                              {openingHours}
+                            </ListItem>
+                          )}
+                          {checkerNumber(capacity) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Capacity:
+                              </Text>{' '}
+                              {capacity}
+                            </ListItem>
+                          )}
+                          {checkerString(childVenue) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Child Venue:
+                              </Text>{' '}
+                              {childVenue}
+                            </ListItem>
+                          )}
+                          {checkerString(instantBook) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Instant Book:
+                              </Text>{' '}
+                              {instantBook}
+                            </ListItem>
+                          )}
+                          {checkerString(isAvailable) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Available for Booking:
+                              </Text>{' '}
+                              {isAvailable}
+                            </ListItem>
+                          )}
                         </List>
                       </Box>
                     </Stack>

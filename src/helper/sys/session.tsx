@@ -1,6 +1,7 @@
 import { getSession } from 'next-auth/react';
 import { Session } from 'next-auth/core/types';
 import { NextApiRequest } from 'next';
+import { levels } from '@constants/sys/admin';
 
 export const currentSession = async (
   req: NextApiRequest | null = null,
@@ -12,7 +13,7 @@ export const currentSession = async (
       user: {
         username: 'Test user',
         email: 'testing@test.com',
-        admin: true,
+        admin: levels.OWNER,
         studentID: 'A7654321',
         roomNum: 'C124',
       },

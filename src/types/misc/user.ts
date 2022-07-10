@@ -4,7 +4,7 @@ export type User = {
   email: string;
   username?: string;
   studentID: string;
-  admin: boolean;
+  admin: number;
   adminStr?: string;
   roomNum: string;
   updated_at?: string;

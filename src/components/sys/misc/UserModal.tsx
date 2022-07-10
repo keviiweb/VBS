@@ -19,6 +19,8 @@ import {
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
+import { User } from 'types/misc/user';
+import { checkerString } from '@constants/sys/helper';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -48,17 +50,46 @@ export default function UserModal({ isOpen, onClose, modalData }) {
   };
 
   useEffect(() => {
-    async function setupData() {
-      setID(modalData.id);
-      setName(modalData.name);
-      setEmail(modalData.email);
-      setRoomNum(modalData.roomNum);
-      setStudentID(modalData.studentID);
-      setAdminStr(modalData.adminStr);
+    async function setupData(modalDataField: User) {
+      if (modalDataField.id && checkerString(modalDataField.id)) {
+        setID(modalDataField.id);
+      } else {
+        setID('');
+      }
+
+      if (modalDataField.name && checkerString(modalDataField.name)) {
+        setName(modalDataField.name);
+      } else {
+        setName('');
+      }
+
+      if (modalDataField.email && checkerString(modalDataField.email)) {
+        setEmail(modalDataField.email);
+      } else {
+        setEmail('');
+      }
+
+      if (modalDataField.roomNum && checkerString(modalDataField.roomNum)) {
+        setRoomNum(modalDataField.roomNum);
+      } else {
+        setRoomNum('');
+      }
+
+      if (modalDataField.studentID && checkerString(modalDataField.studentID)) {
+        setStudentID(modalDataField.studentID);
+      } else {
+        setStudentID('');
+      }
+
+      if (modalDataField.adminStr && checkerString(modalDataField.adminStr)) {
+        setAdminStr(modalDataField.adminStr);
+      } else {
+        setAdminStr('');
+      }
     }
 
     if (modalData) {
-      setupData();
+      setupData(modalData);
     }
   }, [modalData]);
 
@@ -111,42 +142,54 @@ export default function UserModal({ isOpen, onClose, modalData }) {
                         </Text>
 
                         <List spacing={5}>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              User ID:
-                            </Text>{' '}
-                            {id}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Name:
-                            </Text>{' '}
-                            {name}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Email:
-                            </Text>{' '}
-                            {email}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Student ID
-                            </Text>{' '}
-                            {studentID}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Room Num:
-                            </Text>{' '}
-                            {roomNum}
-                          </ListItem>
-                          <ListItem>
-                            <Text as='span' fontWeight='bold'>
-                              Admin:
-                            </Text>{' '}
-                            {adminStr}
-                          </ListItem>
+                          {checkerString(id) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                User ID:
+                              </Text>{' '}
+                              {id}
+                            </ListItem>
+                          )}
+                          {checkerString(name) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Name:
+                              </Text>{' '}
+                              {name}
+                            </ListItem>
+                          )}
+                          {checkerString(email) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Email:
+                              </Text>{' '}
+                              {email}
+                            </ListItem>
+                          )}
+                          {checkerString(studentID) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Student ID
+                              </Text>{' '}
+                              {studentID}
+                            </ListItem>
+                          )}
+                          {checkerString(roomNum) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Room Num:
+                              </Text>{' '}
+                              {roomNum}
+                            </ListItem>
+                          )}
+                          {checkerString(adminStr) && (
+                            <ListItem>
+                              <Text as='span' fontWeight='bold'>
+                                Admin:
+                              </Text>{' '}
+                              {adminStr}
+                            </ListItem>
+                          )}
                         </List>
                       </Box>
                     </Stack>

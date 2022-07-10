@@ -36,6 +36,7 @@
     "@next-auth/prisma-adapter": "1.0.3",
     "@prisma/client": "3.15.2",
     "babel-plugin-transform-require-ignore": "0.1.1",
+    "csv-parser": "3.0.0",
     "formidable": "2.0.1",
     "framer-motion": "6.3.11",
     "google-map-react": "2.1.10",

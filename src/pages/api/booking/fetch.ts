@@ -10,6 +10,7 @@ import {
   PERSONAL,
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
+import { levels } from '@constants/sys/admin';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import {
@@ -30,7 +31,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (checkerString(id)) {
       const venueID: string = (id as string).trim();
       let bookings: Booking[] = [];
-      if (session.user.admin) {
+      if (
+        session.user.admin === levels.ADMIN ||
+        session.user.admin === levels.OWNER
+      ) {
         bookings = await findAllBookingByVenueID(venueID);
 
         if (bookings !== [] && bookings !== undefined && bookings !== null) {

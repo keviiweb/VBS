@@ -4,6 +4,7 @@ import { User } from 'types/misc/user';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { fetchAllUser, countUser } from '@helper/sys/misc/user';
+import { levels } from '@constants/sys/admin';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
@@ -17,7 +18,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     msg: '',
   };
 
-  if (session !== null && session !== undefined) {
+  if (
+    session !== null &&
+    session !== undefined &&
+    (session.user.admin === levels.ADMIN || session.user.admin === levels.OWNER)
+  ) {
     const limit: number = limitQuery !== undefined ? Number(limitQuery) : 100;
     const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
