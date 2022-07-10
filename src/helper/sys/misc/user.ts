@@ -40,6 +40,36 @@ export const createUser = async (data: User): Promise<Result> => {
   return result;
 };
 
+export const createUserFile = async (dataField: any[]): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    for (let key = 0; key < dataField.length; key += 1) {
+      if (dataField[key]) {
+        const data = dataField[key];
+
+        await prisma.users.upsert({
+          where: {
+            email: data.email,
+          },
+          update: {},
+          create: {
+            email: data.email,
+            name: data.name,
+            admin: Number(data.admin),
+          },
+        });
+      }
+    }
+
+    result = { status: true, error: null, msg: 'Successfully created user' };
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: error.toString(), msg: '' };
+  }
+  return result;
+};
+
 export const countUser = async (): Promise<number> => {
   let count: number = 0;
   try {

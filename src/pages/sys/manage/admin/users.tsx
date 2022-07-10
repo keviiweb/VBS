@@ -9,15 +9,19 @@ import {
   Button,
   Box,
   Checkbox,
+  chakra,
   FormControl,
   FormLabel,
+  Flex,
   Heading,
   Input,
+  Icon,
   Text,
   SimpleGrid,
   Stack,
   Select,
   useToast,
+  VisuallyHidden,
 } from '@chakra-ui/react';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import { cardVariant, parentVariant } from '@root/motion';
@@ -77,6 +81,7 @@ export default function ManageUsers(props: any) {
 
   const [errorMsg, setError] = useState('');
   const [errorMsgEdit, setErrorEdit] = useState('');
+  const [errorMsgFile, setErrorFile] = useState('');
 
   const [userIDEdit, setUserIDEdit] = useState('');
   const userIDDBEdit = useRef('');
@@ -93,6 +98,9 @@ export default function ManageUsers(props: any) {
   const [pageCount, setPageCount] = useState(0);
   const pageSizeDB = useRef(PAGESIZE);
   const pageIndexDB = useRef(PAGEINDEX);
+
+  const selectedFileDB = useRef<string | Blob | null>(null);
+  const [fileName, setFileName] = useState(null);
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
@@ -112,6 +120,11 @@ export default function ManageUsers(props: any) {
     setRoomNum('');
     setStudentID('');
     setAdmin(false);
+  }, []);
+
+  const resetFile = useCallback(async () => {
+    selectedFileDB.current = null;
+    setFileName(null);
   }, []);
 
   const resetEdit = useCallback(async () => {
@@ -159,6 +172,58 @@ export default function ManageUsers(props: any) {
 
     return true;
   };
+
+  const handleSubmitFile = useCallback(
+    async (event: { preventDefault: () => void }) => {
+      setErrorFile('');
+      event.preventDefault();
+      if (selectedFileDB.current !== null) {
+        setSubmitButtonPressed(true);
+
+        const dataField = new FormData();
+        dataField.append('file', selectedFileDB.current);
+
+        try {
+          const rawResponse = await fetch('/api/user/file', {
+            method: 'POST',
+            body: dataField,
+          });
+          const content: Result = await rawResponse.json();
+          if (content.status) {
+            toast({
+              title: 'User Created.',
+              description: 'You have successfully created all users',
+              status: 'success',
+              duration: 5000,
+              isClosable: true,
+            });
+
+            await resetFile();
+            await fetchData();
+          } else {
+            toast({
+              title: 'Error',
+              description: content.error,
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+
+          setSubmitButtonPressed(false);
+          return true;
+        } catch (error) {
+          setSubmitButtonPressed(false);
+          return false;
+        }
+      } else {
+        setErrorFile('Please upload a file');
+      }
+
+      return false;
+    },
+    [fetchData, resetFile, toast],
+  );
 
   const handleSubmit = useCallback(
     async (event: { preventDefault: () => void }) => {
@@ -312,6 +377,12 @@ export default function ManageUsers(props: any) {
     await fetchDataTable();
     setLoadingData(false);
   }, [fetchDataTable]);
+
+  const onFileChange = async (event: { target: { files: any[] | any } }) => {
+    const file = event.target.files[0];
+    selectedFileDB.current = file;
+    setFileName(file.name);
+  };
 
   useEffect(() => {
     async function generate(propsField: any) {
@@ -557,6 +628,107 @@ export default function ManageUsers(props: any) {
         initial='initial'
         animate='animate'
       >
+        {level === levels.OWNER && (
+          <MotionBox>
+            {' '}
+            <Stack
+              spacing={4}
+              w='full'
+              maxW='md'
+              bg='white'
+              rounded='xl'
+              boxShadow='lg'
+              p={6}
+              my={12}
+            >
+              <Heading size='md'>Create new user</Heading>
+              <form onSubmit={handleSubmitFile}>
+                <Stack spacing={4}>
+                  <FormControl>
+                    <FormLabel fontSize='sm' fontWeight='md' color='gray.700'>
+                      CSV File
+                    </FormLabel>
+                    {fileName && <Text>File uploaded: {fileName}</Text>}
+                    <Flex
+                      mt={1}
+                      justify='center'
+                      px={6}
+                      pt={5}
+                      pb={6}
+                      borderWidth={2}
+                      borderColor='gray.300'
+                      borderStyle='dashed'
+                      rounded='md'
+                    >
+                      <Stack spacing={1} textAlign='center'>
+                        <Icon
+                          mx='auto'
+                          boxSize={12}
+                          color='gray.400'
+                          stroke='currentColor'
+                          fill='none'
+                          viewBox='0 0 48 48'
+                          aria-hidden='true'
+                        />
+                        <Flex
+                          fontSize='sm'
+                          color='gray.600'
+                          alignItems='baseline'
+                        >
+                          <chakra.label
+                            htmlFor='file-upload'
+                            cursor='pointer'
+                            rounded='md'
+                            fontSize='md'
+                            color='brand.600'
+                            pos='relative'
+                            _hover={{
+                              color: 'brand.400',
+                            }}
+                          >
+                            <span>Upload a file</span>
+                            <VisuallyHidden>
+                              <input
+                                id='file-upload'
+                                name='file-upload'
+                                type='file'
+                                onChange={onFileChange}
+                              />
+                            </VisuallyHidden>
+                          </chakra.label>
+                        </Flex>
+                        <Text fontSize='xs' color='gray.500'>
+                          CSV up to 10MB
+                        </Text>
+                      </Stack>
+                    </Flex>
+                  </FormControl>
+
+                  {checkerString(errorMsgFile) && (
+                    <Stack align='center'>
+                      <Text>{errorMsgFile}</Text>
+                    </Stack>
+                  )}
+
+                  <Stack spacing={10}>
+                    <Button
+                      type='submit'
+                      bg='blue.400'
+                      color='white'
+                      disabled={submitButtonPressed}
+                      _hover={{
+                        bg: 'blue.500',
+                      }}
+                    >
+                      Create
+                    </Button>
+                  </Stack>
+                </Stack>
+              </form>
+            </Stack>
+          </MotionBox>
+        )}
+
         {level === levels.OWNER && (
           <MotionBox>
             {' '}
