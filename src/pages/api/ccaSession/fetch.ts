@@ -4,14 +4,18 @@ import { CCASession } from 'types/cca/ccaSession';
 import { CCA } from 'types/cca/cca';
 
 import { currentSession } from '@helper/sys/sessionServer';
-import { findCCAbyID, calculateDuration } from '@helper/sys/cca/cca';
+import { findCCAbyID } from '@helper/sys/cca/cca';
 import {
   countAllCCASessionByCCAID,
   fetchAllCCASessionByCCAID,
 } from '@helper/sys/cca/ccaSession';
 import { splitHours } from '@helper/sys/vbs/venue';
 
-import { convertUnixToDate, dateISO } from '@constants/sys/date';
+import {
+  convertUnixToDate,
+  dateISO,
+  calculateDuration,
+} from '@constants/sys/date';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);

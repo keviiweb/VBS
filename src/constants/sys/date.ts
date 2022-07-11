@@ -85,3 +85,23 @@ export const prettifyDate = (date: Date): string => {
 
   return `Unknown Date`;
 };
+
+export const calculateDuration = async (
+  start: number,
+  end: number,
+): Promise<number> => {
+  let duration: number = 0;
+
+  const s: string = start.toString().padStart(4, '0');
+  const e: string = end.toString().padStart(4, '0');
+
+  const startH = `${s.toString().slice(0, 2)}:${s.toString().slice(2)}:00`;
+  const endH = `${e.toString().slice(0, 2)}:${e.toString().slice(2)}:00`;
+
+  const startTimeM = moment(startH, 'HH:mm:ss');
+  const endTimeM = moment(endH, 'HH:mm:ss');
+  const durationH = moment.duration(endTimeM.diff(startTimeM));
+  duration = durationH.asHours();
+
+  return duration;
+};

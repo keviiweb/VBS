@@ -1,0 +1,48 @@
+import React, { useState } from 'react';
+import { Button, FormControl, FormLabel, Input, Stack } from '@chakra-ui/react';
+
+export default function MemberButton({
+  reality,
+  handleClick,
+  newKey,
+  id,
+  name,
+}) {
+  const [selected, setSelected] = useState(false);
+
+  const click = async () => {
+    if (handleClick !== null && handleClick !== undefined && !reality) {
+      setSelected(!selected);
+      await handleClick(id);
+    }
+  };
+
+  return (
+    <Stack direction='column'>
+      <Button
+        colorScheme='gray'
+        variant='solid'
+        size='md'
+        margin='8px'
+        key={newKey}
+        onClick={() => click()}
+      >
+        {name}
+      </Button>
+
+      {reality && (
+        <FormControl id='hours'>
+          <FormLabel>Hours for {name}</FormLabel>
+          <Input
+            type='number'
+            placeholder='Hours'
+            size='lg'
+            onChange={(event) => {
+              handleClick(id, name, Number(event.currentTarget.value));
+            }}
+          />
+        </FormControl>
+      )}
+    </Stack>
+  );
+}

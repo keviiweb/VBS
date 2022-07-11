@@ -11,6 +11,7 @@ export type CCASession = {
   optional?: boolean;
   editableStr?: string;
   optionalStr?: string;
+  expectedM?: string;
   remarks?: string;
   ldrNotes?: string;
   action?: any;

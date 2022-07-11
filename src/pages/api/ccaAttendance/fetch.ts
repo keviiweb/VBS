@@ -4,7 +4,7 @@ import { CCAAttendance } from 'types/cca/ccaAttendance';
 import { CCASession } from 'types/cca/ccaSession';
 
 import { currentSession } from '@helper/sys/sessionServer';
-import { calculateDuration, findCCAbyID } from '@helper/sys/cca/cca';
+import { findCCAbyID } from '@helper/sys/cca/cca';
 import {
   countSpecificCCAAttendanceByUserEmail,
   fetchSpecificCCAAttendanceByUserEmail,
@@ -12,7 +12,11 @@ import {
 import { findCCASessionByID } from '@helper/sys/cca/ccaSession';
 import { splitHours } from '@helper/sys/vbs/venue';
 
-import { convertUnixToDate, dateISO } from '@constants/sys/date';
+import {
+  convertUnixToDate,
+  dateISO,
+  calculateDuration,
+} from '@constants/sys/date';
 import { isLeader } from '@helper/sys/cca/ccaRecord';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

@@ -6,6 +6,7 @@ export type CCARecord = {
   sessionEmail?: string;
   sessionName?: string;
   sessionStudentID?: string;
+  sessionID?: string;
   leader?: boolean;
   rate?: string;
   action?: any;

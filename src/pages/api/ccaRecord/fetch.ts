@@ -105,6 +105,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                           sessionEmail: record.sessionEmail,
                           sessionName: user.name,
                           sessionStudentID: user.studentID,
+                          sessionID: user.id,
                           ccaName: ccaDetails.name,
                           image: ccaDetails.image,
                           rate: rate,

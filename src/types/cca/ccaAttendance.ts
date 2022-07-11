@@ -4,9 +4,10 @@ export type CCAAttendance = {
   dateStr?: string;
   durationStr?: string;
   sessionID?: string;
+  sessionEmail?: string;
+  sessionName?: string;
   ccaID: string;
   ccaAttendance: number;
-  sessionEmail?: string;
   action?: any;
   updated_at?: string;
 };

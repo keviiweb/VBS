@@ -3,7 +3,7 @@ import { CCASession } from 'types/cca/ccaSession';
 
 import { prisma } from '@constants/sys/db';
 import { splitHours } from '@helper/sys/vbs/venue';
-import { calculateDuration } from '@helper/sys/cca/cca';
+import { calculateDuration } from '@constants/sys/date';
 
 export const fetchAllCCASessionByCCAID = async (
   id: string,
