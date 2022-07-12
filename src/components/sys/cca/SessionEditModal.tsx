@@ -27,6 +27,7 @@ import {
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import LoadingModal from '@components/sys/misc/LoadingModal';
+import SessionEditConfirmationModal from '@components/sys/cca/SessionEditConfirmationModal';
 import MemberButton from '@components/sys/cca/MemberButton';
 
 import { cardVariant, parentVariant } from '@root/motion';
@@ -65,6 +66,9 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
   const toast = useToast();
 
   const selectedData = useRef<CCASession | null>(null);
+  const [confirmationData, setConfirmationData] = useState<CCASession | null>(
+    null,
+  );
 
   const [progressLevel, setProgressLevel] = useState(levels.TIME);
   const [progressBar, setProgressBar] = useState(progressBarLevel.TIME);
@@ -78,6 +82,8 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
   const [ccaName, setCCAName] = useState('');
   const [dateStr, setDateStr] = useState('');
   const dateStrDB = useRef('');
+  const [name, setName] = useState('');
+  const nameDB = useRef('');
 
   const [upcoming, setUpcoming] = useState(false);
 
@@ -109,6 +115,7 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
       full hours.`;
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+  const [disableButton, setDisableButton] = useState(false);
 
   const memberData = useRef<CCARecord[]>([]);
 
@@ -202,6 +209,17 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
     return true;
   };
 
+  const handleSubmit = async () => {
+    if (selectedData.current !== null) {
+      const data: CCASession = selectedData.current;
+      data.remarks = remarksDB.current;
+      data.ldrNotes = ldrNotesDB.current;
+      selectedData.current = data;
+
+      setConfirmationData(selectedData.current);
+    }
+  };
+
   const handleClick = async (next: boolean) => {
     if (progressLevel === levels.TIME) {
       if (selectedData.current !== null) {
@@ -219,6 +237,7 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
           data.time = `${startTimeDB.current} - ${endTimeDB.current}`;
           data.optional = optionalDB.current;
           data.optionalStr = optionalDB.current ? 'Yes' : 'No';
+          data.name = nameDB.current;
 
           data.duration = await calculateDuration(
             Number(startTimeDB.current),
@@ -237,8 +256,8 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
       if (selectedData.current !== null) {
         const data: CCASession = selectedData.current;
         data.expectedM = selectedExpectedMembers.current.toString();
+        data.expectedMName = selectedExpectedMembersName.current.toString();
         selectedData.current = data;
-
         if (next) {
           setProgressLevel(levels.REALITY);
           setProgressBar(progressBarLevel.REALITY);
@@ -249,6 +268,9 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
       }
     } else if (progressLevel === levels.REALITY) {
       if (selectedData.current !== null) {
+        const data: CCASession = selectedData.current;
+        data.realityM = JSON.stringify(realityMemberHours.current);
+        selectedData.current = data;
         if (next) {
           setProgressLevel(levels.REMARKS);
           setProgressBar(progressBarLevel.REMARKS);
@@ -259,6 +281,10 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
       }
     } else if (progressLevel === levels.REMARKS) {
       if (selectedData.current !== null) {
+        const data: CCASession = selectedData.current;
+        data.remarks = remarksDB.current;
+        data.ldrNotes = ldrNotesDB.current;
+        selectedData.current = data;
         if (!next) {
           setProgressLevel(levels.REALITY);
           setProgressBar(progressBarLevel.REALITY);
@@ -413,15 +439,19 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
 
   const onExpectedMemberChange = useCallback(async (value: string) => {
     if (checkerString(value)) {
-      const name: string = await fetchNameOfUser(value);
+      const nameField: string = await fetchNameOfUser(value);
       let members: string[] = selectedExpectedMembers.current;
       let membersName: string[] = selectedExpectedMembersName.current;
       if (members.includes(value)) {
         members = members.filter((item) => item !== value);
-        membersName = membersName.filter((item) => item !== name);
+        if (checkerString(nameField)) {
+          membersName = membersName.filter((item) => item !== nameField);
+        }
       } else {
         members.push(value);
-        membersName.push(name);
+        if (checkerString(nameField)) {
+          membersName.push(nameField);
+        }
       }
 
       selectedExpectedMembers.current = members;
@@ -433,15 +463,15 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
 
   const onRealityMemberChange = useCallback(async (value: string) => {
     if (checkerString(value)) {
-      const name: string = await fetchNameOfUser(value);
+      const nameField: string = await fetchNameOfUser(value);
       let members: string[] = selectedRealityMembers.current;
       let membersName: string[] = selectedRealityMembersName.current;
       if (members.includes(value)) {
         members = members.filter((item) => item !== value);
-        membersName = membersName.filter((item) => item !== name);
+        membersName = membersName.filter((item) => item !== nameField);
       } else {
         members.push(value);
-        membersName.push(name);
+        membersName.push(nameField);
       }
 
       selectedRealityMembers.current = members;
@@ -450,12 +480,14 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
   }, []);
 
   const onHoursChange = useCallback(
-    async (id: string, name: string, hour: number) => {
+    async (id: string, nameField: string, hour: number) => {
+      setError('');
+      setDisableButton(false);
       if (
         selectedData.current !== null &&
         selectedData.current.duration !== undefined &&
         hour > 0 &&
-        hour < selectedData.current.duration
+        hour <= selectedData.current.duration
       ) {
         await onRealityMemberChange(id);
 
@@ -478,7 +510,7 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
             ccaID: ccaIDDB.current,
             ccaAttendance: hour,
             sessionID: id,
-            sessionName: name,
+            sessionName: nameField,
           };
 
           realityHours.push(attendance);
@@ -500,7 +532,7 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
                 ccaID: ccaIDDB.current,
                 ccaAttendance: reality.ccaAttendance,
                 sessionID: id,
-                sessionName: name,
+                sessionName: nameField,
               };
               break;
             }
@@ -514,12 +546,44 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
         }
 
         realityMemberHours.current = realityHours;
+      } else if (
+        selectedData.current !== null &&
+        selectedData.current.duration !== undefined
+      ) {
+        setError(
+          `Duration of member must not be negative or exceed ${selectedData.current.duration}`,
+        );
+        setDisableButton(true);
       }
 
       displayRealityMembers(realityMemberHours.current);
     },
     [onRealityMemberChange],
   );
+
+  const generateExpectedMemberList = useCallback(async () => {
+    if (
+      memberData.current.length > 0 &&
+      selectedExpectedMembers.current.length > 0
+    ) {
+      const memberName: string[] = [];
+
+      for (
+        let key = 0;
+        key < selectedExpectedMembers.current.length;
+        key += 1
+      ) {
+        if (selectedExpectedMembers.current[key]) {
+          const s: string = selectedExpectedMembers.current[key];
+          const nameField: string = await fetchNameOfUser(s);
+          memberName.push(nameField);
+        }
+      }
+
+      selectedExpectedMembersName.current = memberName;
+      displayExpectedMembers(selectedExpectedMembersName.current);
+    }
+  }, []);
 
   const buildMemberList = useCallback(
     async (content: { count: number; res: CCARecord[] }) => {
@@ -565,9 +629,10 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
         memberData.current = content.res;
         setExpectedMemberButtons(buttons);
         setRealityMemberButtons(realityButtons);
+        await generateExpectedMemberList();
       }
     },
-    [onExpectedMemberChange, onHoursChange],
+    [onExpectedMemberChange, onHoursChange, generateExpectedMemberList],
   );
 
   const generateMemberList = useCallback(async () => {
@@ -614,6 +679,11 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
       const ccaNameField: string =
         modalDataField && modalDataField.ccaName ? modalDataField.ccaName : '';
 
+      const nameField: string =
+        modalDataField && modalDataField.name ? modalDataField.name : '';
+      setName(nameField);
+      nameDB.current = nameField;
+
       setDateStr(dateStrField);
       dateStrDB.current = dateStrField;
 
@@ -646,6 +716,26 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
           : false;
       setOptional(opt);
 
+      const expectedM: string =
+        modalDataField && modalDataField.expectedM
+          ? modalDataField.expectedM
+          : '';
+      if (expectedM.length > 0) {
+        selectedExpectedMembers.current = expectedM.split(',');
+      }
+
+      const remark: string =
+        modalDataField && modalDataField.remarks ? modalDataField.remarks : '';
+      setRemarks(remark);
+      remarksDB.current = remark;
+
+      const ldrNote: string =
+        modalDataField && modalDataField.ldrNotes
+          ? modalDataField.ldrNotes
+          : '';
+      setLdrNotes(ldrNote);
+      ldrNotesDB.current = ldrNote;
+
       selectedData.current = JSON.parse(JSON.stringify(modalDataField));
 
       await generateTimeSlots();
@@ -674,6 +764,12 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
+          <SessionEditConfirmationModal
+            isOpen={confirmationData}
+            onClose={() => setConfirmationData(null)}
+            modalData={confirmationData}
+          />
+
           <LoadingModal
             isOpen={!!submitButtonPressed}
             onClose={() => setSubmitButtonPressed(false)}
@@ -720,6 +816,31 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
                       w={{ base: 'full', md: '500px', lg: '500px' }}
                       direction='row'
                     >
+                      <FormControl id='name'>
+                        <FormLabel>
+                          <Text
+                            w={40}
+                            textTransform='uppercase'
+                            lineHeight='5'
+                            fontWeight='bold'
+                            letterSpacing='tight'
+                            mr={5}
+                          >
+                            Name
+                          </Text>
+                        </FormLabel>
+                        <Input
+                          type='text'
+                          placeholder='Name'
+                          value={name}
+                          size='lg'
+                          onChange={(event) => {
+                            setName(event.currentTarget.value);
+                            nameDB.current = event.currentTarget.value;
+                          }}
+                        />
+                      </FormControl>
+
                       <FormControl id='date'>
                         <FormLabel>
                           <Text
@@ -1040,6 +1161,7 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
         <ModalFooter>
           {progressLevel !== levels.TIME && (
             <Button
+              disabled={disableButton}
               bg='blue.400'
               color='white'
               w='150px'
@@ -1056,6 +1178,7 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
 
           {progressLevel !== levels.REMARKS && (
             <Button
+              disabled={disableButton}
               bg='gray.400'
               color='white'
               w='150px'
@@ -1071,13 +1194,14 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
 
           {progressLevel === levels.REMARKS && (
             <Button
+              disabled={disableButton}
               bg='red.400'
               color='white'
               w='150px'
               size='lg'
               _hover={{ bg: 'red.600' }}
               onClick={async () => {
-                await handleClick(true);
+                await handleSubmit();
               }}
             >
               Submit

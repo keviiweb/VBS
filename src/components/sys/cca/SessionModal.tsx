@@ -21,6 +21,7 @@ import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 
 import { CCASession } from 'types/cca/ccaSession';
+import { checkerString } from '@root/src/constants/sys/helper';
 import SessionEditModal from './SessionEditModal';
 
 const MotionSimpleGrid = motion(SimpleGrid);
@@ -166,59 +167,67 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
                     >
                       <Box>
                         <List spacing={5}>
-                          <ListItem>
-                            <Stack direction='row'>
-                              <Text
-                                textTransform='uppercase'
-                                letterSpacing='tight'
-                                fontWeight='bold'
-                              >
-                                Date
-                              </Text>{' '}
-                              <Text>{dateStr}</Text>
-                            </Stack>
-                          </ListItem>
+                          {checkerString(dateStr) && (
+                            <ListItem>
+                              <Stack direction='row'>
+                                <Text
+                                  textTransform='uppercase'
+                                  letterSpacing='tight'
+                                  fontWeight='bold'
+                                >
+                                  Date
+                                </Text>{' '}
+                                <Text>{dateStr}</Text>
+                              </Stack>
+                            </ListItem>
+                          )}
 
-                          <ListItem>
-                            <Stack direction='row'>
-                              <Text
-                                textTransform='uppercase'
-                                letterSpacing='tight'
-                                fontWeight='bold'
-                              >
-                                Time
-                              </Text>{' '}
-                              <Text>{time}</Text>
-                            </Stack>
-                          </ListItem>
+                          {checkerString(time) && (
+                            <ListItem>
+                              <Stack direction='row'>
+                                <Text
+                                  textTransform='uppercase'
+                                  letterSpacing='tight'
+                                  fontWeight='bold'
+                                >
+                                  Time
+                                </Text>{' '}
+                                <Text>{time}</Text>
+                              </Stack>
+                            </ListItem>
+                          )}
 
-                          <ListItem>
-                            <Stack direction='row'>
-                              <Text
-                                textTransform='uppercase'
-                                letterSpacing='tight'
-                                fontWeight='bold'
-                              >
-                                Optional
-                              </Text>{' '}
-                              <Text>{optionalStr}</Text>
-                            </Stack>
-                          </ListItem>
+                          {checkerString(optionalStr) && (
+                            <ListItem>
+                              <Stack direction='row'>
+                                <Text
+                                  textTransform='uppercase'
+                                  letterSpacing='tight'
+                                  fontWeight='bold'
+                                >
+                                  Optional
+                                </Text>{' '}
+                                <Text>{optionalStr}</Text>
+                              </Stack>
+                            </ListItem>
+                          )}
 
-                          <ListItem>
-                            <Stack direction='column'>
-                              <Text
-                                textTransform='uppercase'
-                                letterSpacing='tight'
-                                fontWeight='bold'
-                              >
-                                Remarks
-                              </Text>{' '}
-                              <Text>{remarks}</Text>
-                            </Stack>
-                          </ListItem>
+                          {checkerString(remarks) && (
+                            <ListItem>
+                              <Stack direction='column'>
+                                <Text
+                                  textTransform='uppercase'
+                                  letterSpacing='tight'
+                                  fontWeight='bold'
+                                >
+                                  Remarks
+                                </Text>{' '}
+                                <Text>{remarks}</Text>
+                              </Stack>
+                            </ListItem>
+                          )}
 
-                          {leader && (
+                          {leader && checkerString(ldrNotes) && (
                             <ListItem>
                               <Stack direction='column'>
                                 <Text
