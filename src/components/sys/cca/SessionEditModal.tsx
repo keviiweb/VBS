@@ -182,12 +182,32 @@ export default function SessionEditModal({
     realityMemberHours.current = [];
   };
 
-  const handleModalCloseButton = () => {
+  const handleModalCloseButton = useCallback(() => {
     setTimeout(() => {
       reset();
       dataHandler();
       onClose();
     }, 200);
+  }, [dataHandler, onClose]);
+
+  const checkRealityMembers = (membersF: string): boolean => {
+    const members: CCAAttendance[] = JSON.parse(membersF) as CCAAttendance[];
+    if (
+      members.length > 0 &&
+      selectedData.current &&
+      selectedData.current.duration !== undefined
+    ) {
+      for (let key = 0; key < members.length; key += 1) {
+        if (members[key]) {
+          const attendance: CCAAttendance = members[key];
+          if (attendance.ccaAttendance > selectedData.current.duration) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
   };
 
   const validateFieldsEdit = (
@@ -255,6 +275,16 @@ export default function SessionEditModal({
       !checkerString(selectedDataField.ldrNotes)
     ) {
       setError('Please set a note!');
+      return false;
+    }
+
+    if (
+      selectedDataField.realityM &&
+      !checkRealityMembers(selectedDataField.realityM)
+    ) {
+      setError(
+        'One or more members have an attendance exceeding the total duration',
+      );
       return false;
     }
 
@@ -717,6 +747,7 @@ export default function SessionEditModal({
 
   useEffect(() => {
     async function setupData(modalDataField: CCASession) {
+      console.log(modalDataField);
       setLoadingData(true);
       setSubmitButtonPressed(true);
 
@@ -784,6 +815,15 @@ export default function SessionEditModal({
           : '';
       if (expectedM.length > 0) {
         selectedExpectedMembers.current = expectedM.split(',');
+      }
+
+      const realityM: string =
+        modalDataField && modalDataField.realityM
+          ? modalDataField.realityM
+          : '';
+      if (realityM.length > 0) {
+        realityMemberHours.current = JSON.parse(realityM) as CCAAttendance[];
+        displayRealityMembers(realityMemberHours.current);
       }
 
       const remark: string =

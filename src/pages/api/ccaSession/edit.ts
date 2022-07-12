@@ -7,6 +7,7 @@ import { currentSession } from '@helper/sys/sessionServer';
 import { findCCAbyID } from '@helper/sys/cca/cca';
 import { isLeader } from '@helper/sys/cca/ccaRecord';
 import { editSession } from '@helper/sys/cca/ccaSession';
+import { editAttendance } from '@helper/sys/cca/ccaAttendance';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
@@ -54,8 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 );
 
                 if (parsedRealityData.length > 0) {
-                  console.log(parsedRealityData);
-                  console.log(parsedData);
+                  await editAttendance(parsedRealityData);
                 }
               }
 

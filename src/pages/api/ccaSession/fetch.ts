@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 import { CCASession } from 'types/cca/ccaSession';
 import { CCA } from 'types/cca/cca';
+import { CCAAttendance } from 'types/cca/ccaAttendance';
+import { User } from 'types/misc/user';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { findCCAbyID } from '@helper/sys/cca/cca';
@@ -10,6 +12,8 @@ import {
   fetchAllCCASessionByCCAID,
 } from '@helper/sys/cca/ccaSession';
 import { splitHours } from '@helper/sys/vbs/venue';
+import { fetchAllCCAAttendanceBySession } from '@helper/sys/cca/ccaAttendance';
+import { fetchUserByEmail } from '@helper/sys/misc/user';
 
 import {
   convertUnixToDate,
@@ -57,39 +61,70 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             for (let ven = 0; ven < ccaData.length; ven += 1) {
               if (ccaData[ven]) {
                 const record: CCASession = ccaData[ven];
-                const { time } = record;
-                const { start, end } = await splitHours(time);
-                if (start !== null && end !== null) {
-                  const duration: number = await calculateDuration(start, end);
 
-                  const dateObj: Date | null = convertUnixToDate(record.date);
-                  let dateStr: string = '';
+                if (record.id !== undefined) {
+                  const { time } = record;
+                  const { start, end } = await splitHours(time);
+                  if (start !== null && end !== null) {
+                    const duration: number = await calculateDuration(
+                      start,
+                      end,
+                    );
 
-                  if (dateObj !== null) {
-                    dateStr = dateISO(dateObj);
+                    const dateObj: Date | null = convertUnixToDate(record.date);
+                    let dateStr: string = '';
+
+                    if (dateObj !== null) {
+                      dateStr = dateISO(dateObj);
+                    }
+
+                    const editableStr: string = record.editable ? 'Yes' : 'No';
+                    const optionalStr: string = record.optional ? 'Yes' : 'No';
+
+                    const attendanceRes: Result =
+                      await fetchAllCCAAttendanceBySession(record.id);
+                    if (attendanceRes.status && attendanceRes.msg) {
+                      const attendance: CCAAttendance[] = attendanceRes.msg;
+                      for (let key = 0; key < attendance.length; key += 1) {
+                        if (attendance[key]) {
+                          const attend: CCAAttendance = attendance[key];
+
+                          if (attend.sessionEmail !== undefined) {
+                            const userEmail: string = attend.sessionEmail;
+                            const userRes: Result = await fetchUserByEmail(
+                              userEmail,
+                            );
+                            if (userRes.status && userRes.msg) {
+                              const user: User = userRes.msg;
+                              attend.sessionID = user.id;
+                              attend.sessionName = user.name;
+                            }
+                          }
+                        }
+                      }
+
+                      const data: CCASession = {
+                        id: record.id,
+                        ccaID: ccaID,
+                        ccaName: ccaDetails.name,
+                        name: record.name,
+                        date: record.date,
+                        dateStr: dateStr,
+                        time: record.time,
+                        duration: duration,
+                        editable: record.editable,
+                        optional: record.optional,
+                        editableStr: editableStr,
+                        optionalStr: optionalStr,
+                        remarks: record.remarks,
+                        ldrNotes: record.ldrNotes,
+                        expectedM: record.expectedM,
+                        realityM: JSON.stringify(attendance),
+                      };
+
+                      parsedCCASession.push(data);
+                    }
                   }
-
-                  const editableStr: string = record.editable ? 'Yes' : 'No';
-                  const optionalStr: string = record.optional ? 'Yes' : 'No';
-
-                  const data: CCASession = {
-                    id: record.id,
-                    ccaID: ccaID,
-                    ccaName: ccaDetails.name,
-                    name: record.name,
-                    date: record.date,
-                    dateStr: dateStr,
-                    time: record.time,
-                    duration: duration,
-                    editable: record.editable,
-                    optional: record.optional,
-                    editableStr: editableStr,
-                    optionalStr: optionalStr,
-                    remarks: record.remarks,
-                    ldrNotes: record.ldrNotes,
-                  };
-
-                  parsedCCASession.push(data);
                 }
               }
             }

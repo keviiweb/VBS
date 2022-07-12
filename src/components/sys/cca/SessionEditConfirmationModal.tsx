@@ -101,7 +101,7 @@ export default function SessionEditConfirmationModal({
       reset();
       onClose();
     }, 200);
-  }, []);
+  }, [dataHandler, onClose]);
 
   const displayExpectedMembers = async (members: string) => {
     if (members.length > 0) {
@@ -109,7 +109,11 @@ export default function SessionEditConfirmationModal({
       const text: JSX.Element[] = [];
       for (let key = 0; key < membersA.length; key += 1) {
         if (membersA[key]) {
-          text.push(<Text>{membersA[key]}</Text>);
+          text.push(
+            <Box key={`box-e-${key}`}>
+              <Text>{membersA[key]}</Text>
+            </Box>,
+          );
         }
       }
 
@@ -120,7 +124,7 @@ export default function SessionEditConfirmationModal({
     }
   };
 
-  const displayRealityMembers = (members: string) => {
+  const displayRealityMembers = async (members: string) => {
     if (members.length > 0) {
       const membersA: CCAAttendance[] = JSON.parse(members) as CCAAttendance[];
       if (membersA.length > 0) {
@@ -132,11 +136,11 @@ export default function SessionEditConfirmationModal({
               membersA[key].ccaAttendance !== undefined
             ) {
               text.push(
-                <Tr>
-                  <Td>
+                <Tr key={`tr-r-${key}`}>
+                  <Td key={`td-r-${key}-1`}>
                     <Text>{membersA[key].sessionName}</Text>
                   </Td>
-                  <Td>
+                  <Td key={`td-r-${key}-2`}>
                     <Text>{membersA[key].ccaAttendance}</Text>
                   </Td>
                 </Tr>,

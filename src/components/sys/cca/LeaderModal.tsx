@@ -345,11 +345,11 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
     [fetchMembers, fetchSession],
   );
 
-  const successEditSession = async () => {
+  const successEditSession = useCallback(async () => {
     setSubmitButtonPressed(true);
     await fetchSession(ccaRecordIDDB.current);
     setSubmitButtonPressed(false);
-  };
+  }, [fetchSession]);
 
   const onSelectionChange = async (event: { target: { value: string } }) => {
     if (event.target.value && checkerString(event.target.value)) {
