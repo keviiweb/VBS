@@ -15,13 +15,20 @@ import {
   SimpleGrid,
   Stack,
   Text,
-  // useToast,
+  Table,
+  Tbody,
+  Tr,
+  Td,
+  TableContainer,
+  useToast,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { cardVariant, parentVariant } from '@root/motion';
 import { CCASession } from 'types/cca/ccaSession';
+import { CCAAttendance } from 'types/cca/ccaAttendance';
+import { Result } from 'types/api';
 
 import { checkerString } from '@constants/sys/helper';
 
@@ -32,8 +39,9 @@ export default function SessionEditConfirmationModal({
   isOpen,
   onClose,
   modalData,
+  dataHandler,
 }) {
-  // const toast = useToast();
+  const toast = useToast();
 
   const selectedData = useRef<CCASession | null>(null);
 
@@ -52,12 +60,32 @@ export default function SessionEditConfirmationModal({
   const [remarks, setRemarks] = useState('');
   const [ldrNotes, setLdrNotes] = useState('');
 
+  const [expectedM, setDisplayedExpected] = useState<JSX.Element[]>([]);
+  const [expectedBool, setExpectedBool] = useState(false);
+
+  const [realityM, setDisplayedReality] = useState<JSX.Element | null>();
+  const [realityBool, setRealityBool] = useState(false);
+
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+  const [isSubmitting, setIsSubmit] = useState(false);
 
   const reset = () => {
     setDateStr('');
     setCCAName('');
     setError('');
+    setName('');
+    setOptionalStr('');
+    setTime('');
+    setDuration('');
+    setRemarks('');
+    setLdrNotes('');
+    setIsSubmit(false);
+
+    setDisplayedExpected([]);
+    setDisplayedReality(null);
+
+    setExpectedBool(false);
+    setRealityBool(false);
   };
 
   const handleModalCloseButton = () => {
@@ -67,64 +95,119 @@ export default function SessionEditConfirmationModal({
     }, 200);
   };
 
-  /*
-  const displayExpectedMembers = (members: string[]) => {
-    if (members.length > 0) {
-      let text: string = 'Selected members(s): ';
-      let counter: number = 0;
+  const handleModalCloseSuccess = useCallback(() => {
+    setTimeout(() => {
+      dataHandler();
+      reset();
+      onClose();
+    }, 200);
+  }, []);
 
-      for (let key = 0; key < members.length; key += 1) {
-        if (members[key]) {
-          counter += 1;
-          if (counter !== members.length) {
-            text += ` ${members[key]} ,`;
-          } else {
-            text += ` ${members[key]} `;
-          }
+  const displayExpectedMembers = async (members: string) => {
+    if (members.length > 0) {
+      const membersA: string[] = members.split(',');
+      const text: JSX.Element[] = [];
+      for (let key = 0; key < membersA.length; key += 1) {
+        if (membersA[key]) {
+          text.push(<Text>{membersA[key]}</Text>);
         }
       }
 
       setDisplayedExpected(text);
+      setExpectedBool(true);
     } else {
-      setDisplayedExpected('');
+      setDisplayedExpected([]);
     }
-  }; */
+  };
 
-  /*
-  const displayRealityMembers = (members: CCAAttendance[]) => {
+  const displayRealityMembers = (members: string) => {
     if (members.length > 0) {
-      let text: string = 'Selected members(s): ';
-      let counter: number = 0;
-
-      for (let key = 0; key < members.length; key += 1) {
-        if (members[key]) {
-          counter += 1;
-          if (
-            members[key].sessionName !== undefined &&
-            members[key].ccaAttendance !== undefined
-          ) {
-            if (counter !== members.length) {
-              text += ` ${members[key].sessionName} (${members[key].ccaAttendance} hours) ,`;
-            } else {
-              text += ` ${members[key].sessionName} (${members[key].ccaAttendance} hours)  `;
+      const membersA: CCAAttendance[] = JSON.parse(members) as CCAAttendance[];
+      if (membersA.length > 0) {
+        const text: JSX.Element[] = [];
+        for (let key = 0; key < membersA.length; key += 1) {
+          if (membersA[key]) {
+            if (
+              membersA[key].sessionName !== undefined &&
+              membersA[key].ccaAttendance !== undefined
+            ) {
+              text.push(
+                <Tr>
+                  <Td>
+                    <Text>{membersA[key].sessionName}</Text>
+                  </Td>
+                  <Td>
+                    <Text>{membersA[key].ccaAttendance}</Text>
+                  </Td>
+                </Tr>,
+              );
             }
           }
         }
+
+        const tableField: JSX.Element = (
+          <TableContainer>
+            <Table variant='simple'>
+              <Tbody>{text}</Tbody>
+            </Table>
+          </TableContainer>
+        );
+
+        setDisplayedReality(tableField);
+        setRealityBool(true);
       }
-
-      setDisplayedReality(text);
     } else {
-      setDisplayedReality('');
+      setDisplayedReality(null);
     }
-  }; */
-  // const handleClick = useCallback(async () => {}, []);
+  };
 
-  const handleSubmit = useCallback(async () => {}, []);
+  const handleSubmit = useCallback(async () => {
+    setSubmitButtonPressed(true);
+    setIsSubmit(true);
+
+    try {
+      const rawResponse = await fetch('/api/ccaSession/edit', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          data: selectedData.current,
+        }),
+      });
+      const content: Result = await rawResponse.json();
+      if (content.status) {
+        toast({
+          title: 'Success',
+          description: content.msg,
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+
+        handleModalCloseSuccess();
+      } else {
+        toast({
+          title: 'Error',
+          description: content.error,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+
+        setIsSubmit(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setIsSubmit(false);
+    }
+
+    setSubmitButtonPressed(false);
+  }, [handleModalCloseSuccess, toast]);
 
   useEffect(() => {
     async function setupData(modalDataField: CCASession) {
-      console.log(modalDataField);
-
       setLoadingData(true);
       setSubmitButtonPressed(true);
 
@@ -166,6 +249,22 @@ export default function SessionEditConfirmationModal({
           ? modalDataField.ldrNotes
           : '';
       setLdrNotes(ldrNote);
+
+      if (
+        modalDataField &&
+        modalDataField.expectedMName !== undefined &&
+        modalDataField.expectedMName?.length > 0
+      ) {
+        await displayExpectedMembers(modalDataField.expectedMName);
+      }
+
+      if (
+        modalDataField &&
+        modalDataField.realityM !== undefined &&
+        modalDataField.realityM?.length > 0
+      ) {
+        await displayRealityMembers(modalDataField.realityM);
+      }
 
       selectedData.current = JSON.parse(JSON.stringify(modalDataField));
 
@@ -238,7 +337,7 @@ export default function SessionEditConfirmationModal({
                   >
                     <List spacing={5}>
                       {checkerString(name) && (
-                        <ListItem>
+                        <ListItem key='name-list'>
                           <Stack direction='row'>
                             <Text
                               textTransform='uppercase'
@@ -252,7 +351,7 @@ export default function SessionEditConfirmationModal({
                         </ListItem>
                       )}
                       {checkerString(dateStr) && (
-                        <ListItem>
+                        <ListItem key='date-list'>
                           <Stack direction='row'>
                             <Text
                               textTransform='uppercase'
@@ -266,7 +365,7 @@ export default function SessionEditConfirmationModal({
                         </ListItem>
                       )}
                       {checkerString(time) && (
-                        <ListItem>
+                        <ListItem key='time-list'>
                           <Stack direction='row'>
                             <Text
                               textTransform='uppercase'
@@ -280,7 +379,7 @@ export default function SessionEditConfirmationModal({
                         </ListItem>
                       )}
                       {checkerString(duration) && (
-                        <ListItem>
+                        <ListItem key='durat-list'>
                           <Stack direction='row'>
                             <Text
                               textTransform='uppercase'
@@ -294,7 +393,7 @@ export default function SessionEditConfirmationModal({
                         </ListItem>
                       )}
                       {checkerString(optionalStr) && (
-                        <ListItem>
+                        <ListItem key='opt-list'>
                           <Stack direction='row'>
                             <Text
                               textTransform='uppercase'
@@ -308,7 +407,7 @@ export default function SessionEditConfirmationModal({
                         </ListItem>
                       )}
                       {checkerString(remarks) && (
-                        <ListItem>
+                        <ListItem key='rem-list'>
                           <Stack direction='column'>
                             <Text
                               textTransform='uppercase'
@@ -322,7 +421,7 @@ export default function SessionEditConfirmationModal({
                         </ListItem>
                       )}
                       {checkerString(ldrNotes) && (
-                        <ListItem>
+                        <ListItem key='ldr-list'>
                           <Stack direction='column'>
                             <Text
                               textTransform='uppercase'
@@ -332,6 +431,43 @@ export default function SessionEditConfirmationModal({
                               Leaders&apos; Notes
                             </Text>{' '}
                             <Text>{ldrNotes}</Text>
+                          </Stack>
+                        </ListItem>
+                      )}
+                      {expectedBool && (
+                        <ListItem key='exp-list'>
+                          <Stack direction='column'>
+                            <Text
+                              textTransform='uppercase'
+                              letterSpacing='tight'
+                              fontWeight='bold'
+                            >
+                              Expected Members
+                            </Text>{' '}
+                            {expectedM}
+                          </Stack>
+                        </ListItem>
+                      )}
+                      {realityBool && (
+                        <ListItem key='real-list'>
+                          <Stack direction='column'>
+                            <Stack spacing={20} direction='row'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Members Present
+                              </Text>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Hours
+                              </Text>
+                            </Stack>
+                            {realityM}
                           </Stack>
                         </ListItem>
                       )}
@@ -350,6 +486,7 @@ export default function SessionEditConfirmationModal({
         </ModalBody>
         <ModalFooter>
           <Button
+            disabled={isSubmitting}
             bg='blue.400'
             color='white'
             w='150px'
@@ -362,6 +499,7 @@ export default function SessionEditConfirmationModal({
           </Button>
 
           <Button
+            disabled={isSubmitting}
             bg='red.400'
             color='white'
             w='150px'

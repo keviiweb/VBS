@@ -264,6 +264,7 @@ export default function LeaderStudentModalComponent({
             onClose={() => setSpecificCCAData(null)}
             modalData={specificCCAData}
             leader={false}
+            dataHandler={null}
           />
 
           <LoadingModal

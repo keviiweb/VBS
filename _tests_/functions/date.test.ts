@@ -82,10 +82,10 @@ test('compareDate test 1', async () => {
   expect(compareDate(res1, 10)).toBe(false);
   const res2 =
     moment
-      .tz('2022-12-25', 'YYYY-MM-DD', true, 'Asia/Singapore')
+      .tz('2022-12-31', 'YYYY-MM-DD', true, 'Asia/Singapore')
       .startOf('day')
       .valueOf() / 1000;
-  expect(compareDate(res2, 2)).toBe(true);
+  expect(compareDate(res2, 7)).toBe(true);
 });
 
 test('dateISO test 1', async () => {

@@ -1,7 +1,7 @@
 export type CCASession = {
   id?: string;
   ccaID: string;
-  ccaName: string;
+  ccaName?: string;
   name: string;
   date: number;
   dateStr?: string;

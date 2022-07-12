@@ -20,6 +20,7 @@ export default function MemberButton({
   return (
     <Stack direction='column'>
       <Button
+        disabled={reality}
         colorScheme='gray'
         variant='solid'
         size='md'

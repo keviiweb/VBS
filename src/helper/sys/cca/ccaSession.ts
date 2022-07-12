@@ -102,3 +102,31 @@ export const countTotalSessionHoursByCCAID = async (
 
   return count;
 };
+
+export const editSession = async (data: CCASession): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    const sess: CCASession = await prisma.cCASessions.update({
+      where: {
+        id: data.id,
+      },
+      data: data,
+    });
+
+    if (sess) {
+      result = {
+        status: true,
+        error: '',
+        msg: `Successfully updated session`,
+      };
+    } else {
+      result = { status: false, error: 'Failed to update session', msg: '' };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: error.toString(), msg: '' };
+  }
+
+  return result;
+};

@@ -22,12 +22,18 @@ import { cardVariant, parentVariant } from '@root/motion';
 
 import { CCASession } from 'types/cca/ccaSession';
 import { checkerString } from '@root/src/constants/sys/helper';
-import SessionEditModal from './SessionEditModal';
+import SessionEditModal from '@components/sys/cca/SessionEditModal';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
-export default function SessionModal({ isOpen, onClose, leader, modalData }) {
+export default function SessionModal({
+  isOpen,
+  onClose,
+  leader,
+  modalData,
+  dataHandler,
+}) {
   const [loadingData, setLoadingData] = useState(true);
   const [specificSession, setSpecificSessionData] = useState<CCASession | null>(
     null,
@@ -61,6 +67,14 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
       reset();
       onClose();
     }, 200);
+  };
+
+  const handleModalSuccessEdit = () => {
+    if (leader) {
+      dataHandler();
+    }
+
+    handleModalCloseButton();
   };
 
   useEffect(() => {
@@ -123,6 +137,7 @@ export default function SessionModal({ isOpen, onClose, leader, modalData }) {
             isOpen={specificSession}
             onClose={() => setSpecificSessionData(null)}
             modalData={specificSession}
+            dataHandler={handleModalSuccessEdit}
           />
 
           <Stack spacing={5} w='full' align='center'>

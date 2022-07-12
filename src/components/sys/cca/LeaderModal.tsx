@@ -345,6 +345,12 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
     [fetchMembers, fetchSession],
   );
 
+  const successEditSession = async () => {
+    setSubmitButtonPressed(true);
+    await fetchSession(ccaRecordIDDB.current);
+    setSubmitButtonPressed(false);
+  };
+
   const onSelectionChange = async (event: { target: { value: string } }) => {
     if (event.target.value && checkerString(event.target.value)) {
       const choiceSelection: string = event.target.value;
@@ -476,6 +482,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
             isOpen={specificSession}
             onClose={() => setSpecificSessionData(null)}
             modalData={specificSession}
+            dataHandler={successEditSession}
           />
 
           <LeaderStudentModalComponent
@@ -489,6 +496,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
             onClose={() => setSpecificCCAData(null)}
             modalData={specificCCAData}
             leader
+            dataHandler={successEditSession}
           />
 
           <LoadingModal

@@ -44,6 +44,7 @@ import {
   isValidDate,
   calculateDuration,
 } from '@root/src/constants/sys/date';
+import moment from 'moment';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -62,7 +63,12 @@ const progressBarLevel = {
   REMARKS: 100,
 };
 
-export default function SessionEditModal({ isOpen, onClose, modalData }) {
+export default function SessionEditModal({
+  isOpen,
+  onClose,
+  modalData,
+  dataHandler,
+}) {
   const toast = useToast();
 
   const selectedData = useRef<CCASession | null>(null);
@@ -145,9 +151,16 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
     setProgressLevel(levels.TIME);
     setProgressBar(progressBarLevel.TIME);
     setError('');
+    setName('');
+    setUpcoming(false);
+    setRemarks('');
+    setLdrNotes('');
 
     setDisplayedExpected('');
     setDisplayedReality('');
+
+    setDisableButton(false);
+    setSubmitButtonPressed(false);
 
     startTimeDB.current = '';
     endTimeDB.current = '';
@@ -155,6 +168,9 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
     dateStrDB.current = '';
     sessionIDDB.current = '';
     ccaIDDB.current = '';
+    nameDB.current = '';
+    remarksDB.current = '';
+    ldrNotesDB.current = '';
 
     memberData.current = [];
 
@@ -169,6 +185,7 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
   const handleModalCloseButton = () => {
     setTimeout(() => {
       reset();
+      dataHandler();
       onClose();
     }, 200);
   };
@@ -209,6 +226,41 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
     return true;
   };
 
+  const validateFieldsSubmit = (selectedDataField: CCASession) => {
+    if (!selectedDataField.id || !checkerString(selectedDataField.id)) {
+      setError('Please select a session!');
+      return false;
+    }
+
+    if (!selectedDataField.name || !checkerString(selectedDataField.name)) {
+      setError('Please set a name!');
+      return false;
+    }
+
+    if (!selectedDataField.time || !checkerString(selectedDataField.time)) {
+      setError('Please set a time!');
+      return false;
+    }
+
+    if (
+      !selectedDataField.remarks ||
+      !checkerString(selectedDataField.remarks)
+    ) {
+      setError('Please set a remark!');
+      return false;
+    }
+
+    if (
+      !selectedDataField.ldrNotes ||
+      !checkerString(selectedDataField.ldrNotes)
+    ) {
+      setError('Please set a note!');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async () => {
     if (selectedData.current !== null) {
       const data: CCASession = selectedData.current;
@@ -216,7 +268,9 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
       data.ldrNotes = ldrNotesDB.current;
       selectedData.current = data;
 
-      setConfirmationData(selectedData.current);
+      if (validateFieldsSubmit(selectedData.current)) {
+        setConfirmationData(selectedData.current);
+      }
     }
   };
 
@@ -687,15 +741,6 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
       setDateStr(dateStrField);
       dateStrDB.current = dateStrField;
 
-      const day: Date = new Date(dateStrField);
-      if (isValidDate(day)) {
-        if (day > new Date()) {
-          setUpcoming(true);
-        } else {
-          setUpcoming(false);
-        }
-      }
-
       setCCAName(ccaNameField);
 
       const split: string[] =
@@ -709,6 +754,23 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
       endTimeDB.current = end;
       setStartTime(start);
       setEndTime(end);
+
+      const day: Date = new Date(dateStrField);
+      if (isValidDate(day)) {
+        if (day > new Date()) {
+          const currentTime: string = moment
+            .tz(moment(), 'Asia/Singapore')
+            .format('HH:mm')
+            .replace(':', '');
+          if (Number(currentTime) >= Number(start)) {
+            setUpcoming(true);
+          } else {
+            setUpcoming(false);
+          }
+        } else {
+          setUpcoming(false);
+        }
+      }
 
       const opt: boolean =
         modalDataField && modalDataField.optional
@@ -768,6 +830,7 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
             isOpen={confirmationData}
             onClose={() => setConfirmationData(null)}
             modalData={confirmationData}
+            dataHandler={handleModalCloseButton}
           />
 
           <LoadingModal
@@ -919,6 +982,9 @@ export default function SessionEditModal({ isOpen, onClose, modalData }) {
                       <Checkbox
                         isChecked={optional}
                         onChange={(event) => {
+                          if (event.cancelable) {
+                            event.preventDefault();
+                          }
                           setOptional(event.target.checked);
                           optionalDB.current = event.target.checked;
                         }}
