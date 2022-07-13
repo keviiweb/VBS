@@ -50,6 +50,7 @@ export default function CCA(props: any) {
               if (itemField.leader) {
                 leaderRes.push(
                   <MotionBox
+                    mt={5}
                     id={itemField.ccaID}
                     key={`leader_${itemField.id}`}
                   >

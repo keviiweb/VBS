@@ -684,23 +684,8 @@ export default function SessionEditModal({
                   newKey={sessionEmail}
                   id={sessionEmail}
                   name={sessionName}
-                  realityHours={0}
                 />,
               );
-
-              let hours: number = 0.0;
-
-              const realityHours: CCAAttendance[] = realityMemberHours.current;
-              if (realityHours.length > 0) {
-                for (let key2 = 0; key2 < realityHours.length; key2 += 1) {
-                  if (realityHours[key2]) {
-                    const attend: CCAAttendance = realityHours[key2];
-                    if (attend.sessionEmail === sessionEmail) {
-                      hours = attend.ccaAttendance;
-                    }
-                  }
-                }
-              }
 
               realityButtons.push(
                 <MemberButton
@@ -710,7 +695,6 @@ export default function SessionEditModal({
                   newKey={sessionEmail}
                   id={sessionEmail}
                   name={sessionName}
-                  realityHours={hours}
                 />,
               );
             }

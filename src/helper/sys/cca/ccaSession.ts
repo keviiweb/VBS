@@ -130,3 +130,61 @@ export const editSession = async (data: CCASession): Promise<Result> => {
 
   return result;
 };
+
+export const lockSession = async (data: CCASession): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    const sess: CCASession = await prisma.cCASessions.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        editable: false,
+        updated_at: new Date().toISOString(),
+      },
+    });
+
+    if (sess) {
+      result = {
+        status: true,
+        error: '',
+        msg: `Successfully lock session`,
+      };
+    } else {
+      result = { status: false, error: 'Failed to lock session', msg: '' };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: error.toString(), msg: '' };
+  }
+
+  return result;
+};
+
+export const deleteSessionByID = async (id: string): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    const sess: CCASession = await prisma.cCASessions.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    if (sess) {
+      result = {
+        status: true,
+        error: '',
+        msg: `Successfully deleted session`,
+      };
+    } else {
+      result = { status: false, error: 'Failed to delete session', msg: '' };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: error.toString(), msg: '' };
+  }
+
+  return result;
+};

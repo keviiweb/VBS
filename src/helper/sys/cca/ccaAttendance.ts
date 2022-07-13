@@ -141,6 +141,27 @@ export const deleteAttendance = async (
   return result;
 };
 
+export const deleteAttendanceBySessionID = async (
+  sessionID: string,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    const query: CCAAttendance = await prisma.cCAAttendance.deleteMany({
+      where: {
+        sessionID: sessionID,
+      },
+    });
+
+    result = { status: true, error: null, msg: query };
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: error.toString(), msg: '' };
+  }
+
+  return result;
+};
+
 export const createAttendance = async (
   attend: CCAAttendance,
 ): Promise<Result> => {
@@ -182,23 +203,31 @@ export const editAttendance = async (
           }
         }
 
-        const data: CCAAttendance = {
-          ccaID: attend.ccaID,
-          ccaAttendance: attend.ccaAttendance,
-          sessionID: ccaSessionID,
-          sessionEmail: attend.sessionEmail,
-        };
+        if (attend.ccaAttendance > 0) {
+          const data: CCAAttendance = {
+            ccaID: attend.ccaID,
+            ccaAttendance: attend.ccaAttendance,
+            sessionID: ccaSessionID,
+            sessionEmail: attend.sessionEmail,
+          };
 
-        const createRes: Result = await createAttendance(data);
-        if (createRes.status) {
+          const createRes: Result = await createAttendance(data);
+          if (createRes.status) {
+            result = {
+              status: true,
+              error: null,
+              msg: 'Successfully edited attendance',
+            };
+          } else {
+            result = { status: false, error: createRes.error, msg: '' };
+            break;
+          }
+        } else {
           result = {
             status: true,
             error: null,
             msg: 'Successfully edited attendance',
           };
-        } else {
-          result = { status: false, error: createRes.error, msg: '' };
-          break;
         }
       }
     }

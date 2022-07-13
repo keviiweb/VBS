@@ -2,7 +2,6 @@ import { Result } from 'types/api';
 import { CCA } from 'types/cca/cca';
 
 import { prisma } from '@constants/sys/db';
-import moment from 'moment';
 
 export const findCCAbyName = async (name: string): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };

@@ -7,10 +7,8 @@ export default function MemberButton({
   newKey,
   id,
   name,
-  realityHours,
 }) {
   const [selected, setSelected] = useState(false);
-  const [hours, setHours] = useState(realityHours);
 
   const click = async () => {
     if (handleClick !== null && handleClick !== undefined && !reality) {
@@ -40,13 +38,11 @@ export default function MemberButton({
             type='number'
             placeholder='Hours'
             step={0.1}
-            value={hours}
             size='lg'
             onChange={(event) => {
               if (event.cancelable) {
                 event.preventDefault();
               }
-              setHours(Number(event.currentTarget.value));
               handleClick(id, name, Number(event.currentTarget.value));
             }}
           />

@@ -38,6 +38,7 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 import LeaderStudentModalComponent from '@components/sys/cca/LeaderStudentModal';
 import SessionModal from '@components/sys/cca/SessionModal';
 import SessionEditModal from '@components/sys/cca/SessionEditModal';
+import SessionDeleteConfirmationModal from '@components/sys/cca/SessionDeleteConfirmationModal';
 
 import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
@@ -67,9 +68,13 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
   const [specificCCAData, setSpecificCCAData] = useState<CCASession | null>(
     null,
   );
+
   const [specificSession, setSpecificSessionData] = useState<CCASession | null>(
     null,
   );
+
+  const [specificSessionDelete, setSpecificSessionDeleteData] =
+    useState<CCASession | null>(null);
 
   const [loadingData, setLoadingData] = useState(true);
 
@@ -123,6 +128,10 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
 
   const handleEditSession = useCallback((content: CCASession) => {
     setSpecificSessionData(content);
+  }, []);
+
+  const handleDeleteSession = useCallback((content: CCASession) => {
+    setSpecificSessionDeleteData(content);
   }, []);
 
   const generateActionButtonRecord = useCallback(
@@ -182,6 +191,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
                 size='md'
                 isDisabled={submitButtonPressed}
                 leftIcon={<DeleteIcon />}
+                onClick={() => handleDeleteSession(content)}
               >
                 Delete
               </Button>
@@ -217,7 +227,12 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
 
       return button;
     },
-    [submitButtonPressed, handleDetailsSession, handleEditSession],
+    [
+      submitButtonPressed,
+      handleDetailsSession,
+      handleEditSession,
+      handleDeleteSession,
+    ],
   );
 
   const includeActionButton = useCallback(
@@ -255,6 +270,8 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
         } else {
           setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
         }
+      } else {
+        setData([]);
       }
     },
     [generateActionButtonRecord, generateActionButtonSession],
@@ -350,6 +367,35 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
     await fetchSession(ccaRecordIDDB.current);
     setSubmitButtonPressed(false);
   }, [fetchSession]);
+
+  const deleteSession = useCallback(
+    async (sess: CCASession) => {
+      if (sess !== null && sess !== undefined) {
+        const { id } = sess;
+        if (id !== undefined && checkerString(id)) {
+          try {
+            const rawResponse = await fetch('/api/ccaSession/delete', {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: id,
+              }),
+            });
+            const content: Result = await rawResponse.json();
+            if (content.status) {
+              await successEditSession();
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      }
+    },
+    [successEditSession],
+  );
 
   const onSelectionChange = async (event: { target: { value: string } }) => {
     if (event.target.value && checkerString(event.target.value)) {
@@ -478,6 +524,13 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
+          <SessionDeleteConfirmationModal
+            isOpen={specificSessionDelete}
+            onClose={() => setSpecificSessionDeleteData(null)}
+            modalData={specificSessionDelete}
+            dataHandler={deleteSession}
+          />
+
           <SessionEditModal
             isOpen={specificSession}
             onClose={() => setSpecificSessionData(null)}

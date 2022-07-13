@@ -15,7 +15,7 @@ import {
   StackDivider,
   Text,
 } from '@chakra-ui/react';
-import { checkerString } from '@root/src/constants/sys/helper';
+import { checkerString } from '@constants/sys/helper';
 
 export default function BookingRejectModal({
   isOpen,
