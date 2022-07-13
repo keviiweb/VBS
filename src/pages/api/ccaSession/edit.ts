@@ -47,6 +47,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               updated_at: new Date().toISOString(),
             };
 
+            let success: boolean = true;
             const editSessionRes: Result = await editSession(sessionData);
             if (editSessionRes.status) {
               if (parsedData && parsedData.realityM !== undefined) {
@@ -54,18 +55,37 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   parsedData.realityM,
                 );
 
-                if (parsedRealityData.length > 0) {
-                  await editAttendance(parsedRealityData);
+                if (
+                  parsedRealityData.length > 0 &&
+                  parsedData.id !== undefined
+                ) {
+                  const editRes: Result = await editAttendance(
+                    parsedData.id,
+                    parsedRealityData,
+                  );
+                  if (!editRes.status) {
+                    success = false;
+
+                    result = {
+                      status: false,
+                      error: editRes.error,
+                      msg: '',
+                    };
+                    res.status(200).send(result);
+                    res.end();
+                  }
                 }
               }
 
-              result = {
-                status: true,
-                error: null,
-                msg: editSessionRes.msg,
-              };
-              res.status(200).send(result);
-              res.end();
+              if (success) {
+                result = {
+                  status: true,
+                  error: null,
+                  msg: editSessionRes.msg,
+                };
+                res.status(200).send(result);
+                res.end();
+              }
             } else {
               result = {
                 status: false,

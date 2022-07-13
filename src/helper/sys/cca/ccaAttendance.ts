@@ -116,19 +116,93 @@ export const countTotalAttendanceHours = async (
   return 0;
 };
 
-export const editAttendance = async (attendance: CCAAttendance[]) => {
+export const deleteAttendance = async (
+  sessionID: string,
+  attend: CCAAttendance,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    const query: CCAAttendance = await prisma.cCAAttendance.deleteMany({
+      where: {
+        sessionID: sessionID,
+        ccaID: attend.ccaID,
+        sessionEmail: attend.sessionEmail,
+        id: attend.id,
+      },
+    });
+
+    result = { status: true, error: null, msg: query };
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: error.toString(), msg: '' };
+  }
+
+  return result;
+};
+
+export const createAttendance = async (
+  attend: CCAAttendance,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    const query: CCAAttendance = await prisma.cCAAttendance.create({
+      data: attend,
+    });
+
+    result = { status: true, error: null, msg: query };
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: error.toString(), msg: '' };
+  }
+
+  return result;
+};
+
+export const editAttendance = async (
+  ccaSessionID: string,
+  attendance: CCAAttendance[],
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
   if (attendance.length > 0) {
     for (let key = 0; key < attendance.length; key += 1) {
       if (attendance[key]) {
         const attend: CCAAttendance = attendance[key];
-        const id: string =
-          attend.id && checkerString(attend.id) ? attend.id : '';
+        const id: string = attend.id !== undefined ? attend.id : '';
         if (checkerString(id)) {
-          // delete
+          const deleteRes: Result = await deleteAttendance(
+            ccaSessionID,
+            attend,
+          );
+          if (!deleteRes.status) {
+            result = { status: false, error: deleteRes.error, msg: '' };
+            break;
+          }
         }
 
-        // create
+        const data: CCAAttendance = {
+          ccaID: attend.ccaID,
+          ccaAttendance: attend.ccaAttendance,
+          sessionID: ccaSessionID,
+          sessionEmail: attend.sessionEmail,
+        };
+
+        const createRes: Result = await createAttendance(data);
+        if (createRes.status) {
+          result = {
+            status: true,
+            error: null,
+            msg: 'Successfully edited attendance',
+          };
+        } else {
+          result = { status: false, error: createRes.error, msg: '' };
+          break;
+        }
       }
     }
   }
+
+  return result;
 };

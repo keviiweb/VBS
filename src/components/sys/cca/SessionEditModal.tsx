@@ -503,7 +503,28 @@ export default function SessionEditModal({
     }
   };
 
-  const fetchNameOfUser = async (id: string): Promise<string> => {
+  const fetchNameOfUser = async (email: string): Promise<string> => {
+    let res: string = '';
+
+    if (memberData.current.length > 0) {
+      for (let key = 0; key < memberData.current.length; key += 1) {
+        if (memberData.current[key]) {
+          const record: CCARecord = memberData.current[key];
+          if (
+            record.sessionEmail === email &&
+            record.sessionName !== undefined
+          ) {
+            res = record.sessionName;
+            break;
+          }
+        }
+      }
+    }
+
+    return res;
+  };
+
+  const fetchNameOfUserByID = async (id: string): Promise<string> => {
     let res: string = '';
 
     if (memberData.current.length > 0) {
@@ -521,18 +542,37 @@ export default function SessionEditModal({
     return res;
   };
 
-  const onExpectedMemberChange = useCallback(async (value: string) => {
-    if (checkerString(value)) {
-      const nameField: string = await fetchNameOfUser(value);
+  const fetchUserIDByEmail = async (email: string): Promise<string> => {
+    let res: string = '';
+
+    if (memberData.current.length > 0) {
+      for (let key = 0; key < memberData.current.length; key += 1) {
+        if (memberData.current[key]) {
+          const record: CCARecord = memberData.current[key];
+          if (record.sessionEmail === email && record.sessionID !== undefined) {
+            res = record.sessionID;
+            break;
+          }
+        }
+      }
+    }
+
+    return res;
+  };
+
+  const onExpectedMemberChange = useCallback(async (sessionEmail: string) => {
+    if (checkerString(sessionEmail)) {
+      const nameField: string = await fetchNameOfUser(sessionEmail);
+      const idField: string = await fetchUserIDByEmail(sessionEmail);
       let members: string[] = selectedExpectedMembers.current;
       let membersName: string[] = selectedExpectedMembersName.current;
-      if (members.includes(value)) {
-        members = members.filter((item) => item !== value);
+      if (members.includes(idField)) {
+        members = members.filter((item) => item !== idField);
         if (checkerString(nameField)) {
           membersName = membersName.filter((item) => item !== nameField);
         }
       } else {
-        members.push(value);
+        members.push(idField);
         if (checkerString(nameField)) {
           membersName.push(nameField);
         }
@@ -545,43 +585,23 @@ export default function SessionEditModal({
     }
   }, []);
 
-  const onRealityMemberChange = useCallback(async (value: string) => {
-    if (checkerString(value)) {
-      const nameField: string = await fetchNameOfUser(value);
-      let members: string[] = selectedRealityMembers.current;
-      let membersName: string[] = selectedRealityMembersName.current;
-      if (members.includes(value)) {
-        members = members.filter((item) => item !== value);
-        membersName = membersName.filter((item) => item !== nameField);
-      } else {
-        members.push(value);
-        membersName.push(nameField);
-      }
-
-      selectedRealityMembers.current = members;
-      selectedRealityMembersName.current = membersName;
-    }
-  }, []);
-
   const onHoursChange = useCallback(
-    async (id: string, nameField: string, hour: number) => {
+    async (email: string, nameField: string, hour: number) => {
       setError('');
       setDisableButton(false);
       if (
         selectedData.current !== null &&
         selectedData.current.duration !== undefined &&
-        hour > 0 &&
+        hour >= 0 &&
         hour <= selectedData.current.duration
       ) {
-        await onRealityMemberChange(id);
-
         const realityHours: CCAAttendance[] = realityMemberHours.current;
         let notFound = false;
 
         for (let key = 0; key < realityHours.length; key += 1) {
           if (realityHours[key]) {
             const reality: CCAAttendance = realityHours[key];
-            if (reality.sessionID === id) {
+            if (reality.sessionEmail === email) {
               reality.ccaAttendance = hour;
               notFound = true;
               break;
@@ -593,42 +613,12 @@ export default function SessionEditModal({
           const attendance: CCAAttendance = {
             ccaID: ccaIDDB.current,
             ccaAttendance: hour,
-            sessionID: id,
+            sessionEmail: email,
             sessionName: nameField,
           };
 
           realityHours.push(attendance);
         }
-        realityMemberHours.current = realityHours;
-      } else if (hour === 0) {
-        await onRealityMemberChange(id);
-
-        let realityHours: CCAAttendance[] = realityMemberHours.current;
-        let notFound = false;
-        let attendance: CCAAttendance;
-
-        for (let key = 0; key < realityHours.length; key += 1) {
-          if (realityHours[key]) {
-            const reality: CCAAttendance = realityHours[key];
-            if (reality.sessionID === id) {
-              notFound = true;
-              attendance = {
-                ccaID: ccaIDDB.current,
-                ccaAttendance: reality.ccaAttendance,
-                sessionID: id,
-                sessionName: nameField,
-              };
-              break;
-            }
-          }
-        }
-
-        if (notFound) {
-          realityHours = realityHours.filter(
-            (item) => JSON.stringify(item) !== JSON.stringify(attendance),
-          );
-        }
-
         realityMemberHours.current = realityHours;
       } else if (
         selectedData.current !== null &&
@@ -642,7 +632,7 @@ export default function SessionEditModal({
 
       displayRealityMembers(realityMemberHours.current);
     },
-    [onRealityMemberChange],
+    [],
   );
 
   const generateExpectedMemberList = useCallback(async () => {
@@ -659,8 +649,10 @@ export default function SessionEditModal({
       ) {
         if (selectedExpectedMembers.current[key]) {
           const s: string = selectedExpectedMembers.current[key];
-          const nameField: string = await fetchNameOfUser(s);
-          memberName.push(nameField);
+          const nameField: string = await fetchNameOfUserByID(s);
+          if (checkerString(nameField)) {
+            memberName.push(nameField);
+          }
         }
       }
 
@@ -679,31 +671,46 @@ export default function SessionEditModal({
           if (content.res[key]) {
             const record: CCARecord = content.res[key];
             if (
-              record.sessionID !== undefined &&
+              record.sessionEmail !== undefined &&
               record.sessionName !== undefined
             ) {
-              const { sessionID } = record;
-              const { sessionName } = record;
+              const { sessionEmail, sessionName } = record;
 
               buttons.push(
                 <MemberButton
                   reality={false}
-                  key={sessionID}
+                  key={sessionEmail}
                   handleClick={onExpectedMemberChange}
-                  newKey={sessionID}
-                  id={sessionID}
+                  newKey={sessionEmail}
+                  id={sessionEmail}
                   name={sessionName}
+                  realityHours={0}
                 />,
               );
+
+              let hours: number = 0.0;
+
+              const realityHours: CCAAttendance[] = realityMemberHours.current;
+              if (realityHours.length > 0) {
+                for (let key2 = 0; key2 < realityHours.length; key2 += 1) {
+                  if (realityHours[key2]) {
+                    const attend: CCAAttendance = realityHours[key2];
+                    if (attend.sessionEmail === sessionEmail) {
+                      hours = attend.ccaAttendance;
+                    }
+                  }
+                }
+              }
 
               realityButtons.push(
                 <MemberButton
                   reality
-                  key={sessionID}
+                  key={sessionEmail}
                   handleClick={onHoursChange}
-                  newKey={sessionID}
-                  id={sessionID}
+                  newKey={sessionEmail}
+                  id={sessionEmail}
                   name={sessionName}
+                  realityHours={hours}
                 />,
               );
             }
