@@ -111,6 +111,8 @@ export default function SessionEditModal({
   const remarksDB = useRef('');
   const ldrNotesDB = useRef('');
 
+  const [editable, setEditable] = useState(false);
+
   const optionalText: string = `Hours from optional sessions will act as bonus hours ie they will not affect the total number of hours.
       Example: Yunus has attended 10 out of 12 hours. 
       If he attends a 3 hour optional session, his attendance will be boosted to 12 out of 12 hours`;
@@ -162,6 +164,8 @@ export default function SessionEditModal({
 
     setDisableButton(false);
     setSubmitButtonPressed(false);
+
+    setEditable(false);
 
     startTimeDB.current = '';
     endTimeDB.current = '';
@@ -754,6 +758,12 @@ export default function SessionEditModal({
       setLoadingData(true);
       setSubmitButtonPressed(true);
 
+      const editableField: boolean =
+        modalDataField && modalDataField.editable
+          ? modalDataField.editable
+          : false;
+      setEditable(editableField);
+
       const idField: string =
         modalDataField && modalDataField.id ? modalDataField.id : '';
       sessionIDDB.current = idField;
@@ -883,443 +893,470 @@ export default function SessionEditModal({
             onClose={() => setSubmitButtonPressed(false)}
           />
 
-          <Stack spacing={5} w='full' align='center'>
+          {editable && (
             <Box>
-              <Text
-                mt={2}
-                mb={6}
-                textTransform='uppercase'
-                fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
-                lineHeight='5'
-                fontWeight='bold'
-                letterSpacing='tight'
-                color='gray.900'
+              <Stack spacing={5} w='full' align='center'>
+                <Box>
+                  <Text
+                    mt={2}
+                    mb={6}
+                    textTransform='uppercase'
+                    fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
+                    lineHeight='5'
+                    fontWeight='bold'
+                    letterSpacing='tight'
+                    color='gray.900'
+                  >
+                    {ccaName}
+                  </Text>
+                </Box>
+              </Stack>
+
+              <Progress hasStripe value={progressBar} />
+
+              <MotionSimpleGrid
+                mt='3'
+                minChildWidth={{ base: 'full', md: '500px', lg: '800px' }}
+                spacing='2em'
+                minH='full'
+                variants={parentVariant}
+                initial='initial'
+                animate='animate'
               >
-                {ccaName}
-              </Text>
+                <MotionBox variants={cardVariant} key='motion-box-time2'>
+                  {modalData && !loadingData && progressLevel === levels.TIME && (
+                    <Flex
+                      w='full'
+                      h='full'
+                      alignItems='center'
+                      justifyContent='center'
+                    >
+                      <Stack spacing={10}>
+                        <Stack
+                          w={{ base: 'full', md: '500px', lg: '500px' }}
+                          direction='row'
+                        >
+                          <FormControl id='name'>
+                            <FormLabel>
+                              <Text
+                                w={40}
+                                textTransform='uppercase'
+                                lineHeight='5'
+                                fontWeight='bold'
+                                letterSpacing='tight'
+                                mr={5}
+                              >
+                                Name
+                              </Text>
+                            </FormLabel>
+                            <Input
+                              type='text'
+                              placeholder='Name'
+                              value={name}
+                              size='lg'
+                              onChange={(event) => {
+                                setName(event.currentTarget.value);
+                                nameDB.current = event.currentTarget.value;
+                              }}
+                            />
+                          </FormControl>
+
+                          <FormControl id='date'>
+                            <FormLabel>
+                              <Text
+                                w={40}
+                                textTransform='uppercase'
+                                lineHeight='5'
+                                fontWeight='bold'
+                                letterSpacing='tight'
+                                mr={5}
+                              >
+                                Date
+                              </Text>
+                            </FormLabel>
+                            <Input
+                              disabled
+                              type='date'
+                              placeholder='Date'
+                              value={dateStr}
+                              size='lg'
+                              onChange={(event) => {
+                                setDateStr(event.currentTarget.value);
+                                dateStrDB.current = event.currentTarget.value;
+                              }}
+                            />
+                          </FormControl>
+                        </Stack>
+                        {startTimeDropdown && (
+                          <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
+                            <FormLabel>
+                              <Text
+                                w={40}
+                                textTransform='uppercase'
+                                lineHeight='5'
+                                fontWeight='bold'
+                                letterSpacing='tight'
+                                mr={5}
+                              >
+                                Start Time
+                              </Text>
+                            </FormLabel>
+                            <Select
+                              value={startTime}
+                              onChange={onStartTimeChange}
+                              size='md'
+                            >
+                              {endTimeDropdown}
+                            </Select>
+                          </Stack>
+                        )}
+
+                        {endTimeDropdown && (
+                          <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
+                            <FormLabel>
+                              <Text
+                                w={40}
+                                textTransform='uppercase'
+                                lineHeight='5'
+                                fontWeight='bold'
+                                letterSpacing='tight'
+                                mr={5}
+                              >
+                                End Time
+                              </Text>
+                            </FormLabel>
+                            <Select
+                              value={endTime}
+                              onChange={onEndTimeChange}
+                              size='md'
+                            >
+                              {endTimeDropdown}
+                            </Select>
+                          </Stack>
+                        )}
+
+                        <Stack spacing={5} direction='row'>
+                          <Checkbox
+                            isChecked={optional}
+                            onChange={(event) => {
+                              if (event.cancelable) {
+                                event.preventDefault();
+                              }
+                              setOptional(event.target.checked);
+                              optionalDB.current = event.target.checked;
+                              optionalStrDB.current = event.target.checked
+                                ? 'Yes'
+                                : 'No';
+                            }}
+                          >
+                            Optional Session
+                          </Checkbox>
+                          <InfoIcon onMouseEnter={handleOptionalHover} />
+                        </Stack>
+                      </Stack>
+                    </Flex>
+                  )}
+
+                  {modalData &&
+                    !loadingData &&
+                    progressLevel === levels.EXPECTATION && (
+                      <Flex
+                        w='full'
+                        h='full'
+                        alignItems='center'
+                        justifyContent='center'
+                      >
+                        <Stack spacing={10}>
+                          <Stack
+                            w={{ base: 'full', md: '500px', lg: '500px' }}
+                            direction='row'
+                          >
+                            {selectedData.current?.duration && (
+                              <List spacing={5}>
+                                <ListItem>
+                                  <Stack direction='row'>
+                                    <Text
+                                      textTransform='uppercase'
+                                      letterSpacing='tight'
+                                      fontWeight='bold'
+                                    >
+                                      Duration
+                                    </Text>{' '}
+                                    <Text>
+                                      {selectedData.current?.duration} Hours
+                                    </Text>
+                                  </Stack>
+                                </ListItem>
+                              </List>
+                            )}
+                          </Stack>
+
+                          {expectedMemberButtons.length > 0 && (
+                            <Stack
+                              w={{ base: 'full', md: '500px', lg: '500px' }}
+                            >
+                              <FormLabel>
+                                <Stack direction='row'>
+                                  <Text
+                                    w={40}
+                                    textTransform='uppercase'
+                                    lineHeight='5'
+                                    fontWeight='bold'
+                                    letterSpacing='tight'
+                                    mr={5}
+                                  >
+                                    Expected Members
+                                  </Text>
+                                  <InfoIcon
+                                    onMouseEnter={handleExpectedHover}
+                                  />
+                                </Stack>
+                              </FormLabel>
+
+                              <Text>{displayedExpected}</Text>
+                              <Stack
+                                direction={['column', 'row']}
+                                align='center'
+                              >
+                                <ButtonGroup display='flex' flexWrap='wrap'>
+                                  {expectedMemberButtons}
+                                </ButtonGroup>
+                              </Stack>
+                            </Stack>
+                          )}
+                        </Stack>
+                      </Flex>
+                  )}
+
+                  {modalData &&
+                    !loadingData &&
+                    progressLevel === levels.REALITY &&
+                    !upcoming && (
+                      <Flex
+                        w='full'
+                        h='full'
+                        alignItems='center'
+                        justifyContent='center'
+                      >
+                        <Stack spacing={10}>
+                          <Stack
+                            w={{ base: 'full', md: '500px', lg: '500px' }}
+                            direction='row'
+                          >
+                            {selectedData.current?.duration && (
+                              <List spacing={5}>
+                                <ListItem>
+                                  <Stack direction='row'>
+                                    <Text
+                                      textTransform='uppercase'
+                                      letterSpacing='tight'
+                                      fontWeight='bold'
+                                    >
+                                      Duration
+                                    </Text>{' '}
+                                    <Text>
+                                      {selectedData.current?.duration} Hours
+                                    </Text>
+                                  </Stack>
+                                </ListItem>
+                              </List>
+                            )}
+                          </Stack>
+
+                          {realityMemberButtons.length > 0 && (
+                            <Stack
+                              w={{ base: 'full', md: '500px', lg: '500px' }}
+                            >
+                              <FormLabel>
+                                <Stack direction='row'>
+                                  <Text
+                                    w={40}
+                                    textTransform='uppercase'
+                                    lineHeight='5'
+                                    fontWeight='bold'
+                                    letterSpacing='tight'
+                                    mr={5}
+                                  >
+                                    Members Present
+                                  </Text>
+                                  <InfoIcon onMouseEnter={handleRealityHover} />
+                                </Stack>
+                              </FormLabel>
+
+                              <Text>{displayedReality}</Text>
+                              <Stack
+                                direction={['column', 'row']}
+                                align='center'
+                              >
+                                <ButtonGroup display='flex' flexWrap='wrap'>
+                                  {realityMemberButtons}
+                                </ButtonGroup>
+                              </Stack>
+                            </Stack>
+                          )}
+                        </Stack>
+                      </Flex>
+                  )}
+
+                  {modalData &&
+                    !loadingData &&
+                    progressLevel === levels.REALITY &&
+                    upcoming && (
+                      <Flex
+                        w='full'
+                        h='full'
+                        alignItems='center'
+                        justifyContent='center'
+                      >
+                        <Stack spacing={10}>
+                          <Text color='red.500'>
+                            Unable to mark attendance. The session has not
+                            commenced.
+                          </Text>
+                          <Text color='red.500'>Click next to proceed.</Text>
+                        </Stack>
+                      </Flex>
+                  )}
+
+                  {modalData &&
+                    !loadingData &&
+                    progressLevel === levels.REMARKS && (
+                      <Flex
+                        w='full'
+                        h='full'
+                        alignItems='center'
+                        justifyContent='center'
+                      >
+                        <Stack spacing={10}>
+                          <Stack
+                            w={{ base: 'full', md: '500px', lg: '500px' }}
+                            direction='column'
+                          >
+                            <FormControl id='remarks'>
+                              <FormLabel>
+                                <Stack direction='row'>
+                                  <Text
+                                    w={40}
+                                    textTransform='uppercase'
+                                    lineHeight='5'
+                                    fontWeight='bold'
+                                    letterSpacing='tight'
+                                    mr={5}
+                                  >
+                                    General Remarks
+                                  </Text>
+                                </Stack>
+                              </FormLabel>
+                              <Textarea
+                                height={150}
+                                placeholder='Remarks (200 characters)'
+                                size='lg'
+                                value={remarks}
+                                onChange={(event) => {
+                                  setRemarks(event.currentTarget.value);
+                                  remarksDB.current = event.currentTarget.value;
+                                }}
+                              />
+                            </FormControl>
+
+                            <FormControl id='leader-notes'>
+                              <FormLabel>
+                                <Stack direction='row'>
+                                  <Text
+                                    w={40}
+                                    textTransform='uppercase'
+                                    lineHeight='5'
+                                    fontWeight='bold'
+                                    letterSpacing='tight'
+                                    mr={5}
+                                  >
+                                    Leaders&apos; Notes
+                                  </Text>
+                                </Stack>
+                              </FormLabel>
+                              <Textarea
+                                height={150}
+                                placeholder='Notes (200 characters)'
+                                size='lg'
+                                value={ldrNotes}
+                                onChange={(event) => {
+                                  setLdrNotes(event.currentTarget.value);
+                                  ldrNotesDB.current =
+                                    event.currentTarget.value;
+                                }}
+                              />
+                            </FormControl>
+                          </Stack>
+                        </Stack>
+                      </Flex>
+                  )}
+
+                  {checkerString(errorMsg) && (
+                    <Stack align='center'>
+                      <Text>{errorMsg}</Text>
+                    </Stack>
+                  )}
+                </MotionBox>
+              </MotionSimpleGrid>
             </Box>
-          </Stack>
+          )}
 
-          <Progress hasStripe value={progressBar} />
-
-          <MotionSimpleGrid
-            mt='3'
-            minChildWidth={{ base: 'full', md: '500px', lg: '800px' }}
-            spacing='2em'
-            minH='full'
-            variants={parentVariant}
-            initial='initial'
-            animate='animate'
-          >
-            <MotionBox variants={cardVariant} key='motion-box-time2'>
-              {modalData && !loadingData && progressLevel === levels.TIME && (
-                <Flex
-                  w='full'
-                  h='full'
-                  alignItems='center'
-                  justifyContent='center'
-                >
-                  <Stack spacing={10}>
-                    <Stack
-                      w={{ base: 'full', md: '500px', lg: '500px' }}
-                      direction='row'
-                    >
-                      <FormControl id='name'>
-                        <FormLabel>
-                          <Text
-                            w={40}
-                            textTransform='uppercase'
-                            lineHeight='5'
-                            fontWeight='bold'
-                            letterSpacing='tight'
-                            mr={5}
-                          >
-                            Name
-                          </Text>
-                        </FormLabel>
-                        <Input
-                          type='text'
-                          placeholder='Name'
-                          value={name}
-                          size='lg'
-                          onChange={(event) => {
-                            setName(event.currentTarget.value);
-                            nameDB.current = event.currentTarget.value;
-                          }}
-                        />
-                      </FormControl>
-
-                      <FormControl id='date'>
-                        <FormLabel>
-                          <Text
-                            w={40}
-                            textTransform='uppercase'
-                            lineHeight='5'
-                            fontWeight='bold'
-                            letterSpacing='tight'
-                            mr={5}
-                          >
-                            Date
-                          </Text>
-                        </FormLabel>
-                        <Input
-                          disabled
-                          type='date'
-                          placeholder='Date'
-                          value={dateStr}
-                          size='lg'
-                          onChange={(event) => {
-                            setDateStr(event.currentTarget.value);
-                            dateStrDB.current = event.currentTarget.value;
-                          }}
-                        />
-                      </FormControl>
-                    </Stack>
-                    {startTimeDropdown && (
-                      <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
-                        <FormLabel>
-                          <Text
-                            w={40}
-                            textTransform='uppercase'
-                            lineHeight='5'
-                            fontWeight='bold'
-                            letterSpacing='tight'
-                            mr={5}
-                          >
-                            Start Time
-                          </Text>
-                        </FormLabel>
-                        <Select
-                          value={startTime}
-                          onChange={onStartTimeChange}
-                          size='md'
-                        >
-                          {endTimeDropdown}
-                        </Select>
-                      </Stack>
-                    )}
-
-                    {endTimeDropdown && (
-                      <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
-                        <FormLabel>
-                          <Text
-                            w={40}
-                            textTransform='uppercase'
-                            lineHeight='5'
-                            fontWeight='bold'
-                            letterSpacing='tight'
-                            mr={5}
-                          >
-                            End Time
-                          </Text>
-                        </FormLabel>
-                        <Select
-                          value={endTime}
-                          onChange={onEndTimeChange}
-                          size='md'
-                        >
-                          {endTimeDropdown}
-                        </Select>
-                      </Stack>
-                    )}
-
-                    <Stack spacing={5} direction='row'>
-                      <Checkbox
-                        isChecked={optional}
-                        onChange={(event) => {
-                          if (event.cancelable) {
-                            event.preventDefault();
-                          }
-                          setOptional(event.target.checked);
-                          optionalDB.current = event.target.checked;
-                          optionalStrDB.current = event.target.checked
-                            ? 'Yes'
-                            : 'No';
-                        }}
-                      >
-                        Optional Session
-                      </Checkbox>
-                      <InfoIcon onMouseEnter={handleOptionalHover} />
-                    </Stack>
-                  </Stack>
-                </Flex>
-              )}
-
-              {modalData &&
-                !loadingData &&
-                progressLevel === levels.EXPECTATION && (
-                  <Flex
-                    w='full'
-                    h='full'
-                    alignItems='center'
-                    justifyContent='center'
-                  >
-                    <Stack spacing={10}>
-                      <Stack
-                        w={{ base: 'full', md: '500px', lg: '500px' }}
-                        direction='row'
-                      >
-                        {selectedData.current?.duration && (
-                          <List spacing={5}>
-                            <ListItem>
-                              <Stack direction='row'>
-                                <Text
-                                  textTransform='uppercase'
-                                  letterSpacing='tight'
-                                  fontWeight='bold'
-                                >
-                                  Duration
-                                </Text>{' '}
-                                <Text>
-                                  {selectedData.current?.duration} Hours
-                                </Text>
-                              </Stack>
-                            </ListItem>
-                          </List>
-                        )}
-                      </Stack>
-
-                      {expectedMemberButtons.length > 0 && (
-                        <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
-                          <FormLabel>
-                            <Stack direction='row'>
-                              <Text
-                                w={40}
-                                textTransform='uppercase'
-                                lineHeight='5'
-                                fontWeight='bold'
-                                letterSpacing='tight'
-                                mr={5}
-                              >
-                                Expected Members
-                              </Text>
-                              <InfoIcon onMouseEnter={handleExpectedHover} />
-                            </Stack>
-                          </FormLabel>
-
-                          <Text>{displayedExpected}</Text>
-                          <Stack direction={['column', 'row']} align='center'>
-                            <ButtonGroup display='flex' flexWrap='wrap'>
-                              {expectedMemberButtons}
-                            </ButtonGroup>
-                          </Stack>
-                        </Stack>
-                      )}
-                    </Stack>
-                  </Flex>
-              )}
-
-              {modalData &&
-                !loadingData &&
-                progressLevel === levels.REALITY &&
-                !upcoming && (
-                  <Flex
-                    w='full'
-                    h='full'
-                    alignItems='center'
-                    justifyContent='center'
-                  >
-                    <Stack spacing={10}>
-                      <Stack
-                        w={{ base: 'full', md: '500px', lg: '500px' }}
-                        direction='row'
-                      >
-                        {selectedData.current?.duration && (
-                          <List spacing={5}>
-                            <ListItem>
-                              <Stack direction='row'>
-                                <Text
-                                  textTransform='uppercase'
-                                  letterSpacing='tight'
-                                  fontWeight='bold'
-                                >
-                                  Duration
-                                </Text>{' '}
-                                <Text>
-                                  {selectedData.current?.duration} Hours
-                                </Text>
-                              </Stack>
-                            </ListItem>
-                          </List>
-                        )}
-                      </Stack>
-
-                      {realityMemberButtons.length > 0 && (
-                        <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
-                          <FormLabel>
-                            <Stack direction='row'>
-                              <Text
-                                w={40}
-                                textTransform='uppercase'
-                                lineHeight='5'
-                                fontWeight='bold'
-                                letterSpacing='tight'
-                                mr={5}
-                              >
-                                Members Present
-                              </Text>
-                              <InfoIcon onMouseEnter={handleRealityHover} />
-                            </Stack>
-                          </FormLabel>
-
-                          <Text>{displayedReality}</Text>
-                          <Stack direction={['column', 'row']} align='center'>
-                            <ButtonGroup display='flex' flexWrap='wrap'>
-                              {realityMemberButtons}
-                            </ButtonGroup>
-                          </Stack>
-                        </Stack>
-                      )}
-                    </Stack>
-                  </Flex>
-              )}
-
-              {modalData &&
-                !loadingData &&
-                progressLevel === levels.REALITY &&
-                upcoming && (
-                  <Flex
-                    w='full'
-                    h='full'
-                    alignItems='center'
-                    justifyContent='center'
-                  >
-                    <Stack spacing={10}>
-                      <Text color='red.500'>
-                        Unable to mark attendance. The session has not
-                        commenced.
-                      </Text>
-                      <Text color='red.500'>Click next to proceed.</Text>
-                    </Stack>
-                  </Flex>
-              )}
-
-              {modalData && !loadingData && progressLevel === levels.REMARKS && (
-                <Flex
-                  w='full'
-                  h='full'
-                  alignItems='center'
-                  justifyContent='center'
-                >
-                  <Stack spacing={10}>
-                    <Stack
-                      w={{ base: 'full', md: '500px', lg: '500px' }}
-                      direction='column'
-                    >
-                      <FormControl id='remarks'>
-                        <FormLabel>
-                          <Stack direction='row'>
-                            <Text
-                              w={40}
-                              textTransform='uppercase'
-                              lineHeight='5'
-                              fontWeight='bold'
-                              letterSpacing='tight'
-                              mr={5}
-                            >
-                              General Remarks
-                            </Text>
-                          </Stack>
-                        </FormLabel>
-                        <Textarea
-                          height={150}
-                          placeholder='Remarks (200 characters)'
-                          size='lg'
-                          value={remarks}
-                          onChange={(event) => {
-                            setRemarks(event.currentTarget.value);
-                            remarksDB.current = event.currentTarget.value;
-                          }}
-                        />
-                      </FormControl>
-
-                      <FormControl id='leader-notes'>
-                        <FormLabel>
-                          <Stack direction='row'>
-                            <Text
-                              w={40}
-                              textTransform='uppercase'
-                              lineHeight='5'
-                              fontWeight='bold'
-                              letterSpacing='tight'
-                              mr={5}
-                            >
-                              Leaders&apos; Notes
-                            </Text>
-                          </Stack>
-                        </FormLabel>
-                        <Textarea
-                          height={150}
-                          placeholder='Notes (200 characters)'
-                          size='lg'
-                          value={ldrNotes}
-                          onChange={(event) => {
-                            setLdrNotes(event.currentTarget.value);
-                            ldrNotesDB.current = event.currentTarget.value;
-                          }}
-                        />
-                      </FormControl>
-                    </Stack>
-                  </Stack>
-                </Flex>
-              )}
-
-              {checkerString(errorMsg) && (
-                <Stack align='center'>
-                  <Text>{errorMsg}</Text>
-                </Stack>
-              )}
-            </MotionBox>
-          </MotionSimpleGrid>
+          {!editable && (
+            <Box>
+              <Text>Sorry, this session is not editable.</Text>
+            </Box>
+          )}
         </ModalBody>
         <ModalFooter>
-          {progressLevel !== levels.TIME && (
-            <Button
-              disabled={disableButton}
-              bg='blue.400'
-              color='white'
-              w='150px'
-              size='lg'
-              _hover={{ bg: 'blue.600' }}
-              mr={5}
-              onClick={async () => {
-                await handleClick(false);
-              }}
-            >
-              Previous
-            </Button>
-          )}
-
-          {progressLevel !== levels.REMARKS && (
-            <Button
-              disabled={disableButton}
-              bg='gray.400'
-              color='white'
-              w='150px'
-              size='lg'
-              _hover={{ bg: 'gray.600' }}
-              onClick={async () => {
-                await handleClick(true);
-              }}
-            >
-              Next
-            </Button>
-          )}
-
-          {progressLevel === levels.REMARKS && (
-            <Button
-              disabled={disableButton}
-              bg='red.400'
-              color='white'
-              w='150px'
-              size='lg'
-              _hover={{ bg: 'red.600' }}
-              onClick={async () => {
-                await handleSubmit();
-              }}
-            >
-              Submit
-            </Button>
+          {editable && (
+            <Box>
+              {progressLevel !== levels.TIME && (
+                <Button
+                  disabled={disableButton}
+                  bg='blue.400'
+                  color='white'
+                  w='150px'
+                  size='lg'
+                  _hover={{ bg: 'blue.600' }}
+                  mr={5}
+                  onClick={async () => {
+                    await handleClick(false);
+                  }}
+                >
+                  Previous
+                </Button>
+              )}
+              {progressLevel !== levels.REMARKS && (
+                <Button
+                  disabled={disableButton}
+                  bg='gray.400'
+                  color='white'
+                  w='150px'
+                  size='lg'
+                  _hover={{ bg: 'gray.600' }}
+                  onClick={async () => {
+                    await handleClick(true);
+                  }}
+                >
+                  Next
+                </Button>
+              )}
+              {progressLevel === levels.REMARKS && (
+                <Button
+                  disabled={disableButton}
+                  bg='red.400'
+                  color='white'
+                  w='150px'
+                  size='lg'
+                  _hover={{ bg: 'red.600' }}
+                  onClick={async () => {
+                    await handleSubmit();
+                  }}
+                >
+                  Submit
+                </Button>
+              )}
+            </Box>
           )}
         </ModalFooter>
       </ModalContent>
