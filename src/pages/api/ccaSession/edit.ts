@@ -6,7 +6,11 @@ import { CCAAttendance } from 'types/cca/ccaAttendance';
 import { currentSession } from '@helper/sys/sessionServer';
 import { findCCAbyID } from '@helper/sys/cca/cca';
 import { isLeader } from '@helper/sys/cca/ccaRecord';
-import { editSession, lockSession } from '@helper/sys/cca/ccaSession';
+import {
+  editSession,
+  isConflict,
+  lockSession,
+} from '@helper/sys/cca/ccaSession';
 import { editAttendance } from '@helper/sys/cca/ccaAttendance';
 
 import { isValidDate, compareDate } from '@constants/sys/date';
@@ -84,66 +88,77 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   updated_at: new Date().toISOString(),
                 };
 
-                let success: boolean = true;
-                const editSessionRes: Result = await editSession(sessionData);
-                if (editSessionRes.status) {
-                  if (parsedData && parsedData.realityM !== undefined) {
-                    let canEdit = false;
-
-                    if (parsedData.dateStr !== undefined) {
-                      const day: Date = new Date(parsedData.dateStr);
-                      if (isValidDate(day)) {
-                        if (day <= new Date()) {
-                          canEdit = true;
-                        }
-                      }
-                    }
-
-                    if (canEdit) {
-                      const parsedRealityData: CCAAttendance[] = JSON.parse(
-                        parsedData.realityM,
-                      );
-
-                      if (
-                        parsedRealityData.length > 0 &&
-                        parsedData.id !== undefined
-                      ) {
-                        const editRes: Result = await editAttendance(
-                          parsedData.id,
-                          parsedRealityData,
-                        );
-                        if (!editRes.status) {
-                          success = false;
-
-                          result = {
-                            status: false,
-                            error: editRes.error,
-                            msg: '',
-                          };
-                          res.status(200).send(result);
-                          res.end();
-                        }
-                      }
-                    }
-                  }
-
-                  if (success) {
-                    result = {
-                      status: true,
-                      error: null,
-                      msg: editSessionRes.msg,
-                    };
-                    res.status(200).send(result);
-                    res.end();
-                  }
-                } else {
+                const findSessRes: boolean = await isConflict(sessionData);
+                if (findSessRes) {
                   result = {
                     status: false,
-                    error: editSessionRes.error,
+                    error: 'A session already exist within the timing',
                     msg: '',
                   };
                   res.status(200).send(result);
                   res.end();
+                } else {
+                  let success: boolean = true;
+                  const editSessionRes: Result = await editSession(sessionData);
+                  if (editSessionRes.status) {
+                    if (parsedData && parsedData.realityM !== undefined) {
+                      let canEdit = false;
+
+                      if (parsedData.dateStr !== undefined) {
+                        const day: Date = new Date(parsedData.dateStr);
+                        if (isValidDate(day)) {
+                          if (day <= new Date()) {
+                            canEdit = true;
+                          }
+                        }
+                      }
+
+                      if (canEdit) {
+                        const parsedRealityData: CCAAttendance[] = JSON.parse(
+                          parsedData.realityM,
+                        );
+
+                        if (
+                          parsedRealityData.length > 0 &&
+                          parsedData.id !== undefined
+                        ) {
+                          const editRes: Result = await editAttendance(
+                            parsedData.id,
+                            parsedRealityData,
+                          );
+                          if (!editRes.status) {
+                            success = false;
+
+                            result = {
+                              status: false,
+                              error: editRes.error,
+                              msg: '',
+                            };
+                            res.status(200).send(result);
+                            res.end();
+                          }
+                        }
+                      }
+                    }
+
+                    if (success) {
+                      result = {
+                        status: true,
+                        error: null,
+                        msg: editSessionRes.msg,
+                      };
+                      res.status(200).send(result);
+                      res.end();
+                    }
+                  } else {
+                    result = {
+                      status: false,
+                      error: editSessionRes.error,
+                      msg: '',
+                    };
+                    res.status(200).send(result);
+                    res.end();
+                  }
                 }
               } else {
                 result = {

@@ -106,8 +106,8 @@ export const countRejectedBooking = async (): Promise<number> => {
 
 export const findBookingByUser = async (
   session: Session,
-  limit: number,
-  skip: number,
+  limit: number = 100000,
+  skip: number = 0,
 ): Promise<BookingRequest[]> => {
   try {
     const bookings: BookingRequest[] =
@@ -132,8 +132,8 @@ export const findBookingByUser = async (
 };
 
 export const findApprovedBooking = async (
-  limit: number,
-  skip: number,
+  limit: number = 100000,
+  skip: number = 0,
 ): Promise<BookingRequest[]> => {
   try {
     const bookings: BookingRequest[] =
@@ -160,8 +160,8 @@ export const findApprovedBooking = async (
 };
 
 export const findRejectedBooking = async (
-  limit: number,
-  skip: number,
+  limit: number = 100000,
+  skip: number = 0,
 ): Promise<BookingRequest[]> => {
   try {
     const bookings: BookingRequest[] =
@@ -188,8 +188,8 @@ export const findRejectedBooking = async (
 };
 
 export const findPendingBooking = async (
-  limit: number,
-  skip: number,
+  limit: number = 100000,
+  skip: number = 0,
 ): Promise<BookingRequest[]> => {
   try {
     const bookings: BookingRequest[] =
@@ -216,8 +216,8 @@ export const findPendingBooking = async (
 };
 
 export const findAllBooking = async (
-  limit: number,
-  skip: number,
+  limit: number = 100000,
+  skip: number = 0,
 ): Promise<BookingRequest[]> => {
   try {
     const bookings: BookingRequest[] =
@@ -907,7 +907,7 @@ export const notifyConflictsEmail = async (
         result = { status: true, error: null, msg: 'Successfully notified!' };
       } catch (error) {
         console.error(error);
-        result = { status: false, error: error.toString(), msg: '' };
+        result = { status: false, error: 'Failed to notify users', msg: '' };
       }
     }
   } else {

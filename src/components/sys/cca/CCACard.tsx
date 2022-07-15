@@ -35,7 +35,7 @@ export default function CCACard({ product, setModalData }) {
             src={image}
             priority
             objectFit='cover'
-            alt='picture of a venue'
+            alt='picture of a cca'
             layout='fill'
           />
         </Box>

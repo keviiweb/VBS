@@ -5,12 +5,12 @@ import { CCASession } from 'types/cca/ccaSession';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { findCCAbyID } from '@helper/sys/cca/cca';
+import { fetchSpecificCCAAttendanceByUserEmail } from '@helper/sys/cca/ccaAttendance';
 import {
-  countSpecificCCAAttendanceByUserEmail,
-  fetchSpecificCCAAttendanceByUserEmail,
-} from '@helper/sys/cca/ccaAttendance';
-import { findCCASessionByID } from '@helper/sys/cca/ccaSession';
-import { splitHours } from '@helper/sys/vbs/venue';
+  countAllCCASessionByCCAID,
+  fetchAllCCASessionByCCAID,
+} from '@helper/sys/cca/ccaSession';
+import { splitHours } from '@constants/sys/helper';
 
 import {
   convertUnixToDate,
@@ -57,13 +57,86 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const ccaDB: Result = await fetchSpecificCCAAttendanceByUserEmail(
             ccaID,
             userEmail,
+          );
+          const sessionDB: Result = await fetchAllCCASessionByCCAID(
+            ccaID,
             limit,
             skip,
           );
-          const totalCount: number =
-            await countSpecificCCAAttendanceByUserEmail(ccaID, userEmail);
+          const totalCount: number = await countAllCCASessionByCCAID(ccaID);
 
-          if (ccaDB.status) {
+          if (ccaDB.status && sessionDB.status) {
+            const totalAttendance: CCAAttendance[] = ccaDB.msg;
+            const totalSessions: CCASession[] = sessionDB.msg;
+            if (totalSessions && totalSessions.length > 0) {
+              for (let key = 0; key < totalSessions.length; key += 1) {
+                if (totalSessions[key]) {
+                  const sess: CCASession = totalSessions[key];
+                  if (sess.id !== undefined) {
+                    const sessionID: string = sess.id;
+
+                    const { date } = sess;
+                    const dateObj: Date | null = convertUnixToDate(date);
+                    let dateStr: string = '';
+
+                    if (dateObj !== null) {
+                      dateStr = dateISO(dateObj);
+                    }
+
+                    const sessionAttendanceHourStr: string = sess.time;
+                    const { start, end } = await splitHours(
+                      sessionAttendanceHourStr,
+                    );
+                    if (start !== null && end !== null) {
+                      const sessionDuration: number = await calculateDuration(
+                        start,
+                        end,
+                      );
+
+                      const optionalStr: string = sess.optional ? 'Yes' : 'No';
+
+                      const filteredAttendance: CCAAttendance[] =
+                        totalAttendance.filter(
+                          (item) => item.sessionID === sessionID,
+                        );
+                      if (filteredAttendance.length === 1) {
+                        const filteredA: CCAAttendance = filteredAttendance[0];
+                        const userDuration: number = filteredA.ccaAttendance;
+
+                        const durationStr: string = `${userDuration} out of ${sessionDuration}`;
+
+                        const data: CCAAttendance = {
+                          id: filteredA.id,
+                          date: date,
+                          dateStr: dateStr,
+                          durationStr: durationStr,
+                          ccaID: filteredA.ccaID,
+                          ccaAttendance: userDuration,
+                          optional: optionalStr,
+                        };
+
+                        parsedCCAAttendance.push(data);
+                      } else {
+                        const userDuration: number = 0;
+                        const durationStr: string = `${userDuration} out of ${sessionDuration}`;
+
+                        const data: CCAAttendance = {
+                          date: date,
+                          dateStr: dateStr,
+                          durationStr: durationStr,
+                          ccaID: ccaID,
+                          ccaAttendance: userDuration,
+                          optional: optionalStr,
+                        };
+
+                        parsedCCAAttendance.push(data);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            /*
             const ccaAttendanceMsg: CCAAttendance[] = ccaDB.msg;
             if (ccaAttendanceMsg && ccaAttendanceMsg.length > 0) {
               for (let key = 0; key < ccaAttendanceMsg.length; key += 1) {
@@ -115,7 +188,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   }
                 }
               }
-            }
+            } */
 
             result = {
               status: true,

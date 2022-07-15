@@ -17,10 +17,14 @@ export const fetchAllCCARecordByUser = async (
       distinct: ['ccaID'],
     });
 
-    result = { status: true, error: null, msg: query };
+    if (query) {
+      result = { status: true, error: null, msg: query };
+    } else {
+      result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
+    }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
   }
 
   return result;
@@ -28,8 +32,8 @@ export const fetchAllCCARecordByUser = async (
 
 export const fetchAllCCARecordByID = async (
   id: string,
-  limit: number,
-  skip: number,
+  limit: number = 100000,
+  skip: number = 0,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -43,10 +47,14 @@ export const fetchAllCCARecordByID = async (
       distinct: ['sessionEmail'],
     });
 
-    result = { status: true, error: null, msg: query };
+    if (query) {
+      result = { status: true, error: null, msg: query };
+    } else {
+      result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
+    }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
   }
 
   return result;
@@ -90,7 +98,7 @@ export const isLeader = async (
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to fetch CCA record', msg: '' };
   }
 
   return result;

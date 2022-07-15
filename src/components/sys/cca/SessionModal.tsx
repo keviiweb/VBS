@@ -26,6 +26,7 @@ import { CCASession } from 'types/cca/ccaSession';
 import { checkerString } from '@constants/sys/helper';
 
 import SessionEditModal from '@components/sys/cca/SessionEditModal';
+import SessionDeleteConfirmationModal from '@components/sys/cca/SessionDeleteConfirmationModal';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -41,6 +42,9 @@ export default function SessionModal({
   const [specificSession, setSpecificSessionData] = useState<CCASession | null>(
     null,
   );
+
+  const [specificSessionDelete, setSpecificSessionDeleteData] =
+    useState<CCASession | null>(null);
 
   const [ccaName, setCCAName] = useState('');
   const [dateStr, setDateStr] = useState('');
@@ -70,7 +74,19 @@ export default function SessionModal({
     }, 200);
   }, [leader, dataHandler, onClose]);
 
-  const handleDelete = useCallback(
+  const handleDelete = () => {
+    setSpecificSessionDeleteData(modalData);
+  };
+
+  const handleEdit = () => {
+    setSpecificSessionData(modalData);
+  };
+
+  const handleModalSuccessEdit = () => {
+    handleModalCloseButton();
+  };
+
+  const deleteSession = useCallback(
     async (sess: CCASession) => {
       if (sess !== null && sess !== undefined) {
         const { id } = sess;
@@ -98,14 +114,6 @@ export default function SessionModal({
     },
     [handleModalCloseButton],
   );
-
-  const handleEdit = () => {
-    setSpecificSessionData(modalData);
-  };
-
-  const handleModalSuccessEdit = () => {
-    handleModalCloseButton();
-  };
 
   useEffect(() => {
     async function setupData(modalDataField: CCASession) {
@@ -168,6 +176,13 @@ export default function SessionModal({
             onClose={() => setSpecificSessionData(null)}
             modalData={specificSession}
             dataHandler={handleModalSuccessEdit}
+          />
+
+          <SessionDeleteConfirmationModal
+            isOpen={specificSessionDelete}
+            onClose={() => setSpecificSessionDeleteData(null)}
+            modalData={specificSessionDelete}
+            dataHandler={deleteSession}
           />
 
           <Stack spacing={5} w='full' align='center'>
@@ -296,7 +311,7 @@ export default function SessionModal({
                             color='white'
                             w='150px'
                             size='lg'
-                            onClick={() => handleDelete(modalData)}
+                            onClick={handleDelete}
                             _hover={{ bg: 'cyan.800' }}
                           >
                             Delete

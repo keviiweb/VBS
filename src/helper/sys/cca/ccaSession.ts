@@ -2,13 +2,13 @@ import { Result } from 'types/api';
 import { CCASession } from 'types/cca/ccaSession';
 
 import { prisma } from '@constants/sys/db';
-import { splitHours } from '@helper/sys/vbs/venue';
 import { calculateDuration } from '@constants/sys/date';
+import { findSlots, splitHours } from '@constants/sys/helper';
 
 export const fetchAllCCASessionByCCAID = async (
   id: string,
-  limit: number,
-  skip: number,
+  limit: number = 100000,
+  skip: number = 0,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -24,7 +24,7 @@ export const fetchAllCCASessionByCCAID = async (
     result = { status: true, error: null, msg: query };
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to find session', msg: [] };
   }
 
   return result;
@@ -61,7 +61,7 @@ export const findCCASessionByID = async (id: string): Promise<Result> => {
     result = { status: true, error: null, msg: query };
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to find session', msg: '' };
   }
 
   return result;
@@ -125,7 +125,7 @@ export const editSession = async (data: CCASession): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to update session', msg: '' };
   }
 
   return result;
@@ -156,7 +156,7 @@ export const lockSession = async (data: CCASession): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to lock session', msg: '' };
   }
 
   return result;
@@ -183,7 +183,7 @@ export const deleteSessionByID = async (id: string): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to delete session', msg: '' };
   }
 
   return result;
@@ -208,7 +208,78 @@ export const createSession = async (data: CCASession): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to create session', msg: '' };
+  }
+
+  return result;
+};
+
+export const isConflict = async (data: CCASession): Promise<boolean> => {
+  try {
+    const anyConflicting: CCASession[] = await prisma.cCASessions.findMany({
+      where: {
+        ccaID: data.ccaID,
+        date: data.date,
+        id: {
+          not: data.id,
+        },
+      },
+    });
+
+    if (anyConflicting.length > 0) {
+      const conflict: boolean = await checkConflict(data, anyConflicting);
+      return conflict;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return true;
+  }
+};
+
+export const checkConflict = async (
+  createRequest: CCASession,
+  existingRequest: CCASession[],
+): Promise<boolean> => {
+  let result = false;
+
+  const { start, end } = await splitHours(createRequest.time);
+  if (start !== null && end !== null) {
+    const startH: string | null = await findSlots(start.toString(), true);
+    const endH: string | null = await findSlots(end.toString(), false);
+
+    if (startH !== null && endH !== null) {
+      const startHNum: number = Number(startH);
+      const endHNum: number = Number(endH);
+
+      for (let key = 0; key < existingRequest.length; key += 1) {
+        if (existingRequest[key]) {
+          const exist: CCASession = existingRequest[key];
+
+          const { start, end } = await splitHours(exist.time);
+          if (start !== null && end !== null) {
+            const eStartH: string | null = await findSlots(
+              start.toString(),
+              true,
+            );
+            const eEndH: string | null = await findSlots(end.toString(), false);
+
+            if (startH !== null && endH !== null) {
+              const eStartHNum: number = Number(eStartH);
+              const eEndHNum: number = Number(eEndH);
+
+              if (
+                (eStartHNum >= startHNum && eStartHNum <= endHNum) ||
+                (eEndHNum >= startHNum && eEndHNum <= endHNum)
+              ) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   return result;

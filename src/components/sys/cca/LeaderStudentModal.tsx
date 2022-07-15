@@ -175,6 +175,10 @@ export default function LeaderStudentModalComponent({
         Header: 'Hours Received',
         accessor: 'durationStr',
       },
+      {
+        Header: 'Optional Session',
+        accessor: 'optional',
+      },
     ],
     [],
   );
@@ -218,19 +222,21 @@ export default function LeaderStudentModalComponent({
             </Stack>
           )}
 
-          <Box>
-            <Stack direction='row'>
-              <Text
-                textTransform='uppercase'
-                fontWeight='bold'
-                letterSpacing='tight'
-                color='gray.900'
-              >
-                Student No.
-              </Text>
-              <Text>{sessionUserStudentID}</Text>
-            </Stack>
-          </Box>
+          {checkerString(sessionUserStudentID) && (
+            <Box>
+              <Stack direction='row'>
+                <Text
+                  textTransform='uppercase'
+                  fontWeight='bold'
+                  letterSpacing='tight'
+                  color='gray.900'
+                >
+                  Student No.
+                </Text>
+                <Text>{sessionUserStudentID}</Text>
+              </Stack>
+            </Box>
+          )}
 
           {!loadingData && data.length > 0 && (
             <Box overflow='auto'>

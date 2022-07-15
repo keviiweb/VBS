@@ -95,6 +95,7 @@ export default function SessionEditModal({
 
   const [optional, setOptional] = useState(false);
   const optionalDB = useRef(false);
+  const optionalStrDB = useRef('');
 
   const [endTimeDropdown, setEndTimeDropdown] = useState<JSX.Element[]>([]);
   const [startTimeDropdown, setStartTimeDropdown] = useState<JSX.Element[]>([]);
@@ -114,8 +115,8 @@ export default function SessionEditModal({
       Example: Yunus has attended 10 out of 12 hours. 
       If he attends a 3 hour optional session, his attendance will be boosted to 12 out of 12 hours`;
 
-  const expectedText: string = `Select only the members who are expected to turn up for this session.
-      Hours allocated to this session will only affect the attendance percentage of the members selected on this page.`;
+  const expectedText: string =
+    'Members who are expected to turn up for the session';
 
   const realityText: string = `Members who turned up for the session can be selected, then assigned partial or
       full hours.`;
@@ -165,6 +166,7 @@ export default function SessionEditModal({
     startTimeDB.current = '';
     endTimeDB.current = '';
     optionalDB.current = false;
+    optionalStrDB.current = 'No';
     dateStrDB.current = '';
     sessionIDDB.current = '';
     ccaIDDB.current = '';
@@ -328,7 +330,7 @@ export default function SessionEditModal({
           data.dateStr = dateStrDB.current;
           data.time = `${startTimeDB.current} - ${endTimeDB.current}`;
           data.optional = optionalDB.current;
-          data.optionalStr = optionalDB.current ? 'Yes' : 'No';
+          data.optionalStr = optionalStrDB.current;
           data.name = nameDB.current;
 
           data.duration = await calculateDuration(
@@ -749,7 +751,6 @@ export default function SessionEditModal({
 
   useEffect(() => {
     async function setupData(modalDataField: CCASession) {
-      console.log(modalDataField);
       setLoadingData(true);
       setSubmitButtonPressed(true);
 
@@ -810,6 +811,8 @@ export default function SessionEditModal({
           ? modalDataField.optional
           : false;
       setOptional(opt);
+      optionalDB.current = opt;
+      optionalStrDB.current = opt ? 'Yes' : 'No';
 
       const expectedM: string =
         modalDataField && modalDataField.expectedM
@@ -1029,6 +1032,9 @@ export default function SessionEditModal({
                           }
                           setOptional(event.target.checked);
                           optionalDB.current = event.target.checked;
+                          optionalStrDB.current = event.target.checked
+                            ? 'Yes'
+                            : 'No';
                         }}
                       >
                         Optional Session
@@ -1244,7 +1250,7 @@ export default function SessionEditModal({
                         </FormLabel>
                         <Textarea
                           height={150}
-                          placeholder='Remarks (200 characters)'
+                          placeholder='Notes (200 characters)'
                           size='lg'
                           value={ldrNotes}
                           onChange={(event) => {

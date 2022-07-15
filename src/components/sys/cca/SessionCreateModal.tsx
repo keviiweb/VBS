@@ -88,6 +88,7 @@ export default function SessionCreateModal({
 
   const [optional, setOptional] = useState(false);
   const optionalDB = useRef(false);
+  const optionalStrDB = useRef('');
 
   const [endTimeDropdown, setEndTimeDropdown] = useState<JSX.Element[]>([]);
   const [startTimeDropdown, setStartTimeDropdown] = useState<JSX.Element[]>([]);
@@ -107,8 +108,8 @@ export default function SessionCreateModal({
       Example: Yunus has attended 10 out of 12 hours. 
       If he attends a 3 hour optional session, his attendance will be boosted to 12 out of 12 hours`;
 
-  const expectedText: string = `Select only the members who are expected to turn up for this session.
-      Hours allocated to this session will only affect the attendance percentage of the members selected on this page.`;
+  const expectedText: string =
+    'Members who are expected to turn up for the session';
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
@@ -145,6 +146,7 @@ export default function SessionCreateModal({
     startTimeDB.current = '';
     endTimeDB.current = '';
     optionalDB.current = false;
+    optionalStrDB.current = 'No';
     dateStrDB.current = '';
     ccaIDDB.current = '';
     nameDB.current = '';
@@ -261,7 +263,7 @@ export default function SessionCreateModal({
           data.dateStr = dateStrDB.current;
           data.time = `${startTimeDB.current} - ${endTimeDB.current}`;
           data.optional = optionalDB.current;
-          data.optionalStr = optionalDB.current ? 'Yes' : 'No';
+          data.optionalStr = optionalStrDB.current;
           data.name = nameDB.current;
 
           data.duration = await calculateDuration(
@@ -769,6 +771,9 @@ export default function SessionCreateModal({
                           }
                           setOptional(event.target.checked);
                           optionalDB.current = event.target.checked;
+                          optionalStrDB.current = event.target.checked
+                            ? 'Yes'
+                            : 'No';
                         }}
                       >
                         Optional Session
@@ -899,7 +904,7 @@ export default function SessionCreateModal({
                         </FormLabel>
                         <Textarea
                           height={150}
-                          placeholder='Remarks (200 characters)'
+                          placeholder='Notes (200 characters)'
                           size='lg'
                           value={ldrNotes}
                           onChange={(event) => {

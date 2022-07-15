@@ -17,7 +17,7 @@ export const fetchBookedTimeSlots = async (
     result = { status: true, error: null, msg: bookedTimeSlots };
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error, msg: '' };
+    result = { status: false, error: 'Failed to fetch timeslots', msg: [] };
   }
 
   return result;

@@ -191,3 +191,34 @@ export const findSlotsByID = async (slot: number): Promise<string | null> => {
 
   return null;
 };
+
+export const splitHours = async (
+  opening: string,
+): Promise<{ start: number | null; end: number | null }> => {
+  try {
+    if (opening) {
+      if (!opening.includes('-')) {
+        return { start: null, end: null };
+      }
+
+      const hours: string[] = opening.split('-');
+      if (hours.length === 2) {
+        const startN = Number(hours[0].trim());
+        const endN = Number(hours[1].trim());
+
+        if (isNaN(startN) || startN === null || isNaN(endN) || endN === null) {
+          return { start: null, end: null };
+        } else {
+          return { start: startN, end: endN };
+        }
+      } else {
+        return { start: null, end: null };
+      }
+    } else {
+      return { start: null, end: null };
+    }
+  } catch (error) {
+    console.error(error);
+    return { start: null, end: null };
+  }
+};

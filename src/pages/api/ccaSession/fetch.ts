@@ -11,7 +11,6 @@ import {
   countAllCCASessionByCCAID,
   fetchAllCCASessionByCCAID,
 } from '@helper/sys/cca/ccaSession';
-import { splitHours } from '@helper/sys/vbs/venue';
 import { fetchAllCCAAttendanceBySession } from '@helper/sys/cca/ccaAttendance';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
 
@@ -20,6 +19,7 @@ import {
   dateISO,
   calculateDuration,
 } from '@constants/sys/date';
+import { splitHours } from '@constants/sys/helper';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);

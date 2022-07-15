@@ -8,6 +8,7 @@ import {
   findSlotsByID,
   checkerString,
   PERSONAL,
+  splitHours,
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
 import { levels } from '@constants/sys/admin';
@@ -15,7 +16,6 @@ import { levels } from '@constants/sys/admin';
 import { currentSession } from '@helper/sys/sessionServer';
 import {
   findVenueByID,
-  splitHours,
   splitOpeningHours,
   splitHoursISO,
 } from '@helper/sys/vbs/venue';

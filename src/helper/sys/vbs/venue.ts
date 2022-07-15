@@ -22,18 +22,27 @@ export const fetchChildVenue = async (venue: string): Promise<Result> => {
     const childVenues: Venue[] = await prisma.venue.findMany({
       where: { parentVenue: venue, isChildVenue: true },
     });
-    result = { status: true, error: null, msg: childVenues };
+
+    if (childVenues) {
+      result = { status: true, error: null, msg: childVenues };
+    } else {
+      result = {
+        status: false,
+        error: 'Failed to fetch child venues',
+        msg: [],
+      };
+    }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to fetch child venues', msg: [] };
   }
 
   return result;
 };
 
 export const fetchAllVenue = async (
-  limit: number,
-  skip: number,
+  limit: number = 100000,
+  skip: number = 0,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -41,10 +50,15 @@ export const fetchAllVenue = async (
       skip: skip * limit,
       take: limit,
     });
-    result = { status: true, error: null, msg: locations };
+
+    if (locations) {
+      result = { status: true, error: null, msg: locations };
+    } else {
+      result = { status: false, error: 'Failed to fetch venues', msg: [] };
+    }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to fetch venues', msg: [] };
   }
 
   return result;
@@ -57,10 +71,14 @@ export const fetchVenue = async (): Promise<Result> => {
       where: { visible: true, isChildVenue: false },
     });
 
-    result = { status: true, error: null, msg: locations };
+    if (locations) {
+      result = { status: true, error: null, msg: locations };
+    } else {
+      result = { status: false, error: 'Failed to fetch venues', msg: [] };
+    }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to fetch venues', msg: [] };
   }
 
   return result;
@@ -73,10 +91,14 @@ export const findVenueByID = async (id: string): Promise<Result> => {
       where: { id: id },
     });
 
-    result = { status: true, error: null, msg: locations };
+    if (locations) {
+      result = { status: true, error: null, msg: locations };
+    } else {
+      result = { status: false, error: 'Failed to fetch venues', msg: [] };
+    }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to fetch venues', msg: [] };
   }
 
   return result;
@@ -98,37 +120,6 @@ export const fetchOpeningHours = async (
 
       if (start !== null && end != null) {
         return { start: Number(start), end: Number(end) };
-      } else {
-        return { start: null, end: null };
-      }
-    } else {
-      return { start: null, end: null };
-    }
-  } catch (error) {
-    console.error(error);
-    return { start: null, end: null };
-  }
-};
-
-export const splitHours = async (
-  opening: string,
-): Promise<{ start: number | null; end: number | null }> => {
-  try {
-    if (opening) {
-      if (!opening.includes('-')) {
-        return { start: null, end: null };
-      }
-
-      const hours: string[] = opening.split('-');
-      if (hours.length === 2) {
-        const startN = Number(hours[0].trim());
-        const endN = Number(hours[1].trim());
-
-        if (isNaN(startN) || startN === null || isNaN(endN) || endN === null) {
-          return { start: null, end: null };
-        } else {
-          return { start: startN, end: endN };
-        }
       } else {
         return { start: null, end: null };
       }
@@ -269,7 +260,7 @@ export const createVenue = async (data: Venue): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to create venue', msg: '' };
   }
 
   return result;
@@ -296,7 +287,7 @@ export const editVenue = async (data: Venue): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to update venue', msg: '' };
   }
 
   return result;

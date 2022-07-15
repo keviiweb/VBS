@@ -11,10 +11,15 @@ export const fetchUserByEmail = async (email: string): Promise<Result> => {
         email: email,
       },
     });
-    result = { status: true, error: null, msg: userFromDB };
+
+    if (userFromDB) {
+      result = { status: true, error: null, msg: userFromDB };
+    } else {
+      result = { status: false, error: 'Failed to fetch user', msg: '' };
+    }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to fetch user', msg: '' };
   }
 
   return result;
@@ -34,7 +39,7 @@ export const createUser = async (data: User): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to create user', msg: '' };
   }
 
   return result;
@@ -65,7 +70,7 @@ export const createUserFile = async (dataField: any[]): Promise<Result> => {
     result = { status: true, error: null, msg: 'Successfully created user' };
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to create user', msg: '' };
   }
   return result;
 };
@@ -82,8 +87,8 @@ export const countUser = async (): Promise<number> => {
 };
 
 export const fetchAllUser = async (
-  limit: number,
-  skip: number,
+  limit: number = 100000,
+  skip: number = 0,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -91,10 +96,15 @@ export const fetchAllUser = async (
       skip: skip * limit,
       take: limit,
     });
-    result = { status: true, error: null, msg: users };
+
+    if (users) {
+      result = { status: true, error: null, msg: users };
+    } else {
+      result = { status: false, error: 'Failed to fetch user', msg: '' };
+    }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to fetch user', msg: '' };
   }
 
   return result;
@@ -121,7 +131,7 @@ export const editUser = async (data: User): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to update user', msg: '' };
   }
 
   return result;

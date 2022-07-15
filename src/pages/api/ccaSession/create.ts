@@ -5,7 +5,7 @@ import { CCASession } from 'types/cca/ccaSession';
 import { currentSession } from '@helper/sys/sessionServer';
 import { findCCAbyID } from '@helper/sys/cca/cca';
 import { isLeader } from '@helper/sys/cca/ccaRecord';
-import { createSession } from '@helper/sys/cca/ccaSession';
+import { createSession, isConflict } from '@helper/sys/cca/ccaSession';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
@@ -28,6 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         if (ldrRes.status && ldrRes.msg) {
           const expectedM: string =
             parsedData && parsedData.expectedM ? parsedData.expectedM : '';
+
           const sessionData: CCASession = {
             ccaID: parsedData.ccaID,
             date: parsedData.date,
@@ -40,23 +41,34 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             expectedM: expectedM,
           };
 
-          const createSessionRes: Result = await createSession(sessionData);
-          if (createSessionRes.status) {
-            result = {
-              status: true,
-              error: '',
-              msg: createSessionRes.msg,
-            };
-            res.status(200).send(result);
-            res.end();
-          } else {
+          const findSessRes: boolean = await isConflict(sessionData);
+          if (findSessRes) {
             result = {
               status: false,
-              error: createSessionRes.error,
+              error: 'A session already exist within the timing',
               msg: '',
             };
             res.status(200).send(result);
             res.end();
+          } else {
+            const createSessionRes: Result = await createSession(sessionData);
+            if (createSessionRes.status) {
+              result = {
+                status: true,
+                error: '',
+                msg: createSessionRes.msg,
+              };
+              res.status(200).send(result);
+              res.end();
+            } else {
+              result = {
+                status: false,
+                error: createSessionRes.error,
+                msg: '',
+              };
+              res.status(200).send(result);
+              res.end();
+            }
           }
         } else {
           result = {

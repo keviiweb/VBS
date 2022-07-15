@@ -4,8 +4,8 @@ import { Announcement } from 'types/misc/announcement';
 import { Result } from 'types/api';
 
 export const fetchAllAnnouncements = async (
-  limit: number,
-  skip: number,
+  limit: number = 100000,
+  skip: number = 0,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -13,10 +13,19 @@ export const fetchAllAnnouncements = async (
       skip: skip * limit,
       take: limit,
     });
-    result = { status: true, error: null, msg: announce };
+
+    if (announce) {
+      result = { status: true, error: null, msg: announce };
+    } else {
+      result = {
+        status: false,
+        error: 'Failed to fetch announcements',
+        msg: [],
+      };
+    }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to fetch announcements', msg: [] };
   }
 
   return result;
@@ -46,7 +55,7 @@ export const createAnnouncement = async (
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to create announcement', msg: '' };
   }
 
   return result;
@@ -77,7 +86,7 @@ export const editAnnouncement = async (data: Announcement): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to update announcement', msg: '' };
   }
 
   return result;
@@ -107,7 +116,7 @@ export const deleteAnnouncement = async (id: string): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: error.toString(), msg: '' };
+    result = { status: false, error: 'Failed to delete announcement', msg: '' };
   }
 
   return result;
