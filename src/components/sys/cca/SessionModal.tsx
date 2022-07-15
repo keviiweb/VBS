@@ -16,6 +16,11 @@ import {
   Stack,
   StackDivider,
   Text,
+  Table,
+  Tbody,
+  Tr,
+  Td,
+  TableContainer,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
@@ -27,6 +32,7 @@ import { checkerString } from '@constants/sys/helper';
 
 import SessionEditModal from '@components/sys/cca/SessionEditModal';
 import SessionDeleteConfirmationModal from '@components/sys/cca/SessionDeleteConfirmationModal';
+import { CCAAttendance } from '@root/src/types/cca/ccaAttendance';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -53,6 +59,13 @@ export default function SessionModal({
   const [remarks, setRemarks] = useState('');
   const [ldrNotes, setLdrNotes] = useState('');
   const [editable, setEditable] = useState(false);
+  const [duration, setDuration] = useState(0);
+
+  const [expectedM, setDisplayedExpected] = useState<JSX.Element[]>([]);
+  const [expectedBool, setExpectedBool] = useState(false);
+
+  const [realityM, setDisplayedReality] = useState<JSX.Element | null>();
+  const [realityBool, setRealityBool] = useState(false);
 
   const reset = () => {
     setDateStr('');
@@ -61,6 +74,7 @@ export default function SessionModal({
     setRemarks('');
     setLdrNotes('');
     setEditable(false);
+    setDuration(0);
   };
 
   const handleModalCloseButton = useCallback(() => {
@@ -115,6 +129,68 @@ export default function SessionModal({
     [handleModalCloseButton],
   );
 
+  const displayExpectedMembers = async (members: string) => {
+    if (members.length > 0) {
+      const membersA: string[] = members.split(',');
+      const text: JSX.Element[] = [];
+      for (let key = 0; key < membersA.length; key += 1) {
+        if (membersA[key]) {
+          text.push(
+            <Box key={`box-e-${key}`}>
+              <Text>{membersA[key]}</Text>
+            </Box>,
+          );
+        }
+      }
+
+      setDisplayedExpected(text);
+      setExpectedBool(true);
+    } else {
+      setDisplayedExpected([]);
+    }
+  };
+
+  const displayRealityMembers = async (members: string) => {
+    if (members.length > 0) {
+      const membersA: CCAAttendance[] = JSON.parse(members) as CCAAttendance[];
+      if (membersA.length > 0) {
+        const text: JSX.Element[] = [];
+        for (let key = 0; key < membersA.length; key += 1) {
+          if (membersA[key]) {
+            if (
+              membersA[key].sessionName !== undefined &&
+              membersA[key].ccaAttendance !== undefined
+            ) {
+              text.push(
+                <Tr key={`tr-r-${key}`}>
+                  <Td key={`td-r-${key}-1`}>
+                    <Text>{membersA[key].sessionName}</Text>
+                  </Td>
+                  <Td key={`td-r-${key}-2`}>
+                    <Text>{membersA[key].ccaAttendance}</Text>
+                  </Td>
+                </Tr>,
+              );
+            }
+          }
+        }
+
+        const tableField: JSX.Element = (
+          <TableContainer>
+            <Table variant='simple'>
+              <Tbody>{text}</Tbody>
+            </Table>
+          </TableContainer>
+        );
+
+        setDisplayedReality(tableField);
+        setRealityBool(true);
+      }
+    } else {
+      setDisplayedReality(null);
+    }
+  };
+
   useEffect(() => {
     async function setupData(modalDataField: CCASession) {
       setLoadingData(true);
@@ -139,6 +215,8 @@ export default function SessionModal({
         modalDataField && modalDataField.editable
           ? modalDataField.editable
           : false;
+      const durationField: number =
+        modalDataField && modalDataField.duration ? modalDataField.duration : 0;
 
       setDateStr(dateStrField);
       setTime(timeStrField);
@@ -147,6 +225,23 @@ export default function SessionModal({
       setLdrNotes(ldrNotesField);
       setCCAName(ccaNameField);
       setEditable(editableField);
+      setDuration(durationField);
+
+      if (
+        modalDataField &&
+        modalDataField.expectedMName !== undefined &&
+        modalDataField.expectedMName?.length > 0
+      ) {
+        await displayExpectedMembers(modalDataField.expectedMName);
+      }
+
+      if (
+        modalDataField &&
+        modalDataField.realityM !== undefined &&
+        modalDataField.realityM?.length > 0
+      ) {
+        await displayRealityMembers(modalDataField.realityM);
+      }
 
       setLoadingData(false);
     }
@@ -257,6 +352,21 @@ export default function SessionModal({
                             </ListItem>
                           )}
 
+                          {duration !== 0 && (
+                            <ListItem>
+                              <Stack direction='row'>
+                                <Text
+                                  textTransform='uppercase'
+                                  letterSpacing='tight'
+                                  fontWeight='bold'
+                                >
+                                  Duration
+                                </Text>{' '}
+                                <Text>{duration} Hours</Text>
+                              </Stack>
+                            </ListItem>
+                          )}
+
                           {checkerString(optionalStr) && (
                             <ListItem>
                               <Stack direction='row'>
@@ -283,6 +393,45 @@ export default function SessionModal({
                                   Remarks
                                 </Text>{' '}
                                 <Text>{remarks}</Text>
+                              </Stack>
+                            </ListItem>
+                          )}
+
+                          {expectedBool && (
+                            <ListItem key='exp-list'>
+                              <Stack direction='column'>
+                                <Text
+                                  textTransform='uppercase'
+                                  letterSpacing='tight'
+                                  fontWeight='bold'
+                                >
+                                  Expected Members
+                                </Text>{' '}
+                                {expectedM}
+                              </Stack>
+                            </ListItem>
+                          )}
+
+                          {realityBool && (
+                            <ListItem key='real-list'>
+                              <Stack direction='column'>
+                                <Stack spacing={20} direction='row'>
+                                  <Text
+                                    textTransform='uppercase'
+                                    letterSpacing='tight'
+                                    fontWeight='bold'
+                                  >
+                                    Members Present
+                                  </Text>
+                                  <Text
+                                    textTransform='uppercase'
+                                    letterSpacing='tight'
+                                    fontWeight='bold'
+                                  >
+                                    Hours
+                                  </Text>
+                                </Stack>
+                                {realityM}
                               </Stack>
                             </ListItem>
                           )}

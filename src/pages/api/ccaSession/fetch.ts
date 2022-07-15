@@ -119,6 +119,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                         remarks: record.remarks,
                         ldrNotes: record.ldrNotes,
                         expectedM: record.expectedM,
+                        expectedMName: record.expectedMName,
                         realityM: JSON.stringify(attendance),
                       };
 

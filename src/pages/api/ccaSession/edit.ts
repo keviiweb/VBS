@@ -75,6 +75,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   parsedData && parsedData.expectedM
                     ? parsedData.expectedM
                     : '';
+
+                const expectedMName: string =
+                  parsedData && parsedData.expectedMName
+                    ? parsedData.expectedMName
+                    : '';
+
                 const sessionData: CCASession = {
                   id: parsedData.id,
                   ccaID: parsedData.ccaID,
@@ -85,6 +91,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   remarks: parsedData.remarks,
                   ldrNotes: parsedData.ldrNotes,
                   expectedM: expectedM,
+                  expectedMName: expectedMName,
                   updated_at: new Date().toISOString(),
                 };
 

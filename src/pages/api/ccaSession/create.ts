@@ -29,6 +29,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const expectedM: string =
             parsedData && parsedData.expectedM ? parsedData.expectedM : '';
 
+          const expectedMName: string =
+            parsedData && parsedData.expectedMName
+              ? parsedData.expectedMName
+              : '';
+
           const sessionData: CCASession = {
             ccaID: parsedData.ccaID,
             date: parsedData.date,
@@ -39,6 +44,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             remarks: parsedData.remarks,
             ldrNotes: parsedData.ldrNotes,
             expectedM: expectedM,
+            expectedMName: expectedMName,
           };
 
           const findSessRes: boolean = await isConflict(sessionData);

@@ -29,7 +29,7 @@ import { checkerString } from '@constants/sys/helper';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
-export default function SessionEditConfirmationModal({
+export default function SessionCreateConfirmationModal({
   isOpen,
   onClose,
   modalData,

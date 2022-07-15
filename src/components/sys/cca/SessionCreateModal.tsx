@@ -569,7 +569,6 @@ export default function SessionCreateModal({
 
   useEffect(() => {
     async function setupData(modalDataField: CCASession) {
-      console.log(modalDataField);
       setLoadingData(true);
       setSubmitButtonPressed(true);
 
