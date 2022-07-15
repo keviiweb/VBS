@@ -188,3 +188,28 @@ export const deleteSessionByID = async (id: string): Promise<Result> => {
 
   return result;
 };
+
+export const createSession = async (data: CCASession): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    const sess: CCASession = await prisma.cCASessions.create({
+      data: data,
+    });
+
+    if (sess) {
+      result = {
+        status: true,
+        error: '',
+        msg: `Successfully created session`,
+      };
+    } else {
+      result = { status: false, error: 'Failed to create session', msg: '' };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: error.toString(), msg: '' };
+  }
+
+  return result;
+};

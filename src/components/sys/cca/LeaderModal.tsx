@@ -39,11 +39,15 @@ import LeaderStudentModalComponent from '@components/sys/cca/LeaderStudentModal'
 import SessionModal from '@components/sys/cca/SessionModal';
 import SessionEditModal from '@components/sys/cca/SessionEditModal';
 import SessionDeleteConfirmationModal from '@components/sys/cca/SessionDeleteConfirmationModal';
+import SessionCreateModal from '@components/sys/cca/SessionCreateModal';
 
 import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
 import { PopoverTriggerProps } from 'types/popover';
 import { CCASession } from 'types/cca/ccaSession';
+
+import moment from 'moment';
+import { convertDateToUnix } from '@root/src/constants/sys/date';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -73,6 +77,10 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
     null,
   );
 
+  const [sessionCreate, setSessionCreateData] = useState<CCASession | null>(
+    null,
+  );
+
   const [specificSessionDelete, setSpecificSessionDeleteData] =
     useState<CCASession | null>(null);
 
@@ -95,6 +103,12 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
   const [pageCount, setPageCount] = useState(0);
   const pageSizeDB = useRef(PAGESIZE);
   const pageIndexDB = useRef(PAGEINDEX);
+
+  const currentDate = async (): Promise<string> => {
+    const res = moment.tz(new Date(), 'Asia/Singapore').format('YYYY-MM-DD');
+
+    return res;
+  };
 
   const reset = () => {
     setSelectedChoice(0);
@@ -132,6 +146,21 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
 
   const handleDeleteSession = useCallback((content: CCASession) => {
     setSpecificSessionDeleteData(content);
+  }, []);
+
+  const handleCreateSession = useCallback(async () => {
+    if (checkerString(ccaRecordIDDB.current)) {
+      const curr: string = await currentDate();
+      const dateN: number = convertDateToUnix(curr);
+      const sess: CCASession = {
+        ccaID: ccaRecordIDDB.current,
+        name: '',
+        date: dateN,
+        dateStr: curr,
+        time: '',
+      };
+      setSessionCreateData(sess);
+    }
   }, []);
 
   const generateActionButtonRecord = useCallback(
@@ -524,6 +553,13 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
+          <SessionCreateModal
+            isOpen={sessionCreate}
+            onClose={() => setSessionCreateData(null)}
+            modalData={sessionCreate}
+            dataHandler={successEditSession}
+          />
+
           <SessionDeleteConfirmationModal
             isOpen={specificSessionDelete}
             onClose={() => setSpecificSessionDeleteData(null)}
@@ -627,6 +663,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
                   w='150px'
                   size='lg'
                   _hover={{ bg: 'cyan.800' }}
+                  onClick={handleCreateSession}
                 >
                   Add Session
                 </Button>

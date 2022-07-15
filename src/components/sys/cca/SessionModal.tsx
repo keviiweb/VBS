@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -20,8 +20,11 @@ import {
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 
+import { Result } from 'types/api';
 import { CCASession } from 'types/cca/ccaSession';
-import { checkerString } from '@root/src/constants/sys/helper';
+
+import { checkerString } from '@constants/sys/helper';
+
 import SessionEditModal from '@components/sys/cca/SessionEditModal';
 
 const MotionSimpleGrid = motion(SimpleGrid);
@@ -56,24 +59,51 @@ export default function SessionModal({
     setEditable(false);
   };
 
-  const handleDelete = () => {};
+  const handleModalCloseButton = useCallback(() => {
+    if (leader) {
+      dataHandler();
+    }
+
+    setTimeout(() => {
+      reset();
+      onClose();
+    }, 200);
+  }, [leader, dataHandler, onClose]);
+
+  const handleDelete = useCallback(
+    async (sess: CCASession) => {
+      if (sess !== null && sess !== undefined) {
+        const { id } = sess;
+        if (id !== undefined && checkerString(id)) {
+          try {
+            const rawResponse = await fetch('/api/ccaSession/delete', {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: id,
+              }),
+            });
+            const content: Result = await rawResponse.json();
+            if (content.status) {
+              handleModalCloseButton();
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      }
+    },
+    [handleModalCloseButton],
+  );
 
   const handleEdit = () => {
     setSpecificSessionData(modalData);
   };
 
-  const handleModalCloseButton = () => {
-    setTimeout(() => {
-      reset();
-      onClose();
-    }, 200);
-  };
-
   const handleModalSuccessEdit = () => {
-    if (leader) {
-      dataHandler();
-    }
-
     handleModalCloseButton();
   };
 
@@ -266,7 +296,7 @@ export default function SessionModal({
                             color='white'
                             w='150px'
                             size='lg'
-                            onClick={handleDelete}
+                            onClick={() => handleDelete(modalData)}
                             _hover={{ bg: 'cyan.800' }}
                           >
                             Delete

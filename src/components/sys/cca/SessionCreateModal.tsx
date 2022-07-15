@@ -27,7 +27,7 @@ import {
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import LoadingModal from '@components/sys/misc/LoadingModal';
-import SessionEditConfirmationModal from '@components/sys/cca/SessionEditConfirmationModal';
+import SessionCreateConfirmationModal from '@components/sys/cca/SessionCreateConfirmationModal';
 import MemberButton from '@components/sys/cca/MemberButton';
 
 import { cardVariant, parentVariant } from '@root/motion';
@@ -35,7 +35,6 @@ import { InfoIcon } from '@chakra-ui/icons';
 import { CCASession } from 'types/cca/ccaSession';
 import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
-import { CCAAttendance } from 'types/cca/ccaAttendance';
 
 import { checkerString } from '@constants/sys/helper';
 import { timeSlots } from '@constants/sys/timeslot';
@@ -44,7 +43,6 @@ import {
   isValidDate,
   calculateDuration,
 } from '@root/src/constants/sys/date';
-import moment from 'moment';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -52,18 +50,16 @@ const MotionBox = motion(Box);
 const levels = {
   TIME: 0,
   EXPECTATION: 1,
-  REALITY: 2,
-  REMARKS: 3,
+  REMARKS: 2,
 };
 
 const progressBarLevel = {
-  TIME: 25,
-  EXPECTATION: 50,
-  REALITY: 75,
+  TIME: 33,
+  EXPECTATION: 66,
   REMARKS: 100,
 };
 
-export default function SessionEditModal({
+export default function SessionCreateModal({
   isOpen,
   onClose,
   modalData,
@@ -82,7 +78,6 @@ export default function SessionEditModal({
 
   const [errorMsg, setError] = useState('');
 
-  const sessionIDDB = useRef('');
   const ccaIDDB = useRef('');
 
   const [ccaName, setCCAName] = useState('');
@@ -90,8 +85,6 @@ export default function SessionEditModal({
   const dateStrDB = useRef('');
   const [name, setName] = useState('');
   const nameDB = useRef('');
-
-  const [upcoming, setUpcoming] = useState(false);
 
   const [optional, setOptional] = useState(false);
   const optionalDB = useRef(false);
@@ -117,9 +110,6 @@ export default function SessionEditModal({
   const expectedText: string = `Select only the members who are expected to turn up for this session.
       Hours allocated to this session will only affect the attendance percentage of the members selected on this page.`;
 
-  const realityText: string = `Members who turned up for the session can be selected, then assigned partial or
-      full hours.`;
-
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
 
@@ -131,14 +121,6 @@ export default function SessionEditModal({
   const selectedExpectedMembers = useRef<string[]>([]);
   const selectedExpectedMembersName = useRef<string[]>([]);
   const [displayedExpected, setDisplayedExpected] = useState('');
-
-  const selectedRealityMembers = useRef<string[]>([]);
-  const [displayedReality, setDisplayedReality] = useState('');
-  const selectedRealityMembersName = useRef<string[]>([]);
-  const [realityMemberButtons, setRealityMemberButtons] = useState<
-    JSX.Element[]
-  >([]);
-  const realityMemberHours = useRef<CCAAttendance[]>([]);
 
   const reset = () => {
     setDateStr('');
@@ -152,12 +134,10 @@ export default function SessionEditModal({
     setProgressBar(progressBarLevel.TIME);
     setError('');
     setName('');
-    setUpcoming(false);
     setRemarks('');
     setLdrNotes('');
 
     setDisplayedExpected('');
-    setDisplayedReality('');
 
     setDisableButton(false);
     setSubmitButtonPressed(false);
@@ -166,7 +146,6 @@ export default function SessionEditModal({
     endTimeDB.current = '';
     optionalDB.current = false;
     dateStrDB.current = '';
-    sessionIDDB.current = '';
     ccaIDDB.current = '';
     nameDB.current = '';
     remarksDB.current = '';
@@ -174,12 +153,8 @@ export default function SessionEditModal({
 
     memberData.current = [];
 
-    selectedRealityMembers.current = [];
     selectedExpectedMembers.current = [];
-
     selectedExpectedMembersName.current = [];
-    selectedRealityMembersName.current = [];
-    realityMemberHours.current = [];
   };
 
   const handleModalCloseButton = useCallback(() => {
@@ -190,38 +165,12 @@ export default function SessionEditModal({
     }, 200);
   }, [dataHandler, onClose]);
 
-  const checkRealityMembers = (membersF: string): boolean => {
-    const members: CCAAttendance[] = JSON.parse(membersF) as CCAAttendance[];
-    if (
-      members.length > 0 &&
-      selectedData.current &&
-      selectedData.current.duration !== undefined
-    ) {
-      for (let key = 0; key < members.length; key += 1) {
-        if (members[key]) {
-          const attendance: CCAAttendance = members[key];
-          if (attendance.ccaAttendance > selectedData.current.duration) {
-            return false;
-          }
-        }
-      }
-    }
-
-    return true;
-  };
-
-  const validateFieldsEdit = (
-    idField: string,
+  const validateFields = (
     nameField: string,
     dateField: string,
     startTimeField: string,
     endTimeField: string,
   ) => {
-    if (!checkerString(idField)) {
-      setError('Please select an event!');
-      return false;
-    }
-
     if (!checkerString(nameField)) {
       setError('Please set a name!');
       return false;
@@ -253,11 +202,6 @@ export default function SessionEditModal({
   };
 
   const validateFieldsSubmit = (selectedDataField: CCASession) => {
-    if (!selectedDataField.id || !checkerString(selectedDataField.id)) {
-      setError('Please select a session!');
-      return false;
-    }
-
     if (!selectedDataField.name || !checkerString(selectedDataField.name)) {
       setError('Please set a name!');
       return false;
@@ -284,16 +228,6 @@ export default function SessionEditModal({
       return false;
     }
 
-    if (
-      selectedDataField.realityM &&
-      !checkRealityMembers(selectedDataField.realityM)
-    ) {
-      setError(
-        'One or more members have an attendance exceeding the total duration',
-      );
-      return false;
-    }
-
     return true;
   };
 
@@ -315,8 +249,7 @@ export default function SessionEditModal({
       if (selectedData.current !== null) {
         setError('');
         if (
-          validateFieldsEdit(
-            sessionIDDB.current,
+          validateFields(
             nameDB.current,
             dateStrDB.current,
             startTimeDB.current,
@@ -352,25 +285,11 @@ export default function SessionEditModal({
         data.expectedMName = selectedExpectedMembersName.current.toString();
         selectedData.current = data;
         if (next) {
-          setProgressLevel(levels.REALITY);
-          setProgressBar(progressBarLevel.REALITY);
-        } else {
-          setProgressLevel(levels.TIME);
-          setProgressBar(progressBarLevel.TIME);
-        }
-      }
-    } else if (progressLevel === levels.REALITY) {
-      if (selectedData.current !== null) {
-        setError('');
-        const data: CCASession = selectedData.current;
-        data.realityM = JSON.stringify(realityMemberHours.current);
-        selectedData.current = data;
-        if (next) {
           setProgressLevel(levels.REMARKS);
           setProgressBar(progressBarLevel.REMARKS);
         } else {
-          setProgressLevel(levels.EXPECTATION);
-          setProgressBar(progressBarLevel.EXPECTATION);
+          setProgressLevel(levels.TIME);
+          setProgressBar(progressBarLevel.TIME);
         }
       }
     } else if (progressLevel === levels.REMARKS) {
@@ -381,8 +300,8 @@ export default function SessionEditModal({
         data.ldrNotes = ldrNotesDB.current;
         selectedData.current = data;
         if (!next) {
-          setProgressLevel(levels.REALITY);
-          setProgressBar(progressBarLevel.REALITY);
+          setProgressLevel(levels.EXPECTATION);
+          setProgressBar(progressBarLevel.EXPECTATION);
         }
       }
     }
@@ -420,17 +339,6 @@ export default function SessionEditModal({
 
     toast({
       description: expectedText,
-      status: 'info',
-      duration: 2000,
-      isClosable: true,
-    });
-  };
-
-  const handleRealityHover = () => {
-    toast.closeAll();
-
-    toast({
-      description: realityText,
       status: 'info',
       duration: 2000,
       isClosable: true,
@@ -484,33 +392,6 @@ export default function SessionEditModal({
       setDisplayedExpected(text);
     } else {
       setDisplayedExpected('');
-    }
-  };
-
-  const displayRealityMembers = (members: CCAAttendance[]) => {
-    if (members.length > 0) {
-      let text: string = 'Selected members(s): ';
-      let counter: number = 0;
-
-      for (let key = 0; key < members.length; key += 1) {
-        if (members[key]) {
-          counter += 1;
-          if (
-            members[key].sessionName !== undefined &&
-            members[key].ccaAttendance !== undefined
-          ) {
-            if (counter !== members.length) {
-              text += ` ${members[key].sessionName} (${members[key].ccaAttendance} hours) ,`;
-            } else {
-              text += ` ${members[key].sessionName} (${members[key].ccaAttendance} hours)  `;
-            }
-          }
-        }
-      }
-
-      setDisplayedReality(text);
-    } else {
-      setDisplayedReality('');
     }
   };
 
@@ -596,56 +477,6 @@ export default function SessionEditModal({
     }
   }, []);
 
-  const onHoursChange = useCallback(
-    async (email: string, nameField: string, hour: number) => {
-      setError('');
-      setDisableButton(false);
-      if (
-        selectedData.current !== null &&
-        selectedData.current.duration !== undefined &&
-        hour >= 0 &&
-        hour <= selectedData.current.duration
-      ) {
-        const realityHours: CCAAttendance[] = realityMemberHours.current;
-        let notFound = false;
-
-        for (let key = 0; key < realityHours.length; key += 1) {
-          if (realityHours[key]) {
-            const reality: CCAAttendance = realityHours[key];
-            if (reality.sessionEmail === email) {
-              reality.ccaAttendance = hour;
-              notFound = true;
-              break;
-            }
-          }
-        }
-
-        if (!notFound) {
-          const attendance: CCAAttendance = {
-            ccaID: ccaIDDB.current,
-            ccaAttendance: hour,
-            sessionEmail: email,
-            sessionName: nameField,
-          };
-
-          realityHours.push(attendance);
-        }
-        realityMemberHours.current = realityHours;
-      } else if (
-        selectedData.current !== null &&
-        selectedData.current.duration !== undefined
-      ) {
-        setError(
-          `Duration of member must not be negative or exceed ${selectedData.current.duration}`,
-        );
-        setDisableButton(true);
-      }
-
-      displayRealityMembers(realityMemberHours.current);
-    },
-    [],
-  );
-
   const generateExpectedMemberList = useCallback(async () => {
     if (
       memberData.current.length > 0 &&
@@ -676,7 +507,6 @@ export default function SessionEditModal({
     async (content: { count: number; res: CCARecord[] }) => {
       if (content.res !== [] && content.count > 0) {
         const buttons: JSX.Element[] = [];
-        const realityButtons: JSX.Element[] = [];
 
         for (let key = 0; key < content.res.length; key += 1) {
           if (content.res[key]) {
@@ -697,32 +527,20 @@ export default function SessionEditModal({
                   name={sessionName}
                 />,
               );
-
-              realityButtons.push(
-                <MemberButton
-                  reality
-                  key={sessionEmail}
-                  handleClick={onHoursChange}
-                  newKey={sessionEmail}
-                  id={sessionEmail}
-                  name={sessionName}
-                />,
-              );
             }
           }
         }
 
         memberData.current = content.res;
         setExpectedMemberButtons(buttons);
-        setRealityMemberButtons(realityButtons);
         await generateExpectedMemberList();
       }
     },
-    [onExpectedMemberChange, onHoursChange, generateExpectedMemberList],
+    [onExpectedMemberChange, generateExpectedMemberList],
   );
 
   const generateMemberList = useCallback(async () => {
-    if (checkerString(sessionIDDB.current) && checkerString(ccaIDDB.current)) {
+    if (checkerString(ccaIDDB.current)) {
       try {
         const rawResponse = await fetch('/api/ccaRecord/fetch', {
           method: 'POST',
@@ -753,92 +571,15 @@ export default function SessionEditModal({
       setLoadingData(true);
       setSubmitButtonPressed(true);
 
-      const idField: string =
-        modalDataField && modalDataField.id ? modalDataField.id : '';
-      sessionIDDB.current = idField;
-
       const ccaidField: string =
         modalDataField && modalDataField.ccaID ? modalDataField.ccaID : '';
       ccaIDDB.current = ccaidField;
 
       const dateStrField: string =
         modalDataField && modalDataField.dateStr ? modalDataField.dateStr : '';
-      const ccaNameField: string =
-        modalDataField && modalDataField.ccaName ? modalDataField.ccaName : '';
-
-      const nameField: string =
-        modalDataField && modalDataField.name ? modalDataField.name : '';
-      setName(nameField);
-      nameDB.current = nameField;
 
       setDateStr(dateStrField);
       dateStrDB.current = dateStrField;
-
-      setCCAName(ccaNameField);
-
-      const split: string[] =
-        modalDataField && modalDataField.time
-          ? modalDataField.time.split('-')
-          : [' - '];
-      const start: string = split[0].trim();
-      const end: string = split[1].trim();
-
-      startTimeDB.current = start;
-      endTimeDB.current = end;
-      setStartTime(start);
-      setEndTime(end);
-
-      const day: Date = new Date(dateStrField);
-      if (isValidDate(day)) {
-        if (day > new Date()) {
-          const currentTime: string = moment
-            .tz(moment(), 'Asia/Singapore')
-            .format('HH:mm')
-            .replace(':', '');
-          if (Number(currentTime) >= Number(start)) {
-            setUpcoming(true);
-          } else {
-            setUpcoming(false);
-          }
-        } else {
-          setUpcoming(false);
-        }
-      }
-
-      const opt: boolean =
-        modalDataField && modalDataField.optional
-          ? modalDataField.optional
-          : false;
-      setOptional(opt);
-
-      const expectedM: string =
-        modalDataField && modalDataField.expectedM
-          ? modalDataField.expectedM
-          : '';
-      if (expectedM.length > 0) {
-        selectedExpectedMembers.current = expectedM.split(',');
-      }
-
-      const realityM: string =
-        modalDataField && modalDataField.realityM
-          ? modalDataField.realityM
-          : '';
-      if (realityM.length > 0) {
-        realityMemberHours.current = JSON.parse(realityM) as CCAAttendance[];
-        displayRealityMembers(realityMemberHours.current);
-      }
-
-      const remark: string =
-        modalDataField && modalDataField.remarks ? modalDataField.remarks : '';
-      setRemarks(remark);
-      remarksDB.current = remark;
-
-      const ldrNote: string =
-        modalDataField && modalDataField.ldrNotes
-          ? modalDataField.ldrNotes
-          : '';
-      setLdrNotes(ldrNote);
-      ldrNotesDB.current = ldrNote;
 
       selectedData.current = JSON.parse(JSON.stringify(modalDataField));
 
@@ -868,7 +609,7 @@ export default function SessionEditModal({
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
-          <SessionEditConfirmationModal
+          <SessionCreateConfirmationModal
             isOpen={confirmationData}
             onClose={() => setConfirmationData(null)}
             modalData={confirmationData}
@@ -960,7 +701,6 @@ export default function SessionEditModal({
                           </Text>
                         </FormLabel>
                         <Input
-                          disabled
                           type='date'
                           placeholder='Date'
                           value={dateStr}
@@ -1099,91 +839,6 @@ export default function SessionEditModal({
                           </Stack>
                         </Stack>
                       )}
-                    </Stack>
-                  </Flex>
-              )}
-
-              {modalData &&
-                !loadingData &&
-                progressLevel === levels.REALITY &&
-                !upcoming && (
-                  <Flex
-                    w='full'
-                    h='full'
-                    alignItems='center'
-                    justifyContent='center'
-                  >
-                    <Stack spacing={10}>
-                      <Stack
-                        w={{ base: 'full', md: '500px', lg: '500px' }}
-                        direction='row'
-                      >
-                        {selectedData.current?.duration && (
-                          <List spacing={5}>
-                            <ListItem>
-                              <Stack direction='row'>
-                                <Text
-                                  textTransform='uppercase'
-                                  letterSpacing='tight'
-                                  fontWeight='bold'
-                                >
-                                  Duration
-                                </Text>{' '}
-                                <Text>
-                                  {selectedData.current?.duration} Hours
-                                </Text>
-                              </Stack>
-                            </ListItem>
-                          </List>
-                        )}
-                      </Stack>
-
-                      {realityMemberButtons.length > 0 && (
-                        <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
-                          <FormLabel>
-                            <Stack direction='row'>
-                              <Text
-                                w={40}
-                                textTransform='uppercase'
-                                lineHeight='5'
-                                fontWeight='bold'
-                                letterSpacing='tight'
-                                mr={5}
-                              >
-                                Members Present
-                              </Text>
-                              <InfoIcon onMouseEnter={handleRealityHover} />
-                            </Stack>
-                          </FormLabel>
-
-                          <Text>{displayedReality}</Text>
-                          <Stack direction={['column', 'row']} align='center'>
-                            <ButtonGroup display='flex' flexWrap='wrap'>
-                              {realityMemberButtons}
-                            </ButtonGroup>
-                          </Stack>
-                        </Stack>
-                      )}
-                    </Stack>
-                  </Flex>
-              )}
-
-              {modalData &&
-                !loadingData &&
-                progressLevel === levels.REALITY &&
-                upcoming && (
-                  <Flex
-                    w='full'
-                    h='full'
-                    alignItems='center'
-                    justifyContent='center'
-                  >
-                    <Stack spacing={10}>
-                      <Text color='red.500'>
-                        Unable to mark attendance. The session has not
-                        commenced.
-                      </Text>
-                      <Text color='red.500'>Click next to proceed.</Text>
                     </Stack>
                   </Flex>
               )}
