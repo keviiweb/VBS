@@ -4,6 +4,32 @@ import { CCARecord } from 'types/cca/ccaRecord';
 import { Session } from 'next-auth/core/types';
 import { prisma } from '@constants/sys/db';
 
+export const fetchAllCCARecordByUserEmail = async (
+  email: string,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    const query: CCARecord[] = await prisma.cCARecord.findMany({
+      where: {
+        sessionEmail: email,
+      },
+      distinct: ['ccaID'],
+    });
+
+    if (query) {
+      result = { status: true, error: null, msg: query };
+    } else {
+      result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
+  }
+
+  return result;
+};
+
 export const fetchAllCCARecordByUser = async (
   session: Session,
 ): Promise<Result> => {

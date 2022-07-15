@@ -27,22 +27,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const ldrRes: Result = await isLeader(parsedData.ccaID, session);
         if (ldrRes.status && ldrRes.msg) {
           const expectedM: string =
-            parsedData && parsedData.expectedM ? parsedData.expectedM : '';
+            parsedData && parsedData.expectedM
+              ? parsedData.expectedM.trim()
+              : '';
 
           const expectedMName: string =
             parsedData && parsedData.expectedMName
-              ? parsedData.expectedMName
+              ? parsedData.expectedMName.trim()
               : '';
 
           const sessionData: CCASession = {
-            ccaID: parsedData.ccaID,
+            ccaID: parsedData.ccaID.trim(),
             date: parsedData.date,
-            name: parsedData.name,
-            time: parsedData.time,
+            name: parsedData.name.trim(),
+            time: parsedData.time.trim(),
             optional: parsedData.optional === true,
             editable: true,
-            remarks: parsedData.remarks,
-            ldrNotes: parsedData.ldrNotes,
+            remarks: parsedData.remarks?.trim(),
+            ldrNotes: parsedData.ldrNotes?.trim(),
             expectedM: expectedM,
             expectedMName: expectedMName,
           };

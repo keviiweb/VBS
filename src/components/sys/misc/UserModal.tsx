@@ -20,6 +20,9 @@ import {
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 import { User } from 'types/misc/user';
+import { Result } from 'types/api';
+import { CCARecord } from 'types/cca/ccaRecord';
+
 import { checkerString } from '@constants/sys/helper';
 
 const MotionSimpleGrid = motion(SimpleGrid);
@@ -33,6 +36,8 @@ export default function UserModal({ isOpen, onClose, modalData }) {
   const [studentID, setStudentID] = useState('');
   const [adminStr, setAdminStr] = useState('');
 
+  const [ccaList, setCCAList] = useState<JSX.Element[]>([]);
+
   const reset = useCallback(async () => {
     setID('');
     setName('');
@@ -40,6 +45,8 @@ export default function UserModal({ isOpen, onClose, modalData }) {
     setRoomNum('');
     setStudentID('');
     setAdminStr('');
+
+    setCCAList([]);
   }, []);
 
   const handleModalCloseButton = () => {
@@ -48,6 +55,56 @@ export default function UserModal({ isOpen, onClose, modalData }) {
       onClose();
     }, 200);
   };
+
+  const buildMemberList = useCallback(async (content: CCARecord[]) => {
+    if (content.length > 0) {
+      const text: JSX.Element[] = [];
+      for (let key = 0; key < content.length; key += 1) {
+        if (content[key]) {
+          if (content[key].leader) {
+            text.push(
+              <Box key={`box-e-${key}`}>
+                <Text>{content[key].ccaName} (Leader)</Text>
+              </Box>,
+            );
+          } else {
+            text.push(
+              <Box key={`box-e-${key}`}>
+                <Text>{content[key].ccaName}</Text>
+              </Box>,
+            );
+          }
+        }
+      }
+
+      setCCAList(text);
+    } else {
+      setCCAList([]);
+    }
+  }, []);
+
+  const fetchCCARecords = useCallback(async (emailField: string) => {
+    if (checkerString(emailField)) {
+      try {
+        const rawResponse = await fetch('/api/ccaRecord/user', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: emailField,
+          }),
+        });
+        const content: Result = await rawResponse.json();
+        if (content.status) {
+          await buildMemberList(content.msg);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }, [buildMemberList]);
 
   useEffect(() => {
     async function setupData(modalDataField: User) {
@@ -86,12 +143,14 @@ export default function UserModal({ isOpen, onClose, modalData }) {
       } else {
         setAdminStr('');
       }
+
+      await fetchCCARecords(modalDataField.email);
     }
 
     if (modalData) {
       setupData(modalData);
     }
-  }, [modalData]);
+  }, [modalData, fetchCCARecords]);
 
   return (
     <Modal
@@ -188,6 +247,21 @@ export default function UserModal({ isOpen, onClose, modalData }) {
                                 Admin:
                               </Text>{' '}
                               {adminStr}
+                            </ListItem>
+                          )}
+
+                          {ccaList.length > 0 && (
+                            <ListItem key='exp-list'>
+                              <Stack direction='column'>
+                                <Text
+                                  textTransform='uppercase'
+                                  letterSpacing='tight'
+                                  fontWeight='bold'
+                                >
+                                  CCAs
+                                </Text>{' '}
+                                {ccaList}
+                              </Stack>
                             </ListItem>
                           )}
                         </List>
