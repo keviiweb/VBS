@@ -83,28 +83,31 @@ export default function UserModal({ isOpen, onClose, modalData }) {
     }
   }, []);
 
-  const fetchCCARecords = useCallback(async (emailField: string) => {
-    if (checkerString(emailField)) {
-      try {
-        const rawResponse = await fetch('/api/ccaRecord/user', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: emailField,
-          }),
-        });
-        const content: Result = await rawResponse.json();
-        if (content.status) {
-          await buildMemberList(content.msg);
+  const fetchCCARecords = useCallback(
+    async (emailField: string) => {
+      if (checkerString(emailField)) {
+        try {
+          const rawResponse = await fetch('/api/ccaRecord/user', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: emailField,
+            }),
+          });
+          const content: Result = await rawResponse.json();
+          if (content.status) {
+            await buildMemberList(content.msg);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
       }
-    }
-  }, [buildMemberList]);
+    },
+    [buildMemberList],
+  );
 
   useEffect(() => {
     async function setupData(modalDataField: User) {

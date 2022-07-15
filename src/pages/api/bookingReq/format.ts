@@ -14,6 +14,7 @@ import {
   checkerString,
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
+import { levels } from '@constants/sys/admin';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { findVenueByID } from '@helper/sys/vbs/venue';
@@ -32,7 +33,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     msg: '',
   };
 
-  if (session !== undefined && session !== null && session.user.admin) {
+  if (
+    session !== undefined &&
+    session !== null &&
+    (session.user.admin === levels.ADMIN || session.user.admin === levels.OWNER)
+  ) {
     const parsedBooking: BookingRequest[] = [];
     const bookingsRes: BookingRequest[] = bookings as BookingRequest[];
 

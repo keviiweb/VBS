@@ -82,6 +82,7 @@ export default function ManageUsers(props: any) {
   const [errorMsg, setError] = useState('');
   const [errorMsgEdit, setErrorEdit] = useState('');
   const [errorMsgFile, setErrorFile] = useState('');
+  const [errorMsgFileCCA, setErrorFileCCA] = useState('');
 
   const [userIDEdit, setUserIDEdit] = useState('');
   const userIDDBEdit = useRef('');
@@ -101,6 +102,9 @@ export default function ManageUsers(props: any) {
 
   const selectedFileDB = useRef<string | Blob | null>(null);
   const [fileName, setFileName] = useState(null);
+
+  const selectedFileCCADB = useRef<string | Blob | null>(null);
+  const [fileNameCCA, setFileNameCCA] = useState(null);
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
@@ -125,6 +129,11 @@ export default function ManageUsers(props: any) {
   const resetFile = useCallback(async () => {
     selectedFileDB.current = null;
     setFileName(null);
+  }, []);
+
+  const resetFileCCA = useCallback(async () => {
+    selectedFileCCADB.current = null;
+    setFileNameCCA(null);
   }, []);
 
   const resetEdit = useCallback(async () => {
@@ -223,6 +232,59 @@ export default function ManageUsers(props: any) {
       return false;
     },
     [fetchData, resetFile, toast],
+  );
+
+  const handleSubmitFileCCA = useCallback(
+    async (event: { preventDefault: () => void }) => {
+      setErrorFileCCA('');
+      event.preventDefault();
+      if (selectedFileCCADB.current !== null) {
+        setSubmitButtonPressed(true);
+
+        const dataField = new FormData();
+        dataField.append('file', selectedFileCCADB.current);
+
+        try {
+          const rawResponse = await fetch('/api/ccaRecord/file', {
+            method: 'POST',
+            body: dataField,
+          });
+          const content: Result = await rawResponse.json();
+          if (content.status) {
+            toast({
+              title: 'CCA Records populated',
+              description:
+                'You have successfully populated all users CCA records',
+              status: 'success',
+              duration: 5000,
+              isClosable: true,
+            });
+
+            await resetFileCCA();
+            await fetchData();
+          } else {
+            toast({
+              title: 'Error',
+              description: content.error,
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+
+          setSubmitButtonPressed(false);
+          return true;
+        } catch (error) {
+          setSubmitButtonPressed(false);
+          return false;
+        }
+      } else {
+        setErrorFileCCA('Please upload a file');
+      }
+
+      return false;
+    },
+    [fetchData, resetFileCCA, toast],
   );
 
   const handleSubmit = useCallback(
@@ -382,6 +444,12 @@ export default function ManageUsers(props: any) {
     const file = event.target.files[0];
     selectedFileDB.current = file;
     setFileName(file.name);
+  };
+
+  const onFileChangeCCA = async (event: { target: { files: any[] | any } }) => {
+    const file = event.target.files[0];
+    selectedFileCCADB.current = file;
+    setFileNameCCA(file.name);
   };
 
   useEffect(() => {
@@ -729,6 +797,107 @@ export default function ManageUsers(props: any) {
                       }}
                     >
                       Create
+                    </Button>
+                  </Stack>
+                </Stack>
+              </form>
+            </Stack>
+          </MotionBox>
+        )}
+
+        {level === levels.OWNER && (
+          <MotionBox>
+            {' '}
+            <Stack
+              spacing={4}
+              w='full'
+              maxW='md'
+              bg='white'
+              rounded='xl'
+              boxShadow='lg'
+              p={6}
+              my={12}
+            >
+              <Heading size='md'>Populate CCA Records</Heading>
+              <form onSubmit={handleSubmitFileCCA}>
+                <Stack spacing={4}>
+                  <FormControl>
+                    <FormLabel fontSize='sm' fontWeight='md' color='gray.700'>
+                      CSV File
+                    </FormLabel>
+                    {fileNameCCA && <Text>File uploaded: {fileNameCCA}</Text>}
+                    <Flex
+                      mt={1}
+                      justify='center'
+                      px={6}
+                      pt={5}
+                      pb={6}
+                      borderWidth={2}
+                      borderColor='gray.300'
+                      borderStyle='dashed'
+                      rounded='md'
+                    >
+                      <Stack spacing={1} textAlign='center'>
+                        <Icon
+                          mx='auto'
+                          boxSize={12}
+                          color='gray.400'
+                          stroke='currentColor'
+                          fill='none'
+                          viewBox='0 0 48 48'
+                          aria-hidden='true'
+                        />
+                        <Flex
+                          fontSize='sm'
+                          color='gray.600'
+                          alignItems='baseline'
+                        >
+                          <chakra.label
+                            htmlFor='file-upload'
+                            cursor='pointer'
+                            rounded='md'
+                            fontSize='md'
+                            color='brand.600'
+                            pos='relative'
+                            _hover={{
+                              color: 'brand.400',
+                            }}
+                          >
+                            <span>Upload a file</span>
+                            <VisuallyHidden>
+                              <input
+                                id='file-upload'
+                                name='file-upload'
+                                type='file'
+                                onChange={onFileChangeCCA}
+                              />
+                            </VisuallyHidden>
+                          </chakra.label>
+                        </Flex>
+                        <Text fontSize='xs' color='gray.500'>
+                          CSV up to 10MB
+                        </Text>
+                      </Stack>
+                    </Flex>
+                  </FormControl>
+
+                  {checkerString(errorMsgFileCCA) && (
+                    <Stack align='center'>
+                      <Text>{errorMsgFileCCA}</Text>
+                    </Stack>
+                  )}
+
+                  <Stack spacing={10}>
+                    <Button
+                      type='submit'
+                      bg='blue.400'
+                      color='white'
+                      disabled={submitButtonPressed}
+                      _hover={{
+                        bg: 'blue.500',
+                      }}
+                    >
+                      Populate
                     </Button>
                   </Stack>
                 </Stack>

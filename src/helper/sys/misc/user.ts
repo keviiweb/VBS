@@ -1,4 +1,5 @@
 import { prisma } from '@constants/sys/db';
+import { levels } from '@root/src/constants/sys/admin';
 
 import { User } from '@root/src/types/misc/user';
 import { Result } from 'types/api';
@@ -53,15 +54,33 @@ export const createUserFile = async (dataField: any[]): Promise<Result> => {
       if (dataField[key]) {
         const data = dataField[key];
 
+        const name: string = data.name !== undefined ? data.name : '';
+        const email: string = data.email !== undefined ? data.email : '';
+        const admin: number =
+          data.admin !== undefined ? Number(data.admin) : levels.USER;
+        const studentID: string =
+          data.studentID !== undefined ? data.studentID : '';
+        const roomNum: string = data.roomNum !== undefined ? data.roomNum : '';
+
+        const userData: User = {
+          name: name.trim(),
+          email: email.trim(),
+          admin: admin,
+          studentID: studentID.trim(),
+          roomNum: roomNum.trim(),
+        };
+
         await prisma.users.upsert({
           where: {
-            email: data.email,
+            email: userData.email,
           },
           update: {},
           create: {
-            email: data.email,
-            name: data.name,
-            admin: Number(data.admin),
+            email: userData.email,
+            name: userData.name,
+            admin: userData.admin,
+            studentID: userData.studentID,
+            roomNum: userData.roomNum,
           },
         });
       }

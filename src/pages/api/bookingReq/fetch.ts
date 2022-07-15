@@ -16,6 +16,7 @@ import {
   compareDate,
   prettifyDate,
 } from '@constants/sys/date';
+import { levels } from '@constants/sys/admin';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { findVenueByID } from '@helper/sys/vbs/venue';
@@ -66,7 +67,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       bookings = await findBookingByUser(session, limit, skip);
 
       successBooking = true;
-    } else if (session.user.admin) {
+    } else if (
+      session.user.admin === levels.ADMIN ||
+      session.user.admin === levels.OWNER
+    ) {
       if (query !== undefined) {
         if (typeof query === 'string') {
           if (BOOKINGS.includes(query)) {
