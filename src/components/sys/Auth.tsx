@@ -25,7 +25,7 @@ export default function Auth({ children, admin }) {
           if (
             isAdmin &&
             devSession.current !== null &&
-            !devSession.current.user.admin
+            !(devSession.current.user.admin === levels.ADMIN || devSession.current.user.admin === levels.OWNER)
           ) {
             router.push('/unauthorized');
           }

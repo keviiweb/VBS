@@ -296,9 +296,14 @@ export default function ManageVenues(props: any) {
   );
 
   const onFileChange = async (event: { target: { files: any[] | any } }) => {
+    setError('');
     const file = event.target.files[0];
-    selectedFileDB.current = file;
-    setFileName(file.name);
+    if (file !== undefined && file !== null && file.name !== undefined) {
+      selectedFileDB.current = file;
+      setFileName(file.name);
+    } else {
+      setError('File name not found');
+    }
   };
 
   const onParentVenueChange = async (event: { target: { value: string } }) => {

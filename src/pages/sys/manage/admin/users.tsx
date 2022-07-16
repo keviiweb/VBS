@@ -441,15 +441,25 @@ export default function ManageUsers(props: any) {
   }, [fetchDataTable]);
 
   const onFileChange = async (event: { target: { files: any[] | any } }) => {
+    setErrorFile('');
     const file = event.target.files[0];
-    selectedFileDB.current = file;
-    setFileName(file.name);
+    if (file !== undefined && file !== null && file.name !== undefined) {
+      selectedFileDB.current = file;
+      setFileName(file.name);
+    } else {
+      setErrorFile('File name not found');
+    }
   };
 
   const onFileChangeCCA = async (event: { target: { files: any[] | any } }) => {
+    setErrorFileCCA('');
     const file = event.target.files[0];
-    selectedFileCCADB.current = file;
-    setFileNameCCA(file.name);
+    if (file !== undefined && file !== null && file.name !== undefined) {
+      selectedFileCCADB.current = file;
+      setFileNameCCA(file.name);
+    } else {
+      setErrorFileCCA('File name not found');
+    }
   };
 
   useEffect(() => {
@@ -768,6 +778,7 @@ export default function ManageUsers(props: any) {
                                 id='file-upload'
                                 name='file-upload'
                                 type='file'
+                                accept='.csv'
                                 onChange={onFileChange}
                               />
                             </VisuallyHidden>
@@ -853,7 +864,7 @@ export default function ManageUsers(props: any) {
                           alignItems='baseline'
                         >
                           <chakra.label
-                            htmlFor='file-upload'
+                            htmlFor='file-upload-cca'
                             cursor='pointer'
                             rounded='md'
                             fontSize='md'
@@ -866,9 +877,10 @@ export default function ManageUsers(props: any) {
                             <span>Upload a file</span>
                             <VisuallyHidden>
                               <input
-                                id='file-upload'
-                                name='file-upload'
+                                id='file-upload-cca'
+                                name='file-upload-cca'
                                 type='file'
+                                accept='.csv'
                                 onChange={onFileChangeCCA}
                               />
                             </VisuallyHidden>

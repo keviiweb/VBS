@@ -23,6 +23,8 @@ import { User } from 'types/misc/user';
 import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
 
+import LoadingModal from '@components/sys/misc/LoadingModal';
+
 import { checkerString } from '@constants/sys/helper';
 
 const MotionSimpleGrid = motion(SimpleGrid);
@@ -37,6 +39,8 @@ export default function UserModal({ isOpen, onClose, modalData }) {
   const [adminStr, setAdminStr] = useState('');
 
   const [ccaList, setCCAList] = useState<JSX.Element[]>([]);
+
+  const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
   const reset = useCallback(async () => {
     setID('');
@@ -85,6 +89,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
 
   const fetchCCARecords = useCallback(
     async (emailField: string) => {
+      setSubmitButtonPressed(true);
       if (checkerString(emailField)) {
         try {
           const rawResponse = await fetch('/api/ccaRecord/user', {
@@ -105,6 +110,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
           console.error(error);
         }
       }
+      setSubmitButtonPressed(false);
     },
     [buildMemberList],
   );
@@ -170,6 +176,11 @@ export default function UserModal({ isOpen, onClose, modalData }) {
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
+          <LoadingModal
+            isOpen={!!submitButtonPressed}
+            onClose={() => setSubmitButtonPressed(false)}
+          />
+
           <MotionSimpleGrid
             mt='3'
             minChildWidth={{ base: 'full', md: 'full' }}
