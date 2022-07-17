@@ -152,11 +152,15 @@ export const fetchSpecificCCARecord = async (
     if (query) {
       result = { status: true, error: null, msg: query };
     } else {
-      result = { status: false, error: 'Failed to fetch CCA records', msg: '' };
+      result = {
+        status: false,
+        error: 'Failed to fetch CCA records',
+        msg: null,
+      };
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: 'Failed to fetch CCA records', msg: '' };
+    result = { status: false, error: 'Failed to fetch CCA records', msg: null };
   }
 
   return result;

@@ -10,5 +10,22 @@ export type KEIPS = {
   roomDraw: number;
   semesterStay: string;
   fulfilled: boolean;
+  contrastingStr?: string;
+  fulfilledStr?: string;
   updated_at?: string;
+};
+
+export type KEIPSCCA = {
+  cca: string;
+  cat: string;
+  atte: number;
+  perf: number;
+  outs: number;
+  total: number;
+};
+
+export type KEIPSBonus = {
+  cca: string;
+  description: string;
+  total: number;
 };

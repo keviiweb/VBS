@@ -94,11 +94,11 @@ export const findVenueByID = async (id: string): Promise<Result> => {
     if (locations) {
       result = { status: true, error: null, msg: locations };
     } else {
-      result = { status: false, error: 'Failed to fetch venues', msg: [] };
+      result = { status: false, error: 'Failed to fetch venues', msg: null };
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: 'Failed to fetch venues', msg: [] };
+    result = { status: false, error: 'Failed to fetch venues', msg: null };
   }
 
   return result;

@@ -16,11 +16,11 @@ export const findCCAbyID = async (id: string): Promise<Result> => {
     if (query) {
       result = { status: true, error: null, msg: query };
     } else {
-      result = { status: false, error: 'Failed to fetch CCA', msg: '' };
+      result = { status: false, error: 'Failed to fetch CCA', msg: null };
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: 'Failed to fetch CCA', msg: '' };
+    result = { status: false, error: 'Failed to fetch CCA', msg: null };
   }
 
   return result;
@@ -39,11 +39,11 @@ export const findCCAbyName = async (name: string): Promise<Result> => {
     if (query) {
       result = { status: true, error: null, msg: query };
     } else {
-      result = { status: false, error: 'Failed to fetch CCA', msg: '' };
+      result = { status: false, error: 'Failed to fetch CCA', msg: null };
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: 'Failed to fetch CCA', msg: '' };
+    result = { status: false, error: 'Failed to fetch CCA', msg: null };
   }
 
   return result;
@@ -62,11 +62,11 @@ export const findAllCCA = async (): Promise<Result> => {
     if (ccaList) {
       result = { status: true, error: null, msg: ccaList };
     } else {
-      result = { status: false, error: 'Failed to fetch CCA', msg: '' };
+      result = { status: false, error: 'Failed to fetch CCA', msg: [] };
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: 'Failed to fetch CCA', msg: '' };
+    result = { status: false, error: 'Failed to fetch CCA', msg: [] };
   }
 
   return result;

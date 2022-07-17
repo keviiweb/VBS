@@ -5,6 +5,7 @@ import { Box, CloseButton, Flex, Text } from '@chakra-ui/react';
 import {
   FiHome,
   FiCompass,
+  FiStar,
   FiSettings,
   FiCalendar,
   FiMapPin,
@@ -42,6 +43,11 @@ const adminMenu = [
     label: 'MANAGE ANNOUNCEMENTS',
     icon: FiAlertCircle,
     href: '/sys/manage/announcement',
+  },
+  {
+    label: 'MANAGE KEIPS',
+    icon: FiStar,
+    href: '/sys/manage/admin/keips',
   },
 ];
 

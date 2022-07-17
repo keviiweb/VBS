@@ -15,7 +15,7 @@ import TableWidget from '@components/sys/misc/TableWidget';
 
 import { checkerString } from '@constants/sys/helper';
 import { Result } from 'types/api';
-import { KEIPS } from 'types/misc/keips';
+import { KEIPS, KEIPSCCA, KEIPSBonus } from 'types/misc/keips';
 
 export default function KEIPSComponent() {
   const [loadingData, setLoadingData] = useState(true);
@@ -26,6 +26,13 @@ export default function KEIPSComponent() {
   const [errorMsg, setError] = useState('');
 
   const [data, setData] = useState<KEIPS[]>([]);
+  const [topCCA, setTopCCA] = useState<KEIPSCCA[]>([]);
+  const [allCCA, setAllCCA] = useState<KEIPSCCA[]>([]);
+  const [bonusCCA, setBonusCCA] = useState<KEIPSBonus[]>([]);
+
+  const [showTop, setShowTop] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+  const [showBonus, setShowBonus] = useState(false);
 
   const PAGESIZE: number = 10;
 
@@ -45,14 +52,99 @@ export default function KEIPSComponent() {
     return false;
   };
 
+  const populateBonusCCA = async (dataField: string[]) => {
+    if (dataField.length > 0) {
+      const totalData: KEIPSBonus[] = [];
+
+      for (let key = 0; key < dataField.length; key += 1) {
+        const dataF: string = dataField[key];
+        const dataArr: string[] = dataF.split('.');
+
+        if (dataArr.length > 2) {
+          const parsedData: KEIPSBonus = {
+            cca: dataArr[0],
+            description: dataArr[1],
+            total: Number(dataArr[2]),
+          };
+
+          totalData.push(parsedData);
+        }
+      }
+
+      setBonusCCA(totalData);
+      setShowBonus(true);
+    }
+  };
+
+  const populateAllCCA = async (dataField: string[]) => {
+    if (dataField.length > 0) {
+      const totalData: KEIPSCCA[] = [];
+
+      for (let key = 0; key < dataField.length; key += 1) {
+        const dataF: string = dataField[key];
+        const dataArr: string[] = dataF.split('.');
+
+        if (dataArr.length > 5) {
+          const parsedData: KEIPSCCA = {
+            cca: dataArr[0],
+            cat: dataArr[1],
+            atte: Number(dataArr[2]),
+            perf: Number(dataArr[3]),
+            outs: Number(dataArr[4]),
+            total: Number(dataArr[5]),
+          };
+
+          totalData.push(parsedData);
+        }
+      }
+
+      setAllCCA(totalData);
+      setShowAll(true);
+    }
+  };
+
+  const populateTopCCA = async (dataField: string[]) => {
+    if (dataField.length > 0) {
+      const totalData: KEIPSCCA[] = [];
+
+      for (let key = 0; key < dataField.length; key += 1) {
+        const dataF: string = dataField[key];
+        const dataArr: string[] = dataF.split('.');
+
+        if (dataArr.length > 5) {
+          const parsedData: KEIPSCCA = {
+            cca: dataArr[0],
+            cat: dataArr[1],
+            atte: Number(dataArr[2]),
+            perf: Number(dataArr[3]),
+            outs: Number(dataArr[4]),
+            total: Number(dataArr[5]),
+          };
+
+          totalData.push(parsedData);
+        }
+      }
+
+      setTopCCA(totalData);
+      setShowTop(true);
+    }
+  };
+
   const includeActionButton = useCallback(async (content: KEIPS[]) => {
     if (content.length > 0) {
       for (let key = 0; key < content.length; key += 1) {
         if (content[key]) {
-          // const dataField: KEIPS = content[key];
+          const record: KEIPS = content[key];
+
+          const recordTop: string[] = record.topCCA.split('|');
+          const recordAll: string[] = record.allCCA.split('|');
+          const recordBonus: string[] = record.bonusCCA.split('|');
+
+          await populateTopCCA(recordTop);
+          await populateAllCCA(recordAll);
+          await populateBonusCCA(recordBonus);
         }
       }
-
       setData(content);
 
       if (content.length % pageSizeDB.current === 0) {
@@ -103,48 +195,90 @@ export default function KEIPSComponent() {
   const columns = useMemo(
     () => [
       {
-        Header: 'Venue',
-        accessor: 'venue',
+        Header: 'OSA Points',
+        accessor: 'OSA',
       },
       {
-        Header: 'Date',
-        accessor: 'dateStr',
+        Header: 'OSA Percentile',
+        accessor: 'osaPercentile',
       },
       {
-        Header: 'Timeslot(s)',
-        accessor: 'timeSlots',
+        Header: 'Room Draw Points',
+        accessor: 'roomDraw',
       },
       {
-        Header: 'Email',
-        accessor: 'email',
+        Header: 'Contrasting',
+        accessor: 'contrastingStr',
       },
+      {
+        Header: 'Semester stayed',
+        accessor: 'semesterStay',
+      },
+      {
+        Header: 'Fullfilled criteria?',
+        accessor: 'fulfilledStr',
+      },
+    ],
+    [],
+  );
+
+  const columnsData = useMemo(
+    () => [
       {
         Header: 'CCA',
         accessor: 'cca',
       },
       {
-        Header: 'Purpose',
-        accessor: 'purpose',
+        Header: 'Category',
+        accessor: 'cat',
       },
       {
-        Header: 'Status',
-        accessor: 'status',
+        Header: 'Attendance',
+        accessor: 'atte',
       },
       {
-        Header: 'Actions',
-        accessor: 'action',
+        Header: 'Performance',
+        accessor: 'perf',
+      },
+      {
+        Header: 'Outstanding',
+        accessor: 'outs',
+      },
+      {
+        Header: 'Total',
+        accessor: 'total',
+      },
+    ],
+    [],
+  );
+
+  const columnsBonus = useMemo(
+    () => [
+      {
+        Header: 'CCA',
+        accessor: 'cca',
+      },
+      {
+        Header: 'Description',
+        accessor: 'description',
+      },
+      {
+        Header: 'Total',
+        accessor: 'total',
       },
     ],
     [],
   );
 
   return (
-    <Flex minH='100vh' align='center' justify='center' bg='gray.50'>
-      <Stack spacing={8} mx='auto' maxW='lg' py={12} px={6}>
-        <Stack align='center'>
-          <Heading fontSize='4xl'>KEVII</Heading>
-          <Text>Work in progress...</Text>
-        </Stack>
+    <Flex minH='100vh' w='full' align='center' justify='center' bg='gray.50'>
+      <Stack align='center' spacing={8} mx='auto' maxW='lg' py={12} px={6}>
+        {!successData && (
+          <Stack align='center'>
+            <Heading fontSize='4xl'>KEVII</Heading>
+            <Text>Work in progress...</Text>
+          </Stack>
+        )}
 
         <LoadingModal
           isOpen={!!submitButtonPressed}
@@ -202,15 +336,69 @@ export default function KEIPSComponent() {
         )}
 
         {!loadingData && successData && data && data !== [] && data.length > 0 && (
-          <Box w='full' overflow='auto'>
-            <Stack align='center' justify='center' spacing={30}>
-              <TableWidget
-                key={1}
-                columns={columns}
-                data={data}
-                controlledPageCount={pageCount}
-                dataHandler={null}
-              />
+          <Box>
+            <Stack spacing={30}>
+              <Box w='900px' overflow='auto'>
+                <Stack align='center' justify='center' spacing={10}>
+                  <Text>MATNET: {matnet}</Text>
+                  <TableWidget
+                    key={1}
+                    columns={columns}
+                    data={data}
+                    controlledPageCount={pageCount}
+                    dataHandler={null}
+                    showPage={false}
+                  />
+                </Stack>
+              </Box>
+
+              {showTop && topCCA.length > 0 && (
+                <Box w='900px' overflow='auto'>
+                  <Stack align='center' justify='center'>
+                    <Text>Top CCAs</Text>
+                    <TableWidget
+                      key={2}
+                      columns={columnsData}
+                      data={topCCA}
+                      controlledPageCount={pageCount}
+                      dataHandler={null}
+                      showPage={false}
+                    />
+                  </Stack>
+                </Box>
+              )}
+
+              {showAll && allCCA.length > 0 && (
+                <Box w='900px' overflow='auto'>
+                  <Stack align='center' justify='center'>
+                    <Text>All CCAs</Text>
+                    <TableWidget
+                      key={3}
+                      columns={columnsData}
+                      data={allCCA}
+                      controlledPageCount={pageCount}
+                      dataHandler={null}
+                      showPage={false}
+                    />
+                  </Stack>
+                </Box>
+              )}
+
+              {showBonus && bonusCCA.length > 0 && (
+                <Box w='900px' overflow='auto'>
+                  <Stack align='center' justify='center'>
+                    <Text>Bonus</Text>
+                    <TableWidget
+                      key={4}
+                      columns={columnsBonus}
+                      data={bonusCCA}
+                      controlledPageCount={pageCount}
+                      dataHandler={null}
+                      showPage={false}
+                    />
+                  </Stack>
+                </Box>
+              )}
             </Stack>
           </Box>
         )}

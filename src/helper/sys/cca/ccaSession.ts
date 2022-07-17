@@ -58,10 +58,14 @@ export const findCCASessionByID = async (id: string): Promise<Result> => {
       },
     });
 
-    result = { status: true, error: null, msg: query };
+    if (query) {
+      result = { status: true, error: null, msg: query };
+    } else {
+      result = { status: false, error: null, msg: null };
+    }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: 'Failed to find session', msg: '' };
+    result = { status: false, error: 'Failed to find session', msg: null };
   }
 
   return result;

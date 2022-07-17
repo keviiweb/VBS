@@ -155,10 +155,10 @@ model Announcement {
 
 model KEIPS {
   id  String    @id @default(cuid())
-  matnet  String
-  topCCA    String
-  allCCA    String
-  bonusCCA  String
+  matnet  String  @unique
+  topCCA    String @db.MediumText
+  allCCA    String @db.MediumText
+  bonusCCA  String @db.MediumText
   contrasting Boolean
   OSA Int
   osaPercentile Float 

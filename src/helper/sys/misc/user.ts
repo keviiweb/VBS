@@ -1,7 +1,7 @@
 import { prisma } from '@constants/sys/db';
 import { levels } from '@root/src/constants/sys/admin';
 
-import { User } from '@root/src/types/misc/user';
+import { User } from 'types/misc/user';
 import { Result } from 'types/api';
 
 export const fetchUserByEmail = async (email: string): Promise<Result> => {
@@ -16,11 +16,11 @@ export const fetchUserByEmail = async (email: string): Promise<Result> => {
     if (userFromDB) {
       result = { status: true, error: null, msg: userFromDB };
     } else {
-      result = { status: false, error: 'Failed to fetch user', msg: '' };
+      result = { status: false, error: 'Failed to fetch user', msg: null };
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: 'Failed to fetch user', msg: '' };
+    result = { status: false, error: 'Failed to fetch user', msg: null };
   }
 
   return result;
@@ -119,11 +119,11 @@ export const fetchAllUser = async (
     if (users) {
       result = { status: true, error: null, msg: users };
     } else {
-      result = { status: false, error: 'Failed to fetch user', msg: '' };
+      result = { status: false, error: 'Failed to fetch user', msg: [] };
     }
   } catch (error) {
     console.error(error);
-    result = { status: false, error: 'Failed to fetch user', msg: '' };
+    result = { status: false, error: 'Failed to fetch user', msg: [] };
   }
 
   return result;

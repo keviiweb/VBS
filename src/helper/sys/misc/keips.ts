@@ -1,0 +1,153 @@
+import { prisma } from '@constants/sys/db';
+
+import { KEIPS } from 'types/misc/keips';
+import { Result } from 'types/api';
+
+import { checkerString } from '@constants/sys/helper';
+
+export const fetchKEIPSByMatNet = async (matnet: string): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    const keipsFromDB: KEIPS = await prisma.kEIPS.findUnique({
+      where: {
+        matnet: matnet,
+      },
+    });
+
+    if (keipsFromDB) {
+      result = { status: true, error: null, msg: keipsFromDB };
+    } else {
+      result = { status: false, error: 'Failed to fetch KEIPS', msg: null };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: 'Failed to fetch KEIPS', msg: null };
+  }
+
+  return result;
+};
+
+export const createKEIPSFile = async (dataField: any[]): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  let count = 0;
+  try {
+    for (let key = 0; key < dataField.length; key += 1) {
+      if (dataField[key]) {
+        const data = dataField[key];
+
+        const matnet: string =
+          data.MATNET !== undefined
+            ? data.MATNET
+            : data['﻿MATNET'] !== undefined
+            ? data['﻿MATNET']
+            : '';
+        const top: string = data.Top4cca !== undefined ? data.Top4cca : '';
+        const all: string = data.Allcca !== undefined ? data.Allcca : '';
+        const bonus: string = data.Bonus !== undefined ? data.Bonus : '';
+        const contrasting: boolean =
+          data.Contrasting !== undefined ? data.Contrasting === 'Y' : false;
+        const OSA: number = data.OSA !== undefined ? Number(data.OSA) : 0;
+        const osaPercentile: number =
+          data.OSApercentile !== undefined ? Number(data.OSApercentile) : 0;
+        const roomDraw: number =
+          data.Roomdraw !== undefined ? Number(data.Roomdraw) : 0;
+        const sem: string =
+          data.Semesterstay !== undefined ? data.Semesterstay : '';
+        const fulfil: boolean =
+          data.Fullfilled !== undefined ? data.Fullfilled === 'Y' : false;
+
+        if (checkerString(matnet)) {
+          const userData: KEIPS = {
+            matnet: matnet,
+            topCCA: top,
+            allCCA: all,
+            bonusCCA: bonus,
+            contrasting: contrasting,
+            OSA: OSA,
+            osaPercentile: osaPercentile,
+            roomDraw: roomDraw,
+            semesterStay: sem,
+            fulfilled: fulfil,
+          };
+
+          await prisma.kEIPS.upsert({
+            where: {
+              matnet: userData.matnet,
+            },
+            update: {
+              topCCA: userData.topCCA,
+              allCCA: userData.allCCA,
+              bonusCCA: userData.bonusCCA,
+              contrasting: userData.contrasting,
+              OSA: userData.OSA,
+              osaPercentile: userData.osaPercentile,
+              roomDraw: userData.roomDraw,
+              semesterStay: userData.semesterStay,
+              fulfilled: userData.fulfilled,
+            },
+            create: {
+              matnet: userData.matnet,
+              topCCA: userData.topCCA,
+              allCCA: userData.allCCA,
+              bonusCCA: userData.bonusCCA,
+              contrasting: userData.contrasting,
+              OSA: userData.OSA,
+              osaPercentile: userData.osaPercentile,
+              roomDraw: userData.roomDraw,
+              semesterStay: userData.semesterStay,
+              fulfilled: userData.fulfilled,
+            },
+          });
+
+          count += 1;
+        }
+      }
+    }
+
+    result = {
+      status: true,
+      error: null,
+      msg: `Successfully created ${count} KEIPS records`,
+    };
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: 'Failed to create KEIPS', msg: '' };
+  }
+  return result;
+};
+
+export const countKEIPS = async (): Promise<number> => {
+  let count: number = 0;
+  try {
+    count = await prisma.kEIPS.count();
+  } catch (error) {
+    console.error(error);
+  }
+
+  return count;
+};
+
+export const fetchAllKEIPS = async (
+  limit: number = 100000,
+  skip: number = 0,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    const query: KEIPS[] = await prisma.kEIPS.findMany({
+      skip: skip * limit,
+      take: limit,
+    });
+
+    if (query) {
+      result = { status: true, error: null, msg: query };
+    } else {
+      result = { status: false, error: 'Failed to fetch KEIPS', msg: [] };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: 'Failed to fetch KEIPS', msg: [] };
+  }
+
+  return result;
+};
