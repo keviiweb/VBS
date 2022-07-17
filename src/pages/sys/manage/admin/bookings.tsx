@@ -478,7 +478,6 @@ export default function ManageBooking() {
   }, [includeActionButton]);
 
   const fetchPendingData = useCallback(async () => {
-    console.log('CALLED');
     try {
       const rawResponse = await fetch(
         `/api/bookingReq/fetch?q=PENDING&limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
@@ -589,28 +588,31 @@ export default function ManageBooking() {
     [fetchPendingData, fetchApprovedData, fetchRejectedData, fetchAllData],
   );
 
-  const generateVenueDropdown = useCallback(async (contentRes) => {
-    const content: Venue[] = contentRes.res;
-    const selection: JSX.Element[] = [];
-    venueData.current = [];
+  const generateVenueDropdown = useCallback(
+    async (contentRes: { count: number; res: Venue[] }) => {
+      const content: Venue[] = contentRes.res;
+      const selection: JSX.Element[] = [];
+      venueData.current = [];
 
-    selection.push(<option key='' value='' aria-label='Default' />);
+      selection.push(<option key='' value='' aria-label='Default' />);
 
-    for (let key = 0; key < content.length; key += 1) {
-      if (content[key]) {
-        const dataField: Venue = content[key];
-        selection.push(
-          <option key={dataField.id} value={dataField.id}>
-            {dataField.name}
-          </option>,
-        );
+      for (let key = 0; key < content.length; key += 1) {
+        if (content[key]) {
+          const dataField: Venue = content[key];
+          selection.push(
+            <option key={dataField.id} value={dataField.id}>
+              {dataField.name}
+            </option>,
+          );
 
-        venueData.current.push(dataField);
+          venueData.current.push(dataField);
+        }
       }
-    }
 
-    setVenueDropdown(selection);
-  }, []);
+      setVenueDropdown(selection);
+    },
+    [],
+  );
 
   const fetchVenue = useCallback(async () => {
     try {
@@ -918,7 +920,7 @@ export default function ManageBooking() {
           )}
 
           {!loadingData && data && data !== [] && data.length > 0 && (
-            <Box w='full' mt={30} overflow='auto'>
+            <Box w='full' overflow='auto'>
               <Stack align='center' justify='center' spacing={30}>
                 <TableWidget
                   key={1}

@@ -19,6 +19,7 @@ import {
 } from '@chakra-ui/react';
 
 import TableWidget from '@components/sys/misc/TableWidget';
+import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { BookingRequest } from 'types/vbs/bookingReq';
 import { Result } from 'types/api';
@@ -51,9 +52,11 @@ export default function BookingModal({
 
   const [pageCount, setPageCount] = useState(0);
 
+  const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+
   let generateData: any;
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setID('');
     setVenue('');
     setDate('');
@@ -65,7 +68,7 @@ export default function BookingModal({
     setStatus('');
     setReason('');
     setUserName('');
-  };
+  }, []);
 
   const handleDetails = useCallback(
     (content: BookingRequest) => {
@@ -74,12 +77,12 @@ export default function BookingModal({
     [generateData],
   );
 
-  const handleModalCloseButton = () => {
+  const handleModalCloseButton = useCallback(() => {
     setTimeout(() => {
       reset();
       onClose();
     }, 200);
-  };
+  }, [reset, onClose]);
 
   const generateActionButton = useCallback(
     async (content: BookingRequest) => {
@@ -113,115 +116,122 @@ export default function BookingModal({
     [generateActionButton],
   );
 
-  const processConflicts = async (conflicts: BookingRequest[]) => {
-    try {
-      const rawResponse = await fetch('/api/bookingReq/format', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          bookings: conflicts,
-        }),
-      });
-      const content: Result = await rawResponse.json();
-      if (content.status) {
-        await includeActionButton(content.msg);
+  const processConflicts = useCallback(
+    async (conflicts: BookingRequest[]) => {
+      setSubmitButtonPressed(true);
+      try {
+        const rawResponse = await fetch('/api/bookingReq/format', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            bookings: conflicts,
+          }),
+        });
+        const content: Result = await rawResponse.json();
+        if (content.status) {
+          await includeActionButton(content.msg);
+        }
+      } catch (error) {
+        console.error(error);
       }
+      setSubmitButtonPressed(false);
+    },
+    [includeActionButton],
+  );
 
-      return true;
-    } catch (error) {
-      return false;
-    }
-  };
-
-  generateData = async (modalDataField: BookingRequest) => {
-    if (modalDataField.id && checkerString(modalDataField.id)) {
-      setID(modalDataField.id);
-    } else {
-      setID('');
-    }
-
-    if (modalDataField.venue && checkerString(modalDataField.venue)) {
-      setVenue(modalDataField.venue);
-    } else {
-      setVenue('');
-    }
-
-    if (modalDataField.dateStr && checkerString(modalDataField.dateStr)) {
-      setDate(modalDataField.dateStr);
-    } else {
-      setDate('');
-    }
-
-    if (modalDataField.timeSlots && checkerString(modalDataField.timeSlots)) {
-      setTimeSlots(modalDataField.timeSlots);
-    } else {
-      setTimeSlots('');
-    }
-
-    if (modalDataField.email && checkerString(modalDataField.email)) {
-      setEmail(modalDataField.email);
-    } else {
-      setEmail('');
-    }
-
-    if (modalDataField.cca && checkerString(modalDataField.cca)) {
-      setCCA(modalDataField.cca);
-    } else {
-      setCCA('');
-    }
-
-    if (modalDataField.purpose && checkerString(modalDataField.purpose)) {
-      setPurpose(modalDataField.purpose);
-    } else {
-      setPurpose('');
-    }
-
-    if (modalDataField.status && checkerString(modalDataField.status)) {
-      setStatus(modalDataField.status);
-    } else {
-      setStatus('');
-    }
-
-    if (modalDataField.userName && checkerString(modalDataField.userName)) {
-      setUserName(modalDataField.userName);
-    } else {
-      setUserName('');
-    }
-
-    if (
-      isBookingRequest &&
-      modalDataField.conflictRequestObj &&
-      modalDataField.conflictRequestObj.length > 0
-    ) {
-      if (modalData.conflictRequestObj.length % pageSize === 0) {
-        setPageCount(
-          Math.floor(modalData.conflictRequestObj.length / pageSize),
-        );
+  generateData = useCallback(
+    async (modalDataField: BookingRequest) => {
+      if (modalDataField.id && checkerString(modalDataField.id)) {
+        setID(modalDataField.id);
       } else {
-        setPageCount(
-          Math.floor(modalData.conflictRequestObj.length / pageSize) + 1,
-        );
+        setID('');
       }
 
-      await processConflicts(modalDataField.conflictRequestObj);
-    } else if (
-      isBookingRequest &&
-      modalDataField.conflictRequestObj?.length === 0
-    ) {
-      setConflict([]);
-    }
+      if (modalDataField.venue && checkerString(modalDataField.venue)) {
+        setVenue(modalDataField.venue);
+      } else {
+        setVenue('');
+      }
 
-    if (modalDataField.reason && checkerString(modalDataField.reason)) {
-      setReason(modalDataField.reason);
-    } else {
-      setReason('');
-    }
+      if (modalDataField.dateStr && checkerString(modalDataField.dateStr)) {
+        setDate(modalDataField.dateStr);
+      } else {
+        setDate('');
+      }
 
-    setLoadingData(false);
-  };
+      if (modalDataField.timeSlots && checkerString(modalDataField.timeSlots)) {
+        setTimeSlots(modalDataField.timeSlots);
+      } else {
+        setTimeSlots('');
+      }
+
+      if (modalDataField.email && checkerString(modalDataField.email)) {
+        setEmail(modalDataField.email);
+      } else {
+        setEmail('');
+      }
+
+      if (modalDataField.cca && checkerString(modalDataField.cca)) {
+        setCCA(modalDataField.cca);
+      } else {
+        setCCA('');
+      }
+
+      if (modalDataField.purpose && checkerString(modalDataField.purpose)) {
+        setPurpose(modalDataField.purpose);
+      } else {
+        setPurpose('');
+      }
+
+      if (modalDataField.status && checkerString(modalDataField.status)) {
+        setStatus(modalDataField.status);
+      } else {
+        setStatus('');
+      }
+
+      if (modalDataField.userName && checkerString(modalDataField.userName)) {
+        setUserName(modalDataField.userName);
+      } else {
+        setUserName('');
+      }
+
+      if (
+        isBookingRequest &&
+        modalDataField.conflictRequestObj &&
+        modalDataField.conflictRequestObj.length > 0
+      ) {
+        if (modalDataField.conflictRequestObj.length % pageSize === 0) {
+          setPageCount(
+            Math.floor(modalDataField.conflictRequestObj.length / pageSize),
+          );
+        } else {
+          setPageCount(
+            Math.floor(modalDataField.conflictRequestObj.length / pageSize) + 1,
+          );
+        }
+
+        await processConflicts(modalDataField.conflictRequestObj);
+      } else if (
+        isBookingRequest &&
+        modalDataField.conflictRequestObj?.length === 0
+      ) {
+        setConflict([]);
+      }
+
+      if (modalDataField.reason && checkerString(modalDataField.reason)) {
+        setReason(modalDataField.reason);
+      } else {
+        setReason('');
+      }
+
+      setLoadingData(false);
+    },
+    [isBookingRequest, processConflicts],
+  );
+
   useEffect(() => {
     async function setupData(modalDataField: BookingRequest) {
       await generateData(modalDataField);
@@ -281,6 +291,11 @@ export default function BookingModal({
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
+          <LoadingModal
+            isOpen={!!submitButtonPressed}
+            onClose={() => setSubmitButtonPressed(false)}
+          />
+
           <SimpleGrid mt='3' minChildWidth='250px' spacing='2em' minH='full'>
             <Box>
               {modalData && (
@@ -431,7 +446,7 @@ export default function BookingModal({
                         isBookingRequest &&
                         conflict.length > 0 &&
                         !loadingData && (
-                          <Box overflow='auto'>
+                          <Box w='full' overflow='auto'>
                             <Text
                               fontSize={{ base: '16px', lg: '18px' }}
                               fontWeight='500'

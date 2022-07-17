@@ -345,7 +345,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                 )}
 
                 {childVenues && !loadingData && (
-                  <Box overflow='scroll'>
+                  <Box w='full' overflow='auto'>
                     <Text
                       fontSize={{ base: '16px', lg: '18px' }}
                       fontWeight='500'

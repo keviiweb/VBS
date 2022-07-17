@@ -304,7 +304,7 @@ export default function LeaderStudentModalComponent({
           </Box>
 
           {!loadingData && data.length > 0 && (
-            <Box overflow='auto'>
+            <Box w='full' overflow='auto'>
               <TableWidget
                 key='table-widget-session'
                 columns={columns}

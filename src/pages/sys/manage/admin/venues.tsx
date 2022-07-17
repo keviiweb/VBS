@@ -751,7 +751,7 @@ export default function ManageVenues(props: any) {
           )}
 
           {!loadingData && data && data.length > 0 && (
-            <Box minWidth='full' mt={30}>
+            <Box w='full' overflow='auto'>
               <Stack spacing={30} align='center' justify='center'>
                 <TableWidget
                   key={1}

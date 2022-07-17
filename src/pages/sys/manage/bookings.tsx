@@ -271,7 +271,7 @@ export default function ManageBooking() {
           )}
 
           {!loadingData && data && data !== [] && data.length > 0 && (
-            <Box minWidth='full' mt={30} overflow='auto'>
+            <Box w='full' overflow='auto'>
               <Stack align='center' justify='center' spacing={30}>
                 <TableWidget
                   key={1}

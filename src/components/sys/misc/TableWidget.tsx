@@ -2,12 +2,6 @@ import React, { useEffect } from 'react';
 import { useTable, usePagination } from 'react-table';
 import {
   Box,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
   Flex,
   IconButton,
   Text,
@@ -19,6 +13,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from '@chakra-ui/react';
+import { Table, Tbody, Thead, Th, Tr, Td } from '@components/sys/misc/table';
 import {
   ArrowRightIcon,
   ArrowLeftIcon,
@@ -33,9 +28,6 @@ export default function TableWidget({
   dataHandler,
 }) {
   const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
     prepareRow,
     page,
     canPreviousPage,
@@ -73,23 +65,21 @@ export default function TableWidget({
         maxHeight: '600px',
       }}
     >
-      <Table {...getTableProps()}>
+      <Table variant='striped' size='md' colorScheme='facebook'>
         <Thead>
-          {headerGroups.map((headerGroup) => (
-            <Tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <Th {...column.getHeaderProps()}>{column.render('Header')}</Th>
-              ))}
-            </Tr>
-          ))}
+          <Tr>
+            {columns.map((item: { Header: string; accessor: string }) => (
+              <Th>{item.Header}</Th>
+            ))}
+          </Tr>
         </Thead>
-        <Tbody {...getTableBodyProps()}>
-          {page.map((row) => {
+        <Tbody>
+          {page.map((row, idx) => {
             prepareRow(row);
             return (
-              <Tr {...row.getRowProps()}>
+              <Tr id={`tr-${idx}`}>
                 {row.cells.map((cell) => (
-                  <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
+                  <Td>{cell.render('Cell')}</Td>
                 ))}
               </Tr>
             );

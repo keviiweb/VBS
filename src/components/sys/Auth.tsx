@@ -48,21 +48,6 @@ export default function Auth({ children, admin }) {
             router.push('/unauthorized');
           }
         }
-
-        if (!loading && !hasUser) {
-          router.push('/sys/signin');
-        } else if (isAdmin && session !== null && status === 'authenticated') {
-          if (!session.user.admin) {
-            router.push('/unauthorized');
-          } else if (
-            !(
-              session.user.admin === levels.ADMIN ||
-              session.user.admin === levels.OWNER
-            )
-          ) {
-            router.push('/unauthorized');
-          }
-        }
       } catch (error) {
         router.push('/unauthorized');
       }

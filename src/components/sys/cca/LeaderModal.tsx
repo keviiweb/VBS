@@ -672,7 +672,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           </MotionSimpleGrid>
 
           {!loadingData && data.length > 0 && selectedChoice === choice.MEMBER && (
-            <Box overflow='auto'>
+            <Box w='full' overflow='auto'>
               <TableWidget
                 key='table-widget-member'
                 columns={columnsMember}
@@ -696,7 +696,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           {!loadingData &&
             data.length > 0 &&
             selectedChoice === choice.SESSION && (
-              <Box overflow='auto'>
+              <Box w='full' overflow='auto'>
                 <TableWidget
                   key='table-widget-session'
                   columns={columnsSession}
