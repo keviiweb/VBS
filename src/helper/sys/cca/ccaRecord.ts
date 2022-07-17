@@ -247,6 +247,7 @@ export const createCCARecordFile = async (
                     sessionEmail: email.trim(),
                     ccaID: ccaDetails.id.trim(),
                     leader: leader,
+                    updated_at: new Date().toISOString(),
                   };
 
                   const updateRes: Result = await editCCARecord(userData);

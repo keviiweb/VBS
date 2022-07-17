@@ -5,7 +5,6 @@ import { Box, CloseButton, Flex, Text } from '@chakra-ui/react';
 import {
   FiHome,
   FiCompass,
-  FiStar,
   FiSettings,
   FiCalendar,
   FiMapPin,
@@ -18,7 +17,6 @@ import NavLink from '@components/sys/misc/NavLink';
 const adminMenu = [
   { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },
   { label: 'CCA ATTENDANCE', icon: FiSettings, href: '/sys/cca' },
-  { label: 'KEIPs', icon: FiStar, href: '/sys/keips' },
   { label: 'CONTACT US', icon: FiCompass, href: '/sys/contact' },
   {
     label: 'APPROVE BOOKINGS',
@@ -50,7 +48,6 @@ const adminMenu = [
 const userMenu = [
   { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },
   { label: 'CCA ATTENDANCE', icon: FiSettings, href: '/sys/cca' },
-  { label: 'KEIPs', icon: FiStar, href: '/sys/keips' },
   { label: 'CONTACT US', icon: FiCompass, href: '/sys/contact' },
   {
     label: 'MANAGE BOOKINGS',

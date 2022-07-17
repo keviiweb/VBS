@@ -86,85 +86,85 @@ export default function Header() {
     );
   }, []);
 
-  const CCA = useCallback(
-    (props) => {
-      const sections = [
-        {
-          title: 'Sports',
-          icon: null,
-          description: 'Learn a new sport!',
-          link: '/sports',
-        },
-        {
-          title: 'Cultural',
-          icon: null,
-          description: 'Showcase your inner talents!',
-          link: '/cultural',
-        },
-        {
-          title: 'Production',
-          icon: null,
-          description: 'Be part of a large family!',
-          link: '/production',
-        },
-        {
-          title: 'Committee',
-          icon: null,
-          description: 'Take charge and be your own leader!',
-          link: '/committee',
-        },
-      ];
+  const CCA = useCallback(() => {
+    const sections = [
+      {
+        title: 'Sports',
+        icon: null,
+        description: 'Learn a new sport!',
+        link: '/sports',
+      },
+      {
+        title: 'Cultural',
+        icon: null,
+        description: 'Showcase your inner talents!',
+        link: '/cultural',
+      },
+      {
+        title: 'Production',
+        icon: null,
+        description: 'Be part of a large family!',
+        link: '/production',
+      },
+      {
+        title: 'Committee',
+        icon: null,
+        description: 'Take charge and be your own leader!',
+        link: '/committee',
+      },
+    ];
 
-      return (
-        <SimpleGrid
-          columns={props.h ? { base: 1, md: 3, lg: 5 } : 1}
-          pos='relative'
-          gap={{ base: 6, sm: 8 }}
-          px={5}
-          py={6}
-          p={{ sm: 8 }}
-        >
-          {sections.map(({ title, icon, description, link }, sid) => (
-            <Section title={title} icon={icon} key={sid} link={link}>
-              {description}
-            </Section>
-          ))}
-        </SimpleGrid>
-      );
-    },
-    [Section],
-  );
+    return (
+      <SimpleGrid
+        columns={1}
+        pos='relative'
+        gap={{ base: 6, sm: 8 }}
+        px={5}
+        py={6}
+        p={{ sm: 8 }}
+      >
+        {sections.map(({ title, icon, description, link }, sid) => (
+          <Section title={title} icon={icon} key={sid} link={link}>
+            {description}
+          </Section>
+        ))}
+      </SimpleGrid>
+    );
+  }, [Section]);
 
-  const System = useCallback(
-    (props) => {
-      const system = [
-        {
-          title: 'VBS',
-          icon: null,
-          description: 'Venue Booking System for KEVII',
-          link: '/sys',
-        },
-      ];
+  const System = useCallback(() => {
+    const system = [
+      {
+        title: 'VBS',
+        icon: null,
+        description: 'Venue Booking System for KEVII',
+        link: '/sys',
+      },
+      {
+        title: 'KEIPS',
+        icon: null,
+        description: 'Check your KEIPS',
+        link: '/sys/keips',
+      },
+    ];
 
-      return (
-        <SimpleGrid
-          columns={props.h ? { base: 1, md: 3, lg: 5 } : 1}
-          pos='relative'
-          gap={{ base: 6, sm: 8 }}
-          px={5}
-          py={6}
-          p={{ sm: 8 }}
-        >
-          {system.map(({ title, icon, description, link }, sid) => (
-            <Section title={title} icon={icon} key={sid} link={link}>
-              {description}
-            </Section>
-          ))}
-        </SimpleGrid>
-      );
-    },
-    [Section],
-  );
+    return (
+      <SimpleGrid
+        columns={1}
+        pos='relative'
+        gap={{ base: 6, sm: 8 }}
+        px={5}
+        py={6}
+        p={{ sm: 8 }}
+      >
+        {system.map(({ title, icon, description, link }, sid) => (
+          <Section title={title} icon={icon} key={sid} link={link}>
+            {description}
+          </Section>
+        ))}
+      </SimpleGrid>
+    );
+  }, [Section]);
 
   return (
     <chakra.header id='header' w='full' px={{ base: 2, sm: 4 }} py={6}>
