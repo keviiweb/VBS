@@ -69,10 +69,9 @@ export default function VBS(props: any) {
   };
 
   useEffect(() => {
-    async function fetchData(propsField) {
+    async function fetchData(propsField: any) {
       setIsLoading(true);
 
-      const propRes = await propsField;
       minDate.current = propsField.minDate
         ? propsField.minDate
         : minDate.current;
@@ -80,8 +79,8 @@ export default function VBS(props: any) {
         ? propsField.maxDate
         : maxDate.current;
 
-      if (propRes.data) {
-        const res: Result = propRes.data;
+      if (propsField.data) {
+        const res: Result = propsField.data;
         if (res.msg.length > 0) {
           if (res.status) {
             const result: Venue[] = res.msg;
@@ -190,24 +189,26 @@ export default function VBS(props: any) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => ({
-  props: (async function Props() {
-    try {
-      const res: Result = await fetchVenue();
-      const stringifiedData = safeJsonStringify(res);
-      const data: Result = JSON.parse(stringifiedData);
-      return {
-        minDate: process.env.CALENDAR_MIN_DAY,
-        maxDate: process.env.CALENDAR_MAX_DAY,
-        data: data,
-      };
-    } catch (error) {
-      console.error(error);
-      return {
-        minDate: process.env.CALENDAR_MIN_DAY,
-        maxDate: process.env.CALENDAR_MAX_DAY,
-        data: null,
-      };
-    }
-  })(),
-});
+export const getServerSideProps: GetServerSideProps = async (cont) => {
+  cont.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59',
+  );
+
+  let data: Result | null = null;
+  try {
+    const res: Result = await fetchVenue();
+    const stringifiedData = safeJsonStringify(res);
+    data = JSON.parse(stringifiedData);
+  } catch (error) {
+    console.error(error);
+  }
+
+  return {
+    props: {
+      minDate: process.env.CALENDAR_MIN_DAY,
+      maxDate: process.env.CALENDAR_MAX_DAY,
+      data: data,
+    },
+  };
+};

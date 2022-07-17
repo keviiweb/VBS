@@ -25,10 +25,9 @@ export const currentSession = async (
     let session: Session | null = null;
     if (isServer && req) {
       session = await getSession({ req });
-      return session;
     } else {
       session = await getSession();
-      return session;
     }
+    return session;
   }
 };

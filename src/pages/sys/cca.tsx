@@ -36,9 +36,8 @@ export default function CCA(props: any) {
     async function generate(propsField: any) {
       setSubmitButtonPressed(true);
 
-      const propRes = await propsField;
-      if (propRes.data) {
-        const res: Result = propRes.data;
+      if (propsField.data) {
+        const res: Result = propsField.data;
         if (res.status && res.msg.count > 0) {
           const resField: { count: number; res: CCARecord[] } = res.msg;
           const result: CCARecord[] = resField.res;
@@ -187,44 +186,38 @@ export default function CCA(props: any) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (cont) => ({
-  props: (async function Props() {
-    try {
-      const session: Session | null = await currentSession(null, null, cont);
-      if (session !== null && process.env.NEXTAUTH_URL !== undefined) {
-        try {
-          const rawResponse = await fetch(
-            `${process.env.NEXTAUTH_URL}/api/ccaRecord/fetch`,
-            {
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-            },
-          );
+export const getServerSideProps: GetServerSideProps = async (cont) => {
+  cont.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59',
+  );
 
-          const content: Result = await rawResponse.json();
-          const stringifiedData = safeJsonStringify(content);
-          const data: Result = JSON.parse(stringifiedData);
-          return {
-            data: data,
-          };
-        } catch (error) {
-          console.error(error);
-        }
+  let data: Result | null = null;
+  try {
+    const session: Session | null = await currentSession(null, null, cont);
+    if (session !== null && process.env.NEXTAUTH_URL !== undefined) {
+      console.log(process.env.NEXTAUTH_URL);
+      const rawResponse = await fetch(
+        `${process.env.NEXTAUTH_URL}/api/ccaRecord/fetch`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
+      );
 
-        return {
-          data: null,
-        };
-      }
-      return {
-        data: null,
-      };
-    } catch (error) {
-      console.error(error);
-      return {
-        data: null,
-      };
+      const content: Result = await rawResponse.json();
+      const stringifiedData = safeJsonStringify(content);
+      data = JSON.parse(stringifiedData);
     }
-  })(),
-});
+  } catch (error) {
+    console.error(error);
+  }
+
+  return {
+    props: {
+      data: data,
+    },
+  };
+};

@@ -5,6 +5,7 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
 import { prisma } from '@constants/sys/db';
 import { User } from 'types/misc/user';
+import { Session } from 'next-auth/core/types';
 
 function html({ newURL, email }) {
   const escapedEmail = `${email.replace(/\./g, '&#8203;.')}`;
@@ -491,7 +492,7 @@ export const options = {
           });
 
           if (userFromDB != null) {
-            const newSession = session;
+            const newSession: Session = JSON.parse(JSON.stringify(session));
             newSession.user.email = userFromDB.email;
             newSession.user.username = userFromDB.name;
             newSession.user.studentID = userFromDB.studentID;

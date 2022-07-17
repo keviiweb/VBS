@@ -405,6 +405,8 @@ export default function ManageVenues(props: any) {
   );
 
   const fetchDataTable = useCallback(async () => {
+    setSubmitButtonPressed(true);
+
     try {
       const rawResponse = await fetch(
         `/api/venue/fetch?limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
@@ -422,6 +424,8 @@ export default function ManageVenues(props: any) {
     } catch (error) {
       console.error(error);
     }
+
+    setSubmitButtonPressed(false);
   }, [includeActionButton]);
 
   fetchData = useCallback(async () => {
@@ -462,8 +466,7 @@ export default function ManageVenues(props: any) {
 
   useEffect(() => {
     async function generate(propsField: any) {
-      const propRes = await propsField;
-      setLevel(propRes.data);
+      setLevel(propsField.data);
 
       await fetchData();
       await generateTimeSlots();
@@ -1149,23 +1152,25 @@ export default function ManageVenues(props: any) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (cont) => ({
-  props: (async function Props() {
-    try {
-      const session: Session | null = await currentSession(null, null, cont);
-      if (session !== null) {
-        return {
-          data: session.user.admin,
-        };
-      }
-      return {
-        data: levels.USER,
-      };
-    } catch (error) {
-      console.error(error);
-      return {
-        data: levels.USER,
-      };
+export const getServerSideProps: GetServerSideProps = async (cont) => {
+  cont.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59',
+  );
+
+  let data: number = levels.USER;
+  try {
+    const session: Session | null = await currentSession(null, null, cont);
+    if (session !== null) {
+      data = session.user.admin;
     }
-  })(),
-});
+  } catch (error) {
+    console.error(error);
+  }
+
+  return {
+    props: {
+      data: data,
+    },
+  };
+};

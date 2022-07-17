@@ -15,34 +15,53 @@ export default function Auth({ children, admin }) {
   const hasUser: boolean = !!session?.user;
   const router = useRouter();
   const devSession = useRef<Session | null>(null);
-  const isAdmin: boolean = !!admin;
+  const isAdmin: boolean = admin !== undefined;
 
   useEffect(() => {
     async function fetchData() {
       try {
         if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
           devSession.current = await currentSession();
-          if (
-            isAdmin &&
-            devSession.current !== null &&
+          if (isAdmin && devSession.current !== null) {
+            if (!devSession.current.user.admin) {
+              router.push('/unauthorized');
+            } else if (
+              !(
+                devSession.current.user.admin === levels.ADMIN ||
+                devSession.current.user.admin === levels.OWNER
+              )
+            ) {
+              router.push('/unauthorized');
+            }
+          }
+        } else if (!loading && !hasUser) {
+          router.push('/sys/signin');
+        } else if (isAdmin && session !== null && status === 'authenticated') {
+          if (!session.user.admin) {
+            router.push('/unauthorized');
+          } else if (
             !(
-              devSession.current.user.admin === levels.ADMIN ||
-              devSession.current.user.admin === levels.OWNER
+              session.user.admin === levels.ADMIN ||
+              session.user.admin === levels.OWNER
             )
           ) {
             router.push('/unauthorized');
           }
-        } else if (!loading && !hasUser) {
+        }
+
+        if (!loading && !hasUser) {
           router.push('/sys/signin');
-        } else if (
-          isAdmin &&
-          session !== null &&
-          !(
-            session.user.admin === levels.ADMIN ||
-            session.user.admin === levels.OWNER
-          )
-        ) {
-          router.push('/unauthorized');
+        } else if (isAdmin && session !== null && status === 'authenticated') {
+          if (!session.user.admin) {
+            router.push('/unauthorized');
+          } else if (
+            !(
+              session.user.admin === levels.ADMIN ||
+              session.user.admin === levels.OWNER
+            )
+          ) {
+            router.push('/unauthorized');
+          }
         }
       } catch (error) {
         router.push('/unauthorized');
@@ -50,7 +69,7 @@ export default function Auth({ children, admin }) {
     }
 
     fetchData();
-  }, [loading, hasUser, isAdmin, router, session]);
+  }, [loading, hasUser, isAdmin, router, session, status]);
 
   if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     return <Layout session={devSession.current}>{children}</Layout>;

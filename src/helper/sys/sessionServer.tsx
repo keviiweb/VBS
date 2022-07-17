@@ -30,16 +30,13 @@ export const currentSession = async (
         context.res,
         options,
       )) as Session;
-      return session;
     } else if (request !== null && response !== null) {
       session = (await unstable_getServerSession(
         request,
         response,
         options,
       )) as Session;
-      return session;
-    } else {
-      return null;
     }
+    return session;
   }
 };

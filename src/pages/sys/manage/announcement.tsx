@@ -255,9 +255,8 @@ export default function ManageVenues() {
     [router],
   );
 
-  fetchData = useCallback(async () => {
-    setLoadingData(true);
-    setData([]);
+  const fetchDataTable = useCallback(async () => {
+    setSubmitButtonPressed(true);
     try {
       const rawResponse = await fetch(
         `/api/announcement/fetch?limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
@@ -272,31 +271,19 @@ export default function ManageVenues() {
       if (content.status) {
         await includeActionButton(content.msg);
       }
-      setLoadingData(false);
     } catch (error) {
       console.error(error);
     }
+
+    setSubmitButtonPressed(false);
   }, [includeActionButton]);
 
-  const fetchDataTable = useCallback(async () => {
-    try {
-      const rawResponse = await fetch(
-        `/api/venue/fetch?limit=${pageSizeDB.current}&skip=${pageIndexDB.current}`,
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      const content: Result = await rawResponse.json();
-      if (content.status) {
-        await includeActionButton(content.msg);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }, [includeActionButton]);
+  fetchData = useCallback(async () => {
+    setLoadingData(true);
+    setData([]);
+    await fetchDataTable();
+    setLoadingData(false);
+  }, [fetchDataTable]);
 
   useEffect(() => {
     async function generate() {
