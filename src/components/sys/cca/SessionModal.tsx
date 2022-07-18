@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -16,23 +16,19 @@ import {
   Stack,
   StackDivider,
   Text,
-  Table,
-  Tbody,
-  Tr,
-  Td,
-  TableContainer,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 
 import { Result } from 'types/api';
 import { CCASession } from 'types/cca/ccaSession';
+import { CCAAttendance } from '@root/src/types/cca/ccaAttendance';
 
 import { checkerString } from '@constants/sys/helper';
 
+import TableWidget from '@components/sys/misc/TableWidget';
 import SessionEditModal from '@components/sys/cca/SessionEditModal';
 import SessionDeleteConfirmationModal from '@components/sys/cca/SessionDeleteConfirmationModal';
-import { CCAAttendance } from '@root/src/types/cca/ccaAttendance';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -64,8 +60,11 @@ export default function SessionModal({
   const [expectedM, setDisplayedExpected] = useState<JSX.Element[]>([]);
   const [expectedBool, setExpectedBool] = useState(false);
 
-  const [realityM, setDisplayedReality] = useState<JSX.Element | null>();
+  const [dataM, setDataM] = useState<CCAAttendance[]>([]);
   const [realityBool, setRealityBool] = useState(false);
+
+  const PAGESIZE: number = 10;
+  const [pageCount, setPageCount] = useState(0);
 
   const reset = () => {
     setDateStr('');
@@ -75,6 +74,9 @@ export default function SessionModal({
     setLdrNotes('');
     setEditable(false);
     setDuration(0);
+
+    setDataM([]);
+    setPageCount(0);
   };
 
   const handleModalCloseButton = useCallback(() => {
@@ -154,40 +156,17 @@ export default function SessionModal({
     if (members.length > 0) {
       const membersA: CCAAttendance[] = JSON.parse(members) as CCAAttendance[];
       if (membersA.length > 0) {
-        const text: JSX.Element[] = [];
-        for (let key = 0; key < membersA.length; key += 1) {
-          if (membersA[key]) {
-            if (
-              membersA[key].sessionName !== undefined &&
-              membersA[key].ccaAttendance !== undefined
-            ) {
-              text.push(
-                <Tr key={`tr-r-${key}`}>
-                  <Td key={`td-r-${key}-1`}>
-                    <Text>{membersA[key].sessionName}</Text>
-                  </Td>
-                  <Td key={`td-r-${key}-2`}>
-                    <Text>{membersA[key].ccaAttendance}</Text>
-                  </Td>
-                </Tr>,
-              );
-            }
-          }
-        }
-
-        const tableField: JSX.Element = (
-          <TableContainer>
-            <Table variant='simple'>
-              <Tbody>{text}</Tbody>
-            </Table>
-          </TableContainer>
-        );
-
-        setDisplayedReality(tableField);
+        setDataM(membersA);
         setRealityBool(true);
+
+        if (membersA.length % PAGESIZE === 0) {
+          setPageCount(Math.floor(membersA.length / PAGESIZE));
+        } else {
+          setPageCount(Math.floor(membersA.length / PAGESIZE) + 1);
+        }
       }
     } else {
-      setDisplayedReality(null);
+      setDataM([]);
     }
   };
 
@@ -250,6 +229,20 @@ export default function SessionModal({
       setupData(modalData);
     }
   }, [modalData]);
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Name',
+        accessor: 'sessionName',
+      },
+      {
+        Header: 'Hours',
+        accessor: 'ccaAttendance',
+      },
+    ],
+    [],
+  );
 
   return (
     <Modal
@@ -423,15 +416,15 @@ export default function SessionModal({
                                   >
                                     Members Present
                                   </Text>
-                                  <Text
-                                    textTransform='uppercase'
-                                    letterSpacing='tight'
-                                    fontWeight='bold'
-                                  >
-                                    Hours
-                                  </Text>
                                 </Stack>
-                                {realityM}
+                                <TableWidget
+                                  key='realityM-table'
+                                  columns={columns}
+                                  data={dataM}
+                                  controlledPageCount={pageCount}
+                                  dataHandler={null}
+                                  showPage={false}
+                                />
                               </Stack>
                             </ListItem>
                           )}

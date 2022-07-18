@@ -26,11 +26,11 @@ import { motion } from 'framer-motion';
 import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/misc/TableWidget';
 import LoadingModal from '@components/sys/misc/LoadingModal';
-import UserModal from '@components/sys/misc/UserModal';
+import KEIPSModal from '@components/sys/misc/KEIPSModal';
 
 import { checkerString } from '@constants/sys/helper';
 
-import { User } from 'types/misc/user';
+import { KEIPS } from 'types/misc/keips';
 import { Result } from 'types/api';
 import { levels } from '@root/src/constants/sys/admin';
 
@@ -38,18 +38,19 @@ import { Session } from 'next-auth/core/types';
 
 import { GetServerSideProps } from 'next';
 import { currentSession } from '@root/src/helper/sys/sessionServer';
+import { InfoOutlineIcon } from '@chakra-ui/icons';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
 export default function ManageKEIPS(props: any) {
-  const [modalData, setModalData] = useState<User | null>(null);
+  const [modalData, setModalData] = useState<KEIPS | null>(null);
   const toast = useToast();
 
   const [level, setLevel] = useState(levels.USER);
 
   const [loadingData, setLoadingData] = useState(true);
-  const [data, setData] = useState<User[]>([]);
+  const [data, setData] = useState<KEIPS[]>([]);
 
   const [errorMsgFileKEIPS, setErrorFileKEIPS] = useState('');
 
@@ -70,6 +71,10 @@ export default function ManageKEIPS(props: any) {
   const resetFileKEIPS = useCallback(async () => {
     selectedFileKEIPSDB.current = null;
     setFileNameKEIPS(null);
+  }, []);
+
+  const handleDetails = useCallback((content: KEIPS) => {
+    setModalData(content);
   }, []);
 
   const handleSubmitFileKEIPS = useCallback(
@@ -124,28 +129,36 @@ export default function ManageKEIPS(props: any) {
     [fetchData, resetFileKEIPS, toast],
   );
 
+  const generateActionButton = useCallback(
+    async (content: KEIPS) => {
+      const button: JSX.Element = (
+        <Button
+          size='sm'
+          leftIcon={<InfoOutlineIcon />}
+          onClick={() => handleDetails(content)}
+        >
+          View Details
+        </Button>
+      );
+
+      return button;
+    },
+    [handleDetails],
+  );
+
   const includeActionButton = useCallback(
-    async (content: { count: number; res: User[] }) => {
+    async (content: { count: number; res: KEIPS[] }) => {
       if (
         (content.count !== undefined || content.count !== null) &&
         (content.res !== undefined || content.res !== null)
       ) {
-        const contentRes: User[] = content.res;
-        const selectionEdit: JSX.Element[] = [];
-        const allUser: User[] = [];
-        selectionEdit.push(<option key='' value='' aria-label='Default' />);
+        const contentRes: KEIPS[] = content.res;
 
         for (let key = 0; key < contentRes.length; key += 1) {
           if (contentRes[key]) {
-            const dataField: User = contentRes[key];
-
-            selectionEdit.push(
-              <option key={dataField.id} value={dataField.id}>
-                {dataField.name}
-              </option>,
-            );
-
-            allUser.push(dataField);
+            const dataField: KEIPS = contentRes[key];
+            const buttons = await generateActionButton(dataField);
+            dataField.action = buttons;
           }
         }
 
@@ -244,6 +257,10 @@ export default function ManageKEIPS(props: any) {
         Header: 'Fullfilled criteria?',
         accessor: 'fulfilledStr',
       },
+      {
+        Header: 'Actions',
+        accessor: 'action',
+      },
     ],
     [],
   );
@@ -300,7 +317,7 @@ export default function ManageKEIPS(props: any) {
                 />
               </Stack>
 
-              <UserModal
+              <KEIPSModal
                 isOpen={modalData}
                 onClose={() => setModalData(null)}
                 modalData={modalData}

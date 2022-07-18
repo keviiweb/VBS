@@ -52,7 +52,7 @@ export default function KEIPSComponent() {
     return false;
   };
 
-  const populateBonusCCA = async (dataField: string[]) => {
+  const populateBonusCCA = useCallback(async (dataField: string[]) => {
     if (dataField.length > 0) {
       const totalData: KEIPSBonus[] = [];
 
@@ -74,9 +74,9 @@ export default function KEIPSComponent() {
       setBonusCCA(totalData);
       setShowBonus(true);
     }
-  };
+  }, []);
 
-  const populateAllCCA = async (dataField: string[]) => {
+  const populateAllCCA = useCallback(async (dataField: string[]) => {
     if (dataField.length > 0) {
       const totalData: KEIPSCCA[] = [];
 
@@ -101,9 +101,9 @@ export default function KEIPSComponent() {
       setAllCCA(totalData);
       setShowAll(true);
     }
-  };
+  }, []);
 
-  const populateTopCCA = async (dataField: string[]) => {
+  const populateTopCCA = useCallback(async (dataField: string[]) => {
     if (dataField.length > 0) {
       const totalData: KEIPSCCA[] = [];
 
@@ -128,7 +128,7 @@ export default function KEIPSComponent() {
       setTopCCA(totalData);
       setShowTop(true);
     }
-  };
+  }, []);
 
   const includeActionButton = useCallback(async (content: KEIPS[]) => {
     if (content.length > 0) {

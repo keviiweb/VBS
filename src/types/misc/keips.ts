@@ -13,6 +13,7 @@ export type KEIPS = {
   contrastingStr?: string;
   fulfilledStr?: string;
   updated_at?: string;
+  action?: any;
 };
 
 export type KEIPSCCA = {

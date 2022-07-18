@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import {
   Box,
   Button,
@@ -15,15 +21,11 @@ import {
   SimpleGrid,
   Stack,
   Text,
-  Table,
-  Tbody,
-  Tr,
-  Td,
-  TableContainer,
   useToast,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import LoadingModal from '@components/sys/misc/LoadingModal';
+import TableWidget from '@components/sys/misc/TableWidget';
 
 import { cardVariant, parentVariant } from '@root/motion';
 import { CCASession } from 'types/cca/ccaSession';
@@ -63,11 +65,14 @@ export default function SessionEditConfirmationModal({
   const [expectedM, setDisplayedExpected] = useState<JSX.Element[]>([]);
   const [expectedBool, setExpectedBool] = useState(false);
 
-  const [realityM, setDisplayedReality] = useState<JSX.Element | null>();
   const [realityBool, setRealityBool] = useState(false);
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
   const [isSubmitting, setIsSubmit] = useState(false);
+
+  const [dataM, setDataM] = useState<CCAAttendance[]>([]);
+  const PAGESIZE: number = 10;
+  const [pageCount, setPageCount] = useState(0);
 
   const reset = () => {
     setDateStr('');
@@ -82,10 +87,12 @@ export default function SessionEditConfirmationModal({
     setIsSubmit(false);
 
     setDisplayedExpected([]);
-    setDisplayedReality(null);
 
     setExpectedBool(false);
     setRealityBool(false);
+
+    setDataM([]);
+    setPageCount(0);
   };
 
   const handleModalCloseButton = () => {
@@ -128,40 +135,17 @@ export default function SessionEditConfirmationModal({
     if (members.length > 0) {
       const membersA: CCAAttendance[] = JSON.parse(members) as CCAAttendance[];
       if (membersA.length > 0) {
-        const text: JSX.Element[] = [];
-        for (let key = 0; key < membersA.length; key += 1) {
-          if (membersA[key]) {
-            if (
-              membersA[key].sessionName !== undefined &&
-              membersA[key].ccaAttendance !== undefined
-            ) {
-              text.push(
-                <Tr key={`tr-r-${key}`}>
-                  <Td key={`td-r-${key}-1`}>
-                    <Text>{membersA[key].sessionName}</Text>
-                  </Td>
-                  <Td key={`td-r-${key}-2`}>
-                    <Text>{membersA[key].ccaAttendance}</Text>
-                  </Td>
-                </Tr>,
-              );
-            }
-          }
-        }
-
-        const tableField: JSX.Element = (
-          <TableContainer>
-            <Table variant='simple'>
-              <Tbody>{text}</Tbody>
-            </Table>
-          </TableContainer>
-        );
-
-        setDisplayedReality(tableField);
+        setDataM(membersA);
         setRealityBool(true);
+
+        if (membersA.length % PAGESIZE === 0) {
+          setPageCount(Math.floor(membersA.length / PAGESIZE));
+        } else {
+          setPageCount(Math.floor(membersA.length / PAGESIZE) + 1);
+        }
       }
     } else {
-      setDisplayedReality(null);
+      setDataM([]);
     }
   };
 
@@ -280,6 +264,20 @@ export default function SessionEditConfirmationModal({
       setupData(modalData);
     }
   }, [modalData]);
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Name',
+        accessor: 'sessionName',
+      },
+      {
+        Header: 'Hours',
+        accessor: 'ccaAttendance',
+      },
+    ],
+    [],
+  );
 
   return (
     <Modal
@@ -471,7 +469,14 @@ export default function SessionEditConfirmationModal({
                                 Hours
                               </Text>
                             </Stack>
-                            {realityM}
+                            <TableWidget
+                              key='realityM-table'
+                              columns={columns}
+                              data={dataM}
+                              controlledPageCount={pageCount}
+                              dataHandler={null}
+                              showPage={false}
+                            />
                           </Stack>
                         </ListItem>
                       )}
