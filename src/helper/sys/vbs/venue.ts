@@ -5,6 +5,11 @@ import { dateISO, isValidDate } from '@constants/sys/date';
 import { Venue } from 'types/vbs/venue';
 import { Result } from 'types/api';
 
+/**
+ * Count the total of venues
+ *
+ * @returns The total number of venues wrapped in a Promise
+ */
 export const countVenue = async (): Promise<number> => {
   let count: number = 0;
   try {
@@ -16,6 +21,12 @@ export const countVenue = async (): Promise<number> => {
   return count;
 };
 
+/**
+ * Finds all child venue tagged under the parent venue filtered by parent venue ID
+ *
+ * @param venue Parent venue ID
+ * @returns A Result containing the child venues wrapped in a Promise
+ */
 export const fetchChildVenue = async (venue: string): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -40,6 +51,13 @@ export const fetchChildVenue = async (venue: string): Promise<Result> => {
   return result;
 };
 
+/**
+ * Find all venues
+ *
+ * @param limit Number of total records to fetch. Defaults to 100000
+ * @param skip Number of records to skip. Defaults to 0
+ * @returns A Result containing the list of venues wrapped in a Promise
+ */
 export const fetchAllVenue = async (
   limit: number = 100000,
   skip: number = 0,
@@ -64,6 +82,11 @@ export const fetchAllVenue = async (
   return result;
 };
 
+/**
+ * Fetches all venues that are set to Visible and is a parent venue
+ *
+ * @returns A Result containing the list of venues wrapped in a Promise
+ */
 export const fetchVenue = async (): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -84,6 +107,12 @@ export const fetchVenue = async (): Promise<Result> => {
   return result;
 };
 
+/**
+ * Find the specified venue filtered by its ID
+ *
+ * @param id Venue ID
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const findVenueByID = async (id: string): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -104,6 +133,12 @@ export const findVenueByID = async (id: string): Promise<Result> => {
   return result;
 };
 
+/**
+ * Finds the opening hours of the venue filtered by the venue ID
+ *
+ * @param id Venue ID
+ * @returns A Promise containing the start and end time
+ */
 export const fetchOpeningHours = async (
   id: string,
 ): Promise<{ start: number | null; end: number | null }> => {
@@ -132,6 +167,20 @@ export const fetchOpeningHours = async (
   }
 };
 
+/**
+ * Combines a date and a timeslot to form a Date ISO String
+ *
+ * eg. Date = new Date('2022-06-16')
+ *
+ * eg. Timeslot: '0700 - 2300'
+ *
+ * Result:
+ * 1. start: '2022-06-16T07:00:00'
+ * 2. end: '2022-06-16T23:00:00'
+ * @param date Date object
+ * @param timeSlot Timeslot
+ * @returns A Promise containing the start and end time in ISOString format
+ */
 export const splitHoursISO = async (
   date: Date,
   timeSlot: string,
@@ -185,6 +234,14 @@ export const splitHoursISO = async (
   }
 };
 
+/**
+ * Split a timeslot string into their respective timeslots after validating
+ *
+ * eg. 0700 - 0730 is split into 1 and 2
+ *
+ * @param opening Opening Hours
+ * @returns Start and End timeslot IDs wrapped in a Promise
+ */
 export const splitOpeningHours = async (
   opening: string,
 ): Promise<{ start: number | null; end: number | null }> => {
@@ -208,6 +265,12 @@ export const splitOpeningHours = async (
   }
 };
 
+/**
+ * Checks whether the specified ID is an instant-book venue
+ *
+ * @param id Venue ID
+ * @returns A boolean stating if it is an instant-book venue wrapped in a Promise
+ */
 export const isInstantBook = async (id: string): Promise<boolean> => {
   try {
     const locations: Venue = await prisma.venue.findFirst({
@@ -225,6 +288,12 @@ export const isInstantBook = async (id: string): Promise<boolean> => {
   }
 };
 
+/**
+ * Check whether the specified ID is a visble venue (book-able)
+ *
+ * @param id Venue ID
+ * @returns A boolean stating if it is a bookable venue wrapped in a Promise
+ */
 export const isVisible = async (id: string): Promise<boolean> => {
   try {
     const locations: Venue = await prisma.venue.findFirst({
@@ -242,6 +311,12 @@ export const isVisible = async (id: string): Promise<boolean> => {
   }
 };
 
+/**
+ * Creates a Venue
+ *
+ * @param data Venue Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const createVenue = async (data: Venue): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -266,6 +341,12 @@ export const createVenue = async (data: Venue): Promise<Result> => {
   return result;
 };
 
+/**
+ * Edits a Venue
+ *
+ * @param data Venue Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const editVenue = async (data: Venue): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {

@@ -63,6 +63,19 @@ const progressBarLevel = {
   REMARKS: 100,
 };
 
+/**
+ * Renders a modal for the Session Edit modal
+ *
+ * This modal consist of the entire workflow process of editing a session
+ *
+ * 1. The name, start time, end time is displayed and edited
+ * 2. All members of the CCA is displayed for expected member section
+ * 3. Attendance hours are clocked in
+ * 4. Redirect to confirmation modal
+ *
+ * @param param0 Modal functions
+ * @returns A modal
+ */
 export default function SessionEditModal({
   isOpen,
   onClose,

@@ -1,6 +1,11 @@
 import React from 'react';
 import { Box, Flex, Heading, Stack, Spinner, Text } from '@chakra-ui/react';
 
+/**
+ * Default loading page. This page is shown when the authentication is still in progress.
+ *
+ * @returns A loading spinner component
+ */
 export default function Loading() {
   return (
     <Flex minH='100vh' align='center' justify='center' bg='gray.50'>

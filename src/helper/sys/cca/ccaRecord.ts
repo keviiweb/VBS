@@ -9,6 +9,12 @@ import { checkerString } from '@constants/sys/helper';
 import { findCCAbyName } from '@helper/sys/cca/cca';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
 
+/**
+ * Finds all CCA Records filtered by the user email
+ *
+ * @param email Email address of the user
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const fetchAllCCARecordByUserEmail = async (
   email: string,
 ): Promise<Result> => {
@@ -35,6 +41,12 @@ export const fetchAllCCARecordByUserEmail = async (
   return result;
 };
 
+/**
+ * Finds all CCA Records filtered by the user email
+ *
+ * @param session Next-Auth Session object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const fetchAllCCARecordByUser = async (
   session: Session,
 ): Promise<Result> => {
@@ -61,6 +73,14 @@ export const fetchAllCCARecordByUser = async (
   return result;
 };
 
+/**
+ * Finds all CCA records filtered by the CCA ID
+ *
+ * @param id CCA ID
+ * @param limit Number of total records to fetch. Defaults to 100000
+ * @param skip Number of records to skip. Defaults to 0
+ * @returns A Result containing the list of CCA records wrapped in a Promise
+ */
 export const fetchAllCCARecordByID = async (
   id: string,
   limit: number = 100000,
@@ -91,6 +111,12 @@ export const fetchAllCCARecordByID = async (
   return result;
 };
 
+/**
+ * Counts the total of CCA records available filtered by CCA ID
+ *
+ * @param id CCA ID
+ * @returns Total number of records wrapped in a Promise
+ */
 export const countAllCCARecordByID = async (id: string): Promise<number> => {
   let count: number = 0;
 
@@ -107,6 +133,13 @@ export const countAllCCARecordByID = async (id: string): Promise<number> => {
   return count;
 };
 
+/**
+ * Check whether the user is a CCA Leader of the particular CCA
+ *
+ * @param ccaID CCA ID
+ * @param session Next-Auth Session object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const isLeader = async (
   ccaID: string,
   session: Session,
@@ -135,6 +168,13 @@ export const isLeader = async (
   return result;
 };
 
+/**
+ * Finds the specific CCA records filtered by CCA ID and user Email
+ *
+ * @param ccaID CCA ID
+ * @param email Email address of the user
+ * @returns A Result containing the list of records wrapped in a Promise
+ */
 export const fetchSpecificCCARecord = async (
   ccaID: string,
   email: string,
@@ -166,6 +206,12 @@ export const fetchSpecificCCARecord = async (
   return result;
 };
 
+/**
+ * Edits a CCA Record
+ *
+ * @param data CCARecord Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const editCCARecord = async (data: CCARecord): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -193,6 +239,12 @@ export const editCCARecord = async (data: CCARecord): Promise<Result> => {
   return result;
 };
 
+/**
+ * Creates a CCA Record entry in the database
+ *
+ * @param data CCARecord Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const createCCARecord = async (data: CCARecord): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -217,6 +269,18 @@ export const createCCARecord = async (data: CCARecord): Promise<Result> => {
   return result;
 };
 
+/**
+ * Populates the list of CCA Records read from a CSV file
+ *
+ * 1. First, the email of the user is validated against
+ * 2. Next, the CCA name is validated against
+ * 3. After which, the specific CCA record of the user and the CCA is fetched
+ * 4. If the record is available, the record is updated
+ * 5. If the record cannot be found, a new record is created.
+ *
+ * @param dataField File content
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const createCCARecordFile = async (
   dataField: any[],
 ): Promise<Result> => {

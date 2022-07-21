@@ -3,6 +3,12 @@ import { Box, Flex } from '@chakra-ui/react';
 import Link from 'next/link';
 import Image from 'next/image';
 
+/**
+ * A clickable card that redirects the user to an external link
+ *
+ * @param param0 Data
+ * @returns A clickable card
+ */
 export default function LinkCard({ product }) {
   const img = (product && product.img) || null;
   const title = (product && product.title) || null;

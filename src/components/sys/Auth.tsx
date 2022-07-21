@@ -9,6 +9,19 @@ import Loading from '@layout/sys/Loading';
 import { Session } from 'next-auth/core/types';
 import { levels } from '@constants/sys/admin';
 
+/**
+ * This component checks if the user is authenticated.
+ *
+ * If the user is authenticated:
+ * 1. If the admin flag is set to true, check whether the user has the correct permission
+ * 2. If the user does not have the correct permission, redirect to /unauthorized path
+ * 3. Else, display the content
+ *
+ * If the user is not authenticated, redirect to signin page
+ *
+ * @param param0 React Children and Admin boolean
+ * @returns The layout to display to users
+ */
 export default function Auth({ children, admin }) {
   const { data: session, status } = useSession();
   const loading: boolean = status === 'loading';

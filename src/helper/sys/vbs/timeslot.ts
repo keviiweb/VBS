@@ -3,6 +3,13 @@ import { Result } from 'types/api';
 
 import { prisma } from '@constants/sys/db';
 
+/**
+ * Find all booked timeslots filtered by the date and the venue ID
+ *
+ * @param venue Venue ID
+ * @param convertedDate Date in Unix Timestamp (in seconds)
+ * @returns A Result containing the list of timeslots wrapped in a Promise
+ */
 export const fetchBookedTimeSlots = async (
   venue: string,
   convertedDate: number,

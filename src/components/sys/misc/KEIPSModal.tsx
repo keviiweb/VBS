@@ -24,6 +24,12 @@ import TableWidget from '@components/sys/misc/TableWidget';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
+/**
+ * Renders a modal that displays numerous tables on KEIPS for a specified user
+ *
+ * @param param0 Modal functions and data
+ * @returns A modal
+ */
 export default function KEIPSModal({ isOpen, onClose, modalData }) {
   const [loadingData, setLoadingData] = useState(true);
   const [successData, setSuccessData] = useState(false);

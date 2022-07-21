@@ -5,6 +5,20 @@ import { Result } from 'types/api';
 
 import { checkerString } from '@constants/sys/helper';
 
+/**
+ * In this file, MATNET is defined as
+ * <last 4 digit of Student ID><last 4 digit of NUSNET ID>
+ *
+ * eg. Student ID: A1234567R, NUSNET: E0011232
+ * eg. 567R1232
+ */
+
+/**
+ * Finds the list of KEIPS filtered by the MATNET
+ *
+ * @param matnet MATNET of the user
+ * @returns A Result containing the KEIPS record wrapped in a Promise
+ */
 export const fetchKEIPSByMatNet = async (matnet: string): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -27,6 +41,17 @@ export const fetchKEIPSByMatNet = async (matnet: string): Promise<Result> => {
   return result;
 };
 
+/**
+ * Populates the list of KEIPS read from a CSV file
+ *
+ * 1. First, the MATNET is captured and validated if it is a valid string
+ * 2. After which, the specific KEIPS record is fetched
+ * 3. If the record is available, the record is updated
+ * 4. If the record cannot be found, a new record is created.
+ *
+ * @param dataField File content
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const createKEIPSFile = async (dataField: any[]): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -117,6 +142,11 @@ export const createKEIPSFile = async (dataField: any[]): Promise<Result> => {
   return result;
 };
 
+/**
+ * Counts the total of KEIPS records available
+ *
+ * @returns Total number of KEIP record wrapped in a Promise
+ */
 export const countKEIPS = async (): Promise<number> => {
   let count: number = 0;
   try {
@@ -128,6 +158,13 @@ export const countKEIPS = async (): Promise<number> => {
   return count;
 };
 
+/**
+ * Finds all KEIPS records
+ *
+ * @param limit Number of total records to fetch. Defaults to 100000
+ * @param skip Number of records to skip. Defaults to 0
+ * @returns A Result containing the list of KEIPS records wrapped in a Promise
+ */
 export const fetchAllKEIPS = async (
   limit: number = 100000,
   skip: number = 0,

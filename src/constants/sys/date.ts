@@ -3,6 +3,13 @@ import { monthNamesFull } from '@constants/sys/months';
 
 import moment from 'moment-timezone';
 
+/**
+ * Converts a string to Unix timestamp in seconds to store
+ * in the database.
+ *
+ * @param date A string in YYYY-MM-DD format
+ * @returns UNIX timestamp in seconds
+ */
 export const convertDateToUnix = (date: string): number => {
   const prettified = moment
     .tz(date, 'YYYY-MM-DD', true, 'Asia/Singapore')
@@ -14,6 +21,15 @@ export const convertDateToUnix = (date: string): number => {
   }
 };
 
+/**
+ * Converts a Unix timestamp in seconds to a Date object
+ *
+ * Checks if the date provided is within 1 year of today's date,
+ * else marks it as invalid and return null
+ *
+ * @param date
+ * @returns A Date object or Null
+ */
 export const convertUnixToDate = (date: number): Date | null => {
   if (date < 0) {
     return null;
@@ -32,6 +48,20 @@ export const convertUnixToDate = (date: number): Date | null => {
   }
 };
 
+/**
+ * Compares the date between today's date + number and the comparedDate
+ *
+ * First, an object with the current date is created.
+ *
+ * Next, the object is added with the number of dates as specified
+ *
+ * Lastly, the object is checked against the comparedDate and returns true
+ * if the date is before the comparedDate
+ *
+ * @param comparedDate The date to be compared in Unix timestamp
+ * @param number Number of days
+ * @returns Boolean whether date exceeds compared date
+ */
 export const compareDate = (comparedDate: number, number: number): boolean => {
   let compared = convertUnixToDate(comparedDate);
 
@@ -45,6 +75,12 @@ export const compareDate = (comparedDate: number, number: number): boolean => {
   }
 };
 
+/**
+ * Check whether the Date object is valid
+ *
+ * @param d Date object to be checked
+ * @returns Boolean whether the object is a valid Date
+ */
 export const isValidDate = (d: Date): boolean => {
   if (d === null || d === undefined) {
     return false;
@@ -61,6 +97,12 @@ export const isValidDate = (d: Date): boolean => {
   }
 };
 
+/**
+ * Converts a Date object into a string in YYYY-MM-DD format
+ *
+ * @param date Date object
+ * @returns A string in YYYY-MM-DD format if valid, or 'Unknown Date' if not valid
+ */
 export const dateISO = (date: Date): string => {
   if (date && isValidDate(date)) {
     return moment
@@ -72,6 +114,14 @@ export const dateISO = (date: Date): string => {
   return `Unknown Date`;
 };
 
+/**
+ * Converts a Date object into a string in specified format
+ *
+ * eg. Thursday, 21 July 2022
+ *
+ * @param date Date object
+ * @returns A string in specified format or 'Unknown Date' if date not valid
+ */
 export const prettifyDate = (date: Date): string => {
   if (date && isValidDate(date)) {
     const dateObj = moment.tz(date, 'Asia/Singapore');
@@ -86,6 +136,13 @@ export const prettifyDate = (date: Date): string => {
   return `Unknown Date`;
 };
 
+/**
+ * Calculates the duration between two timings
+ *
+ * @param start Start time eg. 0700
+ * @param end End time eg. 1300
+ * @returns Duration between the two hours in a Promise
+ */
 export const calculateDuration = async (
   start: number,
   end: number,

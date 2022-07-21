@@ -66,6 +66,15 @@ const PopoverTriggerNew: React.FC<
   return React.cloneElement(child, getTriggerProps(child.props, child.ref));
 };
 
+/**
+ * Renders the modal that is displayed for the CCA leader.
+ *
+ * The leader can see all sessions, and members of the CCA, as well as perform operations such as
+ * deleting, creating an editing session.
+ *
+ * @param param0 Modal function and data
+ * @returns
+ */
 export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
   const [specificMemberData, setSpecificMemberData] =
     useState<CCARecord | null>(null);

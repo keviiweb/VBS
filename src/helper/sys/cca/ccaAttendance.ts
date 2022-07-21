@@ -4,6 +4,15 @@ import { CCAAttendance } from 'types/cca/ccaAttendance';
 import { prisma } from '@constants/sys/db';
 import { checkerString } from '@constants/sys/helper';
 
+/**
+ * Finds all the attendance by the user in the specified CCA
+ *
+ * @param ccaID CCA ID
+ * @param email Email address of the user
+ * @param limit Number of total records to fetch. Defaults to 100000
+ * @param skip Number of records to skip. Defaults to 0
+ * @returns A Result containing the list of CCA attendance wrapped in a Promise
+ */
 export const fetchSpecificCCAAttendanceByUserEmail = async (
   ccaID: string,
   email: string,
@@ -35,6 +44,12 @@ export const fetchSpecificCCAAttendanceByUserEmail = async (
   return result;
 };
 
+/**
+ * Finds all the CCA attendance filtered by Session ID
+ *
+ * @param sessionID CCA Session ID
+ * @returns A Result containing the list of attendance wrapped in a Promise
+ */
 export const fetchAllCCAAttendanceBySession = async (
   sessionID: string,
 ): Promise<Result> => {
@@ -60,6 +75,12 @@ export const fetchAllCCAAttendanceBySession = async (
   return result;
 };
 
+/**
+ * Counts the total of hours of attendance given an array of CCAAttendance
+ *
+ * @param attendance An array of CCAAttendance
+ * @returns Total number of hours wrapped in a Promise
+ */
 export const countTotalAttendanceHours = async (
   attendance: CCAAttendance[],
 ): Promise<number> => {
@@ -83,6 +104,18 @@ export const countTotalAttendanceHours = async (
   return 0;
 };
 
+/**
+ * Deletes the specified attendance by four criterias:
+ *
+ * 1. CCA Session ID
+ * 2. CCA ID
+ * 3. Email address of the user
+ * 4. Attendance ID
+ *
+ * @param sessionID CCA Session ID
+ * @param attend CCA Attendance Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const deleteAttendance = async (
   sessionID: string,
   attend: CCAAttendance,
@@ -112,6 +145,12 @@ export const deleteAttendance = async (
   return result;
 };
 
+/**
+ * Deletes all attendance given a CCA Session ID
+ *
+ * @param sessionID CCA Session ID
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const deleteAttendanceBySessionID = async (
   sessionID: string,
 ): Promise<Result> => {
@@ -137,6 +176,12 @@ export const deleteAttendanceBySessionID = async (
   return result;
 };
 
+/**
+ * Creates an CCAAttendance entry in the database
+ *
+ * @param attend CCAAttendance Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const createAttendance = async (
   attend: CCAAttendance,
 ): Promise<Result> => {
@@ -160,6 +205,17 @@ export const createAttendance = async (
   return result;
 };
 
+/**
+ * Edits a CCA Attendance
+ *
+ * 1. First, all attendance under the Session ID is deleted
+ * 2. Next, the attendance array is looped and a new entry in the database
+ * is created for each attendance.
+ *
+ * @param ccaSessionID CCA Session ID
+ * @param attendance CCA Attendance Array
+ * @returns  A Result containing the status wrapped in a Promise
+ */
 export const editAttendance = async (
   ccaSessionID: string,
   attendance: CCAAttendance[],

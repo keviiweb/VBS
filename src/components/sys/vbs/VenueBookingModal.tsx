@@ -34,6 +34,13 @@ import { Result } from 'types/api';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
+/**
+ * Renders a modal that represents the data flow in creating a Venue Booking Request
+ *
+ * 1. First the user selects the Date, then the timeslots are fetched and generated for the user.
+ * 2. Booked timeslots are blanked out, while available timeslots are clickable
+ * 3. The user can then choose the selected timeslots and click next to be redirected to the ConfirmationModal
+ */
 export default function VenueBookingModal({
   isOpen,
   onClose,

@@ -21,6 +21,12 @@ import {
   ChevronLeftIcon,
 } from '@chakra-ui/icons';
 
+/**
+ * Renders a responsive table that supports pagination
+ *
+ * @param param0 Column and data
+ * @returns A rendered table
+ */
 export default function TableWidget({
   columns,
   data,

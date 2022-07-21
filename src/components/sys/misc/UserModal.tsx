@@ -30,6 +30,12 @@ import { checkerString } from '@constants/sys/helper';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
+/**
+ * Renders a modal that contains the information of a specific user
+ *
+ * @param param0 Modal functions and User Object
+ * @returns A modal
+ */
 export default function UserModal({ isOpen, onClose, modalData }) {
   const [id, setID] = useState('');
   const [name, setName] = useState('');

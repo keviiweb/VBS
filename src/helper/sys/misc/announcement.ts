@@ -3,6 +3,13 @@ import { prisma } from '@constants/sys/db';
 import { Announcement } from 'types/misc/announcement';
 import { Result } from 'types/api';
 
+/**
+ * Finds all announcements
+ *
+ * @param limit Number of total records to fetch. Defaults to 100000
+ * @param skip Number of records to skip. Defaults to 0
+ * @returns A Result containing all announcements wrapped in a Promise
+ */
 export const fetchAllAnnouncements = async (
   limit: number = 100000,
   skip: number = 0,
@@ -31,6 +38,12 @@ export const fetchAllAnnouncements = async (
   return result;
 };
 
+/**
+ * Creates an announcement
+ *
+ * @param data Announcement Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const createAnnouncement = async (
   data: Announcement,
 ): Promise<Result> => {
@@ -61,6 +74,12 @@ export const createAnnouncement = async (
   return result;
 };
 
+/**
+ * Edits an announcement
+ *
+ * @param data Announcement Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const editAnnouncement = async (data: Announcement): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -92,6 +111,12 @@ export const editAnnouncement = async (data: Announcement): Promise<Result> => {
   return result;
 };
 
+/**
+ * Deletes an announcement filtered by the specific ID
+ *
+ * @param id Announcement ID
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const deleteAnnouncement = async (id: string): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {

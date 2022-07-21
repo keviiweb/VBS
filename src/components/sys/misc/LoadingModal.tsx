@@ -11,6 +11,14 @@ import {
   Spinner,
 } from '@chakra-ui/react';
 
+/**
+ * Renders a modal with a loading spinner and message
+ *
+ * This modal is used to block out all buttons and display a message to the user
+ *
+ * @param param0 Modal functions
+ * @returns A loading modal
+ */
 export default function LoadingModal({ isOpen, onClose }) {
   return (
     <Modal

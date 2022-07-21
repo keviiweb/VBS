@@ -28,6 +28,16 @@ import { checkerString } from '@constants/sys/helper';
 
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 
+/**
+ * Renders a modal that displays information about the venue booking request
+ *
+ * If the isBookingRequest flag is set, the modal is about the venue booking request
+ *
+ * Else, the modal is about the approved venue booking
+ *
+ * @param param0 Modal functions such as isOpen, onClose as well as data from handler
+ * @returns
+ */
 export default function BookingModal({
   isAdmin,
   isBookingRequest,

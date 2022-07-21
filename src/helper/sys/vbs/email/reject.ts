@@ -1,6 +1,12 @@
 import { BookingRequest } from 'types/vbs/bookingReq';
 import nodemailer from 'nodemailer';
 
+/**
+ * Returns a HTML Email template for Reject Bookings
+ *
+ * @param param0 BookingRequest
+ * @returns HTML Template with all fields populated
+ */
 function html({ data }) {
   const id: string = data.id ? data.id : '';
   const email: string = data.email ? data.email : '';
@@ -377,10 +383,22 @@ function html({ data }) {
     </html>`;
 }
 
+/**
+ * This function only runs when the email server of the recipient does not support
+ * HTML emails
+ *
+ * @returns A String
+ */
 function text() {
   return `We rejected your booking request\n\n`;
 }
 
+/**
+ * Checks whether the SEND_EMAIL flag is set, and sends an email to the user
+ *
+ * @param target Email of the user
+ * @param data BookingRequest Object
+ */
 export const sendRejectMail = async (target: string, data: BookingRequest) => {
   if (
     process.env.SEND_EMAIL &&

@@ -5,6 +5,14 @@ import { prisma } from '@constants/sys/db';
 import { calculateDuration } from '@constants/sys/date';
 import { findSlots, splitHours } from '@constants/sys/helper';
 
+/**
+ * Finds all CCA Sessions filtered by CCA ID
+ *
+ * @param id CCA ID
+ * @param limit Number of total records to fetch. Defaults to 100000
+ * @param skip Number of records to skip. Defaults to 0
+ * @returns A Result containing the list of CCA sessions wrapped in a Promise
+ */
 export const fetchAllCCASessionByCCAID = async (
   id: string,
   limit: number = 100000,
@@ -30,6 +38,12 @@ export const fetchAllCCASessionByCCAID = async (
   return result;
 };
 
+/**
+ * Counts the total of CCA sessions available filtered by CCA ID
+ *
+ * @param id CCA ID
+ * @returns Total number of sessions wrapped in a Promise
+ */
 export const countAllCCASessionByCCAID = async (
   id: string,
 ): Promise<number> => {
@@ -48,6 +62,12 @@ export const countAllCCASessionByCCAID = async (
   return count;
 };
 
+/**
+ * Finds the specific CCA Session filtered by CCA ID
+ *
+ * @param id Session ID
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const findCCASessionByID = async (id: string): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -71,6 +91,12 @@ export const findCCASessionByID = async (id: string): Promise<Result> => {
   return result;
 };
 
+/**
+ * Counts the total of session hours filtered by CCA ID
+ *
+ * @param ccaID CCA ID
+ * @returns
+ */
 export const countTotalSessionHoursByCCAID = async (
   ccaID: string,
 ): Promise<number> => {
@@ -107,6 +133,12 @@ export const countTotalSessionHoursByCCAID = async (
   return count;
 };
 
+/**
+ * Edits a CCA Session
+ *
+ * @param data CCASession Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const editSession = async (data: CCASession): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -135,6 +167,12 @@ export const editSession = async (data: CCASession): Promise<Result> => {
   return result;
 };
 
+/**
+ * Locks a session by setting the editable flag to false
+ *
+ * @param data CCASession Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const lockSession = async (data: CCASession): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -166,6 +204,12 @@ export const lockSession = async (data: CCASession): Promise<Result> => {
   return result;
 };
 
+/**
+ * Deletes a CCA Session filtered by its ID
+ *
+ * @param id CCASession ID
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const deleteSessionByID = async (id: string): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -193,6 +237,12 @@ export const deleteSessionByID = async (id: string): Promise<Result> => {
   return result;
 };
 
+/**
+ * Creates a CCA Session
+ *
+ * @param data CCASession Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const createSession = async (data: CCASession): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -218,6 +268,15 @@ export const createSession = async (data: CCASession): Promise<Result> => {
   return result;
 };
 
+/**
+ * Checks whether there is a conflict
+ *
+ * A conflict is defined as clash in timing with another ongoing CCASession of the same
+ * CCA
+ *
+ * @param data CCASession Object
+ * @returns A boolean indicating if there is a conflict wrapped in a Promise
+ */
 export const isConflict = async (data: CCASession): Promise<boolean> => {
   try {
     const anyConflicting: CCASession[] = await prisma.cCASessions.findMany({
@@ -242,6 +301,17 @@ export const isConflict = async (data: CCASession): Promise<boolean> => {
   }
 };
 
+/**
+ * Check if there is any existing CCA Session created already
+ *
+ * Criterias for clash is as follows:
+ * 1. Start time is within another ongoing session
+ * 2. End time is within another ongoing session
+ *
+ * @param createRequest
+ * @param existingRequest
+ * @returns A boolean indicating if there is a conflict wrapped in a Promise
+ */
 export const checkConflict = async (
   createRequest: CCASession,
   existingRequest: CCASession[],

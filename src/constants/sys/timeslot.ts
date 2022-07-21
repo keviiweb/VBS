@@ -1,3 +1,6 @@
+/**
+ * List of all the timeslots available
+ */
 export const timingSlotNumberToTimingMapping = {
   1: '0700 - 0730',
   2: '0730 - 0800',
@@ -35,6 +38,9 @@ export const timingSlotNumberToTimingMapping = {
   34: '2330 - 0000',
 };
 
+/**
+ * List of individual timings
+ */
 export const timeSlots = {
   1: '0700',
   2: '0730',

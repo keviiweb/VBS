@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { Button } from '@chakra-ui/react';
 
+/**
+ * TimeSlot button used for creating a new Venue Booking
+ *
+ * @param param0 List of functions available
+ * @returns Renders a clickable button that represents a particular timeslot
+ */
 export default function TimeSlotButton({
   disable,
   handleClick,

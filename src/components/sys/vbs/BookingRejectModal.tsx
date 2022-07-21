@@ -17,6 +17,14 @@ import {
 } from '@chakra-ui/react';
 import { checkerString } from '@constants/sys/helper';
 
+/**
+ * Renders a modal that pops up when the user presses the reject button.
+ *
+ * The user is required to type in a reason for rejection.
+ *
+ * @param param0 Modal functions such as isOpen, onClose as well as callback function dataHandler
+ * @returns A modal with an input box for reason
+ */
 export default function BookingRejectModal({
   isOpen,
   onClose,

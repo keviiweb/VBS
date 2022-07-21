@@ -2,6 +2,16 @@ import React, { useCallback, useMemo } from 'react';
 import { Box, Button, Flex, Image, Link, Text } from '@chakra-ui/react';
 import NextLink from 'next/link';
 
+/**
+ * Returns a card containing an image, title, description and a link if the card is clickable
+ *
+ * Two types of card is available:
+ * 1. Card with a button that contains a link
+ * 2. Card that is clickable throughout
+ *
+ * @param param0 Information about the particular item
+ * @returns A card
+ */
 export default function Card({
   title,
   description,

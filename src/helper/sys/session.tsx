@@ -3,6 +3,12 @@ import { Session } from 'next-auth/core/types';
 import { NextApiRequest } from 'next';
 import { levels } from '@constants/sys/admin';
 
+/**
+ * Retrieves the current session. This function is used for client-sided requests
+ *
+ * @param req NextJS Request
+ * @returns A Next-Auth Session or null wrapped in a Promise
+ */
 export const currentSession = async (
   req: NextApiRequest | null = null,
 ): Promise<Session | null> => {

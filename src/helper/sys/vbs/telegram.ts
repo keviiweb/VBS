@@ -5,6 +5,11 @@ import { BookingRequest } from 'types/vbs/bookingReq';
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const channel_id = process.env.TELEGRAM_BOT_CHANNEL_ID;
 
+/**
+ * Sends a message to the telegram channel
+ *
+ * @param message Message to be sent
+ */
 export const sendMessageToChannel = async (message: string): Promise<void> => {
   if (
     process.env.SEND_TELEGRAM &&
@@ -31,6 +36,14 @@ export const sendMessageToChannel = async (message: string): Promise<void> => {
   }
 };
 
+/**
+ * Formats the string according to a specified format
+ *
+ * For approved requests
+ *
+ * @param bookingRequest
+ * @returns A formatted string
+ */
 export const approvalBookingRequestMessageBuilder = (
   bookingRequest: BookingRequest,
 ): string => {
@@ -54,6 +67,14 @@ export const approvalBookingRequestMessageBuilder = (
   return '';
 };
 
+/**
+ * Formats the string according to a specified format
+ *
+ * For rejected requests
+ *
+ * @param bookingRequest
+ * @returns A formatted string
+ */
 export const rejectBookingRequestMessageBuilder = (
   bookingRequest: BookingRequest,
 ): string => {

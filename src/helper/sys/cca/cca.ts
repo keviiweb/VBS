@@ -3,6 +3,12 @@ import { CCA } from 'types/cca/cca';
 
 import { prisma } from '@constants/sys/db';
 
+/**
+ * Finds the specified CCA by its ID
+ *
+ * @param id ID of the CCA
+ * @returns Returns a Result wrapped in a Promise
+ */
 export const findCCAbyID = async (id: string): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -26,6 +32,14 @@ export const findCCAbyID = async (id: string): Promise<Result> => {
   return result;
 };
 
+/**
+ * Finds the specified CCA by its Name
+ *
+ * Refer to the CCALIST under the Constant section for the full list
+ *
+ * @param name Name of the CCA
+ * @returns Returns a Result wrapped in a Promsie
+ */
 export const findCCAbyName = async (name: string): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -49,6 +63,11 @@ export const findCCAbyName = async (name: string): Promise<Result> => {
   return result;
 };
 
+/**
+ * Finds all the list of CCAs
+ *
+ * @returns A Result containing the CCAs in ascending order of name wrapped in a Promise
+ */
 export const findAllCCA = async (): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 

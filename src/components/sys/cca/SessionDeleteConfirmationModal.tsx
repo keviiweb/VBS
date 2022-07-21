@@ -14,6 +14,14 @@ import {
   Text,
 } from '@chakra-ui/react';
 
+/**
+ * Renders a modal that prompts the user to confirm the deletion of a particular session.
+ *
+ * When the user clicks on the submit button, the callback function is triggered
+ *
+ * @param param0 Modal functions and callback function
+ * @returns A modal
+ */
 export default function SessionDeleteConfirmationModal({
   isOpen,
   onClose,

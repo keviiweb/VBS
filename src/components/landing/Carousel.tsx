@@ -5,6 +5,11 @@ import { layoutVariant } from '@root/motion';
 
 const MotionBox = motion(Box);
 
+/**
+ * Renders a carousel of items
+ *
+ * @returns A carousel
+ */
 export default function Carousel() {
   const styles: 'absolute' | 'relative' | 'fixed' = 'absolute';
   const arrowStyles = {

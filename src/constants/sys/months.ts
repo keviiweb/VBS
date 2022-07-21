@@ -1,3 +1,10 @@
+/**
+ * An array containing the list of months
+ *
+ * 0 is January
+ *
+ * 11 is December
+ */
 const monthNamesFull = [
   'January',
   'February',

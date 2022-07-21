@@ -5,6 +5,12 @@ import { Result } from 'types/api';
 import { Booking } from 'types/vbs/booking';
 import { Session } from 'next-auth/core/types';
 
+/**
+ * Finds all bookings filtered by the venue ID
+ *
+ * @param id Venue ID
+ * @returns A list of bookings filtered by venue ID wrapped in a Promise
+ */
 export const findAllBookingByVenueID = async (
   id: string,
 ): Promise<Booking[]> => {
@@ -30,6 +36,14 @@ export const findAllBookingByVenueID = async (
   }
 };
 
+/**
+ * Create a Venue Booking
+ *
+ * @param bookingRequest BookingRequest Object
+ * @param timeSlots An array of numbers containing the timeslots
+ * @param session Next-Auth Session object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const createVenueBooking = async (
   bookingRequest: BookingRequest,
   timeSlots: number[],
@@ -81,6 +95,13 @@ export const createVenueBooking = async (
   return result;
 };
 
+/**
+ * Deletes a Venue Booking filtered by the bookingRequest details and timeSlots
+ *
+ * @param bookingRequest BookingRequest Object
+ * @param timeSlots An array of numbers containing the timeslots
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const deleteVenueBooking = async (
   bookingRequest: BookingRequest,
   timeSlots: number[],

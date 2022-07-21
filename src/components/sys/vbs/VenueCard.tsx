@@ -4,6 +4,12 @@ import { Box, Flex } from '@chakra-ui/react';
 
 import { checkerString } from '@constants/sys/helper';
 
+/**
+ * Renders a card that is displayed in the main page of VBS
+ *
+ * @param param0 Venue information as well as callback function
+ * @returns A card displaying the venue image and name
+ */
 export default function VenueCard({ product, setModalData }) {
   const image: string = checkerString(product.image)
     ? product.image

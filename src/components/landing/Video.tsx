@@ -5,6 +5,11 @@ import { layoutVariant } from '@root/motion';
 
 const MotionBox = motion(Box);
 
+/**
+ * Renders the Video Component of the landing page, which consist of the QnA video and some Text
+ *
+ * @returns Video Component
+ */
 export default function Video() {
   return (
     <MotionBox

@@ -26,6 +26,12 @@ import { Result } from 'types/api';
 import { CCASession } from 'types/cca/ccaSession';
 import SessionModal from '@components/sys/cca/SessionModal';
 
+/**
+ * Renders a modal for a specific user, displaying all the CCA attendance for the particular user and CCA
+ *
+ * @param param0 Modal functions and data
+ * @returns A modal
+ */
 export default function LeaderStudentModalComponent({
   isOpen,
   onClose,

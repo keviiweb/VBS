@@ -2,6 +2,11 @@ import { chakra, Box, Flex, Link, Icon, HStack } from '@chakra-ui/react';
 import { AiFillFacebook, AiFillInstagram, AiFillYoutube } from 'react-icons/ai';
 import React from 'react';
 
+/**
+ * Renders the bottom bar of the landing page that contains links to all social media platforms
+ *
+ * @returns Social Media Platforms
+ */
 export default function Social() {
   return (
     <Flex

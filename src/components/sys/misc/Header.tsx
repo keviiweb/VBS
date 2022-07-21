@@ -5,6 +5,12 @@ import Link from 'next/link';
 
 import UserProfile from '@components/sys/misc/UserProfile';
 
+/**
+ * Renders a Header with title and User Profile
+ *
+ * @param param0 Header information
+ * @returns A Header
+ */
 export default function Header({ onOpen, ...rest }) {
   return (
     <Flex

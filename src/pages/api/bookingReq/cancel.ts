@@ -95,7 +95,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               } else {
                 const notifyOtherRejected: Result = await notifyConflicts(
                   bookingRequest,
-                  session,
                 );
                 if (!notifyOtherRejected.status) {
                   result = {

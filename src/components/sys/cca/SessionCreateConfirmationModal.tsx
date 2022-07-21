@@ -29,6 +29,16 @@ import { checkerString } from '@constants/sys/helper';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
+/**
+ * Renders a confirmation modal that is displayed when the user tries to confirm
+ * the creation of a session.
+ *
+ * When the user clicks on the submit button, an API call will be sent to the backend
+ * to create the session.
+ *
+ * @param param0 Modal functions and callback function
+ * @returns A confirmation modal
+ */
 export default function SessionCreateConfirmationModal({
   isOpen,
   onClose,

@@ -7,6 +7,15 @@ import { layoutVariant } from '@root/motion';
 
 const MotionBox = motion(Box);
 
+/**
+ * Renders the features page for the landing page
+ *
+ * 1. Contains a Google Map component for KEVII location
+ * 2. Text beside the Map
+ *
+ * @param param0 API Key for Google Maps
+ * @returns Features component for landing page
+ */
 export default function Feature({ API_KEY }) {
   const location = {
     address: '1A Kent Ridge Rd, Singapore 119224',

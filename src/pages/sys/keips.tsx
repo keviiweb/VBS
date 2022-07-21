@@ -130,32 +130,35 @@ export default function KEIPSComponent() {
     }
   }, []);
 
-  const includeActionButton = useCallback(async (content: KEIPS[]) => {
-    if (content.length > 0) {
-      for (let key = 0; key < content.length; key += 1) {
-        if (content[key]) {
-          const record: KEIPS = content[key];
+  const includeActionButton = useCallback(
+    async (content: KEIPS[]) => {
+      if (content.length > 0) {
+        for (let key = 0; key < content.length; key += 1) {
+          if (content[key]) {
+            const record: KEIPS = content[key];
 
-          const recordTop: string[] = record.topCCA.split('|');
-          const recordAll: string[] = record.allCCA.split('|');
-          const recordBonus: string[] = record.bonusCCA.split('|');
+            const recordTop: string[] = record.topCCA.split('|');
+            const recordAll: string[] = record.allCCA.split('|');
+            const recordBonus: string[] = record.bonusCCA.split('|');
 
-          await populateTopCCA(recordTop);
-          await populateAllCCA(recordAll);
-          await populateBonusCCA(recordBonus);
+            await populateTopCCA(recordTop);
+            await populateAllCCA(recordAll);
+            await populateBonusCCA(recordBonus);
+          }
         }
-      }
-      setData(content);
+        setData(content);
 
-      if (content.length % pageSizeDB.current === 0) {
-        setPageCount(Math.floor(content.length / pageSizeDB.current));
-      } else {
-        setPageCount(Math.floor(content.length / pageSizeDB.current) + 1);
-      }
+        if (content.length % pageSizeDB.current === 0) {
+          setPageCount(Math.floor(content.length / pageSizeDB.current));
+        } else {
+          setPageCount(Math.floor(content.length / pageSizeDB.current) + 1);
+        }
 
-      setSuccessData(true);
-    }
-  }, []);
+        setSuccessData(true);
+      }
+    },
+    [populateTopCCA, populateAllCCA, populateBonusCCA],
+  );
 
   const handleSubmit = useCallback(
     async (event: { preventDefault: () => void }) => {

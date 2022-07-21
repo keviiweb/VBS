@@ -23,6 +23,12 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
 
+/**
+ * Renders a modal for a specific user, displaying all the CCA attendance for the particular user and CCA
+ *
+ * @param param0 Modal functions and data
+ * @returns A modal
+ */
 export default function LeaderStudentModalComponent({
   isOpen,
   onClose,

@@ -31,6 +31,11 @@ const PopoverTriggerNew: React.FC<
   return React.cloneElement(child, getTriggerProps(child.props, child.ref));
 };
 
+/**
+ * Renders the Header component that contains links to different sections of the page, as well as bring users to the internal VBS system
+ *
+ * @returns A Header
+ */
 export default function Header() {
   const bg = 'white';
   const mobileNav = useDisclosure();

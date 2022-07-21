@@ -171,7 +171,7 @@ export default function ManageKEIPS(props: any) {
         }
       }
     },
-    [],
+    [generateActionButton],
   );
 
   const fetchDataTable = useCallback(async () => {

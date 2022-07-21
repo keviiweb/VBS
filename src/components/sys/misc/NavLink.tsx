@@ -2,6 +2,12 @@ import React from 'react';
 import NextLink from 'next/link';
 import { Flex, Icon, Text } from '@chakra-ui/react';
 
+/**
+ * Renders a clickable link with icon for the Sidebar
+ *
+ * @param param0 Parameters
+ * @returns A navigation link
+ */
 export default function NavLink({ link, ...rest }) {
   const { label, icon, href } = link;
 

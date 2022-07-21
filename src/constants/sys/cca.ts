@@ -1,3 +1,8 @@
+/**
+ * List of CCA for reference.
+ *
+ * Not used in the application
+ */
 export const CCALIST = [
   'acaKE',
   'Amplitude',

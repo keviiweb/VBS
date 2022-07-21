@@ -25,8 +25,17 @@ import {
   sendMessageToChannel,
 } from '@helper/sys/vbs/telegram';
 
+/**
+ * Three possible states for Booking requests
+ */
 export const BOOKINGS = ['PENDING', 'APPROVED', 'REJECTED'];
 
+/**
+ * Count the number of booking request created by the user
+ *
+ * @param session Next-Auth Session
+ * @returns The total number of booking requests by the user wrapped in a Promise
+ */
 export const countBookingByUser = async (session: Session): Promise<number> => {
   let count = 0;
   try {
@@ -42,6 +51,11 @@ export const countBookingByUser = async (session: Session): Promise<number> => {
   return count;
 };
 
+/**
+ * Counts the total number of booking requests available
+ *
+ * @returns The total number of booking requests wrapped in a Promise
+ */
 export const countAllBooking = async (): Promise<number> => {
   let count = 0;
   try {
@@ -53,6 +67,11 @@ export const countAllBooking = async (): Promise<number> => {
   return count;
 };
 
+/**
+ * Counts the total number of booking requests available that are approved
+ *
+ * @returns The total number of booking requests approved wrapped in a Promise
+ */
 export const countApprovedBooking = async (): Promise<number> => {
   let count = 0;
   try {
@@ -70,6 +89,11 @@ export const countApprovedBooking = async (): Promise<number> => {
   return count;
 };
 
+/**
+ * Counts the total number of booking requests pending
+ *
+ * @returns The total number of booking requests pending wrapped in a Promise
+ */
 export const countPendingBooking = async (): Promise<number> => {
   let count = 0;
   try {
@@ -87,6 +111,11 @@ export const countPendingBooking = async (): Promise<number> => {
   return count;
 };
 
+/**
+ * Counts the total number of booking requests rejected
+ *
+ * @returns The total number of booking requests rejected wrapped in a Promise
+ */
 export const countRejectedBooking = async (): Promise<number> => {
   let count = 0;
   try {
@@ -104,6 +133,14 @@ export const countRejectedBooking = async (): Promise<number> => {
   return count;
 };
 
+/**
+ * Find all booking requests filtered by the User
+ *
+ * @param session Next-Auth Session
+ * @param limit Number of total records to fetch. Defaults to 100000
+ * @param skip Number of records to skip. Defaults to 0
+ * @returns A list of Booking Requests wrapped in a Promise
+ */
 export const findBookingByUser = async (
   session: Session,
   limit: number = 100000,
@@ -131,6 +168,13 @@ export const findBookingByUser = async (
   }
 };
 
+/**
+ * Find all approved booking requests
+ *
+ * @param limit Number of total records to fetch. Defaults to 100000
+ * @param skip Number of records to skip. Defaults to 0
+ * @returns A list of approved booking requests wrapped in a Promise
+ */
 export const findApprovedBooking = async (
   limit: number = 100000,
   skip: number = 0,
@@ -159,6 +203,13 @@ export const findApprovedBooking = async (
   }
 };
 
+/**
+ * Find all rejected booking requests
+ *
+ * @param limit Number of total records to fetch. Defaults to 100000
+ * @param skip Number of records to skip. Defaults to 0
+ * @returns A list of rejected booking requests wrapped in a Promise
+ */
 export const findRejectedBooking = async (
   limit: number = 100000,
   skip: number = 0,
@@ -187,6 +238,13 @@ export const findRejectedBooking = async (
   }
 };
 
+/**
+ * Find all pending booking requests
+ *
+ * @param limit Number of total records to fetch. Defaults to 100000
+ * @param skip Number of records to skip. Defaults to 0
+ * @returns A list of pending booking requests wrapped in a Promise
+ */
 export const findPendingBooking = async (
   limit: number = 100000,
   skip: number = 0,
@@ -215,6 +273,13 @@ export const findPendingBooking = async (
   }
 };
 
+/**
+ * Find all booking requests
+ *
+ * @param limit Number of total records to fetch. Defaults to 100000
+ * @param skip Number of records to skip. Defaults to 0
+ * @returns A list of booking requests wrapped in a Promise
+ */
 export const findAllBooking = async (
   limit: number = 100000,
   skip: number = 0,
@@ -238,6 +303,12 @@ export const findAllBooking = async (
   }
 };
 
+/**
+ * Find the specific booking request by its ID
+ *
+ * @param id BookingRequest ID
+ * @returns A BookingRequest or null wrapped in a Promise
+ */
 export const findBookingByID = async (
   id: string,
 ): Promise<BookingRequest | null> => {
@@ -256,6 +327,12 @@ export const findBookingByID = async (
   }
 };
 
+/**
+ * Returns whether the request has been approved
+ *
+ * @param bookingRequest BookingRequest Object
+ * @returns A boolean stating whether request is approved wrapped in a Promise
+ */
 export const isApproved = async (
   bookingRequest: BookingRequest,
 ): Promise<boolean> => {
@@ -271,6 +348,12 @@ export const isApproved = async (
   }
 };
 
+/**
+ * Returns whether the request has been cancelled
+ *
+ * @param bookingRequest BookingRequest Object
+ * @returns A boolean stating whether request is cancelled wrapped in a Promise
+ */
 export const isCancelled = async (
   bookingRequest: BookingRequest,
 ): Promise<boolean> => {
@@ -286,6 +369,12 @@ export const isCancelled = async (
   }
 };
 
+/**
+ * Returns whether the request has been rejected
+ *
+ * @param bookingRequest BookingRequest Object
+ * @returns A boolean stating whether request is rejected wrapped in a Promise
+ */
 export const isRejected = async (
   bookingRequest: BookingRequest,
 ): Promise<boolean> => {
@@ -301,6 +390,13 @@ export const isRejected = async (
   }
 };
 
+/**
+ * Returns whether the request is created by the user
+ *
+ * @param bookingRequest BookingRequest Object
+ * @param session Next-Auth Session
+ * @returns A boolean stating whether request is created by user wrapped in a Promise
+ */
 export const isOwner = async (
   bookingRequest: BookingRequest,
   session: Session,
@@ -320,6 +416,15 @@ export const isOwner = async (
   }
 };
 
+/**
+ * Returns whether there is a conflict in request
+ *
+ * A conflict is defined as:
+ * 1. There is an existing approved Booking within the same date, venue and timeslot
+ *
+ * @param bookingRequest BookingRequest Object
+ * @returns A boolean stating whether there is a conflict wrapped in a Promise
+ */
 export const isConflict = async (
   bookingRequest: BookingRequest,
 ): Promise<boolean> => {
@@ -350,6 +455,17 @@ export const isConflict = async (
   }
 };
 
+/**
+ * Returns whether there is an existing venue booking requests
+ *
+ * The criteria for checking is as follows:
+ * 1. If it is a PERSONAL request, check whether there is a same timeslot booking in the same date and venue
+ * 2. If it is for a CCA, check whether there is a same timeslot booking for the CCA
+ *
+ * @param bookingRequest BookingRequest Object
+ * @param session Next-Auth Session
+ * @returns A boolean stating whether there is an existing request wrapped in a Promise
+ */
 export const isThereExisting = async (
   bookingRequest: BookingRequest,
   session: Session,
@@ -399,6 +515,18 @@ export const isThereExisting = async (
   }
 };
 
+/**
+ * Approve the venue booking request
+ *
+ * The approval process is as such:
+ * 1. Update the request to APPROVED
+ * 2. Send an email to the user
+ * 3. Send a message to the Telegram group
+ *
+ * @param bookingRequest BookingRequest Object
+ * @param session Next-Auth Session
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const setApprove = async (
   bookingRequest: BookingRequest,
   session: Session,
@@ -482,6 +610,18 @@ export const setApprove = async (
   return result;
 };
 
+/**
+ * Reject the venue booking request
+ *
+ * The rejection process is as such:
+ * 1. Update the request to REJECTED
+ * 2. Send an email to the user
+ * 3. Send a message to the Telegram group
+ *
+ * @param bookingRequest BookingRequest Object
+ * @param reason Reason for rejection
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const setReject = async (
   bookingRequest: BookingRequest,
   reason: string,
@@ -566,6 +706,17 @@ export const setReject = async (
   return result;
 };
 
+/**
+ * Cancel the venue booking request
+ *
+ * The cancellation process is as such:
+ * 1. Update the request to CANCELLED
+ * 2. Send an email to the user
+ *
+ * @param bookingRequest BookingRequest Object
+ * @param session Next-Auth Session
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const setCancel = async (
   bookingRequest: BookingRequest,
   session: Session,
@@ -639,6 +790,12 @@ export const setCancel = async (
   return result;
 };
 
+/**
+ * Finds all other conflicting requests filtered by the BookingRequest object
+ *
+ * @param bookingRequest BookingRequest Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const getConflictingRequest = async (
   bookingRequest: BookingRequest,
 ): Promise<Result> => {
@@ -691,6 +848,12 @@ export const getConflictingRequest = async (
   return result;
 };
 
+/**
+ * Find all other conflicting requests and reject them
+ *
+ * @param bookingRequest BookingRequest Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const setRejectConflicts = async (
   bookingRequest: BookingRequest,
 ): Promise<Result> => {
@@ -756,6 +919,13 @@ export const setRejectConflicts = async (
   return result;
 };
 
+/**
+ * Update the current booking request with the list of conflicting request IDs
+ *
+ * @param bookingRequest BookingRequest
+ * @param conflict String array containing all conflicting IDs
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const updateConflictingIDs = async (
   bookingRequest: BookingRequest,
   conflict: string[],
@@ -788,6 +958,12 @@ export const updateConflictingIDs = async (
   return result;
 };
 
+/**
+ * Create a new venue booking request
+ *
+ * @param data BookingRequest Object
+ * @returns A BookingRequest or null wrapped in a Promise
+ */
 export const createVenueBookingRequest = async (
   data: BookingRequest,
 ): Promise<BookingRequest | null> => {
@@ -802,9 +978,14 @@ export const createVenueBookingRequest = async (
   }
 };
 
+/**
+ * Notify other users that timeslot is available
+ *
+ * @param bookingRequest BookingRequest Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const notifyConflicts = async (
   bookingRequest: BookingRequest,
-  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   let success: boolean = true;
@@ -821,10 +1002,7 @@ export const notifyConflicts = async (
             );
 
             if (sameDayVenue !== null) {
-              const email: Result = await notifyConflictsEmail(
-                sameDayVenue,
-                session,
-              );
+              const email: Result = await notifyConflictsEmail(sameDayVenue);
               if (!email.status) {
                 console.error(email.error);
                 success = false;
@@ -857,9 +1035,14 @@ export const notifyConflicts = async (
   return result;
 };
 
+/**
+ * Send an email to notify other users that the timeslot is available for booking
+ *
+ * @param bookingRequest BookingRequest Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const notifyConflictsEmail = async (
   bookingRequest: BookingRequest,
-  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 

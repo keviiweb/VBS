@@ -1,6 +1,14 @@
 import React from 'react';
 import { Box, Heading, Image } from '@chakra-ui/react';
 
+/**
+ * Renders a card that shows the image of the announcement.
+ *
+ * Used for displaying announcements
+ *
+ * @param param0 Product
+ * @returns A card
+ */
 export default function AnnouncementCard({ product }) {
   const { image, description } = product;
 

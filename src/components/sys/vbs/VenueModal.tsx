@@ -35,6 +35,15 @@ import { checkerNumber, checkerString } from '@constants/sys/helper';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
+/**
+ * A modal for the Venue.
+ *
+ * All information regarding the venue is displayed,
+ * including its child venues if any
+ *
+ * @param param0 Modal functions such as isOpen, onClose
+ * @returns A Modal displaying Venue information
+ */
 export default function VenueModal({ isOpen, onClose, modalData }) {
   const [loadingData, setLoadingData] = useState(true);
 

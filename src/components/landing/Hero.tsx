@@ -10,6 +10,12 @@ import { motion } from 'framer-motion';
 import React from 'react';
 
 const MotionBox = motion(Box);
+
+/**
+ * Renders the Hero component of a typical website, which consists of the Open House video and some Text
+ *
+ * @returns A Hero component
+ */
 export default function Hero() {
   return (
     <Flex

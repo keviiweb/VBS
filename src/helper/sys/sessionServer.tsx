@@ -3,6 +3,14 @@ import { options } from '@constants/sys/nextAuthOptions';
 import { unstable_getServerSession } from 'next-auth/next';
 import { levels } from '@constants/sys/admin';
 
+/**
+ * Retrieves the current session. This function is used for server-sided requests
+ *
+ * @param request NextJS Request
+ * @param response NextJS Response
+ * @param context Request Context
+ * @returns A Next-Auth Session or null wrapped in a Promise
+ */
 export const currentSession = async (
   request: any = null,
   response: any = null,

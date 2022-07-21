@@ -3,7 +3,14 @@ import { levels } from '@root/src/constants/sys/admin';
 
 import { User } from 'types/misc/user';
 import { Result } from 'types/api';
+import { checkerString } from '@root/src/constants/sys/helper';
 
+/**
+ * Finds all User records filtered by email address
+ *
+ * @param email Email address of the user
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const fetchUserByEmail = async (email: string): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -26,6 +33,12 @@ export const fetchUserByEmail = async (email: string): Promise<Result> => {
   return result;
 };
 
+/**
+ * Creates a new User
+ *
+ * @param data User Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const createUser = async (data: User): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -46,8 +59,20 @@ export const createUser = async (data: User): Promise<Result> => {
   return result;
 };
 
+/**
+ * Populates the list of User read from a CSV file
+ *
+ * 1. The specific User record is fetched
+ * 2. If the record is available, the record is updated
+ * 3. If the record cannot be found, a new record is created.
+ *
+ * @param dataField File content
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const createUserFile = async (dataField: any[]): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
+
+  let count = 0;
 
   try {
     for (let key = 0; key < dataField.length; key += 1) {
@@ -62,31 +87,39 @@ export const createUserFile = async (dataField: any[]): Promise<Result> => {
           data.studentID !== undefined ? data.studentID : '';
         const roomNum: string = data.roomNum !== undefined ? data.roomNum : '';
 
-        const userData: User = {
-          name: name.trim(),
-          email: email.trim(),
-          admin: admin,
-          studentID: studentID.trim(),
-          roomNum: roomNum.trim(),
-        };
+        if (checkerString(name) && checkerString(email)) {
+          const userData: User = {
+            name: name.trim(),
+            email: email.trim(),
+            admin: admin,
+            studentID: studentID.trim(),
+            roomNum: roomNum.trim(),
+          };
 
-        await prisma.users.upsert({
-          where: {
-            email: userData.email,
-          },
-          update: {},
-          create: {
-            email: userData.email,
-            name: userData.name,
-            admin: userData.admin,
-            studentID: userData.studentID,
-            roomNum: userData.roomNum,
-          },
-        });
+          await prisma.users.upsert({
+            where: {
+              email: userData.email,
+            },
+            update: {},
+            create: {
+              email: userData.email,
+              name: userData.name,
+              admin: userData.admin,
+              studentID: userData.studentID,
+              roomNum: userData.roomNum,
+            },
+          });
+
+          count += 1;
+        }
       }
     }
 
-    result = { status: true, error: null, msg: 'Successfully created user' };
+    result = {
+      status: true,
+      error: null,
+      msg: `Successfully created ${count} User records`,
+    };
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to create user', msg: '' };
@@ -94,6 +127,11 @@ export const createUserFile = async (dataField: any[]): Promise<Result> => {
   return result;
 };
 
+/**
+ * Counts the total of User records available
+ *
+ * @returns Total number of User record wrapped in a Promise
+ */
 export const countUser = async (): Promise<number> => {
   let count: number = 0;
   try {
@@ -105,6 +143,13 @@ export const countUser = async (): Promise<number> => {
   return count;
 };
 
+/**
+ * Finds all User records
+ *
+ * @param limit Number of total records to fetch. Defaults to 100000
+ * @param skip Number of records to skip. Defaults to 0
+ * @returns A Result containing the list of User records wrapped in a Promise
+ */
 export const fetchAllUser = async (
   limit: number = 100000,
   skip: number = 0,
@@ -129,6 +174,12 @@ export const fetchAllUser = async (
   return result;
 };
 
+/**
+ * Edit a User
+ *
+ * @param data User Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
 export const editUser = async (data: User): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {

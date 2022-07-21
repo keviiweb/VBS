@@ -4,6 +4,14 @@ import Sidebar from '@components/sys/misc/Sidebar';
 
 import { Box, Drawer, DrawerContent, useDisclosure } from '@chakra-ui/react';
 
+/**
+ * Default layout for the system-page.
+ *
+ * It consists of a Sidebar and a Header
+ *
+ * @param param0 React Children
+ * @returns Layout for system
+ */
 export default function Layout({ session, children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (

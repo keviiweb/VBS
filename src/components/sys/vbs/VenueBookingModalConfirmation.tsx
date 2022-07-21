@@ -38,6 +38,17 @@ import { CCA } from 'types/cca/cca';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
+/**
+ * Renders a confirmation modal in the Venue Booking process.
+ *
+ * When user press the submit button, a request is sent to the backend to create
+ * a venue booking request
+ *
+ * The modal will automatically close once the request is successful, or displays an error message otherwise
+ *
+ * @param param0 Modal functions such as isOpen, onClose and BookingRequest information
+ * @returns A confirmation modal that is displayed to the user
+ */
 export default function VenueBookingModalConfirmation({
   isOpen,
   onClose,

@@ -14,7 +14,13 @@ import { FiChevronDown } from 'react-icons/fi';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
-export default function UserProfile(props) {
+/**
+ * Renders a dropdown menu when the user clicks on the Avatar on the Header
+ *
+ * @param props Contains data such as the current host URL
+ * @returns A component displaying the dropdown menu
+ */
+export default function UserProfile(props: any) {
   const [url, setURL] = useState('https://vbs-kevii.vercel.app'); // default
   const router = useRouter();
 

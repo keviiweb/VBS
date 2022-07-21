@@ -7,6 +7,12 @@ import { prisma } from '@constants/sys/db';
 import { User } from 'types/misc/user';
 import { Session } from 'next-auth/core/types';
 
+/**
+ * Generates an email using the given template
+ *
+ * @param param0 URL for callback link and the email address of the user
+ * @returns A HTML email with the correct parameters set
+ */
 function html({ newURL, email }) {
   const escapedEmail = `${email.replace(/\./g, '&#8203;.')}`;
 
@@ -398,10 +404,21 @@ function html({ newURL, email }) {
 `;
 }
 
+/**
+ * This function is only called when the email server of the recipient does not
+ * support HTML emails
+ *
+ * @param param0 URL of the callback link and the hostname of the application
+ * @returns A string
+ */
 function text({ newURL, host }) {
   return `Sign in to ${host}\n${newURL}\n\n`;
 }
 
+/**
+ * Options for the Next-Auth library, including sending of emails for passwordless-authentication,
+ * as well as checking of session and populating session with custom details
+ */
 export const options = {
   providers: [
     EmailProvider({

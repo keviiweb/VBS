@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { Button, FormControl, FormLabel, Input, Stack } from '@chakra-ui/react';
 
+/**
+ * Member button used for selecting an expected member
+ *
+ * @param param0 List of functions available
+ * @returns Renders a clickable button that represents a particular member
+ */
 export default function MemberButton({
   reality,
   handleClick,

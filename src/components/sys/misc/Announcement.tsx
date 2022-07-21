@@ -11,6 +11,11 @@ import AnnouncementCard from './AnnouncementCard';
 const MotionBox = motion(Box);
 const MotionSimpleGrid = motion(SimpleGrid);
 
+/**
+ * Fetches all announcements and renders them in cards
+ *
+ * @returns A component containing the list of announcements
+ */
 export default function AnnouncementComponent() {
   const [slides, setSlides] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(false);

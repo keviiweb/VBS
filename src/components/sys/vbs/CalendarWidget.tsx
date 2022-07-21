@@ -5,6 +5,16 @@ import moment from 'moment-timezone';
 
 import { monthNamesFull } from '@constants/sys/months';
 
+/**
+ * Renders a small calendar that allow users to select dates.
+ *
+ * The dates are limited by the calendarMin and calendarMax variables.
+ *
+ * Users can only click on dates that are between currentDate() + calendarMin and currentDate() + calendarMax
+ *
+ * @param param0 Callback function for selected date, and minimum and maximum date range
+ * @returns
+ */
 export default function CalendarWidget({
   selectedDate,
   calendarMin,
@@ -42,7 +52,7 @@ export default function CalendarWidget({
     await selectedDate(currDate);
   };
 
-  const displayLabel = (date, view) => {
+  const displayLabel = (date: Date, view: string) => {
     const month = monthNamesFull[date.getMonth()];
     const year = date.getFullYear();
     if (view === 'month') {

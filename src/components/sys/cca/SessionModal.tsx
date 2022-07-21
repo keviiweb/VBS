@@ -33,6 +33,12 @@ import SessionDeleteConfirmationModal from '@components/sys/cca/SessionDeleteCon
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
+/**
+ * Renders a modal that displays information about the specified session
+ *
+ * @param param0 Modal functions and callback function
+ * @returns A modal
+ */
 export default function SessionModal({
   isOpen,
   onClose,

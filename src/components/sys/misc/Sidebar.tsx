@@ -14,6 +14,8 @@ import {
 } from 'react-icons/fi';
 
 import NavLink from '@components/sys/misc/NavLink';
+import { Session } from 'next-auth/core/types';
+import { levels } from '@root/src/constants/sys/admin';
 
 const adminMenu = [
   { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },
@@ -62,15 +64,27 @@ const userMenu = [
   },
 ];
 
+/**
+ * Renders a sidebar that switches menu depending on the session
+ *
+ * @param param0 React Children and session
+ * @returns Sidebar
+ */
 export default function Sidebar({ session, onClose, ...rest }) {
   const router = useRouter();
   const [menu, setMenu] = useState(userMenu);
 
   useEffect(() => {
-    if (session) {
-      if (session.user.admin) {
+    function setData(sessionField: Session) {
+      if (
+        sessionField.user.admin === levels.ADMIN ||
+        sessionField.user.admin === levels.OWNER
+      ) {
         setMenu(adminMenu);
       }
+    }
+    if (session) {
+      setData(session);
     }
 
     router.events.on('routeChangeComplete', onClose);
