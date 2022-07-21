@@ -21,6 +21,12 @@ import {
 } from '@helper/sys/cca/ccaAttendance';
 import { countTotalSessionHoursByCCAID } from '@helper/sys/cca/ccaSession';
 
+/**
+ * Fetches the list of CCA records filtered by CCA ID
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

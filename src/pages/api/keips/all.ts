@@ -6,6 +6,14 @@ import { fetchAllKEIPS, countKEIPS } from '@helper/sys/misc/keips';
 import { currentSession } from '@helper/sys/sessionServer';
 import { levels } from '@constants/sys/admin';
 
+/**
+ * Fetches the list of KEIPS
+ *
+ * This is an OWNER level request only
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 
@@ -21,7 +29,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== null &&
     session !== undefined &&
-    (session.user.admin === levels.ADMIN || session.user.admin === levels.OWNER)
+    session.user.admin === levels.OWNER
   ) {
     const limit: number = limitQuery !== undefined ? Number(limitQuery) : 10000;
     const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;

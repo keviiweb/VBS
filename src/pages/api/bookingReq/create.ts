@@ -31,6 +31,12 @@ import { isInstantBook, isVisible } from '@helper/sys/vbs/venue';
 import { sendProgressMail } from '@helper/sys/vbs/email/progress';
 import { createVenueBooking } from '@helper/sys/vbs/booking';
 
+/**
+ * Creates a new Venue Booking Request
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

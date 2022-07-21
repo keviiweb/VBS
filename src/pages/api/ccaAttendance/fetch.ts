@@ -19,6 +19,12 @@ import {
 } from '@constants/sys/date';
 import { isLeader } from '@helper/sys/cca/ccaRecord';
 
+/**
+ * Fetches the list of CCA attendance by the specific user email and CCA ID
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

@@ -1,6 +1,11 @@
 import React from 'react';
 import { Box, Flex, Heading, Stack, Text } from '@chakra-ui/react';
 
+/**
+ * Renders a component that reminds user to check their emails to complete the authentication process
+ *
+ * @returns Verify Request Page
+ */
 export default function VerifyRequest() {
   return (
     <Flex minH='100vh' align='center' justify='center' bg='gray.50'>

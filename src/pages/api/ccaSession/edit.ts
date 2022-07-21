@@ -15,6 +15,12 @@ import { editAttendance } from '@helper/sys/cca/ccaAttendance';
 
 import { isValidDate, compareDate } from '@constants/sys/date';
 
+/**
+ * Edit the CCA session
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

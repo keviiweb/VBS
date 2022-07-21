@@ -5,6 +5,12 @@ import { CCA } from 'types/cca/cca';
 import { currentSession } from '@helper/sys/sessionServer';
 import { findAllCCA } from '@helper/sys/cca/cca';
 
+/**
+ * Fetches all CCAs in the database
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
   let result: Result = {

@@ -9,6 +9,12 @@ import {
   countVenue,
 } from '@helper/sys/vbs/venue';
 
+/**
+ * Fetches all venues based on pagination limit and skip
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

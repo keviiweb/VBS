@@ -46,6 +46,14 @@ import { currentSession } from '@root/src/helper/sys/sessionServer';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
+/**
+ * Renders a component that displays the list of venues available for booking, and allow users to create or edit venues.
+ *
+ * Creating and Editing a venue is an OWNER-level task only
+ *
+ * @param props Permission level of user
+ * @returns Manage Venues page
+ */
 export default function ManageVenues(props: any) {
   const [modalData, setModalData] = useState<Venue | null>(null);
   const toast = useToast();

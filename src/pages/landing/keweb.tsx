@@ -6,6 +6,13 @@ import { layoutVariant } from '@root/motion';
 
 const MotionBox = motion(Box);
 
+/**
+ * Part of the list of CCA Pages
+ *
+ * CCA: KEWEB
+ *
+ * @returns KEWEB Page
+ */
 export default function KEWeb() {
   return (
     <Landing>

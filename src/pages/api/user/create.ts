@@ -8,6 +8,14 @@ import { levels } from '@constants/sys/admin';
 import { currentSession } from '@helper/sys/sessionServer';
 import { createUser } from '@helper/sys/misc/user';
 
+/**
+ * Creates a new user
+ *
+ * This is an OWNER level request only
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

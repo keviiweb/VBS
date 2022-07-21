@@ -15,6 +15,12 @@ import { signIn } from 'next-auth/react';
 
 import { checkerString } from '@constants/sys/helper';
 
+/**
+ * Renders a signin page
+ *
+ * @param props Host URL
+ * @returns SignIn Page
+ */
 export default function SignIn(props: any) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');

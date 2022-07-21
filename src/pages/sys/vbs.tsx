@@ -28,6 +28,14 @@ import { TimeSlot } from 'types/vbs/timeslot';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
+/**
+ * Main entry point for VBS
+ *
+ * Users can create venue booking requests through here
+ *
+ * @param props List of venues
+ * @returns VBS Page
+ */
 export default function VBS(props: any) {
   const [modalData, setModalData] = useState(null);
   const [modalDataConfirm, setModalDataConfirm] = useState<{

@@ -2,6 +2,13 @@ import React, { useEffect } from 'react';
 import { Box, Flex, Heading, Stack, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
+/**
+ * Renders the page whenever server hits an error 404
+ *
+ * Automatically redirect to the main landing page
+ *
+ * @returns Error 404 Page
+ */
 export default function Error404() {
   const router = useRouter();
 

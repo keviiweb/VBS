@@ -8,6 +8,13 @@ import { motion } from 'framer-motion';
 const MotionBox = motion(Box);
 const MotionSimpleGrid = motion(SimpleGrid);
 
+/**
+ * Renders the /sports page that contains the list of sports CCA in KE
+ *
+ * For future addition of Sports CCA
+ *
+ * @returns Sports Page
+ */
 export default function Sports() {
   const content = [];
 

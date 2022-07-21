@@ -7,6 +7,14 @@ import Carousel from '@components/landing/Carousel';
 
 import { GetServerSideProps } from 'next';
 
+/**
+ * Renders the main landing page.
+ *
+ * The order of the components can be adjusted through here
+ *
+ * @param param0 API Key for Google Maps
+ * @returns Main landing page
+ */
 export default function Index({ API_KEY }) {
   return (
     <Landing>

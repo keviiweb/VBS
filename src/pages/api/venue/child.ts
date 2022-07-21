@@ -7,6 +7,12 @@ import { checkerString } from '@constants/sys/helper';
 import { currentSession } from '@helper/sys/sessionServer';
 import { findVenueByID, fetchChildVenue } from '@helper/sys/vbs/venue';
 
+/**
+ * Fetches all child venue under the specified parent venue ID
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

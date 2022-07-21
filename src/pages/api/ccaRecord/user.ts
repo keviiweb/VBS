@@ -9,6 +9,14 @@ import { fetchAllCCARecordByUserEmail } from '@helper/sys/cca/ccaRecord';
 import { levels } from '@constants/sys/admin';
 import { findCCAbyID } from '@root/src/helper/sys/cca/cca';
 
+/**
+ * Fetches the CCA records for a specific user
+ *
+ * This is an OWNER and ADMIN level request only
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

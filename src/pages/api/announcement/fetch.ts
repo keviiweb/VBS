@@ -5,6 +5,12 @@ import { Announcement } from 'types/misc/announcement';
 import { currentSession } from '@helper/sys/sessionServer';
 import { fetchAllAnnouncements } from '@helper/sys/misc/announcement';
 
+/**
+ * Fetches the list of announcements with pagination and skip
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

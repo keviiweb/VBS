@@ -8,7 +8,12 @@ import { cardVariant, parentVariant } from '@root/motion';
 const MotionBox = motion(Box);
 const MotionSimpleGrid = motion(SimpleGrid);
 
-export default function Cultural() {
+/**
+ * Shows the list of personnel around KE
+ *
+ * @returns Community Page
+ */
+export default function Community() {
   const content = [
     {
       img: '/landing/community/hall-master_beach-clean-up.png',

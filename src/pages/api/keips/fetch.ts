@@ -6,6 +6,20 @@ import { checkerString } from '@constants/sys/helper';
 
 import { fetchKEIPSByMatNet } from '@helper/sys/misc/keips';
 
+/**
+ * In this file, MATNET is defined as
+ * <last 4 digit of Student ID><last 4 digit of NUSNET ID>
+ *
+ * eg. Student ID: A1234567R, NUSNET: E0011232
+ * eg. 567R1232
+ */
+
+/**
+ * Fetches the specific KEIPS record based on MATNET
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,

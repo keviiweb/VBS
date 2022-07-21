@@ -11,6 +11,14 @@ import { currentSession } from '@helper/sys/sessionServer';
 import { fetchOpeningHours } from '@helper/sys/vbs/venue';
 import { fetchBookedTimeSlots } from '@helper/sys/vbs/timeslot';
 
+/**
+ * Fetches the list of timeslots for a particular venue and date
+ *
+ * This includes booked timeslots as well
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

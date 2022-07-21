@@ -10,6 +10,12 @@ import {
 import { isLeader } from '@helper/sys/cca/ccaRecord';
 import { deleteAttendanceBySessionID } from '@helper/sys/cca/ccaAttendance';
 
+/**
+ * Delete the CCA session
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

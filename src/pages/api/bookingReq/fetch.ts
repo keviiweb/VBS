@@ -37,6 +37,13 @@ import {
 } from '@helper/sys/vbs/bookingReq';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
 
+/**
+ * Fetches the list of booking request made by the user themselves
+ * together with pagination and skip
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
   let query: string | undefined;

@@ -17,6 +17,14 @@ import { currentSession } from '@helper/sys/sessionServer';
 import { createVenueBooking } from '@helper/sys/vbs/booking';
 import { levels } from '@constants/sys/admin';
 
+/**
+ * Approves a venue booking request
+ *
+ * This is an ADMIN level or OWNER level request only.
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

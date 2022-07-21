@@ -8,6 +8,13 @@ import { motion } from 'framer-motion';
 const MotionBox = motion(Box);
 const MotionSimpleGrid = motion(SimpleGrid);
 
+/**
+ * Renders the /production page that contains the list of production CCA in KE
+ *
+ * For future addition of Production CCA
+ *
+ * @returns Production Page
+ */
 export default function Production() {
   const content = [];
 

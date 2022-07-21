@@ -6,7 +6,12 @@ import { layoutVariant } from '@root/motion';
 
 const MotionBox = motion(Box);
 
-export default function Cultural() {
+/**
+ * Renders a contact us page, with address of KE, email etc
+ *
+ * @returns Contact Us Page
+ */
+export default function ContactUs() {
   return (
     <Landing>
       <MotionBox

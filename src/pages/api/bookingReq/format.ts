@@ -22,6 +22,14 @@ import { findCCAbyID } from '@helper/sys/cca/cca';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
 import { getConflictingRequest } from '@helper/sys/vbs/bookingReq';
 
+/**
+ * Formats the list of Booking Request to specific format
+ *
+ * This is an ADMIN level or OWNER level request only.
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

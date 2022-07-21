@@ -39,7 +39,12 @@ import { Announcement } from 'types/misc/announcement';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
-export default function ManageVenues() {
+/**
+ * Renders a page that allows users to add new announcements
+ *
+ * @returns Manage Announcement Page
+ */
+export default function ManageAnnouncement() {
   const toast = useToast();
   const router = useRouter();
 

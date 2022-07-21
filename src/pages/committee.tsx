@@ -8,6 +8,13 @@ import { motion } from 'framer-motion';
 const MotionBox = motion(Box);
 const MotionSimpleGrid = motion(SimpleGrid);
 
+/**
+ * Renders the /committee page that contains the list of commoitee CCA in KE
+ *
+ * For future addition of Committee CCA
+ *
+ * @returns Committee Page
+ */
 export default function Committee() {
   const content = [
     {

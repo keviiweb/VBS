@@ -46,6 +46,14 @@ import { currentSession } from '@root/src/helper/sys/sessionServer';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
+/**
+ * Renders a component that displays the list of users and allow users to create or edit new users.
+ *
+ * Creating and Editing a user is an OWNER-level task only
+ *
+ * @param props Permission level of user
+ * @returns Manage User page
+ */
 export default function ManageUsers(props: any) {
   const [modalData, setModalData] = useState<User | null>(null);
   const toast = useToast();

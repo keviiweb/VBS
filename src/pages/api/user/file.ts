@@ -16,6 +16,14 @@ export const config = {
   },
 };
 
+/**
+ * Populates the User database through a CSV file
+ *
+ * This is an OWNER level request only
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

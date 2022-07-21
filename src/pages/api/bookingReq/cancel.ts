@@ -17,6 +17,12 @@ import {
 import { currentSession } from '@helper/sys/sessionServer';
 import { deleteVenueBooking } from '@helper/sys/vbs/booking';
 
+/**
+ * Cancels an existing Venue Booking Request
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

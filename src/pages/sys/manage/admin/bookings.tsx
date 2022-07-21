@@ -55,6 +55,14 @@ const levels = {
   ALL: 4,
 };
 
+/**
+ * Renders a component that displays the list of bookings and allow users to approve bookings
+ *
+ * Approval of bookings is an ADMIN or OWNER level task
+ *
+ * @param props Permission level of user
+ * @returns Manage User page
+ */
 export default function ManageBooking() {
   const [modalData, setModalData] = useState<BookingRequest | null>(null);
 

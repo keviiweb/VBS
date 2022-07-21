@@ -8,6 +8,13 @@ import { motion } from 'framer-motion';
 const MotionBox = motion(Box);
 const MotionSimpleGrid = motion(SimpleGrid);
 
+/**
+ * Renders the /cultural page that contains the list of cultural CCA in KE
+ *
+ * For future addition of Cultural CCA
+ *
+ * @returns Cultural Page
+ */
 export default function Cultural() {
   const content = [];
 

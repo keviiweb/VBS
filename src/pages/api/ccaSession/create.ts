@@ -7,6 +7,12 @@ import { findCCAbyID } from '@helper/sys/cca/cca';
 import { isLeader } from '@helper/sys/cca/ccaRecord';
 import { createSession, isConflict } from '@helper/sys/cca/ccaSession';
 
+/**
+ * Create a new CCA session
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
 

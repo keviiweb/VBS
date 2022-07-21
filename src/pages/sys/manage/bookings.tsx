@@ -22,6 +22,13 @@ import { checkerString } from '@constants/sys/helper';
 
 const MotionBox = motion(Box);
 
+/**
+ * Renders a page containing all the bookings made by the user themselves
+ *
+ * Users can see the details of a booking request or cancel them
+ *
+ * @returns ManageBooking page
+ */
 export default function ManageBooking() {
   const [modalData, setModalData] = useState<BookingRequest | null>(null);
 

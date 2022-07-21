@@ -8,6 +8,11 @@ import { motion } from 'framer-motion';
 const MotionBox = motion(Box);
 const MotionSimpleGrid = motion(SimpleGrid);
 
+/**
+ * Renders a page that shows all the list of events that KE has
+ *
+ * @returns Event Page
+ */
 export default function Event() {
   const content = [
     {

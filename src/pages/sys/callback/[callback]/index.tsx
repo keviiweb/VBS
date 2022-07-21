@@ -3,6 +3,13 @@ import { Box, Flex, Heading, Stack, Spinner, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { CheckCircleIcon } from '@chakra-ui/icons';
 
+/**
+ * This component is vital in ensuring the passwordless authentication process works
+ *
+ * The component will automatically redirect the user to the callback link embedded within the query of the page.
+ *
+ * @returns A simple redirection component
+ */
 export default function EmailCallBack() {
   const router = useRouter();
   const { query } = router;

@@ -17,6 +17,12 @@ import { checkerString } from '@constants/sys/helper';
 import { Result } from 'types/api';
 import { KEIPS, KEIPSCCA, KEIPSBonus } from 'types/misc/keips';
 
+/**
+ * Renders a search page where users can type in their MATNET and returns the KEIPS points
+ *
+ *
+ * @returns KEIPS page
+ */
 export default function KEIPSComponent() {
   const [loadingData, setLoadingData] = useState(true);
   const [successData, setSuccessData] = useState(false);

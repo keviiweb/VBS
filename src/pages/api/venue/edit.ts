@@ -14,6 +14,14 @@ export const config = {
   },
 };
 
+/**
+ * Edit the venue
+ *
+ * This is an OWNER level request only
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
   let result: Result = {
@@ -25,7 +33,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== undefined &&
     session !== null &&
-    (session.user.admin === levels.ADMIN || session.user.admin === levels.OWNER)
+    session.user.admin === levels.OWNER
   ) {
     const data: { fields: formidable.Fields; files: formidable.Files } =
       await new Promise((resolve, reject) => {

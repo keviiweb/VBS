@@ -2,6 +2,11 @@ import React, { useEffect } from 'react';
 import { Box, Flex, Heading, Stack, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
+/**
+ * Renders a component whenever user encountered error
+ *
+ * @returns Error Page
+ */
 export default function Error() {
   const router = useRouter();
 

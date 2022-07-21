@@ -43,6 +43,14 @@ import { InfoOutlineIcon } from '@chakra-ui/icons';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
+/**
+ * Renders a component that displays the list of KEIPS points available
+ *
+ * Creating and Editing a KEIPS record is an OWNER-level task only
+ *
+ * @param props Permission level of user
+ * @returns Manage KEIPS page
+ */
 export default function ManageKEIPS(props: any) {
   const [modalData, setModalData] = useState<KEIPS | null>(null);
   const toast = useToast();

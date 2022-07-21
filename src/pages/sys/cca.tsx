@@ -23,6 +23,14 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
+/**
+ * Entry point for the CCA attendance component
+ *
+ * Renders a page filled with cards of the user's CCA
+ *
+ * @param props List of CCAs
+ * @returns CCA Page
+ */
 export default function CCA(props: any) {
   const [leaderModalData, setLeaderModalData] = useState(null);
   const [memberModalData, setMemberModalData] = useState(null);

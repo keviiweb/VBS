@@ -14,6 +14,14 @@ export const config = {
   },
 };
 
+/**
+ * Delete the announcement
+ *
+ * This is an ADMIN level or OWNER level request only.
+ *
+ * @param req NextJS API Request
+ * @param res NextJS API Response
+ */
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await currentSession(req, res, null);
   let result: Result = {
