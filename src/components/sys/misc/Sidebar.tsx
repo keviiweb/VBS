@@ -20,6 +20,7 @@ import { levels } from '@root/src/constants/sys/admin';
 const adminMenu = [
   { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },
   { label: 'CCA ATTENDANCE', icon: FiSettings, href: '/sys/cca' },
+  { label: 'KEIPS', icon: FiStar, href: '/sys/keips' },
   { label: 'CONTACT US', icon: FiCompass, href: '/sys/contact' },
   {
     label: 'APPROVE BOOKINGS',
@@ -107,7 +108,7 @@ export default function Sidebar({ session, onClose, ...rest }) {
       <Flex h='20' alignItems='center' mx='8' justifyContent='space-between'>
         <Link href='/sys'>
           <Text fontSize='2xl' fontFamily='monospace' fontWeight='bold'>
-            KEVII VBS
+            KEVII
           </Text>
         </Link>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />

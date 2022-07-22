@@ -119,7 +119,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     result = {
                       status: true,
                       error: null,
-                      msg: 'Booking request rejected - Successfully notified conflicting requests',
+                      msg: reject.msg,
                     };
                     res.status(200).send(result);
                     res.end();
@@ -140,7 +140,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 result = {
                   status: true,
                   error: null,
-                  msg: 'Booking request rejected',
+                  msg: reject.msg,
                 };
                 res.status(200).send(result);
                 res.end();

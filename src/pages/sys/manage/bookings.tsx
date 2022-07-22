@@ -56,7 +56,6 @@ export default function ManageBooking() {
     async (id: string) => {
       if (checkerString(id)) {
         setSubmitButtonPressed(true);
-
         try {
           const rawResponse = await fetch('/api/bookingReq/cancel', {
             method: 'POST',
@@ -72,7 +71,7 @@ export default function ManageBooking() {
           if (content.status) {
             toast({
               title: 'Request cancelled.',
-              description: 'An email has been sent to the requester',
+              description: content.msg,
               status: 'success',
               duration: 5000,
               isClosable: true,
@@ -90,7 +89,6 @@ export default function ManageBooking() {
         } catch (error) {
           console.error(error);
         }
-
         setSubmitButtonPressed(false);
       }
     },
@@ -277,7 +275,7 @@ export default function ManageBooking() {
             </Box>
           )}
 
-          {!loadingData && data && data !== [] && data.length > 0 && (
+          {!loadingData && data && data.length > 0 && (
             <Box w='full' overflow='auto'>
               <Stack align='center' justify='center' spacing={30}>
                 <TableWidget

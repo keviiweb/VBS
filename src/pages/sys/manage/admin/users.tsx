@@ -209,7 +209,7 @@ export default function ManageUsers(props: any) {
           if (content.status) {
             toast({
               title: 'User Created.',
-              description: 'You have successfully created all users',
+              description: content.msg,
               status: 'success',
               duration: 5000,
               isClosable: true,
@@ -226,13 +226,10 @@ export default function ManageUsers(props: any) {
               isClosable: true,
             });
           }
-
-          setSubmitButtonPressed(false);
-          return true;
         } catch (error) {
-          setSubmitButtonPressed(false);
-          return false;
+          console.error(error);
         }
+        setSubmitButtonPressed(false);
       } else {
         setErrorFile('Please upload a file');
       }
@@ -261,8 +258,7 @@ export default function ManageUsers(props: any) {
           if (content.status) {
             toast({
               title: 'CCA Records populated',
-              description:
-                'You have successfully populated all users CCA records',
+              description: content.msg,
               status: 'success',
               duration: 5000,
               isClosable: true,
@@ -279,13 +275,10 @@ export default function ManageUsers(props: any) {
               isClosable: true,
             });
           }
-
-          setSubmitButtonPressed(false);
-          return true;
         } catch (error) {
-          setSubmitButtonPressed(false);
-          return false;
+          console.error(error);
         }
+        setSubmitButtonPressed(false);
       } else {
         setErrorFileCCA('Please upload a file');
       }
@@ -308,7 +301,6 @@ export default function ManageUsers(props: any) {
         )
       ) {
         setSubmitButtonPressed(true);
-
         try {
           const rawResponse = await fetch('/api/user/create', {
             method: 'POST',
@@ -326,11 +318,9 @@ export default function ManageUsers(props: any) {
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
-            setSubmitButtonPressed(false);
-
             toast({
               title: 'User Created.',
-              description: 'You have successfully created an user',
+              description: content.msg,
               status: 'success',
               duration: 5000,
               isClosable: true,
@@ -339,8 +329,6 @@ export default function ManageUsers(props: any) {
             await reset();
             await fetchData();
           } else {
-            setSubmitButtonPressed(false);
-
             toast({
               title: 'Error',
               description: content.error,
@@ -349,12 +337,10 @@ export default function ManageUsers(props: any) {
               isClosable: true,
             });
           }
-
-          return true;
         } catch (error) {
-          setSubmitButtonPressed(false);
-          return false;
+          console.error(error);
         }
+        setSubmitButtonPressed(false);
       }
 
       return false;
@@ -452,23 +438,31 @@ export default function ManageUsers(props: any) {
 
   const onFileChange = async (event: { target: { files: any[] | any } }) => {
     setErrorFile('');
-    const file = event.target.files[0];
-    if (file !== undefined && file !== null && file.name !== undefined) {
-      selectedFileDB.current = file;
-      setFileName(file.name);
-    } else {
-      setErrorFile('File name not found');
+    try {
+      const file = event.target.files[0];
+      if (file !== undefined && file !== null && file.name !== undefined) {
+        selectedFileDB.current = file;
+        setFileName(file.name);
+      } else {
+        setErrorFile('File name not found');
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
   const onFileChangeCCA = async (event: { target: { files: any[] | any } }) => {
     setErrorFileCCA('');
-    const file = event.target.files[0];
-    if (file !== undefined && file !== null && file.name !== undefined) {
-      selectedFileCCADB.current = file;
-      setFileNameCCA(file.name);
-    } else {
-      setErrorFileCCA('File name not found');
+    try {
+      const file = event.target.files[0];
+      if (file !== undefined && file !== null && file.name !== undefined) {
+        selectedFileCCADB.current = file;
+        setFileNameCCA(file.name);
+      } else {
+        setErrorFileCCA('File name not found');
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -598,11 +592,9 @@ export default function ManageUsers(props: any) {
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
-            setSubmitButtonPressed(false);
-
             toast({
               title: 'User Edited',
-              description: 'You have successfully edited an user',
+              description: content.msg,
               status: 'success',
               duration: 5000,
               isClosable: true,
@@ -611,8 +603,6 @@ export default function ManageUsers(props: any) {
             await resetEdit();
             await fetchData();
           } else {
-            setSubmitButtonPressed(false);
-
             toast({
               title: 'Error',
               description: content.error,
@@ -621,12 +611,11 @@ export default function ManageUsers(props: any) {
               isClosable: true,
             });
           }
-
-          return true;
         } catch (error) {
-          setSubmitButtonPressed(false);
-          return false;
+          console.error(error);
         }
+
+        setSubmitButtonPressed(false);
       }
 
       return false;
@@ -640,7 +629,7 @@ export default function ManageUsers(props: any) {
       userIDDBEdit.current = value;
       setUserIDEdit(value);
 
-      if (userData.current !== []) {
+      if (userData.current.length > 0) {
         for (let key = 0; key < userData.current.length; key += 1) {
           if (userData.current[key]) {
             const dataField: User = userData.current[key];
@@ -688,7 +677,7 @@ export default function ManageUsers(props: any) {
           {!loadingData && data && data.length === 0 && (
             <Box mt={30}>
               <Stack align='center' justify='center'>
-                <Text>No venues found</Text>
+                <Text>No users found</Text>
               </Stack>
             </Box>
           )}
@@ -928,8 +917,7 @@ export default function ManageUsers(props: any) {
         )}
 
         {level === levels.OWNER && (
-          <MotionBox>
-            {' '}
+          <MotionBox key='create-user'>
             <Stack
               spacing={4}
               w='full'
@@ -1036,124 +1024,126 @@ export default function ManageUsers(props: any) {
           </MotionBox>
         )}
 
-        <MotionBox>
-          <Stack
-            spacing={4}
-            w='full'
-            maxW='md'
-            bg='white'
-            rounded='xl'
-            boxShadow='lg'
-            p={6}
-            my={12}
-          >
-            <Heading size='md'>Edit existing user</Heading>
-            <form onSubmit={handleSubmitEdit}>
-              <Stack spacing={4}>
-                {userDropdown && (
-                  <Stack spacing={3} w='full'>
-                    <FormLabel>Select User</FormLabel>
-                    <Select
-                      value={userIDEdit}
-                      onChange={onUserIDChangeEdit}
-                      size='sm'
+        {level === levels.OWNER && userDropdown && (
+          <MotionBox key='edit-user'>
+            <Stack
+              spacing={4}
+              w='full'
+              maxW='md'
+              bg='white'
+              rounded='xl'
+              boxShadow='lg'
+              p={6}
+              my={12}
+            >
+              <Heading size='md'>Edit existing user</Heading>
+              <form onSubmit={handleSubmitEdit}>
+                <Stack spacing={4}>
+                  {userDropdown && (
+                    <Stack spacing={3} w='full'>
+                      <FormLabel>Select User</FormLabel>
+                      <Select
+                        value={userIDEdit}
+                        onChange={onUserIDChangeEdit}
+                        size='sm'
+                      >
+                        {userDropdown}
+                      </Select>
+                    </Stack>
+                  )}
+
+                  <FormControl id='nameEdit'>
+                    <FormLabel>Name</FormLabel>
+                    <Input
+                      type='text'
+                      placeholder='Name'
+                      value={nameEdit}
+                      size='lg'
+                      onChange={(event) => {
+                        setNameEdit(event.currentTarget.value);
+                        nameDBEdit.current = event.currentTarget.value;
+                      }}
+                    />
+                  </FormControl>
+
+                  <FormControl id='emailEdit'>
+                    <FormLabel>Email</FormLabel>
+                    <Input
+                      type='email'
+                      placeholder='Email'
+                      value={emailEdit}
+                      size='lg'
+                      onChange={(event) => {
+                        setEmailEdit(event.currentTarget.value);
+                        emailDBEdit.current = event.currentTarget.value;
+                      }}
+                    />
+                  </FormControl>
+
+                  <FormControl id='studentIDEdit'>
+                    <FormLabel>Student ID</FormLabel>
+                    <Input
+                      type='text'
+                      placeholder='Student ID'
+                      value={studentIDEdit}
+                      size='lg'
+                      onChange={(event) => {
+                        setStudentIDEdit(event.currentTarget.value);
+                        studentIDDBEdit.current = event.currentTarget.value;
+                      }}
+                    />
+                  </FormControl>
+
+                  <FormControl id='roomNumEdit'>
+                    <FormLabel>Room Num</FormLabel>
+                    <Input
+                      type='text'
+                      placeholder='Room Num'
+                      value={roomNumEdit}
+                      size='lg'
+                      onChange={(event) => {
+                        setRoomNumEdit(event.currentTarget.value);
+                        roomNumDBEdit.current = event.currentTarget.value;
+                      }}
+                    />
+                  </FormControl>
+
+                  <Stack spacing={5} direction='row'>
+                    <Checkbox
+                      isChecked={adminEdit}
+                      onChange={(event) => {
+                        setAdminEdit(event.target.checked);
+                        adminDBEdit.current = event.target.checked;
+                      }}
                     >
-                      {userDropdown}
-                    </Select>
+                      Admin
+                    </Checkbox>
                   </Stack>
-                )}
 
-                <FormControl id='nameEdit'>
-                  <FormLabel>Name</FormLabel>
-                  <Input
-                    type='text'
-                    placeholder='Name'
-                    value={nameEdit}
-                    size='lg'
-                    onChange={(event) => {
-                      setNameEdit(event.currentTarget.value);
-                      nameDBEdit.current = event.currentTarget.value;
-                    }}
-                  />
-                </FormControl>
+                  {checkerString(errorMsgEdit) && (
+                    <Stack align='center'>
+                      <Text>{errorMsgEdit}</Text>
+                    </Stack>
+                  )}
 
-                <FormControl id='emailEdit'>
-                  <FormLabel>Email</FormLabel>
-                  <Input
-                    type='email'
-                    placeholder='Email'
-                    value={emailEdit}
-                    size='lg'
-                    onChange={(event) => {
-                      setEmailEdit(event.currentTarget.value);
-                      emailDBEdit.current = event.currentTarget.value;
-                    }}
-                  />
-                </FormControl>
-
-                <FormControl id='studentIDEdit'>
-                  <FormLabel>Student ID</FormLabel>
-                  <Input
-                    type='text'
-                    placeholder='Student ID'
-                    value={studentIDEdit}
-                    size='lg'
-                    onChange={(event) => {
-                      setStudentIDEdit(event.currentTarget.value);
-                      studentIDDBEdit.current = event.currentTarget.value;
-                    }}
-                  />
-                </FormControl>
-
-                <FormControl id='roomNumEdit'>
-                  <FormLabel>Room Num</FormLabel>
-                  <Input
-                    type='text'
-                    placeholder='Room Num'
-                    value={roomNumEdit}
-                    size='lg'
-                    onChange={(event) => {
-                      setRoomNumEdit(event.currentTarget.value);
-                      roomNumDBEdit.current = event.currentTarget.value;
-                    }}
-                  />
-                </FormControl>
-
-                <Stack spacing={5} direction='row'>
-                  <Checkbox
-                    isChecked={adminEdit}
-                    onChange={(event) => {
-                      setAdminEdit(event.target.checked);
-                      adminDBEdit.current = event.target.checked;
-                    }}
-                  >
-                    Admin
-                  </Checkbox>
-                </Stack>
-
-                {checkerString(errorMsgEdit) && (
-                  <Stack align='center'>
-                    <Text>{errorMsgEdit}</Text>
+                  <Stack spacing={10}>
+                    <Button
+                      type='submit'
+                      bg='blue.400'
+                      color='white'
+                      disabled={submitButtonPressed}
+                      _hover={{
+                        bg: 'blue.500',
+                      }}
+                    >
+                      Update
+                    </Button>
                   </Stack>
-                )}
-
-                <Stack spacing={10}>
-                  <Button
-                    type='submit'
-                    bg='blue.400'
-                    color='white'
-                    disabled={submitButtonPressed}
-                    _hover={{
-                      bg: 'blue.500',
-                    }}
-                  >
-                    Update
-                  </Button>
                 </Stack>
-              </Stack>
-            </form>
-          </Stack>
-        </MotionBox>
+              </form>
+            </Stack>
+          </MotionBox>
+        )}
       </MotionSimpleGrid>
     </Auth>
   );

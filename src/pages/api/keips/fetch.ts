@@ -37,7 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (keipsDB.status) {
       const keipsData: KEIPS = keipsDB.msg;
-      if (keipsData) {
+      if (keipsData !== null && keipsData !== undefined) {
         const contrastingStr: string = keipsData.contrasting ? 'Yes' : 'No';
         const fulfilledStr: string = keipsData.fulfilled ? 'Yes' : 'No';
 

@@ -7,6 +7,14 @@ import { currentSession } from '@helper/sys/sessionServer';
 import { levels } from '@constants/sys/admin';
 
 /**
+ * In this file, MATNET is defined as
+ * <last 4 digit of Student ID><last 4 digit of NUSNET ID>
+ *
+ * eg. Student ID: A1234567R, NUSNET: E0011232
+ * eg. 567R1232
+ */
+
+/**
  * Fetches the list of KEIPS
  *
  * This is an OWNER level request only
@@ -43,8 +51,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const keipsDataArr: KEIPS[] = keipsDB.msg;
       if (count > 0) {
         for (let ven = 0; ven < keipsDataArr.length; ven += 1) {
-          const keipsData: KEIPS = keipsDataArr[ven];
-          if (keipsData) {
+          if (keipsDataArr[ven]) {
+            const keipsData: KEIPS = keipsDataArr[ven];
             const contrastingStr: string = keipsData.contrasting ? 'Yes' : 'No';
             const fulfilledStr: string = keipsData.fulfilled ? 'Yes' : 'No';
 

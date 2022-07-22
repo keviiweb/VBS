@@ -147,8 +147,8 @@ export default function ManageAnnouncement() {
       setError('');
       event.preventDefault();
       if (validateFields(descriptionDB.current)) {
-        setSubmitButtonPressed(true);
         if (selectedFileDB.current !== null) {
+          setSubmitButtonPressed(true);
           const dataField = new FormData();
           dataField.append('image', selectedFileDB.current);
           dataField.append('description', descriptionDB.current);
@@ -182,17 +182,23 @@ export default function ManageAnnouncement() {
           } catch (error) {
             console.error(error);
           }
+          setSubmitButtonPressed(false);
         }
-        setSubmitButtonPressed(false);
       }
     },
     [fetchData, reset, toast],
   );
 
   const onFileChange = async (event: { target: { files: any[] | any } }) => {
-    const file = event.target.files[0];
-    selectedFileDB.current = file;
-    setFileName(file.name);
+    try {
+      const file = event.target.files[0];
+      if (file !== undefined && file !== null && file.name !== undefined) {
+        selectedFileDB.current = file;
+        setFileName(file.name);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const includeActionButton = useCallback(
@@ -279,7 +285,6 @@ export default function ManageAnnouncement() {
     } catch (error) {
       console.error(error);
     }
-
     setSubmitButtonPressed(false);
   }, [includeActionButton]);
 
@@ -360,12 +365,11 @@ export default function ManageAnnouncement() {
       if (
         validateFieldsEdit(announceIDDBEdit.current, descriptionDBEdit.current)
       ) {
-        setSubmitButtonPressed(true);
-
         const dataField = new FormData();
         dataField.append('id', announceIDDBEdit.current);
         dataField.append('description', descriptionDBEdit.current);
 
+        setSubmitButtonPressed(true);
         try {
           const rawResponse = await fetch('/api/announcement/edit', {
             method: 'POST',
@@ -395,7 +399,6 @@ export default function ManageAnnouncement() {
         } catch (error) {
           console.error(error);
         }
-
         setSubmitButtonPressed(false);
       }
     },
@@ -473,7 +476,6 @@ export default function ManageAnnouncement() {
         animate='animate'
       >
         <MotionBox key='submit-form'>
-          {' '}
           <Stack
             spacing={4}
             w='full'
@@ -560,10 +562,9 @@ export default function ManageAnnouncement() {
                             />
                           </VisuallyHidden>
                         </chakra.label>
-                        <Text pl={1}>or drag and drop</Text>
                       </Flex>
                       <Text fontSize='xs' color='gray.500'>
-                        PNG, JPG, GIF up to 10MB
+                        PNG, JPG up to 10MB
                       </Text>
                     </Stack>
                   </Flex>

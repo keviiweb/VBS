@@ -13,6 +13,7 @@ import {
 import { FiChevronDown } from 'react-icons/fi';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
 
 /**
  * Renders a dropdown menu when the user clicks on the Avatar on the Header
@@ -21,15 +22,14 @@ import { useRouter } from 'next/router';
  * @returns A component displaying the dropdown menu
  */
 export default function UserProfile(props: any) {
-  const [url, setURL] = useState('https://vbs-kevii.vercel.app'); // default
+  const [url, setURL] = useState('https://kevii.azurewebsites.net'); // default
   const router = useRouter();
 
   useEffect(() => {
-    async function fetchData(propsField: Promise<{ data: string }>) {
-      const propRes = await propsField;
+    async function fetchData(propsField: any) {
       try {
-        if (propRes.data) {
-          setURL(propRes.data);
+        if (propsField.data) {
+          setURL(propsField.data);
         }
       } catch (error) {
         console.error(error);
@@ -74,19 +74,18 @@ export default function UserProfile(props: any) {
   );
 }
 
-export async function getServerSideProps() {
+export const getServerSideProps: GetServerSideProps = async (cont) => {
+  cont.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=240, stale-while-revalidate=480',
+  );
+
+  const data: string | null =
+    process.env.NEXTAUTH_URL !== undefined ? process.env.NEXTAUTH_URL : null;
+
   return {
-    props: (async function Props() {
-      try {
-        return {
-          data: process.env.NEXTAUTH_URL,
-        };
-      } catch (error) {
-        console.error(error);
-        return {
-          data: null,
-        };
-      }
-    })(),
+    props: {
+      data: data,
+    },
   };
-}
+};

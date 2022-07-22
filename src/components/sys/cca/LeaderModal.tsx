@@ -401,9 +401,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
   );
 
   const successEditSession = useCallback(async () => {
-    setSubmitButtonPressed(true);
     await fetchSession(ccaRecordIDDB.current);
-    setSubmitButtonPressed(false);
   }, [fetchSession]);
 
   const deleteSession = useCallback(
@@ -411,6 +409,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
       if (sess !== null && sess !== undefined) {
         const { id } = sess;
         if (id !== undefined && checkerString(id)) {
+          setSubmitButtonPressed(true);
           try {
             const rawResponse = await fetch('/api/ccaSession/delete', {
               method: 'POST',
@@ -429,6 +428,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           } catch (error) {
             console.error(error);
           }
+          setSubmitButtonPressed(false);
         }
       }
     },

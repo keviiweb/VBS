@@ -114,15 +114,19 @@ export default function VBS(props: any) {
   }, [props]);
 
   const handleSearch = (event: { target: { value: string } }) => {
-    const searchInput: string = event.target.value;
-    setSearch(searchInput);
+    if (event.target.value !== null && event.target.value !== undefined) {
+      const searchInput: string = event.target.value;
+      setSearch(searchInput);
 
-    if (checkerString(searchInput)) {
-      const filteredDataField = cards.filter((value) =>
-        value.props.id.toLowerCase().includes(searchInput.toLowerCase()),
-      );
+      if (checkerString(searchInput)) {
+        const filteredDataField = cards.filter((value) =>
+          value.props.id.toLowerCase().includes(searchInput.toLowerCase()),
+        );
 
-      setFilteredData(filteredDataField);
+        setFilteredData(filteredDataField);
+      } else {
+        setFilteredData([]);
+      }
     } else {
       setFilteredData([]);
     }
@@ -200,7 +204,7 @@ export default function VBS(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59',
+    'public, s-maxage=240, stale-while-revalidate=480',
   );
 
   let data: Result | null = null;

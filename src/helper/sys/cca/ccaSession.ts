@@ -25,6 +25,11 @@ export const fetchAllCCASessionByCCAID = async (
       where: {
         ccaID: id,
       },
+      orderBy: [
+        {
+          date: 'desc',
+        },
+      ],
       skip: skip * limit,
       take: limit,
     });

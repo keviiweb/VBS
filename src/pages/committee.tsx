@@ -18,7 +18,7 @@ const MotionSimpleGrid = motion(SimpleGrid);
 export default function Committee() {
   const content = [
     {
-      img: '/landing/event/ihg.png',
+      img: '/landing/cca/keweb.png',
       title: 'KE Web',
       description: 'We work hard to give you the website you deserve.',
       link: '/landing/keweb',

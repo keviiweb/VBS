@@ -126,6 +126,7 @@ export default function LeaderStudentModalComponent({
 
   const fetchAttendance = useCallback(async (id: string) => {
     if (checkerString(id)) {
+      setSubmitButtonPressed(true);
       try {
         const rawResponse = await fetch('/api/ccaAttendance/member', {
           method: 'POST',
@@ -144,15 +145,14 @@ export default function LeaderStudentModalComponent({
       } catch (error) {
         console.error(error);
       }
-
-      return true;
+      setSubmitButtonPressed(false);
     }
-    return false;
   }, []);
 
   const fetchSession = useCallback(
     async (id: string) => {
       if (checkerString(id)) {
+        setSubmitButtonPressed(true);
         try {
           const rawResponse = await fetch('/api/ccaSession/fetch', {
             method: 'POST',
@@ -173,21 +173,17 @@ export default function LeaderStudentModalComponent({
         } catch (error) {
           console.error(error);
         }
-
-        return true;
+        setSubmitButtonPressed(false);
       }
-      return false;
     },
     [includeActionButton],
   );
 
   const tableChange = useCallback(async () => {
-    setSubmitButtonPressed(true);
     setLoadingData(true);
 
     await fetchSession(ccaRecordIDDB.current);
 
-    setSubmitButtonPressed(false);
     setLoadingData(false);
   }, [fetchSession]);
 

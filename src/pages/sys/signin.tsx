@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { signIn } from 'next-auth/react';
 
+import { GetServerSideProps } from 'next';
 import { checkerString } from '@constants/sys/helper';
 
 /**
@@ -31,9 +32,8 @@ export default function SignIn(props: any) {
 
   useEffect(() => {
     async function fetchData(propsField: any) {
-      const propRes = await propsField;
-      if (checkerString(propRes.data)) {
-        setURL(propRes.data);
+      if (checkerString(propsField.data)) {
+        setURL(propsField.data);
       }
     }
     fetchData(props);
@@ -122,19 +122,18 @@ export default function SignIn(props: any) {
   );
 }
 
-export async function getServerSideProps() {
+export const getServerSideProps: GetServerSideProps = async (cont) => {
+  cont.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=240, stale-while-revalidate=480',
+  );
+
+  const data: string | null =
+    process.env.NEXTAUTH_URL !== undefined ? process.env.NEXTAUTH_URL : null;
+
   return {
-    props: (async function Props() {
-      try {
-        return {
-          data: process.env.NEXTAUTH_URL,
-        };
-      } catch (error) {
-        console.error(error);
-        return {
-          data: null,
-        };
-      }
-    })(),
+    props: {
+      data: data,
+    },
   };
-}
+};

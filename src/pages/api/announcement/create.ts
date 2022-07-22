@@ -79,7 +79,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: true,
             error: '',
-            msg: 'Successfully created announcement',
+            msg: createAnnounceRequest.msg,
           };
           res.status(200).send(result);
           res.end();

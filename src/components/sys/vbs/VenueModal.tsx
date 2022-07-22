@@ -27,6 +27,7 @@ import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 
 import TableWidget from '@components/sys/misc/TableWidget';
+import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { Result } from 'types/api';
 import { Venue } from 'types/vbs/venue';
@@ -60,6 +61,8 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
   const pageIndexDB = useRef(0);
   const pageSizeDB = useRef(10);
 
+  const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+
   const onTableChange = useCallback(({ pageIndex, pageSize }) => {
     pageIndexDB.current = pageIndex;
     pageSizeDB.current = pageSize;
@@ -85,6 +88,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
   };
 
   const processChildVenue = async (parentVenueID: string) => {
+    setSubmitButtonPressed(true);
     try {
       const rawResponse = await fetch('/api/venue/child', {
         method: 'POST',
@@ -103,6 +107,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
     } catch (error) {
       console.log(error);
     }
+    setSubmitButtonPressed(false);
   };
 
   useEffect(() => {
@@ -227,6 +232,11 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
+          <LoadingModal
+            isOpen={!!submitButtonPressed}
+            onClose={() => setSubmitButtonPressed(false)}
+          />
+
           <MotionSimpleGrid
             mt='3'
             minChildWidth={{ base: 'full', md: 'full' }}
@@ -236,7 +246,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
             initial='initial'
             animate='animate'
           >
-            <MotionBox variants={cardVariant} key='2'>
+            <MotionBox variants={cardVariant} key='venue-data'>
               {modalData && (
                 <Flex
                   w='full'
@@ -262,66 +272,66 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
 
                         <List spacing={5}>
                           {checkerString(id) && (
-                            <ListItem>
+                            <ListItem key='venue-id'>
                               <Text as='span' fontWeight='bold'>
                                 Venue ID:
-                              </Text>{' '}
+                              </Text>
                               {id}
                             </ListItem>
                           )}
                           {checkerString(name) && (
-                            <ListItem>
+                            <ListItem key='venue-name'>
                               <Text as='span' fontWeight='bold'>
                                 Name:
-                              </Text>{' '}
+                              </Text>
                               {name}
                             </ListItem>
                           )}
                           {checkerString(description) && (
-                            <ListItem>
+                            <ListItem key='venue-desc'>
                               <Text as='span' fontWeight='bold'>
                                 Description:
-                              </Text>{' '}
+                              </Text>
                               {description}
                             </ListItem>
                           )}
                           {checkerString(openingHours) && (
-                            <ListItem>
+                            <ListItem key='venue-opening'>
                               <Text as='span' fontWeight='bold'>
                                 Opening Hours:
-                              </Text>{' '}
+                              </Text>
                               {openingHours}
                             </ListItem>
                           )}
                           {checkerNumber(capacity) && (
-                            <ListItem>
+                            <ListItem key='venue-capacity'>
                               <Text as='span' fontWeight='bold'>
                                 Capacity:
-                              </Text>{' '}
+                              </Text>
                               {capacity}
                             </ListItem>
                           )}
                           {checkerString(childVenue) && (
-                            <ListItem>
+                            <ListItem key='venue-child'>
                               <Text as='span' fontWeight='bold'>
                                 Child Venue:
-                              </Text>{' '}
+                              </Text>
                               {childVenue}
                             </ListItem>
                           )}
                           {checkerString(instantBook) && (
-                            <ListItem>
+                            <ListItem key='venue-ib'>
                               <Text as='span' fontWeight='bold'>
                                 Instant Book:
-                              </Text>{' '}
+                              </Text>
                               {instantBook}
                             </ListItem>
                           )}
                           {checkerString(isAvailable) && (
-                            <ListItem>
+                            <ListItem key='venue-ia'>
                               <Text as='span' fontWeight='bold'>
                                 Available for Booking:
-                              </Text>{' '}
+                              </Text>
                               {isAvailable}
                             </ListItem>
                           )}
@@ -332,7 +342,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                 </Flex>
               )}
             </MotionBox>
-            <MotionBox variants={cardVariant} key='3'>
+            <MotionBox variants={cardVariant} key='child-data'>
               <Flex
                 w='full'
                 h='full'
@@ -340,7 +350,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                 justifyContent='center'
               >
                 {childVenues && loadingData && (
-                  <Box overflow='scroll'>
+                  <Box overflow='auto'>
                     <Text
                       fontSize={{ base: '16px', lg: '18px' }}
                       fontWeight='500'

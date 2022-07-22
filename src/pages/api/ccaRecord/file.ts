@@ -65,7 +65,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: true,
                 error: null,
-                msg: 'Successfully populated CCA Records',
+                msg: recordRes.msg,
               };
               res.status(200).send(result);
               res.end();

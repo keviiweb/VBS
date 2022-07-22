@@ -80,7 +80,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
           } else {
             text.push(
               <Box key={`box-e-${key}`}>
-                <Text>{content[key].ccaName}</Text>
+                <Text>{content[key].ccaName} (Member)</Text>
               </Box>,
             );
           }
@@ -95,8 +95,8 @@ export default function UserModal({ isOpen, onClose, modalData }) {
 
   const fetchCCARecords = useCallback(
     async (emailField: string) => {
-      setSubmitButtonPressed(true);
       if (checkerString(emailField)) {
+        setSubmitButtonPressed(true);
         try {
           const rawResponse = await fetch('/api/ccaRecord/user', {
             method: 'POST',
@@ -115,8 +115,8 @@ export default function UserModal({ isOpen, onClose, modalData }) {
         } catch (error) {
           console.error(error);
         }
+        setSubmitButtonPressed(false);
       }
-      setSubmitButtonPressed(false);
     },
     [buildMemberList],
   );
@@ -222,50 +222,50 @@ export default function UserModal({ isOpen, onClose, modalData }) {
 
                         <List spacing={5}>
                           {checkerString(id) && (
-                            <ListItem>
+                            <ListItem key='user-id'>
                               <Text as='span' fontWeight='bold'>
                                 User ID:
-                              </Text>{' '}
+                              </Text>
                               {id}
                             </ListItem>
                           )}
                           {checkerString(name) && (
-                            <ListItem>
+                            <ListItem key='user-name'>
                               <Text as='span' fontWeight='bold'>
                                 Name:
-                              </Text>{' '}
+                              </Text>
                               {name}
                             </ListItem>
                           )}
                           {checkerString(email) && (
-                            <ListItem>
+                            <ListItem key='user-email'>
                               <Text as='span' fontWeight='bold'>
                                 Email:
-                              </Text>{' '}
+                              </Text>
                               {email}
                             </ListItem>
                           )}
                           {checkerString(studentID) && (
-                            <ListItem>
+                            <ListItem key='user-stud'>
                               <Text as='span' fontWeight='bold'>
                                 Student ID
-                              </Text>{' '}
+                              </Text>
                               {studentID}
                             </ListItem>
                           )}
                           {checkerString(roomNum) && (
-                            <ListItem>
+                            <ListItem key='user-rm'>
                               <Text as='span' fontWeight='bold'>
                                 Room Num:
-                              </Text>{' '}
+                              </Text>
                               {roomNum}
                             </ListItem>
                           )}
                           {checkerString(adminStr) && (
-                            <ListItem>
+                            <ListItem key='user-admin'>
                               <Text as='span' fontWeight='bold'>
                                 Admin:
-                              </Text>{' '}
+                              </Text>
                               {adminStr}
                             </ListItem>
                           )}
@@ -279,7 +279,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
                                   fontWeight='bold'
                                 >
                                   CCAs
-                                </Text>{' '}
+                                </Text>
                                 {ccaList}
                               </Stack>
                             </ListItem>

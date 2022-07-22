@@ -214,7 +214,7 @@ export default function SessionModal({
 
       if (
         modalDataField &&
-        modalDataField.expectedMName !== undefined &&
+        modalDataField.expectedMName &&
         modalDataField.expectedMName?.length > 0
       ) {
         await displayExpectedMembers(modalDataField.expectedMName);
@@ -222,7 +222,7 @@ export default function SessionModal({
 
       if (
         modalDataField &&
-        modalDataField.realityM !== undefined &&
+        modalDataField.realityM &&
         modalDataField.realityM?.length > 0
       ) {
         await displayRealityMembers(modalDataField.realityM);
@@ -322,7 +322,7 @@ export default function SessionModal({
                       <Box>
                         <List spacing={5}>
                           {checkerString(dateStr) && (
-                            <ListItem>
+                            <ListItem key='session-date'>
                               <Stack direction='row'>
                                 <Text
                                   textTransform='uppercase'
@@ -337,7 +337,7 @@ export default function SessionModal({
                           )}
 
                           {checkerString(time) && (
-                            <ListItem>
+                            <ListItem key='session-time'>
                               <Stack direction='row'>
                                 <Text
                                   textTransform='uppercase'
@@ -352,7 +352,7 @@ export default function SessionModal({
                           )}
 
                           {duration !== 0 && (
-                            <ListItem>
+                            <ListItem key='session-duration'>
                               <Stack direction='row'>
                                 <Text
                                   textTransform='uppercase'
@@ -367,7 +367,7 @@ export default function SessionModal({
                           )}
 
                           {checkerString(optionalStr) && (
-                            <ListItem>
+                            <ListItem key='session-opt'>
                               <Stack direction='row'>
                                 <Text
                                   textTransform='uppercase'
@@ -382,7 +382,7 @@ export default function SessionModal({
                           )}
 
                           {checkerString(remarks) && (
-                            <ListItem>
+                            <ListItem key='session-remark'>
                               <Stack direction='column'>
                                 <Text
                                   textTransform='uppercase'
@@ -436,7 +436,7 @@ export default function SessionModal({
                           )}
 
                           {leader && checkerString(ldrNotes) && (
-                            <ListItem>
+                            <ListItem key='ldr-note'>
                               <Stack direction='column'>
                                 <Text
                                   textTransform='uppercase'

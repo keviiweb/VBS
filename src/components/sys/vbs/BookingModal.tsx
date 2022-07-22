@@ -36,7 +36,7 @@ import { InfoOutlineIcon } from '@chakra-ui/icons';
  * Else, the modal is about the approved venue booking
  *
  * @param param0 Modal functions such as isOpen, onClose as well as data from handler
- * @returns
+ * @returns A modal containing Booking information
  */
 export default function BookingModal({
   isAdmin,
@@ -226,6 +226,7 @@ export default function BookingModal({
         await processConflicts(modalDataField.conflictRequestObj);
       } else if (
         isBookingRequest &&
+        modalDataField.conflictRequestObj &&
         modalDataField.conflictRequestObj?.length === 0
       ) {
         setConflict([]);
@@ -347,91 +348,91 @@ export default function BookingModal({
 
                         <List spacing={5}>
                           {checkerString(id) && (
-                            <ListItem>
+                            <ListItem key='book-ref'>
                               <Text as='span' fontWeight='bold'>
                                 Reference No:
-                              </Text>{' '}
+                              </Text>
                               {id}
                             </ListItem>
                           )}
 
                           {checkerString(venue) && (
-                            <ListItem>
+                            <ListItem key='book-ven'>
                               <Text as='span' fontWeight='bold'>
                                 Venue:
-                              </Text>{' '}
+                              </Text>
                               {venue}
                             </ListItem>
                           )}
 
                           {checkerString(date) && (
-                            <ListItem>
+                            <ListItem key='book-date'>
                               <Text as='span' fontWeight='bold'>
                                 Date:
-                              </Text>{' '}
+                              </Text>
                               {date}
                             </ListItem>
                           )}
 
                           {checkerString(timeSlots) && (
-                            <ListItem>
+                            <ListItem key='book-times'>
                               <Text as='span' fontWeight='bold'>
                                 Timeslot(s):
-                              </Text>{' '}
+                              </Text>
                               {timeSlots}
                             </ListItem>
                           )}
 
-                          {checkerString(email) && (
-                            <ListItem>
+                          {checkerString(userName) && (
+                            <ListItem key='book-name'>
                               <Text as='span' fontWeight='bold'>
                                 Contact Name:
-                              </Text>{' '}
+                              </Text>
                               {userName}
                             </ListItem>
                           )}
 
                           {checkerString(email) && (
-                            <ListItem>
+                            <ListItem key='book-email'>
                               <Text as='span' fontWeight='bold'>
                                 Contact Email:
-                              </Text>{' '}
+                              </Text>
                               {email}
                             </ListItem>
                           )}
 
                           {checkerString(cca) && (
-                            <ListItem>
+                            <ListItem key='book-cca'>
                               <Text as='span' fontWeight='bold'>
                                 CCA:
-                              </Text>{' '}
+                              </Text>
                               {cca}
                             </ListItem>
                           )}
 
                           {checkerString(purpose) && (
-                            <ListItem>
+                            <ListItem key='book-purp'>
                               <Text as='span' fontWeight='bold'>
                                 Purpose:
-                              </Text>{' '}
+                              </Text>
                               {purpose}
                             </ListItem>
                           )}
 
                           {checkerString(status) && (
-                            <ListItem>
+                            <ListItem key='book-status'>
                               <Text as='span' fontWeight='bold'>
                                 Status:
-                              </Text>{' '}
+                              </Text>
                               {status}
                             </ListItem>
                           )}
 
                           {checkerString(reason) && (
-                            <ListItem>
+                            <ListItem key='book-reason'>
                               <Text as='span' fontWeight='bold'>
                                 Rejected Reason:
-                              </Text>{' '}
+                              </Text>
                               {reason}
                             </ListItem>
                           )}

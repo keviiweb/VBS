@@ -12,9 +12,11 @@ export default function Error() {
 
   useEffect(() => {
     setTimeout(() => {
-      router.push('/sys');
+      if (router.isReady) {
+        router.push('/sys');
+      }
     }, 5000);
-  }, [router]);
+  }, [router, router.isReady]);
 
   return (
     <Flex minH='100vh' align='center' justify='center' bg='gray.50'>

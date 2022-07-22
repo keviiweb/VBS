@@ -622,6 +622,7 @@ export default function SessionEditModal({
       if (
         selectedData.current !== null &&
         selectedData.current.duration !== undefined &&
+        !Number.isNaN(hour) &&
         hour >= 0 &&
         hour <= selectedData.current.duration
       ) {
@@ -943,6 +944,7 @@ export default function SessionEditModal({
                       h='full'
                       alignItems='center'
                       justifyContent='center'
+                      mt={30}
                     >
                       <Stack spacing={10}>
                         <Stack
@@ -1078,6 +1080,7 @@ export default function SessionEditModal({
                         h='full'
                         alignItems='center'
                         justifyContent='center'
+                        mt={30}
                       >
                         <Stack spacing={10}>
                           <Stack
@@ -1150,13 +1153,14 @@ export default function SessionEditModal({
                         h='full'
                         alignItems='center'
                         justifyContent='center'
+                        mt={30}
                       >
                         <Stack spacing={10}>
                           <Stack
                             w={{ base: 'full', md: '500px', lg: '500px' }}
                             direction='row'
                           >
-                            {selectedData.current?.duration && (
+                            {selectedData.current?.duration !== undefined && (
                               <List spacing={5}>
                                 <ListItem>
                                   <Stack direction='row'>
@@ -1166,7 +1170,7 @@ export default function SessionEditModal({
                                       fontWeight='bold'
                                     >
                                       Duration
-                                    </Text>{' '}
+                                    </Text>
                                     <Text>
                                       {selectedData.current?.duration} Hours
                                     </Text>
@@ -1220,8 +1224,9 @@ export default function SessionEditModal({
                         h='full'
                         alignItems='center'
                         justifyContent='center'
+                        mt={30}
                       >
-                        <Stack spacing={10}>
+                        <Stack spacing={10} align='center'>
                           <Text color='red.500'>
                             Unable to mark attendance. The session has not
                             commenced.
@@ -1239,6 +1244,7 @@ export default function SessionEditModal({
                         h='full'
                         alignItems='center'
                         justifyContent='center'
+                        mt={30}
                       >
                         <Stack spacing={10}>
                           <Stack

@@ -519,7 +519,7 @@ export default function SessionCreateModal({
 
   const buildMemberList = useCallback(
     async (content: { count: number; res: CCARecord[] }) => {
-      if (content.res !== [] && content.count > 0) {
+      if (content.res.length > 0 && content.count > 0) {
         const buttons: JSX.Element[] = [];
 
         for (let key = 0; key < content.res.length; key += 1) {
@@ -555,6 +555,7 @@ export default function SessionCreateModal({
 
   const generateMemberList = useCallback(async () => {
     if (checkerString(ccaIDDB.current)) {
+      setSubmitButtonPressed(true);
       try {
         const rawResponse = await fetch('/api/ccaRecord/fetch', {
           method: 'POST',
@@ -573,16 +574,13 @@ export default function SessionCreateModal({
       } catch (error) {
         console.error(error);
       }
-
-      return true;
+      setSubmitButtonPressed(false);
     }
-    return false;
   }, [buildMemberList]);
 
   useEffect(() => {
     async function setupData(modalDataField: CCASession) {
       setLoadingData(true);
-      setSubmitButtonPressed(true);
 
       const ccaidField: string =
         modalDataField && modalDataField.ccaID ? modalDataField.ccaID : '';
@@ -598,8 +596,8 @@ export default function SessionCreateModal({
 
       await generateTimeSlots();
       await generateMemberList();
+
       setLoadingData(false);
-      setSubmitButtonPressed(false);
     }
 
     if (modalData) {
@@ -669,6 +667,7 @@ export default function SessionCreateModal({
                   h='full'
                   alignItems='center'
                   justifyContent='center'
+                  mt={30}
                 >
                   <Stack spacing={10}>
                     <Stack
@@ -803,6 +802,7 @@ export default function SessionCreateModal({
                     h='full'
                     alignItems='center'
                     justifyContent='center'
+                    mt={30}
                   >
                     <Stack spacing={10}>
                       <Stack
@@ -865,6 +865,7 @@ export default function SessionCreateModal({
                   h='full'
                   alignItems='center'
                   justifyContent='center'
+                  mt={30}
                 >
                   <Stack spacing={10}>
                     <Stack

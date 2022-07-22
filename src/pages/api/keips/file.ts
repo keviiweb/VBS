@@ -17,6 +17,14 @@ export const config = {
 };
 
 /**
+ * In this file, MATNET is defined as
+ * <last 4 digit of Student ID><last 4 digit of NUSNET ID>
+ *
+ * eg. Student ID: A1234567R, NUSNET: E0011232
+ * eg. 567R1232
+ */
+
+/**
  * Populates the KEIPS database through a CSV file
  *
  * This is an OWNER level request only

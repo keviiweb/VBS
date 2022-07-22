@@ -18,6 +18,14 @@ import { Result } from 'types/api';
 import { KEIPS, KEIPSCCA, KEIPSBonus } from 'types/misc/keips';
 
 /**
+ * In this file, MATNET is defined as
+ * <last 4 digit of Student ID><last 4 digit of NUSNET ID>
+ *
+ * eg. Student ID: A1234567R, NUSNET: E0011232
+ * eg. 567R1232
+ */
+
+/**
  * Renders a search page where users can type in their MATNET and returns the KEIPS points
  *
  *
@@ -285,7 +293,9 @@ export default function KEIPSComponent() {
         {!successData && (
           <Stack align='center'>
             <Heading fontSize='4xl'>KEVII</Heading>
-            <Text>Work in progress...</Text>
+            <Text>
+              {'<last 4 digit of Student ID><last 4 digit of NUSNET ID>'}{' '}
+            </Text>
           </Stack>
         )}
 

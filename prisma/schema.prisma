@@ -168,3 +168,12 @@ model KEIPS {
   created_at DateTime @default(now()) @db.DateTime(0)
   updated_at DateTime @default(now()) @db.DateTime(0)
 }
+
+model Log {
+  id      String    @id @default(cuid())
+  location  String
+  username   String
+  content   String
+  created_at DateTime @default(now()) @db.DateTime(0)
+  updated_at DateTime @default(now()) @db.DateTime(0)
+}

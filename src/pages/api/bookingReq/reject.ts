@@ -46,9 +46,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       );
 
       if (bookingRequest !== null) {
-        const isRequestApproved = await isApproved(bookingRequest);
-        const isRequestCancelled = await isCancelled(bookingRequest);
-        const isRequestRejected = await isRejected(bookingRequest);
+        const isRequestApproved: boolean = await isApproved(bookingRequest);
+        const isRequestCancelled: boolean = await isCancelled(bookingRequest);
+        const isRequestRejected: boolean = await isRejected(bookingRequest);
 
         if (isRequestApproved) {
           const timeSlots: number[] = convertSlotToArray(
@@ -56,7 +56,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             true,
           ) as number[];
 
-          const deleteBooking = await deleteVenueBooking(
+          const deleteBooking: Result = await deleteVenueBooking(
             bookingRequest,
             timeSlots,
           );
@@ -75,7 +75,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: true,
                 error: null,
-                msg: 'Booking request rejected',
+                msg: reject.msg,
               };
               res.status(200).send(result);
               res.end();
@@ -111,7 +111,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: true,
               error: null,
-              msg: 'Booking request rejected',
+              msg: reject.msg,
             };
             res.status(200).send(result);
             res.end();

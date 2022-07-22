@@ -104,7 +104,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 result = {
                   status: true,
                   error: null,
-                  msg: 'Booking request created',
+                  msg: createBooking.msg,
                 };
                 res.status(200).send(result);
                 res.end();

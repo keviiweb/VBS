@@ -55,7 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: true,
           error: '',
-          msg: 'Successfully deleted announcement',
+          msg: deleteAnnounceRequest.msg,
         };
         res.status(200).send(result);
         res.end();

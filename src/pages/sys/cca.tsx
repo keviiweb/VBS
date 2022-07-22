@@ -197,7 +197,7 @@ export default function CCA(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59',
+    'public, s-maxage=120, stale-while-revalidate=240',
   );
 
   let data: Result | null = null;

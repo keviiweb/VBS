@@ -124,13 +124,16 @@ export default function SessionEditConfirmationModal({
     if (members.length > 0) {
       const membersA: string[] = members.split(',');
       const text: JSX.Element[] = [];
-      for (let key = 0; key < membersA.length; key += 1) {
-        if (membersA[key]) {
-          text.push(
-            <Box key={`box-e-${key}`}>
-              <Text>{membersA[key]}</Text>
-            </Box>,
-          );
+
+      if (membersA.length > 0) {
+        for (let key = 0; key < membersA.length; key += 1) {
+          if (membersA[key]) {
+            text.push(
+              <Box key={`box-e-${key}`}>
+                <Text>{membersA[key]}</Text>
+              </Box>,
+            );
+          }
         }
       }
 

@@ -47,24 +47,28 @@ export const sendMessageToChannel = async (message: string): Promise<void> => {
 export const approvalBookingRequestMessageBuilder = (
   bookingRequest: BookingRequest,
 ): string => {
+  let returnMessage: string = '';
   if (bookingRequest.dateStr !== undefined) {
-    const venueName: string = bookingRequest.venue;
-    const date: string = bookingRequest.dateStr;
-    const timeSlots: string = bookingRequest.timeSlots;
-    const cca: string = bookingRequest.cca;
-
-    if (
-      checkerString(venueName) &&
-      checkerString(date) &&
-      checkerString(timeSlots) &&
-      checkerString(cca)
-    ) {
-      const returnMessage: string = `[APPROVED]\nCCA: ${cca}\nVenue: ${venueName}\nDate: ${date}\nTimeslot(s): ${timeSlots}`;
-      return returnMessage;
+    try {
+      const venueName: string = bookingRequest.venue;
+      const date: string = bookingRequest.dateStr;
+      const timeSlots: string = bookingRequest.timeSlots;
+      const cca: string = bookingRequest.cca;
+  
+      if (
+        checkerString(venueName) &&
+        checkerString(date) &&
+        checkerString(timeSlots) &&
+        checkerString(cca)
+      ) {
+        returnMessage = `[APPROVED]\nCCA: ${cca}\nVenue: ${venueName}\nDate: ${date}\nTimeslot(s): ${timeSlots}`;
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 
-  return '';
+  return returnMessage;
 };
 
 /**
@@ -78,26 +82,30 @@ export const approvalBookingRequestMessageBuilder = (
 export const rejectBookingRequestMessageBuilder = (
   bookingRequest: BookingRequest,
 ): string => {
-  if (
-    bookingRequest.dateStr !== undefined &&
-    bookingRequest.reason !== undefined
-  ) {
-    const venueName: string = bookingRequest.venue;
-    const date: string = bookingRequest.dateStr;
-    const timeSlots: string = bookingRequest.timeSlots;
-    const cca: string = bookingRequest.cca;
-    const reason: string = bookingRequest.reason;
-
+  let returnMessage: string = '';
+  try {
     if (
-      checkerString(venueName) &&
-      checkerString(date) &&
-      checkerString(timeSlots) &&
-      checkerString(cca)
+      bookingRequest.dateStr !== undefined &&
+      bookingRequest.reason !== undefined
     ) {
-      const returnMessage: string = `[REJECTED]\nCCA: ${cca}\nVenue: ${venueName}\nDate: ${date}\nTimeslot(s): ${timeSlots}\nReason: ${reason}`;
-      return returnMessage;
+      const venueName: string = bookingRequest.venue;
+      const date: string = bookingRequest.dateStr;
+      const timeSlots: string = bookingRequest.timeSlots;
+      const cca: string = bookingRequest.cca;
+      const reason: string = bookingRequest.reason;
+  
+      if (
+        checkerString(venueName) &&
+        checkerString(date) &&
+        checkerString(timeSlots) &&
+        checkerString(cca)
+      ) {
+        returnMessage = `[REJECTED]\nCCA: ${cca}\nVenue: ${venueName}\nDate: ${date}\nTimeslot(s): ${timeSlots}\nReason: ${reason}`;
+      }
     }
+  } catch (error) {
+    console.error(error);
   }
 
-  return '';
+  return returnMessage;
 };

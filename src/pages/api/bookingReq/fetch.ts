@@ -68,6 +68,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const limit: number = limitQuery !== undefined ? Number(limitQuery) : 200;
     const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
     let successBooking: boolean = false;
+    let sessionPresent: boolean = true;
 
     if (query !== undefined && checkerString(query) && query === 'USER') {
       count = await countBookingByUser(session);
@@ -117,6 +118,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         successBooking = true;
       }
     } else {
+      successBooking = false;
+      sessionPresent = false;
+
       result = {
         status: false,
         error: 'Unauthorized access',
@@ -127,7 +131,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const parsedBooking: BookingRequest[] = [];
-    if (successBooking) {
+    if (successBooking && sessionPresent) {
       if (count > 0 && bookings !== null && bookings.length > 0) {
         for (let booking = 0; booking < bookings.length; booking += 1) {
           if (bookings[booking]) {
@@ -249,7 +253,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       res.status(200).send(result);
       res.end();
-    } else {
+    } else if (sessionPresent) {
       result = {
         status: false,
         error: 'Cannot get all bookings',

@@ -45,6 +45,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           process.env.SESSION_EDITABLE_DAY !== undefined
             ? Number(process.env.SESSION_EDITABLE_DAY)
             : 14;
+
         if (compareDate(sessionDate, threshold)) {
           let lockSessionSuccess = true;
           if (editable) {

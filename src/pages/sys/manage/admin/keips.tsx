@@ -44,6 +44,14 @@ const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
 /**
+ * In this file, MATNET is defined as
+ * <last 4 digit of Student ID><last 4 digit of NUSNET ID>
+ *
+ * eg. Student ID: A1234567R, NUSNET: E0011232
+ * eg. 567R1232
+ */
+
+/**
  * Renders a component that displays the list of KEIPS points available
  *
  * Creating and Editing a KEIPS record is an OWNER-level task only
@@ -91,11 +99,10 @@ export default function ManageKEIPS(props: any) {
       event.preventDefault();
       if (selectedFileKEIPSDB.current !== null) {
         setSubmitButtonPressed(true);
-
-        const dataField = new FormData();
-        dataField.append('file', selectedFileKEIPSDB.current);
-
         try {
+          const dataField = new FormData();
+          dataField.append('file', selectedFileKEIPSDB.current);
+
           const rawResponse = await fetch('/api/keips/file', {
             method: 'POST',
             body: dataField,
@@ -121,13 +128,10 @@ export default function ManageKEIPS(props: any) {
               isClosable: true,
             });
           }
-
-          setSubmitButtonPressed(false);
-          return true;
         } catch (error) {
-          setSubmitButtonPressed(false);
-          return false;
+          console.error(error);
         }
+        setSubmitButtonPressed(false);
       } else {
         setErrorFileKEIPS('Please upload a file');
       }
@@ -216,12 +220,16 @@ export default function ManageKEIPS(props: any) {
     target: { files: any[] | any };
   }) => {
     setErrorFileKEIPS('');
-    const file = event.target.files[0];
-    if (file !== undefined && file !== null && file.name !== undefined) {
-      selectedFileKEIPSDB.current = file;
-      setFileNameKEIPS(file.name);
-    } else {
-      setErrorFileKEIPS('File name not found');
+    try {
+      const file = event.target.files[0];
+      if (file !== undefined && file !== null && file.name !== undefined) {
+        selectedFileKEIPSDB.current = file;
+        setFileNameKEIPS(file.name);
+      } else {
+        setErrorFileKEIPS('File name not found');
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -344,8 +352,7 @@ export default function ManageKEIPS(props: any) {
         animate='animate'
       >
         {level === levels.OWNER && (
-          <MotionBox>
-            {' '}
+          <MotionBox key='populate-keips'>
             <Stack
               spacing={4}
               w='full'
@@ -454,7 +461,7 @@ export default function ManageKEIPS(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59',
+    'public, s-maxage=120, stale-while-revalidate=240',
   );
 
   let data: number = levels.USER;

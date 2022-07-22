@@ -90,6 +90,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
                     const attendanceRes: Result =
                       await fetchAllCCAAttendanceBySession(record.id);
+
                     if (attendanceRes.status && attendanceRes.msg) {
                       const attendance: CCAAttendance[] = attendanceRes.msg;
                       for (let key = 0; key < attendance.length; key += 1) {

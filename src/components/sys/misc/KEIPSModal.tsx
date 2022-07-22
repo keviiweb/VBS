@@ -90,8 +90,10 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
         }
       }
 
-      setBonusCCA(totalData);
-      setShowBonus(true);
+      if (totalData.length > 0) {
+        setBonusCCA(totalData);
+        setShowBonus(true);
+      }
     }
   }, []);
 
@@ -117,8 +119,10 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
         }
       }
 
-      setAllCCA(totalData);
-      setShowAll(true);
+      if (totalData.length > 0) {
+        setAllCCA(totalData);
+        setShowAll(true);
+      }
     }
   }, []);
 
@@ -144,14 +148,16 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
         }
       }
 
-      setTopCCA(totalData);
-      setShowTop(true);
+      if (totalData.length > 0) {
+        setTopCCA(totalData);
+        setShowTop(true);
+      }
     }
   }, []);
 
   const includeActionButton = useCallback(
     async (record: KEIPS) => {
-      if (record) {
+      if (record !== null && record !== undefined) {
         const recordTop: string[] = record.topCCA.split('|');
         const recordAll: string[] = record.allCCA.split('|');
         const recordBonus: string[] = record.bonusCCA.split('|');
@@ -329,21 +335,23 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
                 >
                   <Box>
                     <Stack spacing={30}>
-                      <Box w='900px' overflow='auto'>
-                        <Stack align='center' justify='center' spacing={10}>
-                          <TableWidget
-                            key={1}
-                            columns={columns}
-                            data={data}
-                            controlledPageCount={pageCount}
-                            dataHandler={null}
-                            showPage={false}
-                          />
-                        </Stack>
-                      </Box>
+                      {data.length > 0 && (
+                        <Box w='900px' overflow='auto' key='box-overall'>
+                          <Stack align='center' justify='center' spacing={10}>
+                            <TableWidget
+                              key={1}
+                              columns={columns}
+                              data={data}
+                              controlledPageCount={pageCount}
+                              dataHandler={null}
+                              showPage={false}
+                            />
+                          </Stack>
+                        </Box>
+                      )}
 
                       {showTop && topCCA.length > 0 && (
-                        <Box w='900px' overflow='auto'>
+                        <Box w='900px' overflow='auto' key='box-top'>
                           <Stack align='center' justify='center'>
                             <Text>Top CCAs</Text>
                             <TableWidget
@@ -359,7 +367,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
                       )}
 
                       {showAll && allCCA.length > 0 && (
-                        <Box w='900px' overflow='auto'>
+                        <Box w='900px' overflow='auto' key='box-all'>
                           <Stack align='center' justify='center'>
                             <Text>All CCAs</Text>
                             <TableWidget
@@ -375,7 +383,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
                       )}
 
                       {showBonus && bonusCCA.length > 0 && (
-                        <Box w='900px' overflow='auto'>
+                        <Box w='900px' overflow='auto' key='box-bonus'>
                           <Stack align='center' justify='center'>
                             <Text>Bonus</Text>
                             <TableWidget

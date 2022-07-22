@@ -28,6 +28,7 @@ import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 
 import Loading from '@components/sys/misc/Loading';
+import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { checkerString, checkerNumber, PERSONAL } from '@constants/sys/helper';
 import { TimeSlot } from 'types/vbs/timeslot';
@@ -85,6 +86,8 @@ export default function VenueBookingModalConfirmation({
   const [submitting, setSubmitting] = useState(false);
 
   const timeouts = useRef<NodeJS.Timeout[]>([]);
+
+  const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
   const check = (timeSlotsField: TimeSlot[]): boolean => {
     if (timeSlotsField.length === 0) {
@@ -306,6 +309,7 @@ export default function VenueBookingModalConfirmation({
 
   const buildCCAList = async () => {
     const selection: JSX.Element[] = [];
+    setSubmitButtonPressed(true);
     try {
       const rawResponse = await fetch('/api/cca', {
         headers: {
@@ -314,33 +318,36 @@ export default function VenueBookingModalConfirmation({
         },
       });
       const content: Result = await rawResponse.json();
-      if (content.status && content.msg.length > 0) {
-        CCALIST.current = [];
-        const ccaContent: CCA[] = content.msg;
+      if (content.status) {
+        if (content.msg !== null && content.msg !== undefined) {
+          CCALIST.current = [];
+          const ccaContent: CCA[] = content.msg;
 
-        selection.push(<option key='' value='' aria-label='default' />);
+          selection.push(<option key='' value='' aria-label='default' />);
 
-        for (let key = 0; key < ccaContent.length; key += 1) {
-          if (ccaContent[key]) {
-            CCALIST.current.push({
-              id: ccaContent[key].id,
-              name: ccaContent[key].name,
-            });
-            selection.push(
-              <option key={ccaContent[key].id} value={ccaContent[key].id}>
-                {ccaContent[key].name}
-              </option>,
-            );
+          if (ccaContent.length > 0) {
+            for (let key = 0; key < ccaContent.length; key += 1) {
+              if (ccaContent[key]) {
+                CCALIST.current.push({
+                  id: ccaContent[key].id,
+                  name: ccaContent[key].name,
+                });
+                selection.push(
+                  <option key={ccaContent[key].id} value={ccaContent[key].id}>
+                    {ccaContent[key].name}
+                  </option>,
+                );
+              }
+            }
           }
+
+          setCCAList(selection);
         }
-
-        setCCAList(selection);
       }
-
-      return true;
     } catch (error) {
-      return false;
+      console.error(error);
     }
+    setSubmitButtonPressed(false);
   };
 
   useEffect(() => {
@@ -365,25 +372,35 @@ export default function VenueBookingModalConfirmation({
     }
   }, [modalData]);
 
-  const setTypeHelper = (event) => {
-    if (event) {
-      if (Number(event) === 2) {
-        typeDB.current = '';
-        setShowCCAs(true);
-      } else {
-        typeDB.current = PERSONAL;
-        setShowCCAs(false);
-      }
+  const setTypeHelper = (event: any) => {
+    try {
+      if (event) {
+        if (Number(event) === 2) {
+          typeDB.current = '';
+          setShowCCAs(true);
+        } else {
+          typeDB.current = PERSONAL;
+          setShowCCAs(false);
+        }
 
-      setType(event);
+        setType(event);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
   const onCCASelectionChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    typeDB.current = event.target.value;
-    setCCASelection(event.target.value);
+    try {
+      if (event.target.value) {
+        typeDB.current = event.target.value;
+        setCCASelection(event.target.value);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -401,6 +418,11 @@ export default function VenueBookingModalConfirmation({
         {!submitting && <ModalCloseButton />}
         <ModalHeader />
         <ModalBody>
+          <LoadingModal
+            isOpen={!!submitButtonPressed}
+            onClose={() => setSubmitButtonPressed(false)}
+          />
+
           {submitting && (
             <Box>
               <Loading message='Submitting request...' />
@@ -432,7 +454,7 @@ export default function VenueBookingModalConfirmation({
               initial='initial'
               animate='animate'
             >
-              <MotionBox variants={cardVariant} key='2'>
+              <MotionBox variants={cardVariant} key='cca-confirm'>
                 <Flex align='center' justify='center' mt={-10}>
                   <Stack spacing={8} mx='auto' maxW='lg' py={12} px={6}>
                     <Stack align='center'>
@@ -451,11 +473,11 @@ export default function VenueBookingModalConfirmation({
                         >
                           <Stack direction='row'>
                             <Radio value='1'>{PERSONAL}</Radio>
-                            <Radio value='2'>CCA</Radio>
+                            {ccaList.length > 0 && <Radio value='2'>CCA</Radio>}
                           </Stack>
                         </RadioGroup>
 
-                        {showCCAs && ccaList && (
+                        {showCCAs && ccaList.length > 0 && (
                           <Select
                             onChange={onCCASelectionChange}
                             value={ccaSelection}
@@ -482,7 +504,7 @@ export default function VenueBookingModalConfirmation({
 
                     <Stack direction='row'>
                       <Text mr={8}>
-                        I have confirmed that the details are correct{' '}
+                        I have confirmed that the details are correct
                       </Text>
                       <Switch
                         isRequired

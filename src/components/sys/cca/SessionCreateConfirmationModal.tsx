@@ -116,8 +116,10 @@ export default function SessionCreateConfirmationModal({
         }
       }
 
-      setDisplayedExpected(text);
-      setExpectedBool(true);
+      if (text.length > 0) {
+        setDisplayedExpected(text);
+        setExpectedBool(true);
+      }
     } else {
       setDisplayedExpected([]);
     }

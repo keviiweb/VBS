@@ -19,6 +19,7 @@ import {
 import CalendarWidget from '@components/sys/vbs/CalendarWidget';
 import TimeSlotButton from '@components/sys/vbs/TimeSlotButton';
 import Loading from '@components/sys/misc/Loading';
+import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
@@ -76,6 +77,7 @@ export default function VenueBookingModal({
   const selectedTimeSlots = useRef<TimeSlot[]>([]);
 
   const [errorMsg, setError] = useState('');
+  const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
   const check = (timeSlotsField: TimeSlot[]) => {
     if (timeSlotsField.length === 0) {
@@ -222,6 +224,7 @@ export default function VenueBookingModal({
   useEffect(() => {
     async function fetchData() {
       if (!isChildVenue) {
+        setSubmitButtonPressed(true);
         try {
           const rawResponse = await fetch('/api/venue/child', {
             method: 'POST',
@@ -240,14 +243,11 @@ export default function VenueBookingModal({
               setHasChildVenue(true);
             }
           }
-
-          return true;
         } catch (error) {
-          return false;
+          console.error(error);
         }
+        setSubmitButtonPressed(false);
       }
-
-      return true;
     }
 
     if (modalData) {
@@ -279,7 +279,7 @@ export default function VenueBookingModal({
       let text: string = 'Selected timeslot(s): ';
       let counter: number = 0;
       const total: number = countSlots(slots);
-      if (slots) {
+      if (slots.length > 0) {
         for (let key = 0; key < slots.length; key += 1) {
           if (Object.prototype.hasOwnProperty.call(slots, key)) {
             if (slots[key]) {
@@ -408,40 +408,40 @@ export default function VenueBookingModal({
           rawSlots.current = timeS;
           buildTimeSlot(timeS);
         }
-
-        return true;
       } catch (error) {
-        return false;
+        console.error(error);
       }
     }
-
-    return false;
   };
 
   // Child venue generation
   const onChildVenueChange = (event: { target: { value: string } }) => {
     setError('');
 
-    if (event.target.value) {
-      selectedVenue.current = event.target.value;
+    try {
+      if (event && event.target.value) {
+        selectedVenue.current = event.target.value;
 
-      if (rawDate.current !== null) {
-        if (isValidDate(rawDate.current)) {
-          handleDate(rawDate.current);
-          selectedTimeSlots.current = [];
-          displaySlots([]);
+        if (rawDate.current !== null) {
+          if (isValidDate(rawDate.current)) {
+            handleDate(rawDate.current);
+            selectedTimeSlots.current = [];
+            displaySlots([]);
+          }
+        }
+
+        for (let key = 0; key < rawVenue.current.length; key += 1) {
+          const ven: Venue = rawVenue.current[key];
+          if (ven.id === event.target.value) {
+            setDescription(ven.description);
+            setCapacity(ven.capacity.toString());
+            setOpeningHours(ven.openingHours);
+            setName(ven.name);
+          }
         }
       }
-
-      for (let key = 0; key < rawVenue.current.length; key += 1) {
-        const ven: Venue = rawVenue.current[key];
-        if (ven.id === event.target.value) {
-          setDescription(ven.description);
-          setCapacity(ven.capacity.toString());
-          setOpeningHours(ven.openingHours);
-          setName(ven.name);
-        }
-      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -460,6 +460,11 @@ export default function VenueBookingModal({
         <ModalCloseButton />
         <ModalHeader>{name}</ModalHeader>
         <ModalBody>
+          <LoadingModal
+            isOpen={!!submitButtonPressed}
+            onClose={() => setSubmitButtonPressed(false)}
+          />
+
           <Text>Description: {description}</Text>
           <Text>Opening Hours: {openingHours}</Text>
           <Text>Capacity: {capacity}</Text>
@@ -500,7 +505,7 @@ export default function VenueBookingModal({
               calendarMin={calendarMin}
               calendarMax={calendarMax}
             />
-            <MotionBox variants={cardVariant} key='2'>
+            <MotionBox variants={cardVariant} key='timeslot-box'>
               <Flex
                 w='full'
                 h='full'

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, FormControl, FormLabel, Input, Stack } from '@chakra-ui/react';
+import { checkerString } from '@constants/sys/helper';
 
 /**
  * Member button used for selecting an expected member
@@ -39,17 +40,23 @@ export default function MemberButton({
 
       {reality && (
         <FormControl id='hours'>
-          <FormLabel>Hours for {name}</FormLabel>
+          {checkerString(name) && <FormLabel>Hours for {name}</FormLabel>}
+
           <Input
-            type='number'
+            type='text'
             placeholder='Hours'
-            step={0.1}
             size='lg'
             onChange={(event) => {
               if (event.cancelable) {
                 event.preventDefault();
               }
-              handleClick(id, name, Number(event.currentTarget.value));
+
+              if (
+                event.currentTarget.value !== null &&
+                event.currentTarget.value !== undefined
+              ) {
+                handleClick(id, name, Number(event.currentTarget.value));
+              }
             }}
           />
         </FormControl>

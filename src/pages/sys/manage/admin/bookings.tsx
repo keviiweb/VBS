@@ -108,7 +108,6 @@ export default function ManageBooking() {
     async (id: string) => {
       if (checkerString(id)) {
         setSubmitButtonPressed(true);
-
         try {
           const rawResponse = await fetch('/api/bookingReq/approve', {
             method: 'POST',
@@ -122,11 +121,9 @@ export default function ManageBooking() {
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
-            setSubmitButtonPressed(false);
-
             toast({
               title: 'Request approved.',
-              description: 'An email has been sent to the requester',
+              description: content.msg,
               status: 'success',
               duration: 5000,
               isClosable: true,
@@ -134,8 +131,6 @@ export default function ManageBooking() {
             await handleTabChange(bookingChoiceDB.current);
             await fetchBookings(venueIDDB.current);
           } else {
-            setSubmitButtonPressed(false);
-
             toast({
               title: 'Error',
               description: content.error,
@@ -144,15 +139,11 @@ export default function ManageBooking() {
               isClosable: true,
             });
           }
-
-          return true;
         } catch (error) {
-          setSubmitButtonPressed(false);
-          return false;
+          console.error(error);
         }
+        setSubmitButtonPressed(false);
       }
-
-      return false;
     },
     [handleTabChange, toast, fetchBookings],
   );
@@ -162,7 +153,6 @@ export default function ManageBooking() {
       const { id } = contentField;
       if (id !== undefined && checkerString(id)) {
         setSubmitButtonPressed(true);
-
         try {
           const rawResponse = await fetch('/api/bookingReq/reject', {
             method: 'POST',
@@ -177,11 +167,9 @@ export default function ManageBooking() {
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
-            setSubmitButtonPressed(false);
-
             toast({
               title: 'Request rejected.',
-              description: 'An email has been sent to the requester',
+              description: content.msg,
               status: 'success',
               duration: 5000,
               isClosable: true,
@@ -189,8 +177,6 @@ export default function ManageBooking() {
             await handleTabChange(bookingChoiceDB.current);
             await fetchBookings(venueIDDB.current);
           } else {
-            setSubmitButtonPressed(false);
-
             toast({
               title: 'Error',
               description: content.error,
@@ -199,13 +185,10 @@ export default function ManageBooking() {
               isClosable: true,
             });
           }
-          return true;
         } catch (error) {
-          setSubmitButtonPressed(false);
-          return false;
+          console.error(error);
         }
-      } else {
-        return false;
+        setSubmitButtonPressed(false);
       }
     },
     [handleTabChange, toast, fetchBookings],
@@ -223,12 +206,14 @@ export default function ManageBooking() {
   );
 
   const handleReject = useCallback(async (content: BookingRequest) => {
-    const { id } = content;
-    if (id !== undefined && checkerString(id)) {
-      setRejectModalData(content);
+    try {
+      const { id } = content;
+      if (id !== undefined && checkerString(id)) {
+        setRejectModalData(content);
+      }
+    } catch (error) {
+      console.error(error);
     }
-
-    return false;
   }, []);
 
   const handleDetails = useCallback((content: BookingRequest) => {
@@ -404,7 +389,7 @@ export default function ManageBooking() {
         (content.res !== undefined || content.res !== null)
       ) {
         const booking: BookingRequest[] = content.res;
-        if (booking !== []) {
+        if (booking.length > 0) {
           for (let key = 0; key < booking.length; key += 1) {
             if (booking[key]) {
               const dataField: BookingRequest = booking[key];
@@ -623,6 +608,7 @@ export default function ManageBooking() {
   );
 
   const fetchVenue = useCallback(async () => {
+    setSubmitButtonPressed(true);
     try {
       const rawResponse = await fetch('/api/venue/fetch', {
         headers: {
@@ -637,6 +623,7 @@ export default function ManageBooking() {
     } catch (error) {
       console.error(error);
     }
+    setSubmitButtonPressed(false);
   }, [generateVenueDropdown]);
 
   const populateCalendar = useCallback(async (content: Booking[]) => {
@@ -700,11 +687,8 @@ export default function ManageBooking() {
         } catch (error) {
           console.error(error);
         }
-
         setSubmitButtonPressed(false);
-        return true;
       }
-      return false;
     },
     [populateCalendar],
   );
@@ -720,7 +704,6 @@ export default function ManageBooking() {
             await fetchBookings(value);
             venueIDDB.current = value;
             setVenueID(value);
-
             setSelectedVenue(ven.name);
             break;
           }
@@ -805,11 +788,13 @@ export default function ManageBooking() {
     selection.push(<option key='' value='' aria-label='Default' />);
 
     Object.keys(levels).forEach((key) => {
-      selection.push(
-        <option key={levels[key]} value={levels[key]}>
-          {key}
-        </option>,
-      );
+      if (levels[key]) {
+        selection.push(
+          <option key={levels[key]} value={levels[key]}>
+            {key}
+          </option>,
+        );
+      }
     });
 
     setBookingChoiceDropdown(selection);
@@ -843,6 +828,7 @@ export default function ManageBooking() {
           p={4}
           color='gray.900'
           shadow='base'
+          key='info-counter'
         >
           <Text>
             Select between different dropdown menu items to retrieve the latest
@@ -857,6 +843,7 @@ export default function ManageBooking() {
           p={8}
           color='gray.700'
           shadow='base'
+          key='booking-calendar'
         >
           <Stack direction='row'>
             <Heading size='sm' mb={4}>
@@ -874,7 +861,7 @@ export default function ManageBooking() {
             </Stack>
           )}
 
-          {selectedVenue && (
+          {venueDropdown && selectedVenue && (
             <BookingCalendar
               slotMax={endTime}
               slotMin={startTime}
@@ -893,6 +880,7 @@ export default function ManageBooking() {
           p={8}
           color='gray.700'
           shadow='base'
+          key='booking-table'
         >
           <Stack direction='row'>
             <Heading size='sm' mb={4}>

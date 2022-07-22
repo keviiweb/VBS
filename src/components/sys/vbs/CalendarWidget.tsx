@@ -33,21 +33,22 @@ export default function CalendarWidget({
   }
 
   useEffect(() => {
-    async function setDates() {
+    async function setDates(minField: number, maxField: number) {
+      min.current = minField;
+      max.current = maxField;
+
       const current = new Date();
       setMinDate(addDays(current, Number(min.current)));
       setMaxDate(addDays(current, Number(max.current)));
     }
 
     if (calendarMax && calendarMin) {
-      min.current = calendarMin;
-      max.current = calendarMax;
-      setDates();
+      setDates(Number(calendarMin), Number(calendarMax));
     }
   }, [calendarMin, calendarMax]);
 
   const handleChange = async (date: Date) => {
-    const currDate = moment.tz(date, 'Asia/Singapore').toDate();
+    const currDate = moment.tz(date, locale).toDate();
     setDate(currDate);
     await selectedDate(currDate);
   };

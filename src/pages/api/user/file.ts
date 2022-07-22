@@ -65,7 +65,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: true,
                 error: null,
-                msg: 'Successfully created users',
+                msg: user.msg,
               };
               res.status(200).send(result);
               res.end();

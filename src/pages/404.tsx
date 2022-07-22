@@ -14,9 +14,11 @@ export default function Error404() {
 
   useEffect(() => {
     setTimeout(() => {
-      router.push('/');
+      if (router.isReady) {
+        router.push('/');
+      }
     }, 5000);
-  }, [router]);
+  }, [router, router.isReady]);
 
   return (
     <Flex minH='100vh' align='center' justify='center' bg='gray.50'>

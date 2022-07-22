@@ -58,37 +58,37 @@ export default function AnnouncementComponent() {
       viewport={{ once: true, amount: 0.2 }}
     >
       {!loading && slides.length > 0 && (
-        <Text
-          mt={2}
-          mb={6}
-          fontSize={{ base: '2xl', sm: '3xl', lg: '4xl' }}
-          lineHeight='5'
-          fontWeight='bold'
-          letterSpacing='tight'
-          color='gray.900'
-        >
-          CURRENT EVENTS
-        </Text>
-      )}
+        <Box>
+          <Text
+            mt={2}
+            mb={6}
+            fontSize={{ base: '2xl', sm: '3xl', lg: '4xl' }}
+            lineHeight='5'
+            fontWeight='bold'
+            letterSpacing='tight'
+            color='gray.900'
+          >
+            CURRENT EVENTS
+          </Text>
 
-      {!loading && slides.length > 0 && (
-        <MotionSimpleGrid
-          columns={{ base: 1, md: 1, lg: 2, xl: 3 }}
-          pos='relative'
-          gap={{ base: 8, sm: 10 }}
-          px={5}
-          py={6}
-          p={{ sm: 8 }}
-          variants={parentVariant}
-          initial='initial'
-          animate='animate'
-        >
-          {slides.map((slide, sid) => (
-            <MotionBox key={sid} variants={cardVariant}>
-              <AnnouncementCard product={slide} />
-            </MotionBox>
-          ))}
-        </MotionSimpleGrid>
+          <MotionSimpleGrid
+            columns={{ base: 1, md: 1, lg: 2, xl: 3 }}
+            pos='relative'
+            gap={{ base: 8, sm: 10 }}
+            px={5}
+            py={6}
+            p={{ sm: 8 }}
+            variants={parentVariant}
+            initial='initial'
+            animate='animate'
+          >
+            {slides.map((slide, sid) => (
+              <MotionBox key={sid} variants={cardVariant}>
+                <AnnouncementCard product={slide} />
+              </MotionBox>
+            ))}
+          </MotionSimpleGrid>
+        </Box>
       )}
 
       {!loading && slides.length === 0 && (
