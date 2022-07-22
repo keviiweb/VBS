@@ -356,6 +356,7 @@ export const createVenue = async (
     });
 
     if (venue) {
+      await logger('createVenue', session.user.email, `Successfully created ${venue.name}`);
       result = {
         status: true,
         error: '',
@@ -393,6 +394,7 @@ export const editVenue = async (
     });
 
     if (venue) {
+      await logger('editVenue', session.user.email, `Successfully updated ${venue.name}`);
       result = {
         status: true,
         error: '',

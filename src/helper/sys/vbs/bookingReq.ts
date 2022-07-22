@@ -638,12 +638,15 @@ export const setApprove = async (
             console.error(error);
           }
         }
+
+        await logger('setApprove', session.user.email, 'Successfully updated request on approval');
         result = {
           status: true,
           error: null,
           msg: 'Successfully updated request on approval',
         };
       } else {
+        await logger('setApprove', session.user.email,  'Error in updating');
         result = { status: false, error: 'Error in updating', msg: '' };
       }
     } else {
@@ -749,12 +752,14 @@ export const setReject = async (
           }
         }
 
+        await logger('setReject', session.user.email, 'Successfully updated request on reject');
         result = {
           status: true,
           error: null,
           msg: 'Successfully updated request on reject',
         };
       } else {
+        await logger('setReject', session.user.email, 'Error in updating');
         result = { status: false, error: 'Error in updating', msg: '' };
       }
     } else if (bookingRequest) {
@@ -845,6 +850,7 @@ export const setCancel = async (
           }
         }
 
+        await logger('setCancel', session.user.email, 'Successfully updated request on cancel');
         result = {
           status: true,
           error: null,
@@ -986,12 +992,14 @@ export const setRejectConflicts = async (
       }
 
       if (success) {
+        await logger('setRejectConflicts', session.user.email, 'Successfully rejected conflicting timeslots');
         result = {
           status: true,
           error: null,
           msg: 'Successfully rejected conflicting timeslots',
         };
       } else {
+        await logger('setRejectConflicts', session.user.email, 'Failed to reject conflicting timeslots');
         result = {
           status: false,
           error: 'Failed to reject conflicting timeslots',
@@ -1036,12 +1044,14 @@ export const updateConflictingIDs = async (
       });
 
       if (update) {
+        await logger('updateConflictingIDs', session.user.email, 'Successfully updated request on reject');
         result = {
           status: true,
           error: null,
           msg: 'Successfully updated request on reject',
         };
       } else {
+        await logger('updateConflictingIDs', session.user.email, 'Error in updating');
         result = { status: false, error: 'Error in updating', msg: '' };
       }
     } else {
@@ -1070,6 +1080,13 @@ export const createVenueBookingRequest = async (
       data: data,
     });
 
+    if (bookedTimeSlots) {
+      await logger(
+        'createVenueBookingRequest',
+        session.user.email,
+        `Successfully created venue booking request`,
+      );
+    }
     return bookedTimeSlots;
   } catch (error) {
     console.error(error);
@@ -1126,12 +1143,14 @@ export const notifyConflicts = async (
       }
 
       if (success) {
+        await logger('notifyConflicts', session.user.email, 'Successfully notified conflicting bookings');
         result = {
           status: true,
           error: null,
           msg: 'Successfully notified conflicting bookings',
         };
       } else {
+        await logger('notifyConflicts', session.user.email, 'Failed to notify conflicting bookings');
         result = {
           status: false,
           error: 'Failed to notify conflicting bookings',
@@ -1207,8 +1226,10 @@ export const notifyConflictsEmail = async (
         try {
           await sendNotifyMail(bookingRequest.email, data);
           result = { status: true, error: null, msg: 'Successfully notified!' };
+          await logger('notifyConflictsEmail', session.user.email, 'Successfully notified!');
         } catch (error) {
           console.error(error);
+          await logger('notifyConflictsEmail', session.user.email, error.message);
           result = { status: false, error: 'Failed to notify users', msg: '' };
         }
       }

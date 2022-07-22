@@ -59,12 +59,14 @@ export const createAnnouncement = async (
     });
 
     if (announce) {
+      await logger('createAnnouncement', session.user.email, 'Successfully created announcement');
       result = {
         status: true,
         error: '',
         msg: 'Successfully created announcement',
       };
     } else {
+      await logger('createAnnouncement', session.user.email, 'Failed to create announcement');
       result = {
         status: false,
         error: 'Failed to create announcement',
@@ -100,12 +102,14 @@ export const editAnnouncement = async (
     });
 
     if (announce) {
+      await logger('editAnnouncement', session.user.email, 'Successfully updated announcement');
       result = {
         status: true,
         error: '',
         msg: 'Successfully updated announcement',
       };
     } else {
+      await logger('editAnnouncement', session.user.email, 'Failed to update announcement');
       result = {
         status: false,
         error: 'Failed to update announcement',
@@ -140,12 +144,14 @@ export const deleteAnnouncement = async (
     });
 
     if (announce) {
+      await logger('deleteAnnouncement', session.user.email,'Successfully deleted announcement');
       result = {
         status: true,
         error: '',
         msg: 'Successfully deleted announcement',
       };
     } else {
+      await logger('deleteAnnouncement', session.user.email, 'Failed to delete announcement');
       result = {
         status: false,
         error: 'Failed to delete announcement',

@@ -183,12 +183,14 @@ export const editSession = async (
     });
 
     if (sess) {
+      await logger('editSession', session.user.email, `Successfully updated session`);
       result = {
         status: true,
         error: '',
         msg: `Successfully updated session`,
       };
     } else {
+      await logger('editSession', session.user.email, 'Failed to update session',);
       result = { status: false, error: 'Failed to update session', msg: '' };
     }
   } catch (error) {
@@ -261,12 +263,14 @@ export const deleteSessionByID = async (
     });
 
     if (sess) {
+      await logger('deleteSessionByID', session.user.email, `Successfully deleted session`);
       result = {
         status: true,
         error: '',
         msg: `Successfully deleted session`,
       };
     } else {
+      await logger('deleteSessionByID', session.user.email, 'Failed to delete session');
       result = { status: false, error: 'Failed to delete session', msg: '' };
     }
   } catch (error) {
@@ -296,12 +300,14 @@ export const createSession = async (
     });
 
     if (sess) {
+      await logger('createSession', session.user.email, `Successfully created session`);
       result = {
         status: true,
         error: '',
         msg: `Successfully created session`,
       };
     } else {
+      await logger('createSession', session.user.email, 'Failed to create session');
       result = { status: false, error: 'Failed to create session', msg: '' };
     }
   } catch (error) {

@@ -9,6 +9,7 @@ import { checkerString } from '@constants/sys/helper';
 import { findCCAbyName } from '@helper/sys/cca/cca';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
 import { logger } from '@helper/sys/misc/logger';
+
 /**
  * Finds all CCA Records filtered by the user email
  *
@@ -242,12 +243,14 @@ export const editCCARecord = async (
     });
 
     if (query) {
+      await logger('editCCARecord', session.user.email, `Successfully updated record`);
       result = {
         status: true,
         error: '',
         msg: `Successfully updated record`,
       };
     } else {
+      await logger('editCCARecord', session.user.email, 'Failed to update record');
       result = { status: false, error: 'Failed to update record', msg: '' };
     }
   } catch (error) {
@@ -276,12 +279,14 @@ export const createCCARecord = async (
     });
 
     if (query) {
+      await logger('createCCARecord', session.user.email, `Successfully created record`);
       result = {
         status: true,
         error: '',
         msg: `Successfully created record`,
       };
     } else {
+      await logger('createCCARecord', session.user.email, 'Failed to create record');
       result = { status: false, error: 'Failed to create record', msg: '' };
     }
   } catch (error) {
@@ -380,6 +385,7 @@ export const createCCARecordFile = async (
                 }
               }
             } else {
+              await logger('createCCARecordFile', session.user.email, `Failed to find CCA ${ccaName.trim()}`);
               success = false;
               result = {
                 status: false,
@@ -390,6 +396,7 @@ export const createCCARecordFile = async (
             }
           }
         } else {
+          await logger('createCCARecordFile', session.user.email, `Failed to find user ${email.trim()}`);
           success = false;
           result = {
             status: false,
@@ -402,6 +409,7 @@ export const createCCARecordFile = async (
     }
 
     if (success) {
+      await logger('createCCARecordFile', session.user.email, 'Successfully populated CCA Records');
       result = {
         status: true,
         error: null,

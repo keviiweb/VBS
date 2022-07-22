@@ -57,8 +57,10 @@ export const createUser = async (
     });
 
     if (user) {
+      await logger('createUser', session.user.email, 'Successfully created user' );
       result = { status: true, error: null, msg: 'Successfully created user' };
     } else {
+      await logger('createUser', session.user.email, 'Failed to create user');
       result = { status: false, error: 'Failed to create user', msg: '' };
     }
   } catch (error) {
@@ -129,6 +131,7 @@ export const createUserFile = async (
       }
     }
 
+    await logger('createUserFile', session.user.email, `Successfully created ${count} User records`);
     result = {
       status: true,
       error: null,
@@ -212,12 +215,14 @@ export const editUser = async (
     });
 
     if (user) {
+      await logger('editUser', session.user.email, `Successfully updated ${user.name}`);
       result = {
         status: true,
         error: '',
         msg: `Successfully updated ${user.name}`,
       };
     } else {
+      await logger('editUser', session.user.email, 'Failed to update user');
       result = { status: false, error: 'Failed to update user', msg: '' };
     }
   } catch (error) {

@@ -148,8 +148,10 @@ export const deleteAttendance = async (
     });
 
     if (query) {
-      result = { status: true, error: null, msg: query };
+      await logger('deleteAttendance', session.user.email, 'Successfully deleted attendance');
+      result = { status: true, error: null, msg: 'Successfully deleted attendance' };
     } else {
+      await logger('deleteAttendance', session.user.email, 'Failed to delete attendance');
       result = { status: false, error: 'Failed to delete attendance', msg: '' };
     }
   } catch (error) {
@@ -181,8 +183,18 @@ export const deleteAttendanceBySessionID = async (
     });
 
     if (query) {
+      await logger(
+        'deleteAttendanceBySessionID',
+        session.user.email,
+        'Successfully deleted attendance',
+      );
       result = { status: true, error: null, msg: query };
     } else {
+      await logger(
+        'deleteAttendanceBySessionID',
+        session.user.email,
+        'Failed to delete attendance',
+      );
       result = { status: false, error: 'Failed to delete attendance', msg: '' };
     }
   } catch (error) {
@@ -216,14 +228,16 @@ export const createAttendance = async (
     });
 
     if (query) {
-      result = { status: true, error: null, msg: query };
+      await logger('createAttendance', session.user.email, `Successfully created attendance for ${attend.sessionEmail}`);
+      result = { status: true, error: null, msg: `Successfully created attendance for ${attend.sessionEmail}` };
     } else {
-      result = { status: false, error: 'Failed to create attendance', msg: '' };
+      await logger('createAttendance', session.user.email, `Failed to create attendance for ${attend.sessionEmail}`);
+      result = { status: false, error: `Failed to create attendance for ${attend.sessionEmail}`, msg: '' };
     }
   } catch (error) {
     console.error(error);
     await logger('createAttendance', session.user.email, error.message);
-    result = { status: false, error: 'Failed to create attendance', msg: '' };
+    result = { status: false, error: `Failed to create attendance for ${attend.sessionEmail}`, msg: '' };
   }
 
   return result;
@@ -275,16 +289,18 @@ export const editAttendance = async (
 
             const createRes: Result = await createAttendance(data, session);
             if (createRes.status) {
+              await logger('editAttendance', session.user.email,  'Successfully edited attendance');
               result = {
                 status: true,
                 error: null,
-                msg: 'Successfully edited attendance',
+                msg: createRes.msg,
               };
             } else {
               result = { status: false, error: createRes.error, msg: '' };
               break;
             }
           } else {
+            await logger('editAttendance', session.user.email,  'Successfully edited attendance');
             result = {
               status: true,
               error: null,

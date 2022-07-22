@@ -135,6 +135,7 @@ export const createKEIPSFile = async (
       }
     }
 
+    await logger('createKEIPSFile', session.user.email, `Successfully created ${count} KEIPS records`);
     result = {
       status: true,
       error: null,

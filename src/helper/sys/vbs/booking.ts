@@ -69,6 +69,7 @@ export const createVenueBooking = async (
       });
 
       if (!insertRequest) {
+        await logger('createVenueBooking', session.user.email, 'Approve Request - Venue Booking creation failed!');
         console.error('Approve Request - Venue Booking creation failed!');
         success = false;
         result = {
@@ -80,6 +81,7 @@ export const createVenueBooking = async (
     }
 
     if (success) {
+      await logger('createVenueBooking', session.user.email, 'Successfully created bookings');
       result = {
         status: true,
         error: '',
@@ -127,6 +129,7 @@ export const deleteVenueBooking = async (
       });
 
       if (!deleteRequest) {
+        await logger('deleteVenueBooking', session.user.email, 'Cancel Request - Venue Booking deletion failed!');
         console.error('Cancel Request - Venue Booking deletion failed!');
         success = false;
         result = {
@@ -138,6 +141,7 @@ export const deleteVenueBooking = async (
     }
 
     if (success) {
+      await logger('deleteVenueBooking', session.user.email, 'Successfully deleted bookings');
       result = {
         status: true,
         error: '',
