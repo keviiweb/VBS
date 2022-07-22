@@ -21,6 +21,8 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 import { KEIPS, KEIPSCCA, KEIPSBonus } from 'types/misc/keips';
 import TableWidget from '@components/sys/misc/TableWidget';
 
+import { checkerString } from '@constants/sys/helper';
+
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -158,15 +160,22 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
   const includeActionButton = useCallback(
     async (record: KEIPS) => {
       if (record !== null && record !== undefined) {
-        const recordTop: string[] = record.topCCA.split('|');
-        const recordAll: string[] = record.allCCA.split('|');
-        const recordBonus: string[] = record.bonusCCA.split('|');
+        if (checkerString(record.topCCA)) {
+          const recordTop: string[] = record.topCCA.split('|');
+          await populateTopCCA(recordTop);
+        }
+
+        if (checkerString(record.allCCA)) {
+          const recordAll: string[] = record.allCCA.split('|');
+          await populateAllCCA(recordAll);
+        }
+
+        if (checkerString(record.bonusCCA)) {
+          const recordBonus: string[] = record.bonusCCA.split('|');
+          await populateBonusCCA(recordBonus);
+        }
 
         setMATNET(record.matnet);
-
-        await populateTopCCA(recordTop);
-        await populateAllCCA(recordAll);
-        await populateBonusCCA(recordBonus);
 
         const dataField: KEIPS[] = [];
         dataField.push(record);
@@ -220,11 +229,11 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
         accessor: 'contrastingStr',
       },
       {
-        Header: 'Semester stayed',
+        Header: 'Semester Stayed',
         accessor: 'semesterStay',
       },
       {
-        Header: 'Fullfilled criteria?',
+        Header: 'Fullfilled Criteria?',
         accessor: 'fulfilledStr',
       },
     ],
@@ -299,22 +308,24 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
             onClose={() => setSubmitButtonPressed(false)}
           />
 
-          <Stack spacing={5} w='full' align='center'>
-            <Box>
-              <Text
-                mt={2}
-                mb={6}
-                textTransform='uppercase'
-                fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
-                lineHeight='5'
-                fontWeight='bold'
-                letterSpacing='tight'
-                color='gray.900'
-              >
-                MATNET: {matnet}
-              </Text>
-            </Box>
-          </Stack>
+          {checkerString(matnet) && (
+            <Stack spacing={5} w='full' align='center'>
+              <Box>
+                <Text
+                  mt={2}
+                  mb={6}
+                  textTransform='uppercase'
+                  fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
+                  lineHeight='5'
+                  fontWeight='bold'
+                  letterSpacing='tight'
+                  color='gray.900'
+                >
+                  MATNET: {matnet}
+                </Text>
+              </Box>
+            </Stack>
+          )}
 
           <MotionSimpleGrid
             mt='3'
@@ -325,7 +336,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
             initial='initial'
             animate='animate'
           >
-            <MotionBox variants={cardVariant} key='2'>
+            <MotionBox variants={cardVariant} key='table-box-motion'>
               {modalData && !loadingData && successData && (
                 <Flex
                   w='full'
@@ -339,7 +350,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
                         <Box w='900px' overflow='auto' key='box-overall'>
                           <Stack align='center' justify='center' spacing={10}>
                             <TableWidget
-                              key={1}
+                              key='overall-table'
                               columns={columns}
                               data={data}
                               controlledPageCount={pageCount}
@@ -355,7 +366,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
                           <Stack align='center' justify='center'>
                             <Text>Top CCAs</Text>
                             <TableWidget
-                              key={2}
+                              key='topcca-table'
                               columns={columnsData}
                               data={topCCA}
                               controlledPageCount={pageCount}
@@ -371,7 +382,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
                           <Stack align='center' justify='center'>
                             <Text>All CCAs</Text>
                             <TableWidget
-                              key={3}
+                              key='allcca-table'
                               columns={columnsData}
                               data={allCCA}
                               controlledPageCount={pageCount}
@@ -387,7 +398,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
                           <Stack align='center' justify='center'>
                             <Text>Bonus</Text>
                             <TableWidget
-                              key={4}
+                              key='bonus-table'
                               columns={columnsBonus}
                               data={bonusCCA}
                               controlledPageCount={pageCount}

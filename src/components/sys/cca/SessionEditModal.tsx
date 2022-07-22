@@ -264,7 +264,7 @@ export default function SessionEditModal({
     }
 
     if (Number(endTimeField) <= Number(startTimeField)) {
-      setError('End time cannot be earlier than start time!');
+      setError('End time cannot be earlier than or same as start time!');
       return false;
     }
 
@@ -408,18 +408,26 @@ export default function SessionEditModal({
   };
 
   const onStartTimeChange = async (event: { target: { value: string } }) => {
-    if (event.target.value) {
-      const { value } = event.target;
-      startTimeDB.current = value;
-      setStartTime(value);
+    try {
+      if (event.target.value) {
+        const { value } = event.target;
+        startTimeDB.current = value;
+        setStartTime(value);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
   const onEndTimeChange = async (event: { target: { value: string } }) => {
-    if (event.target.value) {
-      const { value } = event.target;
-      endTimeDB.current = value;
-      setEndTime(value);
+    try {
+      if (event.target.value) {
+        const { value } = event.target;
+        endTimeDB.current = value;
+        setEndTime(value);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -694,7 +702,7 @@ export default function SessionEditModal({
 
   const buildMemberList = useCallback(
     async (content: { count: number; res: CCARecord[] }) => {
-      if (content.res !== [] && content.count > 0) {
+      if (content.res.length > 0 && content.count > 0) {
         const buttons: JSX.Element[] = [];
         const realityButtons: JSX.Element[] = [];
 
@@ -743,6 +751,7 @@ export default function SessionEditModal({
 
   const generateMemberList = useCallback(async () => {
     if (checkerString(sessionIDDB.current) && checkerString(ccaIDDB.current)) {
+      setSubmitButtonPressed(true);
       try {
         const rawResponse = await fetch('/api/ccaRecord/fetch', {
           method: 'POST',
@@ -761,10 +770,8 @@ export default function SessionEditModal({
       } catch (error) {
         console.error(error);
       }
-
-      return true;
+      setSubmitButtonPressed(false);
     }
-    return false;
   }, [buildMemberList]);
 
   useEffect(() => {
@@ -909,22 +916,24 @@ export default function SessionEditModal({
 
           {editable && (
             <Box>
-              <Stack spacing={5} w='full' align='center'>
-                <Box>
-                  <Text
-                    mt={2}
-                    mb={6}
-                    textTransform='uppercase'
-                    fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
-                    lineHeight='5'
-                    fontWeight='bold'
-                    letterSpacing='tight'
-                    color='gray.900'
-                  >
-                    {ccaName}
-                  </Text>
-                </Box>
-              </Stack>
+              {checkerString(ccaName) && (
+                <Stack spacing={5} w='full' align='center'>
+                  <Box>
+                    <Text
+                      mt={2}
+                      mb={6}
+                      textTransform='uppercase'
+                      fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
+                      lineHeight='5'
+                      fontWeight='bold'
+                      letterSpacing='tight'
+                      color='gray.900'
+                    >
+                      {ccaName}
+                    </Text>
+                  </Box>
+                </Stack>
+              )}
 
               <Progress hasStripe value={progressBar} />
 
@@ -1333,6 +1342,7 @@ export default function SessionEditModal({
                 <Button
                   disabled={disableButton}
                   bg='blue.400'
+                  key='prev-button'
                   color='white'
                   w='150px'
                   size='lg'
@@ -1348,6 +1358,7 @@ export default function SessionEditModal({
               {progressLevel !== levels.REMARKS && (
                 <Button
                   disabled={disableButton}
+                  key='next-button'
                   bg='gray.400'
                   color='white'
                   w='150px'
@@ -1363,6 +1374,7 @@ export default function SessionEditModal({
               {progressLevel === levels.REMARKS && (
                 <Button
                   disabled={disableButton}
+                  key='submit-button'
                   bg='red.400'
                   color='white'
                   w='150px'

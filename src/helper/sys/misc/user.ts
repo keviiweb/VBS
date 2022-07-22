@@ -34,7 +34,13 @@ export const fetchUserByEmail = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch user', msg: null };
-    await logger('fetchUserByEmail', session.user.email, error.message);
+    if (checkerString(email)) {
+      await logger(
+        `fetchUserByEmail - ${email}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -57,16 +63,32 @@ export const createUser = async (
     });
 
     if (user) {
-      await logger('createUser', session.user.email, 'Successfully created user' );
+      await logger(
+        'createUser',
+        session.user.email,
+        'Successfully created user',
+      );
       result = { status: true, error: null, msg: 'Successfully created user' };
     } else {
-      await logger('createUser', session.user.email, 'Failed to create user');
+      if (checkerString(data.email)) {
+        await logger(
+          `createUser - ${data.email}`,
+          session.user.email,
+          'Failed to create user',
+        );
+      }
       result = { status: false, error: 'Failed to create user', msg: '' };
     }
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to create user', msg: '' };
-    await logger('createUser', session.user.email, error.message);
+    if (checkerString(data.email)) {
+      await logger(
+        `createUser - ${data.email}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -131,7 +153,11 @@ export const createUserFile = async (
       }
     }
 
-    await logger('createUserFile', session.user.email, `Successfully created ${count} User records`);
+    await logger(
+      'createUserFile',
+      session.user.email,
+      `Successfully created ${count} User records`,
+    );
     result = {
       status: true,
       error: null,
@@ -215,20 +241,34 @@ export const editUser = async (
     });
 
     if (user) {
-      await logger('editUser', session.user.email, `Successfully updated ${user.name}`);
+      if (data.id !== undefined && checkerString(data.id)) {
+        await logger(
+          `editUser - ${data.id}`,
+          session.user.email,
+          `Successfully updated ${user.name}`,
+        );
+      }
       result = {
         status: true,
         error: '',
         msg: `Successfully updated ${user.name}`,
       };
     } else {
-      await logger('editUser', session.user.email, 'Failed to update user');
+      if (data.id !== undefined && checkerString(data.id)) {
+        await logger(
+          `editUser - ${data.id}`,
+          session.user.email,
+          'Failed to update user',
+        );
+      }
       result = { status: false, error: 'Failed to update user', msg: '' };
     }
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to update user', msg: '' };
-    await logger('editUser', session.user.email, error.message);
+    if (data.id !== undefined && checkerString(data.id)) {
+      await logger(`editUser - ${data.id}`, session.user.email, error.message);
+    }
   }
 
   return result;

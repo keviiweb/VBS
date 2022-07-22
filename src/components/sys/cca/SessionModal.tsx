@@ -26,6 +26,7 @@ import { CCAAttendance } from '@root/src/types/cca/ccaAttendance';
 
 import { checkerString } from '@constants/sys/helper';
 
+import LoadingModal from '@components/sys/misc/LoadingModal';
 import TableWidget from '@components/sys/misc/TableWidget';
 import SessionEditModal from '@components/sys/cca/SessionEditModal';
 import SessionDeleteConfirmationModal from '@components/sys/cca/SessionDeleteConfirmationModal';
@@ -72,6 +73,8 @@ export default function SessionModal({
   const PAGESIZE: number = 10;
   const [pageCount, setPageCount] = useState(0);
 
+  const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+
   const reset = () => {
     setDateStr('');
     setTime('');
@@ -113,6 +116,7 @@ export default function SessionModal({
       if (sess !== null && sess !== undefined) {
         const { id } = sess;
         if (id !== undefined && checkerString(id)) {
+          setSubmitButtonPressed(true);
           try {
             const rawResponse = await fetch('/api/ccaSession/delete', {
               method: 'POST',
@@ -131,6 +135,7 @@ export default function SessionModal({
           } catch (error) {
             console.error(error);
           }
+          setSubmitButtonPressed(false);
         }
       }
     },
@@ -155,6 +160,7 @@ export default function SessionModal({
       setExpectedBool(true);
     } else {
       setDisplayedExpected([]);
+      setExpectedBool(false);
     }
   };
 
@@ -173,6 +179,7 @@ export default function SessionModal({
       }
     } else {
       setDataM([]);
+      setRealityBool(false);
     }
   };
 
@@ -265,6 +272,11 @@ export default function SessionModal({
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
+          <LoadingModal
+            isOpen={!!submitButtonPressed}
+            onClose={() => setSubmitButtonPressed(false)}
+          />
+
           <SessionEditModal
             isOpen={specificSession}
             onClose={() => setSpecificSessionData(null)}
@@ -279,22 +291,24 @@ export default function SessionModal({
             dataHandler={deleteSession}
           />
 
-          <Stack spacing={5} w='full' align='center'>
-            <Box>
-              <Text
-                mt={2}
-                mb={6}
-                textTransform='uppercase'
-                fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
-                lineHeight='5'
-                fontWeight='bold'
-                letterSpacing='tight'
-                color='gray.900'
-              >
-                {ccaName}
-              </Text>
-            </Box>
-          </Stack>
+          {checkerString(ccaName) && (
+            <Stack spacing={5} w='full' align='center'>
+              <Box>
+                <Text
+                  mt={2}
+                  mb={6}
+                  textTransform='uppercase'
+                  fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
+                  lineHeight='5'
+                  fontWeight='bold'
+                  letterSpacing='tight'
+                  color='gray.900'
+                >
+                  {ccaName}
+                </Text>
+              </Box>
+            </Stack>
+          )}
 
           <MotionSimpleGrid
             mt='3'
@@ -330,7 +344,7 @@ export default function SessionModal({
                                   fontWeight='bold'
                                 >
                                   Date
-                                </Text>{' '}
+                                </Text>
                                 <Text>{dateStr}</Text>
                               </Stack>
                             </ListItem>
@@ -345,7 +359,7 @@ export default function SessionModal({
                                   fontWeight='bold'
                                 >
                                   Time
-                                </Text>{' '}
+                                </Text>
                                 <Text>{time}</Text>
                               </Stack>
                             </ListItem>
@@ -360,7 +374,7 @@ export default function SessionModal({
                                   fontWeight='bold'
                                 >
                                   Duration
-                                </Text>{' '}
+                                </Text>
                                 <Text>{duration} Hours</Text>
                               </Stack>
                             </ListItem>
@@ -375,7 +389,7 @@ export default function SessionModal({
                                   fontWeight='bold'
                                 >
                                   Optional
-                                </Text>{' '}
+                                </Text>
                                 <Text>{optionalStr}</Text>
                               </Stack>
                             </ListItem>
@@ -390,7 +404,7 @@ export default function SessionModal({
                                   fontWeight='bold'
                                 >
                                   Remarks
-                                </Text>{' '}
+                                </Text>
                                 <Text>{remarks}</Text>
                               </Stack>
                             </ListItem>
@@ -405,7 +419,7 @@ export default function SessionModal({
                                   fontWeight='bold'
                                 >
                                   Expected Members
-                                </Text>{' '}
+                                </Text>
                                 {expectedM}
                               </Stack>
                             </ListItem>
@@ -444,7 +458,7 @@ export default function SessionModal({
                                   fontWeight='bold'
                                 >
                                   Leaders&apos; Notes
-                                </Text>{' '}
+                                </Text>
                                 <Text>{ldrNotes}</Text>
                               </Stack>
                             </ListItem>
@@ -455,6 +469,7 @@ export default function SessionModal({
                       {leader && (
                         <Stack direction='row'>
                           <Button
+                            key='delete-button'
                             bg='gray.400'
                             color='white'
                             w='150px'
@@ -466,6 +481,7 @@ export default function SessionModal({
                           </Button>
                           {editable && (
                             <Button
+                              key='edit-button'
                               bg='red.700'
                               color='white'
                               w='150px'
@@ -488,6 +504,7 @@ export default function SessionModal({
         <ModalFooter>
           <Button
             bg='cyan.700'
+            key='submit-button'
             color='white'
             w='150px'
             size='lg'

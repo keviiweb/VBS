@@ -345,7 +345,13 @@ export const findBookingByID = async (
     return bookingRequest;
   } catch (error) {
     console.error(error);
-    await logger('findBookingByID', session.user.email, error.message);
+    if (checkerString(id)) {
+      await logger(
+        `findBookingByID - ${id}`,
+        session.user.email,
+        error.message,
+      );
+    }
     return null;
   }
 };
@@ -364,11 +370,17 @@ export const isApproved = async (
     if (bookingRequest.isApproved !== undefined) {
       return bookingRequest.isApproved;
     } else {
-      return false;
+      return true;
     }
   } catch (error) {
     console.error(error);
-    await logger('isApproved', session.user.email, error.message);
+    if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+      await logger(
+        `isApproved - ${bookingRequest.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
     return true;
   }
 };
@@ -387,11 +399,17 @@ export const isCancelled = async (
     if (bookingRequest.isCancelled !== undefined) {
       return bookingRequest.isCancelled;
     } else {
-      return false;
+      return true;
     }
   } catch (error) {
     console.error(error);
-    await logger('isCancelled', session.user.email, error.message);
+    if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+      await logger(
+        `isCancelled - ${bookingRequest.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
     return true;
   }
 };
@@ -410,11 +428,17 @@ export const isRejected = async (
     if (bookingRequest.isRejected !== undefined) {
       return bookingRequest.isRejected;
     } else {
-      return false;
+      return true;
     }
   } catch (error) {
     console.error(error);
-    await logger('isRejected', session.user.email, error.message);
+    if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+      await logger(
+        `isRejected - ${bookingRequest.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
     return true;
   }
 };
@@ -441,7 +465,13 @@ export const isOwner = async (
     }
   } catch (error) {
     console.error(error);
-    await logger('isOwner', session.user.email, error.message);
+    if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+      await logger(
+        `isOwner - ${bookingRequest.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
     return false;
   }
 };
@@ -482,7 +512,15 @@ export const isConflict = async (
     return false;
   } catch (error) {
     console.error(error);
-    await logger('isConflict', session.user.email, error.message);
+    if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+      await logger(
+        `isConflict - ${bookingRequest.id}`,
+        session.user.email,
+        error.message,
+      );
+    } else {
+      await logger(`isConflict`, session.user.email, error.message);
+    }
     return true;
   }
 };
@@ -639,14 +677,32 @@ export const setApprove = async (
           }
         }
 
-        await logger('setApprove', session.user.email, 'Successfully updated request on approval');
+        if (
+          bookingRequest.id !== undefined &&
+          checkerString(bookingRequest.id)
+        ) {
+          await logger(
+            `setApprove - ${bookingRequest.id}`,
+            session.user.email,
+            'Successfully updated request on approval',
+          );
+        }
         result = {
           status: true,
           error: null,
           msg: 'Successfully updated request on approval',
         };
       } else {
-        await logger('setApprove', session.user.email,  'Error in updating');
+        if (
+          bookingRequest.id !== undefined &&
+          checkerString(bookingRequest.id)
+        ) {
+          await logger(
+            `setApprove - ${bookingRequest.id}`,
+            session.user.email,
+            'Error in updating',
+          );
+        }
         result = { status: false, error: 'Error in updating', msg: '' };
       }
     } else {
@@ -654,7 +710,13 @@ export const setApprove = async (
     }
   } catch (error) {
     console.error(error);
-    await logger('setApprove', session.user.email, error.message);
+    if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+      await logger(
+        `setApprove - ${bookingRequest.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -752,24 +814,55 @@ export const setReject = async (
           }
         }
 
-        await logger('setReject', session.user.email, 'Successfully updated request on reject');
+        if (
+          bookingRequest.id !== undefined &&
+          checkerString(bookingRequest.id)
+        ) {
+          await logger(
+            `setReject - ${bookingRequest.id}`,
+            session.user.email,
+            'Successfully updated request on reject',
+          );
+        }
         result = {
           status: true,
           error: null,
           msg: 'Successfully updated request on reject',
         };
       } else {
-        await logger('setReject', session.user.email, 'Error in updating');
+        if (
+          bookingRequest.id !== undefined &&
+          checkerString(bookingRequest.id)
+        ) {
+          await logger(
+            `setReject - ${bookingRequest.id}`,
+            session.user.email,
+            'Error in updating',
+          );
+        }
         result = { status: false, error: 'Error in updating', msg: '' };
       }
     } else if (bookingRequest) {
+      if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+        await logger(
+          `setReject - ${bookingRequest.id}`,
+          session.user.email,
+          'No reason found',
+        );
+      }
       result = { status: false, error: 'No reason found', msg: '' };
     } else {
       result = { status: false, error: 'No booking ID found', msg: '' };
     }
   } catch (error) {
     console.error(error);
-    await logger('setReject', session.user.email, error.message);
+    if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+      await logger(
+        `setReject - ${bookingRequest.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -850,13 +943,32 @@ export const setCancel = async (
           }
         }
 
-        await logger('setCancel', session.user.email, 'Successfully updated request on cancel');
+        if (
+          bookingRequest.id !== undefined &&
+          checkerString(bookingRequest.id)
+        ) {
+          await logger(
+            `setCancel - ${bookingRequest.id}`,
+            session.user.email,
+            'Successfully updated request on cancel',
+          );
+        }
         result = {
           status: true,
           error: null,
           msg: 'Successfully updated request on cancel',
         };
       } else {
+        if (
+          bookingRequest.id !== undefined &&
+          checkerString(bookingRequest.id)
+        ) {
+          await logger(
+            `setCancel - ${bookingRequest.id}`,
+            session.user.email,
+            'Error in updating',
+          );
+        }
         result = { status: false, error: 'Error in updating', msg: '' };
       }
     } else {
@@ -864,7 +976,13 @@ export const setCancel = async (
     }
   } catch (error) {
     console.error(error);
-    await logger('setCancel', session.user.email, error.message);
+    if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+      await logger(
+        `setCancel - ${bookingRequest.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -928,7 +1046,13 @@ export const getConflictingRequest = async (
     }
   } catch (error) {
     console.error(error);
-    await logger('getConflictingRequest', session.user.email, error.message);
+    if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+      await logger(
+        `getConflictingRequest - ${bookingRequest.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -992,14 +1116,32 @@ export const setRejectConflicts = async (
       }
 
       if (success) {
-        await logger('setRejectConflicts', session.user.email, 'Successfully rejected conflicting timeslots');
+        if (
+          bookingRequest.id !== undefined &&
+          checkerString(bookingRequest.id)
+        ) {
+          await logger(
+            `setRejectConflicts - ${bookingRequest.id}`,
+            session.user.email,
+            'Successfully rejected conflicting timeslots',
+          );
+        }
         result = {
           status: true,
           error: null,
           msg: 'Successfully rejected conflicting timeslots',
         };
       } else {
-        await logger('setRejectConflicts', session.user.email, 'Failed to reject conflicting timeslots');
+        if (
+          bookingRequest.id !== undefined &&
+          checkerString(bookingRequest.id)
+        ) {
+          await logger(
+            `setRejectConflicts - ${bookingRequest.id}`,
+            session.user.email,
+            'Failed to reject conflicting timeslots',
+          );
+        }
         result = {
           status: false,
           error: 'Failed to reject conflicting timeslots',
@@ -1011,7 +1153,13 @@ export const setRejectConflicts = async (
     }
   } catch (error) {
     console.error(error);
-    await logger('setRejectConflicts', session.user.email, error.message);
+    if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+      await logger(
+        `setRejectConflicts - ${bookingRequest.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -1044,14 +1192,32 @@ export const updateConflictingIDs = async (
       });
 
       if (update) {
-        await logger('updateConflictingIDs', session.user.email, 'Successfully updated request on reject');
+        if (
+          bookingRequest.id !== undefined &&
+          checkerString(bookingRequest.id)
+        ) {
+          await logger(
+            `updateConflictingIDs - ${bookingRequest.id}`,
+            session.user.email,
+            'Successfully updated request on reject',
+          );
+        }
         result = {
           status: true,
           error: null,
           msg: 'Successfully updated request on reject',
         };
       } else {
-        await logger('updateConflictingIDs', session.user.email, 'Error in updating');
+        if (
+          bookingRequest.id !== undefined &&
+          checkerString(bookingRequest.id)
+        ) {
+          await logger(
+            `updateConflictingIDs - ${bookingRequest.id}`,
+            session.user.email,
+            'Error in updating',
+          );
+        }
         result = { status: false, error: 'Error in updating', msg: '' };
       }
     } else {
@@ -1059,7 +1225,13 @@ export const updateConflictingIDs = async (
     }
   } catch (error) {
     console.error(error);
-    await logger('updateConflictingIDs', session.user.email, error.message);
+    if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+      await logger(
+        `updateConflictingIDs - ${bookingRequest.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -1076,16 +1248,22 @@ export const createVenueBookingRequest = async (
   session: Session,
 ): Promise<BookingRequest | null> => {
   try {
-    const bookedTimeSlots = await prisma.venueBookingRequest.create({
-      data: data,
-    });
+    const bookedTimeSlots: BookingRequest =
+      await prisma.venueBookingRequest.create({
+        data: data,
+      });
 
     if (bookedTimeSlots) {
-      await logger(
-        'createVenueBookingRequest',
-        session.user.email,
-        `Successfully created venue booking request`,
-      );
+      if (
+        bookedTimeSlots.id !== undefined &&
+        checkerString(bookedTimeSlots.id)
+      ) {
+        await logger(
+          'createVenueBookingRequest',
+          session.user.email,
+          `Successfully created venue booking request`,
+        );
+      }
     }
     return bookedTimeSlots;
   } catch (error) {
@@ -1143,14 +1321,32 @@ export const notifyConflicts = async (
       }
 
       if (success) {
-        await logger('notifyConflicts', session.user.email, 'Successfully notified conflicting bookings');
+        if (
+          bookingRequest.id !== undefined &&
+          checkerString(bookingRequest.id)
+        ) {
+          await logger(
+            `notifyConflicts - ${bookingRequest.id}`,
+            session.user.email,
+            'Successfully notified conflicting bookings',
+          );
+        }
         result = {
           status: true,
           error: null,
           msg: 'Successfully notified conflicting bookings',
         };
       } else {
-        await logger('notifyConflicts', session.user.email, 'Failed to notify conflicting bookings');
+        if (
+          bookingRequest.id !== undefined &&
+          checkerString(bookingRequest.id)
+        ) {
+          await logger(
+            `notifyConflicts - ${bookingRequest.id}`,
+            session.user.email,
+            'Failed to notify conflicting bookings',
+          );
+        }
         result = {
           status: false,
           error: 'Failed to notify conflicting bookings',
@@ -1162,7 +1358,13 @@ export const notifyConflicts = async (
     }
   } catch (error) {
     console.error(error);
-    await logger('notifyConflicts', session.user.email, error.message);
+    if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+      await logger(
+        `notifyConflicts - ${bookingRequest.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -1226,10 +1428,28 @@ export const notifyConflictsEmail = async (
         try {
           await sendNotifyMail(bookingRequest.email, data);
           result = { status: true, error: null, msg: 'Successfully notified!' };
-          await logger('notifyConflictsEmail', session.user.email, 'Successfully notified!');
+          if (
+            bookingRequest.id !== undefined &&
+            checkerString(bookingRequest.id)
+          ) {
+            await logger(
+              `notifyConflictsEmail - ${bookingRequest.id}`,
+              session.user.email,
+              'Successfully notified!',
+            );
+          }
         } catch (error) {
           console.error(error);
-          await logger('notifyConflictsEmail', session.user.email, error.message);
+          if (
+            bookingRequest.id !== undefined &&
+            checkerString(bookingRequest.id)
+          ) {
+            await logger(
+              `notifyConflictsEmail - ${bookingRequest.id}`,
+              session.user.email,
+              error.message,
+            );
+          }
           result = { status: false, error: 'Failed to notify users', msg: '' };
         }
       }
@@ -1238,7 +1458,13 @@ export const notifyConflictsEmail = async (
     }
   } catch (error) {
     console.error(error);
-    await logger('notifyConflictsEmail', session.user.email, error.message);
+    if (bookingRequest.id !== undefined && checkerString(bookingRequest.id)) {
+      await logger(
+        `notifyConflictsEmail - ${bookingRequest.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;

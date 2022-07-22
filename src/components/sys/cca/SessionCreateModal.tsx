@@ -322,18 +322,26 @@ export default function SessionCreateModal({
   };
 
   const onStartTimeChange = async (event: { target: { value: string } }) => {
-    if (event.target.value) {
-      const { value } = event.target;
-      startTimeDB.current = value;
-      setStartTime(value);
+    try {
+      if (event.target.value) {
+        const { value } = event.target;
+        startTimeDB.current = value;
+        setStartTime(value);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
   const onEndTimeChange = async (event: { target: { value: string } }) => {
-    if (event.target.value) {
-      const { value } = event.target;
-      endTimeDB.current = value;
-      setEndTime(value);
+    try {
+      if (event.target.value) {
+        const { value } = event.target;
+        endTimeDB.current = value;
+        setEndTime(value);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -472,15 +480,18 @@ export default function SessionCreateModal({
       const idField: string = await fetchUserIDByEmail(sessionEmail);
       let members: string[] = selectedExpectedMembers.current;
       let membersName: string[] = selectedExpectedMembersName.current;
-      if (members.includes(idField)) {
-        members = members.filter((item) => item !== idField);
-        if (checkerString(nameField)) {
-          membersName = membersName.filter((item) => item !== nameField);
-        }
-      } else {
-        members.push(idField);
-        if (checkerString(nameField)) {
-          membersName.push(nameField);
+
+      if (checkerString(idField)) {
+        if (members.includes(idField)) {
+          members = members.filter((item) => item !== idField);
+          if (checkerString(nameField)) {
+            membersName = membersName.filter((item) => item !== nameField);
+          }
+        } else {
+          members.push(idField);
+          if (checkerString(nameField)) {
+            membersName.push(nameField);
+          }
         }
       }
 
@@ -632,22 +643,24 @@ export default function SessionCreateModal({
             onClose={() => setSubmitButtonPressed(false)}
           />
 
-          <Stack spacing={5} w='full' align='center'>
-            <Box>
-              <Text
-                mt={2}
-                mb={6}
-                textTransform='uppercase'
-                fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
-                lineHeight='5'
-                fontWeight='bold'
-                letterSpacing='tight'
-                color='gray.900'
-              >
-                {ccaName}
-              </Text>
-            </Box>
-          </Stack>
+          {checkerString(ccaName) && (
+            <Stack spacing={5} w='full' align='center'>
+              <Box>
+                <Text
+                  mt={2}
+                  mb={6}
+                  textTransform='uppercase'
+                  fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
+                  lineHeight='5'
+                  fontWeight='bold'
+                  letterSpacing='tight'
+                  color='gray.900'
+                >
+                  {ccaName}
+                </Text>
+              </Box>
+            </Stack>
+          )}
 
           <Progress hasStripe value={progressBar} />
 
@@ -724,9 +737,10 @@ export default function SessionCreateModal({
                         />
                       </FormControl>
                     </Stack>
+
                     {startTimeDropdown && (
                       <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
-                        <FormLabel>
+                        <FormLabel id='start-time'>
                           <Text
                             w={40}
                             textTransform='uppercase'
@@ -750,7 +764,7 @@ export default function SessionCreateModal({
 
                     {endTimeDropdown && (
                       <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
-                        <FormLabel>
+                        <FormLabel id='end-time'>
                           <Text
                             w={40}
                             textTransform='uppercase'
@@ -819,7 +833,7 @@ export default function SessionCreateModal({
                                   fontWeight='bold'
                                 >
                                   Duration
-                                </Text>{' '}
+                                </Text>
                                 <Text>
                                   {selectedData.current?.duration} Hours
                                 </Text>
@@ -831,7 +845,7 @@ export default function SessionCreateModal({
 
                       {expectedMemberButtons.length > 0 && (
                         <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
-                          <FormLabel>
+                          <FormLabel id='expected-members'>
                             <Stack direction='row'>
                               <Text
                                 w={40}
@@ -941,6 +955,7 @@ export default function SessionCreateModal({
         <ModalFooter>
           {progressLevel !== levels.TIME && (
             <Button
+              key='previous-button'
               disabled={disableButton}
               bg='blue.400'
               color='white'
@@ -958,6 +973,7 @@ export default function SessionCreateModal({
 
           {progressLevel !== levels.REMARKS && (
             <Button
+              key='next-button'
               disabled={disableButton}
               bg='gray.400'
               color='white'
@@ -974,6 +990,7 @@ export default function SessionCreateModal({
 
           {progressLevel === levels.REMARKS && (
             <Button
+              key='submit-button'
               disabled={disableButton}
               bg='red.400'
               color='white'

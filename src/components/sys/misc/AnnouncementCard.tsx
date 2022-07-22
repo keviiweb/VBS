@@ -1,6 +1,8 @@
 import React from 'react';
 import { Box, Heading, Image } from '@chakra-ui/react';
 
+import { checkerString } from '@constants/sys/helper';
+
 /**
  * Renders a card that shows the image of the announcement.
  *
@@ -26,7 +28,7 @@ export default function AnnouncementCard({ product }) {
         shadow='2xl'
         maxW='xl'
       >
-        {image && (
+        {checkerString(image) && (
           <Image
             borderRadius='xl'
             w='full'
@@ -35,18 +37,20 @@ export default function AnnouncementCard({ product }) {
             alt={description}
           />
         )}
-        <Box p={2}>
-          <Box>
-            <Heading
-              style={{ whiteSpace: 'pre-line' }}
-              mt={2}
-              fontSize='xl'
-              color='gray.600'
-            >
-              {description}
-            </Heading>
+        {checkerString(description) && (
+          <Box p={2}>
+            <Box>
+              <Heading
+                style={{ whiteSpace: 'pre-line' }}
+                mt={2}
+                fontSize='xl'
+                color='gray.600'
+              >
+                {description}
+              </Heading>
+            </Box>
           </Box>
-        </Box>
+        )}
       </Box>
     </Box>
   );

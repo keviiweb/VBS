@@ -1,10 +1,12 @@
 import { prisma } from '@constants/sys/db';
+import { checkerString } from '@constants/sys/helper';
 
 import { Announcement } from 'types/misc/announcement';
 import { Result } from 'types/api';
 import { Session } from 'next-auth/core/types';
 
 import { logger } from '@helper/sys/misc/logger';
+
 /**
  * Finds all announcements
  *
@@ -59,14 +61,24 @@ export const createAnnouncement = async (
     });
 
     if (announce) {
-      await logger('createAnnouncement', session.user.email, 'Successfully created announcement');
+      if (announce.id !== undefined && checkerString(announce.id)) {
+        await logger(
+          'createAnnouncement',
+          session.user.email,
+          'Successfully created announcement',
+        );
+      }
       result = {
         status: true,
         error: '',
         msg: 'Successfully created announcement',
       };
     } else {
-      await logger('createAnnouncement', session.user.email, 'Failed to create announcement');
+      await logger(
+        'createAnnouncement',
+        session.user.email,
+        'Failed to create announcement',
+      );
       result = {
         status: false,
         error: 'Failed to create announcement',
@@ -102,14 +114,26 @@ export const editAnnouncement = async (
     });
 
     if (announce) {
-      await logger('editAnnouncement', session.user.email, 'Successfully updated announcement');
+      if (data.id !== undefined && checkerString(data.id)) {
+        await logger(
+          `editAnnouncement - ${data.id}`,
+          session.user.email,
+          'Successfully updated announcement',
+        );
+      }
       result = {
         status: true,
         error: '',
         msg: 'Successfully updated announcement',
       };
     } else {
-      await logger('editAnnouncement', session.user.email, 'Failed to update announcement');
+      if (data.id !== undefined && checkerString(data.id)) {
+        await logger(
+          `editAnnouncement - ${data.id}`,
+          session.user.email,
+          'Failed to update announcement',
+        );
+      }
       result = {
         status: false,
         error: 'Failed to update announcement',
@@ -119,7 +143,13 @@ export const editAnnouncement = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to update announcement', msg: '' };
-    await logger('editAnnouncement', session.user.email, error.message);
+    if (data.id !== undefined && checkerString(data.id)) {
+      await logger(
+        `editAnnouncement - ${data.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -144,14 +174,26 @@ export const deleteAnnouncement = async (
     });
 
     if (announce) {
-      await logger('deleteAnnouncement', session.user.email,'Successfully deleted announcement');
+      if (id !== undefined && checkerString(id)) {
+        await logger(
+          `deleteAnnouncement - ${id}`,
+          session.user.email,
+          'Successfully deleted announcement',
+        );
+      }
       result = {
         status: true,
         error: '',
         msg: 'Successfully deleted announcement',
       };
     } else {
-      await logger('deleteAnnouncement', session.user.email, 'Failed to delete announcement');
+      if (id !== undefined && checkerString(id)) {
+        await logger(
+          `deleteAnnouncement - ${id}`,
+          session.user.email,
+          'Failed to delete announcement',
+        );
+      }
       result = {
         status: false,
         error: 'Failed to delete announcement',
@@ -161,7 +203,13 @@ export const deleteAnnouncement = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to delete announcement', msg: '' };
-    await logger('deleteAnnouncement', session.user.email, error.message);
+    if (id !== undefined && checkerString(id)) {
+      await logger(
+        `deleteAnnouncement - ${id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;

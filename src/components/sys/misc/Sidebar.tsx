@@ -88,11 +88,15 @@ export default function Sidebar({ session, onClose, ...rest }) {
       setData(session);
     }
 
-    router.events.on('routeChangeComplete', onClose);
-    return () => {
-      router.events.off('routeChangeComplete', onClose);
-    };
-  }, [router.events, onClose, session]);
+    if (router.events !== undefined && router.events !== null) {
+      router.events.on('routeChangeComplete', onClose);
+
+      return () => {
+        router.events.off('routeChangeComplete', onClose);
+      };
+    }
+    return () => {};
+  }, [router, onClose, session]);
 
   return (
     <Box

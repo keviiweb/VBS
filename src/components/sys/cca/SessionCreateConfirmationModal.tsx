@@ -106,13 +106,16 @@ export default function SessionCreateConfirmationModal({
     if (members.length > 0) {
       const membersA: string[] = members.split(',');
       const text: JSX.Element[] = [];
-      for (let key = 0; key < membersA.length; key += 1) {
-        if (membersA[key]) {
-          text.push(
-            <Box key={`box-e-${key}`}>
-              <Text>{membersA[key]}</Text>
-            </Box>,
-          );
+
+      if (membersA.length > 0) {
+        for (let key = 0; key < membersA.length; key += 1) {
+          if (membersA[key]) {
+            text.push(
+              <Box key={`box-e-${key}`}>
+                <Text>{membersA[key]}</Text>
+              </Box>,
+            );
+          }
         }
       }
 
@@ -128,7 +131,6 @@ export default function SessionCreateConfirmationModal({
   const handleSubmit = useCallback(async () => {
     setSubmitButtonPressed(true);
     setIsSubmit(true);
-
     try {
       const rawResponse = await fetch('/api/ccaSession/create', {
         method: 'POST',
@@ -253,22 +255,24 @@ export default function SessionCreateConfirmationModal({
             onClose={() => setSubmitButtonPressed(false)}
           />
 
-          <Stack spacing={5} w='full' align='center'>
-            <Box>
-              <Text
-                mt={2}
-                mb={6}
-                textTransform='uppercase'
-                fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
-                lineHeight='5'
-                fontWeight='bold'
-                letterSpacing='tight'
-                color='gray.900'
-              >
-                {ccaName}
-              </Text>
-            </Box>
-          </Stack>
+          {checkerString(ccaName) && (
+            <Stack spacing={5} w='full' align='center'>
+              <Box>
+                <Text
+                  mt={2}
+                  mb={6}
+                  textTransform='uppercase'
+                  fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
+                  lineHeight='5'
+                  fontWeight='bold'
+                  letterSpacing='tight'
+                  color='gray.900'
+                >
+                  {ccaName}
+                </Text>
+              </Box>
+            </Stack>
+          )}
 
           <MotionSimpleGrid
             mt='3'
@@ -420,6 +424,7 @@ export default function SessionCreateConfirmationModal({
         <ModalFooter>
           <Button
             disabled={isSubmitting}
+            key='back-button'
             bg='blue.400'
             color='white'
             w='150px'
@@ -433,6 +438,7 @@ export default function SessionCreateConfirmationModal({
 
           <Button
             disabled={isSubmitting}
+            key='submit-button'
             bg='red.400'
             color='white'
             w='150px'

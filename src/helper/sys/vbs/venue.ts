@@ -1,5 +1,5 @@
 import { prisma } from '@constants/sys/db';
-import { findSlots } from '@constants/sys/helper';
+import { checkerString, findSlots } from '@constants/sys/helper';
 import { dateISO, isValidDate } from '@constants/sys/date';
 
 import { Venue } from 'types/vbs/venue';
@@ -52,7 +52,14 @@ export const fetchChildVenue = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch child venues', msg: [] };
-    await logger('fetchChildVenue', session.user.email, error.message);
+
+    if (checkerString(venue)) {
+      await logger(
+        `fetchChildVenue - ${venue}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -141,7 +148,10 @@ export const findVenueByID = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch venues', msg: null };
-    await logger('findVenueByID', session.user.email, error.message);
+
+    if (checkerString(id)) {
+      await logger(`findVenueByID - ${id}`, session.user.email, error.message);
+    }
   }
 
   return result;
@@ -178,7 +188,14 @@ export const fetchOpeningHours = async (
     }
   } catch (error) {
     console.error(error);
-    await logger('fetchOpeningHours', session.user.email, error.message);
+
+    if (checkerString(id)) {
+      await logger(
+        `fetchOpeningHours - ${id}`,
+        session.user.email,
+        error.message,
+      );
+    }
     return { start: null, end: null };
   }
 };
@@ -307,7 +324,9 @@ export const isInstantBook = async (
     }
   } catch (error) {
     console.error(error);
-    await logger('isInstantBook', session.user.email, error.message);
+    if (checkerString(id)) {
+      await logger(`isInstantBook - ${id}`, session.user.email, error.message);
+    }
     return false;
   }
 };
@@ -334,7 +353,9 @@ export const isVisible = async (
     }
   } catch (error) {
     console.error(error);
-    await logger('isVisible', session.user.email, error.message);
+    if (checkerString(id)) {
+      await logger(`isVisible - ${id}`, session.user.email, error.message);
+    }
     return false;
   }
 };
@@ -356,18 +377,35 @@ export const createVenue = async (
     });
 
     if (venue) {
-      await logger('createVenue', session.user.email, `Successfully created ${venue.name}`);
+      await logger(
+        'createVenue',
+        session.user.email,
+        `Successfully created ${venue.name}`,
+      );
       result = {
         status: true,
         error: '',
         msg: `Successfully created ${venue.name}`,
       };
     } else {
+      if (checkerString(data.name)) {
+        await logger(
+          'createVenue',
+          session.user.email,
+          `Failed to create venue ${data.name}`,
+        );
+      }
       result = { status: false, error: 'Failed to create venue', msg: '' };
     }
   } catch (error) {
     console.error(error);
-    await logger('createVenue', session.user.email, error.message);
+    if (checkerString(data.name)) {
+      await logger(
+        `createVenue - ${data.name}`,
+        session.user.email,
+        error.message,
+      );
+    }
     result = { status: false, error: 'Failed to create venue', msg: '' };
   }
 
@@ -394,13 +432,24 @@ export const editVenue = async (
     });
 
     if (venue) {
-      await logger('editVenue', session.user.email, `Successfully updated ${venue.name}`);
+      await logger(
+        'editVenue',
+        session.user.email,
+        `Successfully updated ${venue.name}`,
+      );
       result = {
         status: true,
         error: '',
         msg: `Successfully updated ${venue.name}`,
       };
     } else {
+      if (checkerString(data.name)) {
+        await logger(
+          'editVenue',
+          session.user.email,
+          `Failed to update ${data.name}`,
+        );
+      }
       result = { status: false, error: 'Failed to update venue', msg: '' };
     }
   } catch (error) {

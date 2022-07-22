@@ -79,6 +79,7 @@ export default function SessionDeleteConfirmationModal({
         <ModalFooter>
           <Button
             bg='cyan.700'
+            key='close-button'
             color='white'
             w='100px'
             mr={5}
@@ -90,6 +91,7 @@ export default function SessionDeleteConfirmationModal({
           </Button>
           <Button
             bg='red.500'
+            key='submit-button'
             color='white'
             w='100px'
             size='md'

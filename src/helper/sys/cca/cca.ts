@@ -3,6 +3,7 @@ import { CCA } from 'types/cca/cca';
 import { Session } from 'next-auth/core/types';
 
 import { prisma } from '@constants/sys/db';
+import { checkerString } from '@constants/sys/helper';
 
 import { logger } from '@helper/sys/misc/logger';
 
@@ -32,7 +33,9 @@ export const findCCAbyID = async (
     }
   } catch (error) {
     console.error(error);
-    await logger('FindCCAByID', session.user.email, error.message);
+    if (id !== undefined && checkerString(id)) {
+      await logger(`FindCCAByID - ${id}`, session.user.email, error.message);
+    }
     result = { status: false, error: 'Failed to fetch CCA', msg: null };
   }
 
@@ -67,7 +70,13 @@ export const findCCAbyName = async (
     }
   } catch (error) {
     console.error(error);
-    await logger('FindCCAByName', session.user.email, error.message);
+    if (name !== undefined && checkerString(name)) {
+      await logger(
+        `FindCCAByName - ${name}`,
+        session.user.email,
+        error.message,
+      );
+    }
     result = { status: false, error: 'Failed to fetch CCA', msg: null };
   }
 

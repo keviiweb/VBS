@@ -38,6 +38,7 @@ export const fetchKEIPSByMatNet = async (matnet: string): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch KEIPS', msg: null };
+    await logger('fetchKEIPSByMatNet', matnet, error.message);
   }
 
   return result;
@@ -135,7 +136,11 @@ export const createKEIPSFile = async (
       }
     }
 
-    await logger('createKEIPSFile', session.user.email, `Successfully created ${count} KEIPS records`);
+    await logger(
+      'createKEIPSFile',
+      session.user.email,
+      `Successfully created ${count} KEIPS records`,
+    );
     result = {
       status: true,
       error: null,

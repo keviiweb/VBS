@@ -27,7 +27,6 @@ export default function AnnouncementComponent() {
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-
       try {
         const rawResponse = await fetch('/api/announcement/fetch', {
           headers: {
@@ -83,7 +82,10 @@ export default function AnnouncementComponent() {
             animate='animate'
           >
             {slides.map((slide, sid) => (
-              <MotionBox key={sid} variants={cardVariant}>
+              <MotionBox
+                key={`announce-card-${sid}-idx`}
+                variants={cardVariant}
+              >
                 <AnnouncementCard product={slide} />
               </MotionBox>
             ))}

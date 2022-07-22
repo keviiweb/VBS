@@ -115,7 +115,6 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
 
   const currentDate = async (): Promise<string> => {
     const res = moment.tz(new Date(), 'Asia/Singapore').format('YYYY-MM-DD');
-
     return res;
   };
 
@@ -196,6 +195,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           <Popover>
             <PopoverTriggerNew>
               <Button
+                key='option-sess'
                 size='md'
                 isDisabled={submitButtonPressed}
                 leftIcon={<InfoOutlineIcon />}
@@ -205,6 +205,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
             </PopoverTriggerNew>
             <PopoverContent w='22vw' maxW='md'>
               <Button
+                key='details-sess'
                 py={5}
                 size='md'
                 isDisabled={submitButtonPressed}
@@ -214,6 +215,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
                 Details
               </Button>
               <Button
+                key='edit-sess'
                 mt={1}
                 py={5}
                 size='md'
@@ -224,6 +226,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
                 Edit
               </Button>
               <Button
+                key='delete-sess'
                 py={5}
                 mt={1}
                 size='md'
@@ -243,6 +246,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
         <Popover>
           <PopoverTriggerNew>
             <Button
+              key='not-editable-session-button'
               size='sm'
               isDisabled={submitButtonPressed}
               leftIcon={<InfoOutlineIcon />}
@@ -252,6 +256,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           </PopoverTriggerNew>
           <PopoverContent w='10vw' maxW='sm'>
             <Button
+              key='not-editable-session'
               py={5}
               size='sm'
               isDisabled={submitButtonPressed}

@@ -3,8 +3,10 @@ import { Result } from 'types/api';
 import { Session } from 'next-auth/core/types';
 
 import { prisma } from '@constants/sys/db';
+import { checkerString } from '@constants/sys/helper';
 
 import { logger } from '@helper/sys/misc/logger';
+
 /**
  * Find all booked timeslots filtered by the date and the venue ID
  *
@@ -28,7 +30,14 @@ export const fetchBookedTimeSlots = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch timeslots', msg: [] };
-    await logger('fetchBookedTimeSlots', session.user.email, error.message);
+
+    if (checkerString(venue)) {
+      await logger(
+        `fetchBookedTimeSlots - ${venue}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;

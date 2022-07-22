@@ -103,7 +103,7 @@ export default function LeaderStudentModalComponent({
 
   const includeActionButton = useCallback(
     async (content: { count: number; res: CCASession[] }) => {
-      if (content.res !== [] && content.count > 0) {
+      if (content.res.length > 0 && content.count > 0) {
         for (let key = 0; key < content.res.length; key += 1) {
           if (content.res[key]) {
             const dataField: CCASession = content.res[key] as CCASession;
@@ -119,6 +119,8 @@ export default function LeaderStudentModalComponent({
         } else {
           setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
         }
+      } else {
+        setData([]);
       }
     },
     [generateActionButtonSession],
@@ -214,7 +216,6 @@ export default function LeaderStudentModalComponent({
             ? modalDataField.ccaName
             : '';
         ccaNameDB.current = ccaNameField;
-
         setCCAName(ccaNameField);
 
         await fetchAttendance(ccaRecordField);
@@ -274,36 +275,40 @@ export default function LeaderStudentModalComponent({
             onClose={() => setSubmitButtonPressed(false)}
           />
 
-          <Stack spacing={5} w='full' align='center'>
-            <Box>
-              <Text
-                mt={2}
-                mb={6}
-                textTransform='uppercase'
-                fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
-                lineHeight='5'
-                fontWeight='bold'
-                letterSpacing='tight'
-                color='gray.900'
-              >
-                {ccaName}
-              </Text>
-            </Box>
-          </Stack>
-
-          <Box>
-            <Stack direction='row'>
-              <Text
-                textTransform='uppercase'
-                fontWeight='bold'
-                letterSpacing='tight'
-                color='gray.900'
-              >
-                Attendance
-              </Text>
-              <Text>{attendance}</Text>
+          {checkerString(ccaName) && (
+            <Stack spacing={5} w='full' align='center'>
+              <Box>
+                <Text
+                  mt={2}
+                  mb={6}
+                  textTransform='uppercase'
+                  fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
+                  lineHeight='5'
+                  fontWeight='bold'
+                  letterSpacing='tight'
+                  color='gray.900'
+                >
+                  {ccaName}
+                </Text>
+              </Box>
             </Stack>
-          </Box>
+          )}
+
+          {checkerString(attendance) && (
+            <Box>
+              <Stack direction='row'>
+                <Text
+                  textTransform='uppercase'
+                  fontWeight='bold'
+                  letterSpacing='tight'
+                  color='gray.900'
+                >
+                  Attendance
+                </Text>
+                <Text>{attendance}</Text>
+              </Stack>
+            </Box>
+          )}
 
           {!loadingData && data.length > 0 && (
             <Box w='full' overflow='auto'>

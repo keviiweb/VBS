@@ -18,7 +18,7 @@ export default function Video() {
       whileInView='onscreen'
       viewport={{ once: true, amount: 0.2 }}
     >
-      <MotionBox variants={layoutVariant}>
+      <MotionBox key='video-box' variants={layoutVariant}>
         <Flex
           bg='#F9FAFB'
           p={{ base: 4, md: 8, lg: 12, xl: 20 }}

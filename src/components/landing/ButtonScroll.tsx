@@ -25,10 +25,14 @@ export default function ButtonScrollTop() {
   }
 
   const onCheckScroll = useCallback(() => {
-    if (!show && window.pageYOffset > 400) {
-      setShow(true);
-    } else if (show && window.pageYOffset <= 400) {
-      setShow(false);
+    try {
+      if (!show && window.pageYOffset > 400) {
+        setShow(true);
+      } else if (show && window.pageYOffset <= 400) {
+        setShow(false);
+      }
+    } catch (error) {
+      console.error(error);
     }
   }, [show]);
 

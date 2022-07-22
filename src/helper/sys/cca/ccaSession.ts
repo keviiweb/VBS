@@ -4,7 +4,7 @@ import { Session } from 'next-auth/core/types';
 
 import { prisma } from '@constants/sys/db';
 import { calculateDuration } from '@constants/sys/date';
-import { findSlots, splitHours } from '@constants/sys/helper';
+import { checkerString, findSlots, splitHours } from '@constants/sys/helper';
 
 import { logger } from '@helper/sys/misc/logger';
 /**
@@ -42,7 +42,7 @@ export const fetchAllCCASessionByCCAID = async (
     console.error(error);
     result = { status: false, error: 'Failed to find session', msg: [] };
     await logger(
-      'fetchAllCCARecordByUserEmail',
+      'fetchAllCCASessionByCCAID',
       session.user.email,
       error.message,
     );
@@ -71,11 +71,13 @@ export const countAllCCASessionByCCAID = async (
     });
   } catch (error) {
     console.error(error);
-    await logger(
-      'countAllCCASessionByCCAID',
-      session.user.email,
-      error.message,
-    );
+    if (id !== undefined && checkerString(id)) {
+      await logger(
+        `countAllCCASessionByCCAID - ${id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return count;
@@ -108,7 +110,13 @@ export const findCCASessionByID = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to find session', msg: null };
-    await logger('findCCASessionByID', session.user.email, error.message);
+    if (id !== undefined && checkerString(id)) {
+      await logger(
+        `findCCASessionByID - ${id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -183,20 +191,38 @@ export const editSession = async (
     });
 
     if (sess) {
-      await logger('editSession', session.user.email, `Successfully updated session`);
+      if (data.id !== undefined && checkerString(data.id)) {
+        await logger(
+          `editSession - ${data.id}`,
+          session.user.email,
+          `Successfully updated session`,
+        );
+      }
       result = {
         status: true,
         error: '',
         msg: `Successfully updated session`,
       };
     } else {
-      await logger('editSession', session.user.email, 'Failed to update session',);
+      if (data.id !== undefined && checkerString(data.id)) {
+        await logger(
+          `editSession - ${data.id}`,
+          session.user.email,
+          'Failed to update session',
+        );
+      }
       result = { status: false, error: 'Failed to update session', msg: '' };
     }
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to update session', msg: '' };
-    await logger('editSession', session.user.email, error.message);
+    if (data.id !== undefined && checkerString(data.id)) {
+      await logger(
+        `editSession - ${data.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -237,7 +263,13 @@ export const lockSession = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to lock session', msg: '' };
-    await logger('lockSession', session.user.email, error.message);
+    if (data.id !== undefined && checkerString(data.id)) {
+      await logger(
+        `lockSession - ${data.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -263,20 +295,38 @@ export const deleteSessionByID = async (
     });
 
     if (sess) {
-      await logger('deleteSessionByID', session.user.email, `Successfully deleted session`);
+      if (id !== undefined && checkerString(id)) {
+        await logger(
+          `deleteSessionByID - ${id}`,
+          session.user.email,
+          `Successfully deleted session`,
+        );
+      }
       result = {
         status: true,
         error: '',
         msg: `Successfully deleted session`,
       };
     } else {
-      await logger('deleteSessionByID', session.user.email, 'Failed to delete session');
+      if (id !== undefined && checkerString(id)) {
+        await logger(
+          `deleteSessionByID - ${id}`,
+          session.user.email,
+          'Failed to delete session',
+        );
+      }
       result = { status: false, error: 'Failed to delete session', msg: '' };
     }
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to delete session', msg: '' };
-    await logger('deleteSessionByID', session.user.email, error.message);
+    if (id !== undefined && checkerString(id)) {
+      await logger(
+        `deleteSessionByID - ${id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -300,14 +350,22 @@ export const createSession = async (
     });
 
     if (sess) {
-      await logger('createSession', session.user.email, `Successfully created session`);
+      await logger(
+        'createSession',
+        session.user.email,
+        `Successfully created session`,
+      );
       result = {
         status: true,
         error: '',
         msg: `Successfully created session`,
       };
     } else {
-      await logger('createSession', session.user.email, 'Failed to create session');
+      await logger(
+        'createSession',
+        session.user.email,
+        'Failed to create session',
+      );
       result = { status: false, error: 'Failed to create session', msg: '' };
     }
   } catch (error) {

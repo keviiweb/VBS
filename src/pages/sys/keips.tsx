@@ -62,7 +62,6 @@ export default function KEIPSComponent() {
       return true;
     }
     setError('MATNET not of the correct format');
-
     return false;
   };
 
@@ -151,13 +150,20 @@ export default function KEIPSComponent() {
           if (content[key]) {
             const record: KEIPS = content[key];
 
-            const recordTop: string[] = record.topCCA.split('|');
-            const recordAll: string[] = record.allCCA.split('|');
-            const recordBonus: string[] = record.bonusCCA.split('|');
+            if (checkerString(record.topCCA)) {
+              const recordTop: string[] = record.topCCA.split('|');
+              await populateTopCCA(recordTop);
+            }
 
-            await populateTopCCA(recordTop);
-            await populateAllCCA(recordAll);
-            await populateBonusCCA(recordBonus);
+            if (checkerString(record.allCCA)) {
+              const recordAll: string[] = record.allCCA.split('|');
+              await populateAllCCA(recordAll);
+            }
+
+            if (checkerString(record.bonusCCA)) {
+              const recordBonus: string[] = record.bonusCCA.split('|');
+              await populateBonusCCA(recordBonus);
+            }
           }
         }
         setData(content);
@@ -228,11 +234,11 @@ export default function KEIPSComponent() {
         accessor: 'contrastingStr',
       },
       {
-        Header: 'Semester stayed',
+        Header: 'Semester Stayed',
         accessor: 'semesterStay',
       },
       {
-        Header: 'Fullfilled criteria?',
+        Header: 'Fullfilled Criteria?',
         accessor: 'fulfilledStr',
       },
     ],
@@ -294,7 +300,7 @@ export default function KEIPSComponent() {
           <Stack align='center'>
             <Heading fontSize='4xl'>KEVII</Heading>
             <Text>
-              {'<last 4 digit of Student ID><last 4 digit of NUSNET ID>'}{' '}
+              {'<last 4 digit of Student ID><last 4 digit of NUSNET ID>'}
             </Text>
           </Stack>
         )}
@@ -359,9 +365,10 @@ export default function KEIPSComponent() {
             <Stack spacing={30}>
               <Box w='900px' overflow='auto'>
                 <Stack align='center' justify='center' spacing={10}>
-                  <Text>MATNET: {matnet}</Text>
+                  {checkerString(matnet) && <Text>MATNET: {matnet}</Text>}
+
                   <TableWidget
-                    key={1}
+                    key='overall-keips'
                     columns={columns}
                     data={data}
                     controlledPageCount={pageCount}
@@ -376,7 +383,7 @@ export default function KEIPSComponent() {
                   <Stack align='center' justify='center'>
                     <Text>Top CCAs</Text>
                     <TableWidget
-                      key={2}
+                      key='topcca-keips'
                       columns={columnsData}
                       data={topCCA}
                       controlledPageCount={pageCount}
@@ -392,7 +399,7 @@ export default function KEIPSComponent() {
                   <Stack align='center' justify='center'>
                     <Text>All CCAs</Text>
                     <TableWidget
-                      key={3}
+                      key='all-keips'
                       columns={columnsData}
                       data={allCCA}
                       controlledPageCount={pageCount}
@@ -408,7 +415,7 @@ export default function KEIPSComponent() {
                   <Stack align='center' justify='center'>
                     <Text>Bonus</Text>
                     <TableWidget
-                      key={4}
+                      key='bonus-keips'
                       columns={columnsBonus}
                       data={bonusCCA}
                       controlledPageCount={pageCount}

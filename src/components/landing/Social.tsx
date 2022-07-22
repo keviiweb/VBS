@@ -33,6 +33,7 @@ export default function Social() {
           <Box alignItems='center'>
             <HStack spacing={10} textAlign='center'>
               <Link
+                key='facebook-link'
                 isExternal
                 aria-label='Facebook Page'
                 href='https://www.facebook.com/keviihall'
@@ -47,6 +48,7 @@ export default function Social() {
                 />
               </Link>
               <Link
+                key='ig-link'
                 isExternal
                 aria-label='Instagram Page'
                 href='https://www.instagram.com/kingedwardviihall/'
@@ -61,6 +63,7 @@ export default function Social() {
                 />
               </Link>
               <Link
+                key='youtube-link'
                 isExternal
                 aria-label='Youtube Page'
                 href='https://www.youtube.com/user/KEMediaX'

@@ -29,8 +29,10 @@ export default function CCACard({ product, setModalData }) {
       borderWidth='1px'
       onClick={() => setModalData(product)}
     >
-      <Box w='full' h='full'>
+      <Box id='flex-box' key='flex-box' w='full' h='full'>
         <Box
+          id='flex-image-box'
+          key='flex-image-box'
           w='100%'
           height='200px'
           position='relative'

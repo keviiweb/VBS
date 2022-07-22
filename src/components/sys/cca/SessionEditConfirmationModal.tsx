@@ -141,6 +141,7 @@ export default function SessionEditConfirmationModal({
       setExpectedBool(true);
     } else {
       setDisplayedExpected([]);
+      setExpectedBool(false);
     }
   };
 
@@ -159,6 +160,7 @@ export default function SessionEditConfirmationModal({
       }
     } else {
       setDataM([]);
+      setRealityBool(false);
     }
   };
 
@@ -312,22 +314,24 @@ export default function SessionEditConfirmationModal({
             onClose={() => setSubmitButtonPressed(false)}
           />
 
-          <Stack spacing={5} w='full' align='center'>
-            <Box>
-              <Text
-                mt={2}
-                mb={6}
-                textTransform='uppercase'
-                fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
-                lineHeight='5'
-                fontWeight='bold'
-                letterSpacing='tight'
-                color='gray.900'
-              >
-                {ccaName}
-              </Text>
-            </Box>
-          </Stack>
+          {checkerString(ccaName) && (
+            <Stack spacing={5} w='full' align='center'>
+              <Box>
+                <Text
+                  mt={2}
+                  mb={6}
+                  textTransform='uppercase'
+                  fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
+                  lineHeight='5'
+                  fontWeight='bold'
+                  letterSpacing='tight'
+                  color='gray.900'
+                >
+                  {ccaName}
+                </Text>
+              </Box>
+            </Stack>
+          )}
 
           <MotionSimpleGrid
             mt='3'
@@ -510,6 +514,7 @@ export default function SessionEditConfirmationModal({
           <Button
             disabled={isSubmitting}
             bg='blue.400'
+            key='back-button'
             color='white'
             w='150px'
             size='lg'
@@ -522,6 +527,7 @@ export default function SessionEditConfirmationModal({
 
           <Button
             disabled={isSubmitting}
+            key='submit-button'
             bg='red.400'
             color='white'
             w='150px'

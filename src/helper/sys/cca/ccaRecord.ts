@@ -243,20 +243,38 @@ export const editCCARecord = async (
     });
 
     if (query) {
-      await logger('editCCARecord', session.user.email, `Successfully updated record`);
+      if (data.id !== undefined && checkerString(data.id)) {
+        await logger(
+          `editCCARecord - ${data.id}`,
+          session.user.email,
+          `Successfully updated record`,
+        );
+      }
       result = {
         status: true,
         error: '',
         msg: `Successfully updated record`,
       };
     } else {
-      await logger('editCCARecord', session.user.email, 'Failed to update record');
+      if (data.id !== undefined && checkerString(data.id)) {
+        await logger(
+          `editCCARecord - ${data.id}`,
+          session.user.email,
+          'Failed to update record',
+        );
+      }
       result = { status: false, error: 'Failed to update record', msg: '' };
     }
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to update record', msg: '' };
-    await logger('editCCARecord', session.user.email, error.message);
+    if (data.id !== undefined && checkerString(data.id)) {
+      await logger(
+        `editCCARecord - ${data.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
   }
 
   return result;
@@ -279,14 +297,25 @@ export const createCCARecord = async (
     });
 
     if (query) {
-      await logger('createCCARecord', session.user.email, `Successfully created record`);
+      if (query.id !== undefined && checkerString(query.id)) {
+        await logger(
+          `createCCARecord - ${query.id}`,
+          session.user.email,
+          `Successfully created record`,
+        );
+      }
+
       result = {
         status: true,
         error: '',
         msg: `Successfully created record`,
       };
     } else {
-      await logger('createCCARecord', session.user.email, 'Failed to create record');
+      await logger(
+        'createCCARecord',
+        session.user.email,
+        'Failed to create record',
+      );
       result = { status: false, error: 'Failed to create record', msg: '' };
     }
   } catch (error) {
@@ -385,7 +414,11 @@ export const createCCARecordFile = async (
                 }
               }
             } else {
-              await logger('createCCARecordFile', session.user.email, `Failed to find CCA ${ccaName.trim()}`);
+              await logger(
+                'createCCARecordFile',
+                session.user.email,
+                `Failed to find CCA ${ccaName.trim()}`,
+              );
               success = false;
               result = {
                 status: false,
@@ -396,7 +429,11 @@ export const createCCARecordFile = async (
             }
           }
         } else {
-          await logger('createCCARecordFile', session.user.email, `Failed to find user ${email.trim()}`);
+          await logger(
+            'createCCARecordFile',
+            session.user.email,
+            `Failed to find user ${email.trim()}`,
+          );
           success = false;
           result = {
             status: false,
@@ -409,7 +446,11 @@ export const createCCARecordFile = async (
     }
 
     if (success) {
-      await logger('createCCARecordFile', session.user.email, 'Successfully populated CCA Records');
+      await logger(
+        'createCCARecordFile',
+        session.user.email,
+        'Successfully populated CCA Records',
+      );
       result = {
         status: true,
         error: null,

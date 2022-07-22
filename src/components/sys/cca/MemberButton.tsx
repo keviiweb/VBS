@@ -26,17 +26,19 @@ export default function MemberButton({
 
   return (
     <Stack direction='column'>
-      <Button
-        disabled={reality}
-        colorScheme='gray'
-        variant='solid'
-        size='md'
-        margin='8px'
-        key={newKey}
-        onClick={() => click()}
-      >
-        {name}
-      </Button>
+      {checkerString(name) && (
+        <Button
+          disabled={reality}
+          colorScheme='gray'
+          variant='solid'
+          size='md'
+          margin='8px'
+          key={newKey}
+          onClick={() => click()}
+        >
+          {name}
+        </Button>
+      )}
 
       {reality && (
         <FormControl id='hours'>
