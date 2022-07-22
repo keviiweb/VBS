@@ -38,11 +38,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const bookingID: string = (id as string).trim();
       const bookingRequest: BookingRequest | null = await findBookingByID(
         bookingID,
+        session,
       );
 
       if (bookingRequest !== null && bookingRequest !== undefined) {
-        const isRequestCancelled: boolean = await isCancelled(bookingRequest);
-        const isRequestRejected: boolean = await isRejected(bookingRequest);
+        const isRequestCancelled: boolean = await isCancelled(
+          bookingRequest,
+          session,
+        );
+        const isRequestRejected: boolean = await isRejected(
+          bookingRequest,
+          session,
+        );
         const isRequestByOwner: boolean = await isOwner(
           bookingRequest,
           session,
@@ -77,7 +84,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const currentDate: number = bookingRequest.date as number;
 
           if (compareDate(currentDate, minDay)) {
-            const isRequestApproved: boolean = await isApproved(bookingRequest);
+            const isRequestApproved: boolean = await isApproved(
+              bookingRequest,
+              session,
+            );
 
             if (isRequestApproved) {
               const timeSlots: number[] = convertSlotToArray(
@@ -88,6 +98,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               const deleteBooking = await deleteVenueBooking(
                 bookingRequest,
                 timeSlots,
+                session,
               );
 
               if (!deleteBooking.status) {
@@ -101,6 +112,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               } else {
                 const notifyOtherRejected: Result = await notifyConflicts(
                   bookingRequest,
+                  session,
                 );
                 if (!notifyOtherRejected.status) {
                   result = {

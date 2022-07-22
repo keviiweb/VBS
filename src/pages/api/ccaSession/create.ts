@@ -28,7 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (data !== null && data !== undefined) {
       const parsedData: CCASession = data as CCASession;
 
-      const findCCA: Result = await findCCAbyID(parsedData.ccaID);
+      const findCCA: Result = await findCCAbyID(parsedData.ccaID, session);
       if (findCCA.status && findCCA.msg) {
         const ldrRes: Result = await isLeader(parsedData.ccaID, session);
         if (ldrRes.status && ldrRes.msg) {
@@ -55,7 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             expectedMName: expectedMName,
           };
 
-          const findSessRes: boolean = await isConflict(sessionData);
+          const findSessRes: boolean = await isConflict(sessionData, session);
           if (findSessRes) {
             result = {
               status: false,
@@ -65,7 +65,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             res.status(200).send(result);
             res.end();
           } else {
-            const createSessionRes: Result = await createSession(sessionData);
+            const createSessionRes: Result = await createSession(
+              sessionData,
+              session,
+            );
             if (createSessionRes.status) {
               result = {
                 status: true,

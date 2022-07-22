@@ -60,7 +60,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           .pipe(csv())
           .on('data', (data) => results.push(data))
           .on('end', async () => {
-            const user: Result = await createUserFile(results);
+            const user: Result = await createUserFile(results, session);
             if (user.status) {
               result = {
                 status: true,

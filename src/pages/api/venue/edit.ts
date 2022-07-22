@@ -73,7 +73,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         updated_at: new Date().toISOString(),
       };
 
-      const editVenueRequest: Result = await editVenue(venueData);
+      const editVenueRequest: Result = await editVenue(venueData, session);
       if (editVenueRequest.status) {
         result = {
           status: true,

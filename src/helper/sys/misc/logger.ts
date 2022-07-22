@@ -10,7 +10,7 @@ import { Log } from 'types/misc/logger';
  * @param content What action was performed
  * @return No content is returned
  */
-export const log = async (
+export const logger = async (
   location: string,
   username: string,
   content: string,

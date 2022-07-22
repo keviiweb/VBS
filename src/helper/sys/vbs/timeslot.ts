@@ -1,8 +1,10 @@
 import { Booking } from 'types/vbs/booking';
 import { Result } from 'types/api';
+import { Session } from 'next-auth/core/types';
 
 import { prisma } from '@constants/sys/db';
 
+import { logger } from '@helper/sys/misc/logger';
 /**
  * Find all booked timeslots filtered by the date and the venue ID
  *
@@ -13,6 +15,7 @@ import { prisma } from '@constants/sys/db';
 export const fetchBookedTimeSlots = async (
   venue: string,
   convertedDate: number,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -25,6 +28,7 @@ export const fetchBookedTimeSlots = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch timeslots', msg: [] };
+    await logger('fetchBookedTimeSlots', session.user.email, error.message);
   }
 
   return result;

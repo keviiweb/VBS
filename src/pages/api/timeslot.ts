@@ -36,7 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const dateID: string = (date as string).trim();
 
       const convertedDate: number = convertDateToUnix(dateID);
-      const openingHours = await fetchOpeningHours(venueID);
+      const openingHours = await fetchOpeningHours(venueID, session);
       const startHour: number | null = openingHours.start;
       const endHour: number | null = openingHours.end;
 
@@ -49,6 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const bookedTimeSlots: Result = await fetchBookedTimeSlots(
           venue,
           convertedDate,
+          session,
         );
 
         if (bookedTimeSlots.status) {

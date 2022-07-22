@@ -42,8 +42,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const limit: number = limitQuery !== undefined ? Number(limitQuery) : 10000;
     const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
-    const keipsDB: Result = await fetchAllKEIPS(limit, skip);
-    const count: number = await countKEIPS();
+    const keipsDB: Result = await fetchAllKEIPS(limit, skip, session);
+    const count: number = await countKEIPS(session);
 
     const parsedKEIPS: KEIPS[] = [];
 

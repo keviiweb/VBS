@@ -1,7 +1,10 @@
 import { Result } from 'types/api';
 import { CCA } from 'types/cca/cca';
+import { Session } from 'next-auth/core/types';
 
 import { prisma } from '@constants/sys/db';
+
+import { logger } from '@helper/sys/misc/logger';
 
 /**
  * Finds the specified CCA by its ID
@@ -9,7 +12,10 @@ import { prisma } from '@constants/sys/db';
  * @param id ID of the CCA
  * @returns Returns a Result wrapped in a Promise
  */
-export const findCCAbyID = async (id: string): Promise<Result> => {
+export const findCCAbyID = async (
+  id: string,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
@@ -26,6 +32,7 @@ export const findCCAbyID = async (id: string): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
+    await logger('FindCCAByID', session.user.email, error.message);
     result = { status: false, error: 'Failed to fetch CCA', msg: null };
   }
 
@@ -40,7 +47,10 @@ export const findCCAbyID = async (id: string): Promise<Result> => {
  * @param name Name of the CCA
  * @returns Returns a Result wrapped in a Promsie
  */
-export const findCCAbyName = async (name: string): Promise<Result> => {
+export const findCCAbyName = async (
+  name: string,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
@@ -57,6 +67,7 @@ export const findCCAbyName = async (name: string): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
+    await logger('FindCCAByName', session.user.email, error.message);
     result = { status: false, error: 'Failed to fetch CCA', msg: null };
   }
 
@@ -68,7 +79,7 @@ export const findCCAbyName = async (name: string): Promise<Result> => {
  *
  * @returns A Result containing the CCAs in ascending order of name wrapped in a Promise
  */
-export const findAllCCA = async (): Promise<Result> => {
+export const findAllCCA = async (session: Session): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
@@ -85,6 +96,7 @@ export const findAllCCA = async (): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
+    await logger('FindAllCCA', session.user.email, error.message);
     result = { status: false, error: 'Failed to fetch CCA', msg: [] };
   }
 

@@ -41,7 +41,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (emailRes !== undefined) {
-      const fetchRes: Result = await fetchAllCCARecordByUserEmail(emailRes);
+      const fetchRes: Result = await fetchAllCCARecordByUserEmail(
+        emailRes,
+        session,
+      );
       if (fetchRes.status) {
         const userRecords: CCARecord[] = fetchRes.msg as CCARecord[];
         if (userRecords.length > 0) {
@@ -49,7 +52,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             if (userRecords[key]) {
               const record: CCARecord = userRecords[key];
               const { ccaID } = record;
-              const ccaDetailsRes: Result = await findCCAbyID(ccaID);
+              const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
               if (ccaDetailsRes.status && ccaDetailsRes.msg) {
                 const ccaDetails: CCA = ccaDetailsRes.msg;
                 const data: CCARecord = {

@@ -68,7 +68,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           .pipe(csv())
           .on('data', (data) => results.push(data))
           .on('end', async () => {
-            const keipsRes: Result = await createKEIPSFile(results);
+            const keipsRes: Result = await createKEIPSFile(results, session);
             if (keipsRes.status) {
               result = {
                 status: true,

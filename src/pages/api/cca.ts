@@ -22,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const cca: CCA[] = [];
 
   if (session !== undefined && session !== null) {
-    const ccaList: Result = await findAllCCA();
+    const ccaList: Result = await findAllCCA(session);
     if (ccaList.status) {
       const { msg } = ccaList;
       msg.forEach((item: CCA) => {

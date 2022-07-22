@@ -5,6 +5,7 @@ import { Result } from 'types/api';
 import { Booking } from 'types/vbs/booking';
 import { Session } from 'next-auth/core/types';
 
+import { logger } from '@helper/sys/misc/logger';
 /**
  * Finds all bookings filtered by the venue ID
  *
@@ -13,6 +14,7 @@ import { Session } from 'next-auth/core/types';
  */
 export const findAllBookingByVenueID = async (
   id: string,
+  session: Session,
 ): Promise<Booking[]> => {
   try {
     const bookings: Booking[] = await prisma.venueBooking.findMany({
@@ -32,6 +34,7 @@ export const findAllBookingByVenueID = async (
     return bookings;
   } catch (error) {
     console.error(error);
+    await logger('findAllBookingByVenueID', session.user.email, error.message);
     return [];
   }
 };
@@ -90,6 +93,7 @@ export const createVenueBooking = async (
       error: 'Error in creating venue booking',
       msg: '',
     };
+    await logger('createVenueBooking', session.user.email, error.message);
   }
 
   return result;
@@ -105,6 +109,7 @@ export const createVenueBooking = async (
 export const deleteVenueBooking = async (
   bookingRequest: BookingRequest,
   timeSlots: number[],
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   let success = true;
@@ -146,6 +151,7 @@ export const deleteVenueBooking = async (
       error: 'Error in creating venue booking',
       msg: '',
     };
+    await logger('deleteVenueBooking', session.user.email, error.message);
   }
 
   return result;

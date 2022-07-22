@@ -1,9 +1,11 @@
 import { Result } from 'types/api';
 import { CCAAttendance } from 'types/cca/ccaAttendance';
+import { Session } from 'next-auth/core/types';
 
 import { prisma } from '@constants/sys/db';
 import { checkerString } from '@constants/sys/helper';
 
+import { logger } from '@helper/sys/misc/logger';
 /**
  * Finds all the attendance by the user in the specified CCA
  *
@@ -18,6 +20,7 @@ export const fetchSpecificCCAAttendanceByUserEmail = async (
   email: string,
   limit: number = 100000,
   skip: number = 0,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -38,6 +41,11 @@ export const fetchSpecificCCAAttendanceByUserEmail = async (
     }
   } catch (error) {
     console.error(error);
+    await logger(
+      'fetchSpecificCCAAttendanceByUserEmail',
+      session.user.email,
+      error.message,
+    );
     result = { status: false, error: 'Failed to fetch attendance', msg: [] };
   }
 
@@ -52,6 +60,7 @@ export const fetchSpecificCCAAttendanceByUserEmail = async (
  */
 export const fetchAllCCAAttendanceBySession = async (
   sessionID: string,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -69,6 +78,11 @@ export const fetchAllCCAAttendanceBySession = async (
     }
   } catch (error) {
     console.error(error);
+    await logger(
+      'fetchAllCCAAttendanceBySession',
+      session.user.email,
+      error.message,
+    );
     result = { status: false, error: 'Failed to fetch attendance', msg: [] };
   }
 
@@ -119,6 +133,7 @@ export const countTotalAttendanceHours = async (
 export const deleteAttendance = async (
   sessionID: string,
   attend: CCAAttendance,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -139,6 +154,7 @@ export const deleteAttendance = async (
     }
   } catch (error) {
     console.error(error);
+    await logger('deleteAttendance', session.user.email, error.message);
     result = { status: false, error: 'Failed to delete attendance', msg: '' };
   }
 
@@ -153,6 +169,7 @@ export const deleteAttendance = async (
  */
 export const deleteAttendanceBySessionID = async (
   sessionID: string,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -170,6 +187,11 @@ export const deleteAttendanceBySessionID = async (
     }
   } catch (error) {
     console.error(error);
+    await logger(
+      'deleteAttendanceBySessionID',
+      session.user.email,
+      error.message,
+    );
     result = { status: false, error: error.toString(), msg: '' };
   }
 
@@ -184,6 +206,7 @@ export const deleteAttendanceBySessionID = async (
  */
 export const createAttendance = async (
   attend: CCAAttendance,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -199,6 +222,7 @@ export const createAttendance = async (
     }
   } catch (error) {
     console.error(error);
+    await logger('createAttendance', session.user.email, error.message);
     result = { status: false, error: 'Failed to create attendance', msg: '' };
   }
 
@@ -219,53 +243,61 @@ export const createAttendance = async (
 export const editAttendance = async (
   ccaSessionID: string,
   attendance: CCAAttendance[],
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
-  if (attendance.length > 0) {
-    for (let key = 0; key < attendance.length; key += 1) {
-      if (attendance[key]) {
-        const attend: CCAAttendance = attendance[key];
-        const id: string = attend.id !== undefined ? attend.id : '';
-        if (checkerString(id)) {
-          const deleteRes: Result = await deleteAttendance(
-            ccaSessionID,
-            attend,
-          );
-          if (!deleteRes.status) {
-            result = { status: false, error: deleteRes.error, msg: '' };
-            break;
+  try {
+    if (attendance.length > 0) {
+      for (let key = 0; key < attendance.length; key += 1) {
+        if (attendance[key]) {
+          const attend: CCAAttendance = attendance[key];
+          const id: string = attend.id !== undefined ? attend.id : '';
+          if (checkerString(id)) {
+            const deleteRes: Result = await deleteAttendance(
+              ccaSessionID,
+              attend,
+              session,
+            );
+            if (!deleteRes.status) {
+              result = { status: false, error: deleteRes.error, msg: '' };
+              break;
+            }
           }
-        }
 
-        if (attend.ccaAttendance > 0) {
-          const data: CCAAttendance = {
-            ccaID: attend.ccaID,
-            ccaAttendance: attend.ccaAttendance,
-            sessionID: ccaSessionID,
-            sessionEmail: attend.sessionEmail,
-          };
+          if (attend.ccaAttendance > 0) {
+            const data: CCAAttendance = {
+              ccaID: attend.ccaID,
+              ccaAttendance: attend.ccaAttendance,
+              sessionID: ccaSessionID,
+              sessionEmail: attend.sessionEmail,
+            };
 
-          const createRes: Result = await createAttendance(data);
-          if (createRes.status) {
+            const createRes: Result = await createAttendance(data, session);
+            if (createRes.status) {
+              result = {
+                status: true,
+                error: null,
+                msg: 'Successfully edited attendance',
+              };
+            } else {
+              result = { status: false, error: createRes.error, msg: '' };
+              break;
+            }
+          } else {
             result = {
               status: true,
               error: null,
               msg: 'Successfully edited attendance',
             };
-          } else {
-            result = { status: false, error: createRes.error, msg: '' };
-            break;
           }
-        } else {
-          result = {
-            status: true,
-            error: null,
-            msg: 'Successfully edited attendance',
-          };
         }
       }
     }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: 'Failed to edit attendance', msg: '' };
+    await logger('editAttendance', session.user.email, error.message);
   }
 
   return result;

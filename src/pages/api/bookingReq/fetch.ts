@@ -84,20 +84,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           if (BOOKINGS.includes(query)) {
             switch (query) {
               case 'APPROVED':
-                count = await countApprovedBooking();
-                bookings = await findApprovedBooking(limit, skip);
+                count = await countApprovedBooking(session);
+                bookings = await findApprovedBooking(limit, skip, session);
                 break;
               case 'PENDING':
-                count = await countPendingBooking();
-                bookings = await findPendingBooking(limit, skip);
+                count = await countPendingBooking(session);
+                bookings = await findPendingBooking(limit, skip, session);
                 break;
               case 'REJECTED':
-                count = await countRejectedBooking();
-                bookings = await findRejectedBooking(limit, skip);
+                count = await countRejectedBooking(session);
+                bookings = await findRejectedBooking(limit, skip, session);
                 break;
               default:
-                count = await countPendingBooking();
-                bookings = await findPendingBooking(limit, skip);
+                count = await countPendingBooking(session);
+                bookings = await findPendingBooking(limit, skip, session);
                 break;
             }
 
@@ -106,14 +106,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             successBooking = false;
           }
         } else {
-          count = await countAllBooking();
-          bookings = await findAllBooking(limit, skip);
+          count = await countAllBooking(session);
+          bookings = await findAllBooking(limit, skip, session);
 
           successBooking = true;
         }
       } else {
-        count = await countAllBooking();
-        bookings = await findAllBooking(limit, skip);
+        count = await countAllBooking(session);
+        bookings = await findAllBooking(limit, skip, session);
 
         successBooking = true;
       }
@@ -136,7 +136,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         for (let booking = 0; booking < bookings.length; booking += 1) {
           if (bookings[booking]) {
             const book: BookingRequest = bookings[booking];
-            const venueReq: Result = await findVenueByID(book.venue);
+            const venueReq: Result = await findVenueByID(book.venue, session);
             const date = convertUnixToDate(book.date as number);
             const slotArr: number[] = convertSlotToArray(
               book.timeSlots,
@@ -151,7 +151,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               if (book.cca === PERSONAL) {
                 cca = PERSONAL;
               } else {
-                const ccaReq: Result = await findCCAbyID(book.cca);
+                const ccaReq: Result = await findCCAbyID(book.cca, session);
                 if (ccaReq.status) {
                   const ccaReqMsg: CCA = ccaReq.msg;
                   cca = ccaReqMsg.name;
@@ -162,6 +162,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
               const conflictsRequest: Result = await getConflictingRequest(
                 book,
+                session,
               );
 
               let conflicts: BookingRequest[] = [];
@@ -214,7 +215,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               }
 
               if (success) {
-                const userRes: Result = await fetchUserByEmail(book.email);
+                const userRes: Result = await fetchUserByEmail(
+                  book.email,
+                  session,
+                );
                 const user: User = userRes.msg;
                 let username: string = '';
                 if (user && checkerString(user.name)) {

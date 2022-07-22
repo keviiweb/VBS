@@ -49,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         if (compareDate(sessionDate, threshold)) {
           let lockSessionSuccess = true;
           if (editable) {
-            const lockRes: Result = await lockSession(parsedData);
+            const lockRes: Result = await lockSession(parsedData, session);
             if (!lockRes.status) {
               lockSessionSuccess = false;
               result = {
@@ -73,7 +73,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             res.end();
           }
         } else {
-          const findCCA: Result = await findCCAbyID(parsedData.ccaID);
+          const findCCA: Result = await findCCAbyID(parsedData.ccaID, session);
           if (findCCA.status && findCCA.msg) {
             if (editable) {
               const ldrRes: Result = await isLeader(parsedData.ccaID, session);
@@ -102,7 +102,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   updated_at: new Date().toISOString(),
                 };
 
-                const findSessRes: boolean = await isConflict(sessionData);
+                const findSessRes: boolean = await isConflict(
+                  sessionData,
+                  session,
+                );
                 if (findSessRes) {
                   result = {
                     status: false,
@@ -113,7 +116,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   res.end();
                 } else {
                   let success: boolean = true;
-                  const editSessionRes: Result = await editSession(sessionData);
+                  const editSessionRes: Result = await editSession(
+                    sessionData,
+                    session,
+                  );
                   if (editSessionRes.status) {
                     if (parsedData && parsedData.realityM !== undefined) {
                       let canEdit = false;
@@ -139,6 +145,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                           const editRes: Result = await editAttendance(
                             parsedData.id,
                             parsedRealityData,
+                            session,
                           );
                           if (!editRes.status) {
                             success = false;

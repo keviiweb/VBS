@@ -30,7 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (session !== null && session !== undefined) {
     const sessionID: string = (id as string).trim();
     if (sessionID !== undefined) {
-      const sessionRes: Result = await findCCASessionByID(sessionID);
+      const sessionRes: Result = await findCCASessionByID(sessionID, session);
       if (sessionRes.status && sessionRes.msg) {
         const ccaSession: CCASession = sessionRes.msg;
         const editable: boolean = ccaSession.editable
@@ -41,9 +41,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const ldrRes: Result = await isLeader(ccaSession.ccaID, session);
           if (ldrRes.status && ldrRes.msg) {
             const deleteAttendanceRes: Result =
-              await deleteAttendanceBySessionID(id);
+              await deleteAttendanceBySessionID(id, session);
             if (deleteAttendanceRes.status) {
-              const deleteSessionRes: Result = await deleteSessionByID(id);
+              const deleteSessionRes: Result = await deleteSessionByID(
+                id,
+                session,
+              );
               if (deleteSessionRes.status) {
                 result = {
                   status: true,

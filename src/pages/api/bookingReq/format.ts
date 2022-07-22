@@ -54,7 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         for (let booking = 0; booking < bookingsRes.length; booking += 1) {
           if (bookingsRes[booking]) {
             const book: BookingRequest = bookingsRes[booking];
-            const venueReq: Result = await findVenueByID(book.venue);
+            const venueReq: Result = await findVenueByID(book.venue, session);
 
             let date: Date | null = null;
             let timeSlots: string[] = [];
@@ -75,7 +75,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               if (book.cca === PERSONAL) {
                 cca = PERSONAL;
               } else {
-                const ccaReq: Result = await findCCAbyID(book.cca);
+                const ccaReq: Result = await findCCAbyID(book.cca, session);
                 if (ccaReq.status) {
                   const ccaReqMsg: CCA = ccaReq.msg;
                   cca = ccaReqMsg.name;
@@ -115,7 +115,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 prettified = prettifyDate(date);
               }
 
-              const userRes: Result = await fetchUserByEmail(book.email);
+              const userRes: Result = await fetchUserByEmail(
+                book.email,
+                session,
+              );
               const user: User = userRes.msg;
               let username: string = '';
               if (user && checkerString(user.name)) {
@@ -124,6 +127,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
               const conflictsRequest: Result = await getConflictingRequest(
                 book,
+                session,
               );
 
               let conflicts: BookingRequest[] = [];

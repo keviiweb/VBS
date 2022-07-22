@@ -2,7 +2,9 @@ import { prisma } from '@constants/sys/db';
 
 import { Announcement } from 'types/misc/announcement';
 import { Result } from 'types/api';
+import { Session } from 'next-auth/core/types';
 
+import { logger } from '@helper/sys/misc/logger';
 /**
  * Finds all announcements
  *
@@ -13,6 +15,7 @@ import { Result } from 'types/api';
 export const fetchAllAnnouncements = async (
   limit: number = 100000,
   skip: number = 0,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -33,6 +36,7 @@ export const fetchAllAnnouncements = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch announcements', msg: [] };
+    await logger('fetchAllAnnouncements', session.user.email, error.message);
   }
 
   return result;
@@ -46,6 +50,7 @@ export const fetchAllAnnouncements = async (
  */
 export const createAnnouncement = async (
   data: Announcement,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -69,6 +74,7 @@ export const createAnnouncement = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to create announcement', msg: '' };
+    await logger('createAnnouncement', session.user.email, error.message);
   }
 
   return result;
@@ -80,7 +86,10 @@ export const createAnnouncement = async (
  * @param data Announcement Object
  * @returns A Result containing the status wrapped in a Promise
  */
-export const editAnnouncement = async (data: Announcement): Promise<Result> => {
+export const editAnnouncement = async (
+  data: Announcement,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const announce = await prisma.announcement.update({
@@ -106,6 +115,7 @@ export const editAnnouncement = async (data: Announcement): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to update announcement', msg: '' };
+    await logger('editAnnouncement', session.user.email, error.message);
   }
 
   return result;
@@ -117,7 +127,10 @@ export const editAnnouncement = async (data: Announcement): Promise<Result> => {
  * @param id Announcement ID
  * @returns A Result containing the status wrapped in a Promise
  */
-export const deleteAnnouncement = async (id: string): Promise<Result> => {
+export const deleteAnnouncement = async (
+  id: string,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const announce = await prisma.announcement.delete({
@@ -142,6 +155,7 @@ export const deleteAnnouncement = async (id: string): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to delete announcement', msg: '' };
+    await logger('deleteAnnouncement', session.user.email, error.message);
   }
 
   return result;

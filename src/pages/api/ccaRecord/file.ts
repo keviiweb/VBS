@@ -60,7 +60,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           .pipe(csv())
           .on('data', (data) => results.push(data))
           .on('end', async () => {
-            const recordRes: Result = await createCCARecordFile(results);
+            const recordRes: Result = await createCCARecordFile(
+              results,
+              session,
+            );
             if (recordRes.status) {
               result = {
                 status: true,

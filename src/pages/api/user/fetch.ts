@@ -34,8 +34,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const limit: number = limitQuery !== undefined ? Number(limitQuery) : 100;
     const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
-    const userDB: Result = await fetchAllUser(limit, skip);
-    const count: number = await countUser();
+    const userDB: Result = await fetchAllUser(limit, skip, session);
+    const count: number = await countUser(session);
 
     const parsedUser: User[] = [];
 

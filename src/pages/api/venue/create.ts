@@ -88,7 +88,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           image: venuePath,
         };
 
-        const createVenueRequest: Result = await createVenue(venueData);
+        const createVenueRequest: Result = await createVenue(
+          venueData,
+          session,
+        );
         if (createVenueRequest.status) {
           result = {
             status: true,

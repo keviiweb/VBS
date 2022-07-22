@@ -1,17 +1,23 @@
 import { prisma } from '@constants/sys/db';
-import { levels } from '@root/src/constants/sys/admin';
+import { levels } from '@constants/sys/admin';
 
 import { User } from 'types/misc/user';
 import { Result } from 'types/api';
-import { checkerString } from '@root/src/constants/sys/helper';
+import { Session } from 'next-auth/core/types';
 
+import { checkerString } from '@constants/sys/helper';
+
+import { logger } from '@helper/sys/misc/logger';
 /**
  * Finds all User records filtered by email address
  *
  * @param email Email address of the user
  * @returns A Result containing the status wrapped in a Promise
  */
-export const fetchUserByEmail = async (email: string): Promise<Result> => {
+export const fetchUserByEmail = async (
+  email: string,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const userFromDB: User = await prisma.users.findUnique({
@@ -28,6 +34,7 @@ export const fetchUserByEmail = async (email: string): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch user', msg: null };
+    await logger('fetchUserByEmail', session.user.email, error.message);
   }
 
   return result;
@@ -39,7 +46,10 @@ export const fetchUserByEmail = async (email: string): Promise<Result> => {
  * @param data User Object
  * @returns A Result containing the status wrapped in a Promise
  */
-export const createUser = async (data: User): Promise<Result> => {
+export const createUser = async (
+  data: User,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const user: User = await prisma.users.create({
@@ -54,6 +64,7 @@ export const createUser = async (data: User): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to create user', msg: '' };
+    await logger('createUser', session.user.email, error.message);
   }
 
   return result;
@@ -69,7 +80,10 @@ export const createUser = async (data: User): Promise<Result> => {
  * @param dataField File content
  * @returns A Result containing the status wrapped in a Promise
  */
-export const createUserFile = async (dataField: any[]): Promise<Result> => {
+export const createUserFile = async (
+  dataField: any[],
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   let count = 0;
@@ -123,6 +137,7 @@ export const createUserFile = async (dataField: any[]): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to create user', msg: '' };
+    await logger('createUserFile', session.user.email, error.message);
   }
   return result;
 };
@@ -132,12 +147,13 @@ export const createUserFile = async (dataField: any[]): Promise<Result> => {
  *
  * @returns Total number of User record wrapped in a Promise
  */
-export const countUser = async (): Promise<number> => {
+export const countUser = async (session: Session): Promise<number> => {
   let count: number = 0;
   try {
     count = await prisma.users.count();
   } catch (error) {
     console.error(error);
+    await logger('countUser', session.user.email, error.message);
   }
 
   return count;
@@ -153,6 +169,7 @@ export const countUser = async (): Promise<number> => {
 export const fetchAllUser = async (
   limit: number = 100000,
   skip: number = 0,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -169,6 +186,7 @@ export const fetchAllUser = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch user', msg: [] };
+    await logger('fetchAllUser', session.user.email, error.message);
   }
 
   return result;
@@ -180,7 +198,10 @@ export const fetchAllUser = async (
  * @param data User Object
  * @returns A Result containing the status wrapped in a Promise
  */
-export const editUser = async (data: User): Promise<Result> => {
+export const editUser = async (
+  data: User,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const user: User = await prisma.users.update({
@@ -202,6 +223,7 @@ export const editUser = async (data: User): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to update user', msg: '' };
+    await logger('editUser', session.user.email, error.message);
   }
 
   return result;

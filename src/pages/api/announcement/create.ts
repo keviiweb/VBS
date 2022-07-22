@@ -74,6 +74,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         const createAnnounceRequest: Result = await createAnnouncement(
           announceData,
+          session,
         );
         if (createAnnounceRequest.status) {
           result = {

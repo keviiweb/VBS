@@ -2,9 +2,11 @@ import { prisma } from '@constants/sys/db';
 
 import { KEIPS } from 'types/misc/keips';
 import { Result } from 'types/api';
+import { Session } from 'next-auth/core/types';
 
 import { checkerString } from '@constants/sys/helper';
 
+import { logger } from '@helper/sys/misc/logger';
 /**
  * In this file, MATNET is defined as
  * <last 4 digit of Student ID><last 4 digit of NUSNET ID>
@@ -52,7 +54,10 @@ export const fetchKEIPSByMatNet = async (matnet: string): Promise<Result> => {
  * @param dataField File content
  * @returns A Result containing the status wrapped in a Promise
  */
-export const createKEIPSFile = async (dataField: any[]): Promise<Result> => {
+export const createKEIPSFile = async (
+  dataField: any[],
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   let count = 0;
@@ -138,6 +143,7 @@ export const createKEIPSFile = async (dataField: any[]): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to create KEIPS', msg: '' };
+    await logger('createKEIPSFile', session.user.email, error.message);
   }
   return result;
 };
@@ -147,12 +153,13 @@ export const createKEIPSFile = async (dataField: any[]): Promise<Result> => {
  *
  * @returns Total number of KEIP record wrapped in a Promise
  */
-export const countKEIPS = async (): Promise<number> => {
+export const countKEIPS = async (session: Session): Promise<number> => {
   let count: number = 0;
   try {
     count = await prisma.kEIPS.count();
   } catch (error) {
     console.error(error);
+    await logger('countKEIPS', session.user.email, error.message);
   }
 
   return count;
@@ -168,6 +175,7 @@ export const countKEIPS = async (): Promise<number> => {
 export const fetchAllKEIPS = async (
   limit: number = 100000,
   skip: number = 0,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -184,6 +192,7 @@ export const fetchAllKEIPS = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch KEIPS', msg: [] };
+    await logger('fetchAllKEIPS', session.user.email, error.message);
   }
 
   return result;

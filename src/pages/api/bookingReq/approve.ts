@@ -44,11 +44,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const bookingID: string = (id as string).trim();
       const bookingRequest: BookingRequest | null = await findBookingByID(
         bookingID,
+        session,
       );
       if (bookingRequest !== null && bookingRequest !== undefined) {
-        const isRequestApproved: boolean = await isApproved(bookingRequest);
-        const isRequestCancelled: boolean = await isCancelled(bookingRequest);
-        const isRequestRejected: boolean = await isRejected(bookingRequest);
+        const isRequestApproved: boolean = await isApproved(
+          bookingRequest,
+          session,
+        );
+        const isRequestCancelled: boolean = await isCancelled(
+          bookingRequest,
+          session,
+        );
+        const isRequestRejected: boolean = await isRejected(
+          bookingRequest,
+          session,
+        );
 
         if (isRequestApproved) {
           result = {
@@ -75,7 +85,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           res.status(200).send(result);
           res.end();
         } else {
-          const isThereConflict: boolean = await isConflict(bookingRequest);
+          const isThereConflict: boolean = await isConflict(
+            bookingRequest,
+            session,
+          );
           const timeSlots: number[] = convertSlotToArray(
             bookingRequest.timeSlots,
             true,
@@ -83,7 +96,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
           if (!isThereConflict) {
             const approve: Result = await setApprove(bookingRequest, session);
-            const cancel: Result = await setRejectConflicts(bookingRequest);
+            const cancel: Result = await setRejectConflicts(
+              bookingRequest,
+              session,
+            );
 
             if (approve.status && cancel.status) {
               const createBooking = await createVenueBooking(

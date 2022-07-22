@@ -43,12 +43,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const reasonField: string = (reason as string).trim();
       const bookingRequest: BookingRequest | null = await findBookingByID(
         bookingID,
+        session,
       );
 
       if (bookingRequest !== null) {
-        const isRequestApproved: boolean = await isApproved(bookingRequest);
-        const isRequestCancelled: boolean = await isCancelled(bookingRequest);
-        const isRequestRejected: boolean = await isRejected(bookingRequest);
+        const isRequestApproved: boolean = await isApproved(
+          bookingRequest,
+          session,
+        );
+        const isRequestCancelled: boolean = await isCancelled(
+          bookingRequest,
+          session,
+        );
+        const isRequestRejected: boolean = await isRejected(
+          bookingRequest,
+          session,
+        );
 
         if (isRequestApproved) {
           const timeSlots: number[] = convertSlotToArray(
@@ -59,6 +69,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const deleteBooking: Result = await deleteVenueBooking(
             bookingRequest,
             timeSlots,
+            session,
           );
 
           if (!deleteBooking.status) {
@@ -70,7 +81,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             res.status(200).send(result);
             res.end();
           } else {
-            const reject: Result = await setReject(bookingRequest, reasonField);
+            const reject: Result = await setReject(
+              bookingRequest,
+              reasonField,
+              session,
+            );
             if (reject.status) {
               result = {
                 status: true,
@@ -106,7 +121,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           res.status(200).send(result);
           res.end();
         } else {
-          const reject: Result = await setReject(bookingRequest, reasonField);
+          const reject: Result = await setReject(
+            bookingRequest,
+            reasonField,
+            session,
+          );
           if (reject.status) {
             result = {
               status: true,

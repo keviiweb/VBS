@@ -38,11 +38,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const userEmail: string = session.user.email;
 
     if (ccaID !== undefined && userEmail !== undefined) {
-      const ccaDetailsRes: Result = await findCCAbyID(ccaID);
+      const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
       if (ccaDetailsRes.status && ccaDetailsRes.msg) {
         const ccaDB: Result = await fetchSpecificCCAAttendanceByUserEmail(
           ccaID,
           userEmail,
+          100000,
+          0,
+          session,
         );
 
         if (ccaDB.status) {
@@ -51,7 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           );
 
           const ccaAttendanceHours: number =
-            await countTotalSessionHoursByCCAID(ccaID);
+            await countTotalSessionHoursByCCAID(ccaID, session);
 
           if (userAttendanceHours > ccaAttendanceHours) {
             totalCCAAttendance = `${ccaAttendanceHours} out of ${ccaAttendanceHours}`;

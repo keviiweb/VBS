@@ -57,7 +57,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         updated_at: new Date().toISOString(),
       };
 
-      const userRes = await editUser(user);
+      const userRes = await editUser(user, session);
       if (userRes.status) {
         result = { status: true, error: null, msg: userRes.msg };
         res.status(200).send(result);

@@ -16,6 +16,8 @@ import VenueBookingModalConfirmation from '@components/sys/vbs/VenueBookingModal
 import Loading from '@components/sys/misc/Loading';
 
 import { fetchVenue } from '@helper/sys/vbs/venue';
+import { currentSession } from '@helper/sys/sessionServer';
+
 import { checkerString, checkerArray } from '@constants/sys/helper';
 
 import safeJsonStringify from 'safe-json-stringify';
@@ -24,6 +26,7 @@ import { GetServerSideProps } from 'next';
 import { Result } from 'types/api';
 import { Venue } from 'types/vbs/venue';
 import { TimeSlot } from 'types/vbs/timeslot';
+import { Session } from 'next-auth/core/types';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -209,9 +212,12 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
 
   let data: Result | null = null;
   try {
-    const res: Result = await fetchVenue();
-    const stringifiedData = safeJsonStringify(res);
-    data = JSON.parse(stringifiedData);
+    const session: Session | null = await currentSession(null, null, cont);
+    if (session !== null) {
+      const res: Result = await fetchVenue(session);
+      const stringifiedData = safeJsonStringify(res);
+      data = JSON.parse(stringifiedData);
+    }
   } catch (error) {
     console.error(error);
   }

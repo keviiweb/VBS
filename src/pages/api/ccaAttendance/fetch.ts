@@ -58,18 +58,25 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           limitQuery !== undefined ? Number(limitQuery) : 100;
         const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
-        const ccaDetailsRes: Result = await findCCAbyID(ccaID);
+        const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
         if (ccaDetailsRes.status && ccaDetailsRes.msg) {
           const ccaDB: Result = await fetchSpecificCCAAttendanceByUserEmail(
             ccaID,
             userEmail,
+            100000,
+            0,
+            session,
           );
           const sessionDB: Result = await fetchAllCCASessionByCCAID(
             ccaID,
             limit,
             skip,
+            session,
           );
-          const totalCount: number = await countAllCCASessionByCCAID(ccaID);
+          const totalCount: number = await countAllCCASessionByCCAID(
+            ccaID,
+            session,
+          );
 
           if (ccaDB.status && sessionDB.status) {
             const totalAttendance: CCAAttendance[] = ccaDB.msg;

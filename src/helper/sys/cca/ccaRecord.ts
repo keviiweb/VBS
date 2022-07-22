@@ -1,14 +1,14 @@
 import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
 import { CCA } from 'types/cca/cca';
-
 import { Session } from 'next-auth/core/types';
+
 import { prisma } from '@constants/sys/db';
 import { checkerString } from '@constants/sys/helper';
 
 import { findCCAbyName } from '@helper/sys/cca/cca';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
-
+import { logger } from '@helper/sys/misc/logger';
 /**
  * Finds all CCA Records filtered by the user email
  *
@@ -17,6 +17,7 @@ import { fetchUserByEmail } from '@helper/sys/misc/user';
  */
 export const fetchAllCCARecordByUserEmail = async (
   email: string,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -36,6 +37,11 @@ export const fetchAllCCARecordByUserEmail = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
+    await logger(
+      'fetchAllCCARecordByUserEmail',
+      session.user.email,
+      error.message,
+    );
   }
 
   return result;
@@ -68,6 +74,7 @@ export const fetchAllCCARecordByUser = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
+    await logger('fetchAllCCARecordByUser', session.user.email, error.message);
   }
 
   return result;
@@ -85,6 +92,7 @@ export const fetchAllCCARecordByID = async (
   id: string,
   limit: number = 100000,
   skip: number = 0,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -106,6 +114,7 @@ export const fetchAllCCARecordByID = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
+    await logger('fetchAllCCARecordByID', session.user.email, error.message);
   }
 
   return result;
@@ -117,7 +126,10 @@ export const fetchAllCCARecordByID = async (
  * @param id CCA ID
  * @returns Total number of records wrapped in a Promise
  */
-export const countAllCCARecordByID = async (id: string): Promise<number> => {
+export const countAllCCARecordByID = async (
+  id: string,
+  session: Session,
+): Promise<number> => {
   let count: number = 0;
 
   try {
@@ -128,6 +140,7 @@ export const countAllCCARecordByID = async (id: string): Promise<number> => {
     });
   } catch (error) {
     console.error(error);
+    await logger('countAllCCARecordByID', session.user.email, error.message);
   }
 
   return count;
@@ -163,6 +176,7 @@ export const isLeader = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch CCA record', msg: '' };
+    await logger('isLeader', session.user.email, error.message);
   }
 
   return result;
@@ -178,6 +192,7 @@ export const isLeader = async (
 export const fetchSpecificCCARecord = async (
   ccaID: string,
   email: string,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -201,6 +216,7 @@ export const fetchSpecificCCARecord = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch CCA records', msg: null };
+    await logger('fetchSpecificCCARecord', session.user.email, error.message);
   }
 
   return result;
@@ -212,7 +228,10 @@ export const fetchSpecificCCARecord = async (
  * @param data CCARecord Object
  * @returns A Result containing the status wrapped in a Promise
  */
-export const editCCARecord = async (data: CCARecord): Promise<Result> => {
+export const editCCARecord = async (
+  data: CCARecord,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const query: CCARecord = await prisma.cCARecord.update({
@@ -234,6 +253,7 @@ export const editCCARecord = async (data: CCARecord): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to update record', msg: '' };
+    await logger('editCCARecord', session.user.email, error.message);
   }
 
   return result;
@@ -245,7 +265,10 @@ export const editCCARecord = async (data: CCARecord): Promise<Result> => {
  * @param data CCARecord Object
  * @returns A Result containing the status wrapped in a Promise
  */
-export const createCCARecord = async (data: CCARecord): Promise<Result> => {
+export const createCCARecord = async (
+  data: CCARecord,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const query: CCARecord = await prisma.cCARecord.create({
@@ -264,6 +287,7 @@ export const createCCARecord = async (data: CCARecord): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to create record', msg: '' };
+    await logger('createCCARecord', session.user.email, error.message);
   }
 
   return result;
@@ -283,6 +307,7 @@ export const createCCARecord = async (data: CCARecord): Promise<Result> => {
  */
 export const createCCARecordFile = async (
   dataField: any[],
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   let success: boolean = true;
@@ -297,16 +322,17 @@ export const createCCARecordFile = async (
         const leader: boolean =
           data.leader !== undefined && data.leader === 'yes' ? true : false;
 
-        const userRes: Result = await fetchUserByEmail(email.trim());
+        const userRes: Result = await fetchUserByEmail(email.trim(), session);
         if (userRes.status) {
           if (checkerString(ccaName)) {
-            const ccaRes: Result = await findCCAbyName(ccaName.trim());
+            const ccaRes: Result = await findCCAbyName(ccaName.trim(), session);
             if (ccaRes.status) {
               const ccaDetails: CCA = ccaRes.msg as CCA;
               if (ccaDetails && ccaDetails.id !== undefined) {
                 const existingRecordsRes: Result = await fetchSpecificCCARecord(
                   ccaDetails.id.trim(),
                   email.trim(),
+                  session,
                 );
                 if (existingRecordsRes.status && existingRecordsRes.msg) {
                   const existingRecords: CCARecord = existingRecordsRes.msg;
@@ -318,7 +344,10 @@ export const createCCARecordFile = async (
                     updated_at: new Date().toISOString(),
                   };
 
-                  const updateRes: Result = await editCCARecord(userData);
+                  const updateRes: Result = await editCCARecord(
+                    userData,
+                    session,
+                  );
                   if (!updateRes.status) {
                     success = false;
                     result = {
@@ -335,7 +364,10 @@ export const createCCARecordFile = async (
                     leader: leader,
                   };
 
-                  const createRes: Result = await createCCARecord(userData);
+                  const createRes: Result = await createCCARecord(
+                    userData,
+                    session,
+                  );
                   if (!createRes.status) {
                     success = false;
                     result = {
@@ -383,6 +415,7 @@ export const createCCARecordFile = async (
       error: 'Failed to populate CCA Records',
       msg: '',
     };
+    await logger('createCCARecordFile', session.user.email, error.message);
   }
   return result;
 };

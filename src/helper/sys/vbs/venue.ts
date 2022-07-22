@@ -4,18 +4,21 @@ import { dateISO, isValidDate } from '@constants/sys/date';
 
 import { Venue } from 'types/vbs/venue';
 import { Result } from 'types/api';
+import { Session } from 'next-auth/core/types';
 
+import { logger } from '@helper/sys/misc/logger';
 /**
  * Count the total of venues
  *
  * @returns The total number of venues wrapped in a Promise
  */
-export const countVenue = async (): Promise<number> => {
+export const countVenue = async (session: Session): Promise<number> => {
   let count: number = 0;
   try {
     count = await prisma.venue.count();
   } catch (error) {
     console.error(error);
+    await logger('countVenue', session.user.email, error.message);
   }
 
   return count;
@@ -27,7 +30,10 @@ export const countVenue = async (): Promise<number> => {
  * @param venue Parent venue ID
  * @returns A Result containing the child venues wrapped in a Promise
  */
-export const fetchChildVenue = async (venue: string): Promise<Result> => {
+export const fetchChildVenue = async (
+  venue: string,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const childVenues: Venue[] = await prisma.venue.findMany({
@@ -46,6 +52,7 @@ export const fetchChildVenue = async (venue: string): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch child venues', msg: [] };
+    await logger('fetchChildVenue', session.user.email, error.message);
   }
 
   return result;
@@ -61,6 +68,7 @@ export const fetchChildVenue = async (venue: string): Promise<Result> => {
 export const fetchAllVenue = async (
   limit: number = 100000,
   skip: number = 0,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -77,6 +85,7 @@ export const fetchAllVenue = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch venues', msg: [] };
+    await logger('fetchAllVenue', session.user.email, error.message);
   }
 
   return result;
@@ -87,7 +96,7 @@ export const fetchAllVenue = async (
  *
  * @returns A Result containing the list of venues wrapped in a Promise
  */
-export const fetchVenue = async (): Promise<Result> => {
+export const fetchVenue = async (session: Session): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const locations: Venue[] = await prisma.venue.findMany({
@@ -102,6 +111,7 @@ export const fetchVenue = async (): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch venues', msg: [] };
+    await logger('fetchVenue', session.user.email, error.message);
   }
 
   return result;
@@ -113,7 +123,10 @@ export const fetchVenue = async (): Promise<Result> => {
  * @param id Venue ID
  * @returns A Result containing the status wrapped in a Promise
  */
-export const findVenueByID = async (id: string): Promise<Result> => {
+export const findVenueByID = async (
+  id: string,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const locations: Venue = await prisma.venue.findFirst({
@@ -128,6 +141,7 @@ export const findVenueByID = async (id: string): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch venues', msg: null };
+    await logger('findVenueByID', session.user.email, error.message);
   }
 
   return result;
@@ -141,6 +155,7 @@ export const findVenueByID = async (id: string): Promise<Result> => {
  */
 export const fetchOpeningHours = async (
   id: string,
+  session: Session,
 ): Promise<{ start: number | null; end: number | null }> => {
   try {
     const locations: Venue = await prisma.venue.findFirst({
@@ -163,6 +178,7 @@ export const fetchOpeningHours = async (
     }
   } catch (error) {
     console.error(error);
+    await logger('fetchOpeningHours', session.user.email, error.message);
     return { start: null, end: null };
   }
 };
@@ -184,6 +200,7 @@ export const fetchOpeningHours = async (
 export const splitHoursISO = async (
   date: Date,
   timeSlot: string,
+  session: Session,
 ): Promise<{ start: string | null; end: string | null }> => {
   try {
     if (!isValidDate(date)) {
@@ -230,6 +247,7 @@ export const splitHoursISO = async (
     }
   } catch (error) {
     console.error(error);
+    await logger('splitHoursISO', session.user.email, error.message);
     return { start: null, end: null };
   }
 };
@@ -244,6 +262,7 @@ export const splitHoursISO = async (
  */
 export const splitOpeningHours = async (
   opening: string,
+  session: Session,
 ): Promise<{ start: number | null; end: number | null }> => {
   try {
     if (opening) {
@@ -261,6 +280,7 @@ export const splitOpeningHours = async (
     }
   } catch (error) {
     console.error(error);
+    await logger('splitOpeningHours', session.user.email, error.message);
     return { start: null, end: null };
   }
 };
@@ -271,7 +291,10 @@ export const splitOpeningHours = async (
  * @param id Venue ID
  * @returns A boolean stating if it is an instant-book venue wrapped in a Promise
  */
-export const isInstantBook = async (id: string): Promise<boolean> => {
+export const isInstantBook = async (
+  id: string,
+  session: Session,
+): Promise<boolean> => {
   try {
     const locations: Venue = await prisma.venue.findFirst({
       where: { id: id },
@@ -284,6 +307,7 @@ export const isInstantBook = async (id: string): Promise<boolean> => {
     }
   } catch (error) {
     console.error(error);
+    await logger('isInstantBook', session.user.email, error.message);
     return false;
   }
 };
@@ -294,7 +318,10 @@ export const isInstantBook = async (id: string): Promise<boolean> => {
  * @param id Venue ID
  * @returns A boolean stating if it is a bookable venue wrapped in a Promise
  */
-export const isVisible = async (id: string): Promise<boolean> => {
+export const isVisible = async (
+  id: string,
+  session: Session,
+): Promise<boolean> => {
   try {
     const locations: Venue = await prisma.venue.findFirst({
       where: { id: id },
@@ -307,6 +334,7 @@ export const isVisible = async (id: string): Promise<boolean> => {
     }
   } catch (error) {
     console.error(error);
+    await logger('isVisible', session.user.email, error.message);
     return false;
   }
 };
@@ -317,7 +345,10 @@ export const isVisible = async (id: string): Promise<boolean> => {
  * @param data Venue Object
  * @returns A Result containing the status wrapped in a Promise
  */
-export const createVenue = async (data: Venue): Promise<Result> => {
+export const createVenue = async (
+  data: Venue,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const venue: Venue = await prisma.venue.create({
@@ -335,6 +366,7 @@ export const createVenue = async (data: Venue): Promise<Result> => {
     }
   } catch (error) {
     console.error(error);
+    await logger('createVenue', session.user.email, error.message);
     result = { status: false, error: 'Failed to create venue', msg: '' };
   }
 
@@ -347,7 +379,10 @@ export const createVenue = async (data: Venue): Promise<Result> => {
  * @param data Venue Object
  * @returns A Result containing the status wrapped in a Promise
  */
-export const editVenue = async (data: Venue): Promise<Result> => {
+export const editVenue = async (
+  data: Venue,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const venue: Venue = await prisma.venue.update({
@@ -369,6 +404,7 @@ export const editVenue = async (data: Venue): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to update venue', msg: '' };
+    await logger('editVenue', session.user.email, error.message);
   }
 
   return result;

@@ -43,7 +43,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         session.user.admin === levels.ADMIN ||
         session.user.admin === levels.OWNER
       ) {
-        bookings = await findAllBookingByVenueID(venueID);
+        bookings = await findAllBookingByVenueID(venueID, session);
 
         if (bookings !== [] && bookings !== undefined && bookings !== null) {
           const parsedBooking: Booking[] = [];
@@ -60,7 +60,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               if (book.cca === PERSONAL) {
                 cca = PERSONAL;
               } else {
-                const ccaReq: Result = await findCCAbyID(book.cca);
+                const ccaReq: Result = await findCCAbyID(book.cca, session);
                 if (ccaReq.status) {
                   const ccaReqMsg = ccaReq.msg;
                   cca = ccaReqMsg.name;
@@ -127,6 +127,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                           bookedTimeSlotsISO = await splitHoursISO(
                             date,
                             parsed.timeSlots,
+                            session,
                           );
                         }
 
@@ -147,6 +148,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                           bookedTimeSlotsISO = await splitHoursISO(
                             date,
                             parsed.timeSlots,
+                            session,
                           );
                         }
 
@@ -163,13 +165,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               }
 
               if (!duplicate) {
-                const venueReq: Result = await findVenueByID(book.venue);
+                const venueReq: Result = await findVenueByID(
+                  book.venue,
+                  session,
+                );
                 if (venueReq.status) {
                   const venueReqMsg: Venue = venueReq.msg;
                   const venue: string = venueReqMsg.name;
 
                   const openingHours = await splitOpeningHours(
                     venueReqMsg.openingHours,
+                    session,
                   );
 
                   let startHour: string | null = '';
@@ -210,6 +216,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     bookedTimeSlotsISO = await splitHoursISO(
                       date,
                       bookedTimeSlots,
+                      session,
                     );
                   }
 

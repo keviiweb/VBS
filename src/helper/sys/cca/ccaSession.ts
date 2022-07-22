@@ -1,10 +1,12 @@
 import { Result } from 'types/api';
 import { CCASession } from 'types/cca/ccaSession';
+import { Session } from 'next-auth/core/types';
 
 import { prisma } from '@constants/sys/db';
 import { calculateDuration } from '@constants/sys/date';
 import { findSlots, splitHours } from '@constants/sys/helper';
 
+import { logger } from '@helper/sys/misc/logger';
 /**
  * Finds all CCA Sessions filtered by CCA ID
  *
@@ -17,6 +19,7 @@ export const fetchAllCCASessionByCCAID = async (
   id: string,
   limit: number = 100000,
   skip: number = 0,
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -38,6 +41,11 @@ export const fetchAllCCASessionByCCAID = async (
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to find session', msg: [] };
+    await logger(
+      'fetchAllCCARecordByUserEmail',
+      session.user.email,
+      error.message,
+    );
   }
 
   return result;
@@ -51,6 +59,7 @@ export const fetchAllCCASessionByCCAID = async (
  */
 export const countAllCCASessionByCCAID = async (
   id: string,
+  session: Session,
 ): Promise<number> => {
   let count = 0;
 
@@ -62,6 +71,11 @@ export const countAllCCASessionByCCAID = async (
     });
   } catch (error) {
     console.error(error);
+    await logger(
+      'countAllCCASessionByCCAID',
+      session.user.email,
+      error.message,
+    );
   }
 
   return count;
@@ -73,7 +87,10 @@ export const countAllCCASessionByCCAID = async (
  * @param id Session ID
  * @returns A Result containing the status wrapped in a Promise
  */
-export const findCCASessionByID = async (id: string): Promise<Result> => {
+export const findCCASessionByID = async (
+  id: string,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
@@ -91,6 +108,7 @@ export const findCCASessionByID = async (id: string): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to find session', msg: null };
+    await logger('findCCASessionByID', session.user.email, error.message);
   }
 
   return result;
@@ -104,6 +122,7 @@ export const findCCASessionByID = async (id: string): Promise<Result> => {
  */
 export const countTotalSessionHoursByCCAID = async (
   ccaID: string,
+  session: Session,
 ): Promise<number> => {
   let count = 0;
   try {
@@ -133,6 +152,11 @@ export const countTotalSessionHoursByCCAID = async (
     }
   } catch (error) {
     console.error(error);
+    await logger(
+      'countTotalSessionHoursByCCAID',
+      session.user.email,
+      error.message,
+    );
   }
 
   return count;
@@ -144,7 +168,10 @@ export const countTotalSessionHoursByCCAID = async (
  * @param data CCASession Object
  * @returns A Result containing the status wrapped in a Promise
  */
-export const editSession = async (data: CCASession): Promise<Result> => {
+export const editSession = async (
+  data: CCASession,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
@@ -167,6 +194,7 @@ export const editSession = async (data: CCASession): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to update session', msg: '' };
+    await logger('editSession', session.user.email, error.message);
   }
 
   return result;
@@ -178,7 +206,10 @@ export const editSession = async (data: CCASession): Promise<Result> => {
  * @param data CCASession Object
  * @returns A Result containing the status wrapped in a Promise
  */
-export const lockSession = async (data: CCASession): Promise<Result> => {
+export const lockSession = async (
+  data: CCASession,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
@@ -204,6 +235,7 @@ export const lockSession = async (data: CCASession): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to lock session', msg: '' };
+    await logger('lockSession', session.user.email, error.message);
   }
 
   return result;
@@ -215,7 +247,10 @@ export const lockSession = async (data: CCASession): Promise<Result> => {
  * @param id CCASession ID
  * @returns A Result containing the status wrapped in a Promise
  */
-export const deleteSessionByID = async (id: string): Promise<Result> => {
+export const deleteSessionByID = async (
+  id: string,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
@@ -237,6 +272,7 @@ export const deleteSessionByID = async (id: string): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to delete session', msg: '' };
+    await logger('deleteSessionByID', session.user.email, error.message);
   }
 
   return result;
@@ -248,7 +284,10 @@ export const deleteSessionByID = async (id: string): Promise<Result> => {
  * @param data CCASession Object
  * @returns A Result containing the status wrapped in a Promise
  */
-export const createSession = async (data: CCASession): Promise<Result> => {
+export const createSession = async (
+  data: CCASession,
+  session: Session,
+): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
@@ -268,6 +307,7 @@ export const createSession = async (data: CCASession): Promise<Result> => {
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to create session', msg: '' };
+    await logger('createSession', session.user.email, error.message);
   }
 
   return result;
@@ -282,7 +322,10 @@ export const createSession = async (data: CCASession): Promise<Result> => {
  * @param data CCASession Object
  * @returns A boolean indicating if there is a conflict wrapped in a Promise
  */
-export const isConflict = async (data: CCASession): Promise<boolean> => {
+export const isConflict = async (
+  data: CCASession,
+  session: Session,
+): Promise<boolean> => {
   try {
     const anyConflicting: CCASession[] = await prisma.cCASessions.findMany({
       where: {
@@ -295,13 +338,18 @@ export const isConflict = async (data: CCASession): Promise<boolean> => {
     });
 
     if (anyConflicting.length > 0) {
-      const conflict: boolean = await checkConflict(data, anyConflicting);
+      const conflict: boolean = await checkConflict(
+        data,
+        anyConflicting,
+        session,
+      );
       return conflict;
     } else {
       return false;
     }
   } catch (error) {
     console.error(error);
+    await logger('isConflict', session.user.email, error.message);
     return true;
   }
 };
@@ -320,45 +368,54 @@ export const isConflict = async (data: CCASession): Promise<boolean> => {
 export const checkConflict = async (
   createRequest: CCASession,
   existingRequest: CCASession[],
+  session: Session,
 ): Promise<boolean> => {
   let result = false;
 
-  const { start, end } = await splitHours(createRequest.time);
-  if (start !== null && end !== null) {
-    const startH: string | null = await findSlots(start.toString(), true);
-    const endH: string | null = await findSlots(end.toString(), false);
+  try {
+    const { start, end } = await splitHours(createRequest.time);
+    if (start !== null && end !== null) {
+      const startH: string | null = await findSlots(start.toString(), true);
+      const endH: string | null = await findSlots(end.toString(), false);
 
-    if (startH !== null && endH !== null) {
-      const startHNum: number = Number(startH);
-      const endHNum: number = Number(endH);
+      if (startH !== null && endH !== null) {
+        const startHNum: number = Number(startH);
+        const endHNum: number = Number(endH);
 
-      for (let key = 0; key < existingRequest.length; key += 1) {
-        if (existingRequest[key]) {
-          const exist: CCASession = existingRequest[key];
+        for (let key = 0; key < existingRequest.length; key += 1) {
+          if (existingRequest[key]) {
+            const exist: CCASession = existingRequest[key];
 
-          const { start, end } = await splitHours(exist.time);
-          if (start !== null && end !== null) {
-            const eStartH: string | null = await findSlots(
-              start.toString(),
-              true,
-            );
-            const eEndH: string | null = await findSlots(end.toString(), false);
+            const { start, end } = await splitHours(exist.time);
+            if (start !== null && end !== null) {
+              const eStartH: string | null = await findSlots(
+                start.toString(),
+                true,
+              );
+              const eEndH: string | null = await findSlots(
+                end.toString(),
+                false,
+              );
 
-            if (startH !== null && endH !== null) {
-              const eStartHNum: number = Number(eStartH);
-              const eEndHNum: number = Number(eEndH);
+              if (startH !== null && endH !== null) {
+                const eStartHNum: number = Number(eStartH);
+                const eEndHNum: number = Number(eEndH);
 
-              if (
-                (eStartHNum >= startHNum && eStartHNum <= endHNum) ||
-                (eEndHNum >= startHNum && eEndHNum <= endHNum)
-              ) {
-                return true;
+                if (
+                  (eStartHNum >= startHNum && eStartHNum <= endHNum) ||
+                  (eEndHNum >= startHNum && eEndHNum <= endHNum)
+                ) {
+                  return true;
+                }
               }
             }
           }
         }
       }
     }
+  } catch (error) {
+    console.error(error);
+    await logger('checkConflict', session.user.email, error.message);
   }
 
   return result;

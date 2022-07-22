@@ -1,6 +1,10 @@
+import { Session } from 'next-auth/core/types';
+
 import { checkerString } from '@constants/sys/helper';
 import TelegramBot from 'node-telegram-bot-api';
 import { BookingRequest } from 'types/vbs/bookingReq';
+
+import { logger } from '@helper/sys/misc/logger';
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const channel_id = process.env.TELEGRAM_BOT_CHANNEL_ID;
@@ -10,7 +14,10 @@ const channel_id = process.env.TELEGRAM_BOT_CHANNEL_ID;
  *
  * @param message Message to be sent
  */
-export const sendMessageToChannel = async (message: string): Promise<void> => {
+export const sendMessageToChannel = async (
+  message: string,
+  session: Session,
+): Promise<void> => {
   if (
     process.env.SEND_TELEGRAM &&
     (process.env.SEND_TELEGRAM === '1' ||
@@ -32,6 +39,7 @@ export const sendMessageToChannel = async (message: string): Promise<void> => {
       }
     } catch (error) {
       console.error(error);
+      await logger('sendMessageToChannel', session.user.email, error.message);
     }
   }
 };
@@ -44,9 +52,10 @@ export const sendMessageToChannel = async (message: string): Promise<void> => {
  * @param bookingRequest
  * @returns A formatted string
  */
-export const approvalBookingRequestMessageBuilder = (
+export const approvalBookingRequestMessageBuilder = async (
   bookingRequest: BookingRequest,
-): string => {
+  session: Session,
+): Promise<string> => {
   let returnMessage: string = '';
   if (bookingRequest.dateStr !== undefined) {
     try {
@@ -54,7 +63,7 @@ export const approvalBookingRequestMessageBuilder = (
       const date: string = bookingRequest.dateStr;
       const timeSlots: string = bookingRequest.timeSlots;
       const cca: string = bookingRequest.cca;
-  
+
       if (
         checkerString(venueName) &&
         checkerString(date) &&
@@ -65,6 +74,11 @@ export const approvalBookingRequestMessageBuilder = (
       }
     } catch (error) {
       console.error(error);
+      await logger(
+        'approvalBookingRequestMessageBuilder',
+        session.user.email,
+        error.message,
+      );
     }
   }
 
@@ -79,9 +93,10 @@ export const approvalBookingRequestMessageBuilder = (
  * @param bookingRequest
  * @returns A formatted string
  */
-export const rejectBookingRequestMessageBuilder = (
+export const rejectBookingRequestMessageBuilder = async (
   bookingRequest: BookingRequest,
-): string => {
+  session: Session,
+): Promise<string> => {
   let returnMessage: string = '';
   try {
     if (
@@ -93,7 +108,7 @@ export const rejectBookingRequestMessageBuilder = (
       const timeSlots: string = bookingRequest.timeSlots;
       const cca: string = bookingRequest.cca;
       const reason: string = bookingRequest.reason;
-  
+
       if (
         checkerString(venueName) &&
         checkerString(date) &&
@@ -105,6 +120,11 @@ export const rejectBookingRequestMessageBuilder = (
     }
   } catch (error) {
     console.error(error);
+    await logger(
+      'rejectBookingRequestMessageBuilder',
+      session.user.email,
+      error.message,
+    );
   }
 
   return returnMessage;

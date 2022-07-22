@@ -53,15 +53,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const limit: number = limitQuery !== undefined ? Number(limitQuery) : 100;
       const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
-      const ccaDetailsRes: Result = await findCCAbyID(ccaID);
+      const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
       if (ccaDetailsRes.status && ccaDetailsRes.msg) {
         const ccaDetails: CCA = ccaDetailsRes.msg;
         const ccaDB: Result = await fetchAllCCASessionByCCAID(
           ccaID,
           limit,
           skip,
+          session,
         );
-        const totalCount: number = await countAllCCASessionByCCAID(ccaID);
+        const totalCount: number = await countAllCCASessionByCCAID(
+          ccaID,
+          session,
+        );
         if (ccaDB.status) {
           const ccaData: CCASession[] = ccaDB.msg;
           if (ccaData && ccaData.length > 0) {
@@ -89,7 +93,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     const optionalStr: string = record.optional ? 'Yes' : 'No';
 
                     const attendanceRes: Result =
-                      await fetchAllCCAAttendanceBySession(record.id);
+                      await fetchAllCCAAttendanceBySession(record.id, session);
 
                     if (attendanceRes.status && attendanceRes.msg) {
                       const attendance: CCAAttendance[] = attendanceRes.msg;
@@ -101,6 +105,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                             const userEmail: string = attend.sessionEmail;
                             const userRes: Result = await fetchUserByEmail(
                               userEmail,
+                              session,
                             );
                             if (userRes.status && userRes.msg) {
                               const user: User = userRes.msg;

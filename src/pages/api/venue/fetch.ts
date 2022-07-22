@@ -31,8 +31,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const limit: number = limitQuery !== undefined ? Number(limitQuery) : 100;
     const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
-    const venueDB: Result = await fetchAllVenue(limit, skip);
-    const count: number = await countVenue();
+    const venueDB: Result = await fetchAllVenue(limit, skip, session);
+    const count: number = await countVenue(session);
 
     const parsedVenue: Venue[] = [];
 
@@ -45,7 +45,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
             let parentVenueName: string = '';
             if (venue.isChildVenue) {
-              const venueReq = await findVenueByID(venue.parentVenue);
+              const venueReq = await findVenueByID(venue.parentVenue, session);
               if (venueReq && venueReq.status) {
                 const venueReqMsg: Venue = venueReq.msg;
                 parentVenueName = venueReqMsg.name;

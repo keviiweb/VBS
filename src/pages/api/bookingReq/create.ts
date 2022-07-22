@@ -79,7 +79,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         let isInstantBooked = false;
 
         if (type !== PERSONAL) {
-          const dbSearch: Result = await findCCAbyID(typeField);
+          const dbSearch: Result = await findCCAbyID(typeField, session);
           const checkLdr: Result = await isLeader(typeField, session);
 
           if (checkLdr.status) {
@@ -112,8 +112,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             sessionEmail: session.user.email,
           };
 
-          const isThereConflict: boolean = await isConflict(dataDB);
-          const visible: boolean = await isVisible(venue);
+          const isThereConflict: boolean = await isConflict(dataDB, session);
+          const visible: boolean = await isVisible(venue, session);
           const isThereExistingBookingRequest = await isThereExisting(
             dataDB,
             session,
@@ -145,7 +145,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             res.end();
           } else {
             const bookingRequest: BookingRequest | null =
-              await createVenueBookingRequest(dataDB);
+              await createVenueBookingRequest(dataDB, session);
             if (bookingRequest !== null && bookingRequest !== undefined) {
               if (bookingRequest.id !== undefined) {
                 bookingID = bookingRequest.id;
@@ -162,16 +162,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             }
 
             if (isBookingCreated && bookingRequest !== null) {
-              isInstantBooked = await isInstantBook(venue);
+              isInstantBooked = await isInstantBook(venue, session);
               if (isInstantBooked) {
                 const isRequestApproved: boolean = await isApproved(
                   bookingRequest,
+                  session,
                 );
                 const isRequestCancelled: boolean = await isCancelled(
                   bookingRequest,
+                  session,
                 );
                 const isRequestRejected: boolean = await isRejected(
                   bookingRequest,
+                  session,
                 );
 
                 if (isRequestApproved) {
@@ -225,6 +228,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     );
                     const cancel: Result = await setRejectConflicts(
                       bookingRequest,
+                      session,
                     );
 
                     if (approve.status && cancel.status) {

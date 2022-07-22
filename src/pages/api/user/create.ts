@@ -53,7 +53,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         admin: adminField,
       };
 
-      const userRes = await createUser(user);
+      const userRes = await createUser(user, session);
       if (userRes.status) {
         result = { status: true, error: null, msg: userRes.msg };
         res.status(200).send(result);

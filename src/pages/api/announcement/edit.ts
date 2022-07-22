@@ -58,7 +58,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         updated_at: new Date().toISOString(),
       };
 
-      const editAnnounceRequest: Result = await editAnnouncement(announceData);
+      const editAnnounceRequest: Result = await editAnnouncement(
+        announceData,
+        session,
+      );
       if (editAnnounceRequest.status) {
         result = {
           status: true,

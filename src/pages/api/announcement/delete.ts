@@ -50,7 +50,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const id: string = (data.fields.id as string).trim();
 
-      const deleteAnnounceRequest: Result = await deleteAnnouncement(id);
+      const deleteAnnounceRequest: Result = await deleteAnnouncement(
+        id,
+        session,
+      );
       if (deleteAnnounceRequest.status) {
         result = {
           status: true,
