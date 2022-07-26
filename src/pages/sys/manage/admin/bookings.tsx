@@ -8,13 +8,18 @@ import React, {
 import {
   Button,
   Box,
+  chakra,
   FormLabel,
+  FormControl,
+  Flex,
   Heading,
+  Icon,
   Text,
   SimpleGrid,
   Stack,
   Select,
   useToast,
+  VisuallyHidden,
 } from '@chakra-ui/react';
 import {
   CheckIcon,
@@ -34,9 +39,14 @@ import { motion } from 'framer-motion';
 
 import { Result } from 'types/api';
 import { BookingRequest } from 'types/vbs/bookingReq';
+import { GetServerSideProps } from 'next';
+import { Session } from 'next-auth/core/types';
 
 import { checkerNumber, checkerString } from '@constants/sys/helper';
+import { levels as levelsUser } from '@constants/sys/admin';
 import { levels } from '@constants/sys/bookingReq';
+
+import { currentSession } from '@helper/sys/sessionServer';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 
@@ -48,7 +58,7 @@ const MotionSimpleGrid = motion(SimpleGrid);
  * @param props Permission level of user
  * @returns Manage User page
  */
-export default function ManageBooking() {
+export default function ManageBooking(props: any) {
   const [modalData, setModalData] = useState<BookingRequest | null>(null);
 
   const toast = useToast();
@@ -75,6 +85,12 @@ export default function ManageBooking() {
   const [bookingChoiceDropdown, setBookingChoiceDropdown] = useState<
     JSX.Element[]
   >([]);
+
+  const selectedFileDB = useRef<string | Blob | null>(null);
+  const [fileName, setFileName] = useState(null);
+  const [errorMsgFile, setErrorFile] = useState('');
+
+  const [levelUser, setLevelUser] = useState(levelsUser.USER);
 
   const handleHover = () => {
     toast.closeAll();
@@ -709,9 +725,82 @@ export default function ManageBooking() {
     setBookingChoiceDropdown(selection);
   }, []);
 
+  const resetFile = useCallback(async () => {
+    selectedFileDB.current = null;
+    setFileName(null);
+  }, []);
+
+  const handleSubmitFile = useCallback(
+    async (event: { preventDefault: () => void }) => {
+      setErrorFile('');
+      event.preventDefault();
+      if (selectedFileDB.current !== null) {
+        setSubmitButtonPressed(true);
+
+        const dataField = new FormData();
+        dataField.append('file', selectedFileDB.current);
+
+        try {
+          const rawResponse = await fetch('/api/booking/file', {
+            method: 'POST',
+            body: dataField,
+          });
+          const content: Result = await rawResponse.json();
+          if (content.status) {
+            toast({
+              title: 'Recurring bookings created.',
+              description: content.msg,
+              status: 'success',
+              duration: 5000,
+              isClosable: true,
+            });
+
+            await resetFile();
+          } else {
+            toast({
+              title: 'Error',
+              description: content.error,
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+        } catch (error) {
+          console.error(error);
+        }
+        setSubmitButtonPressed(false);
+      } else {
+        setErrorFile('Please upload a file');
+      }
+
+      return false;
+    },
+    [resetFile, toast],
+  );
+
+  const onFileChange = async (event: { target: { files: any[] | any } }) => {
+    setErrorFile('');
+    try {
+      const file = event.target.files[0];
+      if (file !== undefined && file !== null && file.name !== undefined) {
+        selectedFileDB.current = file;
+        setFileName(file.name);
+      } else {
+        setErrorFile('File name not found');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
+    async function generate(propsField: any) {
+      setLevelUser(propsField.data);
+    }
+
     createBookingChoiceDropDownMenu();
-  }, [createBookingChoiceDropDownMenu]);
+    generate(props);
+  }, [createBookingChoiceDropDownMenu, props]);
 
   return (
     <Auth admin>
@@ -800,7 +889,131 @@ export default function ManageBooking() {
             dataHandler={dataFromBookingRejectVenueModal}
           />
         </Box>
+
+        {levelUser === levelsUser.OWNER && (
+          <Box>
+            <Stack
+              spacing={4}
+              w='full'
+              maxW='md'
+              bg='white'
+              rounded='xl'
+              boxShadow='lg'
+              p={6}
+              my={12}
+            >
+              <Heading size='md'>Recurring Bookings</Heading>
+              <form onSubmit={handleSubmitFile}>
+                <Stack spacing={4}>
+                  <FormControl>
+                    <FormLabel fontSize='sm' fontWeight='md' color='gray.700'>
+                      CSV File
+                    </FormLabel>
+                    {fileName && <Text>File uploaded: {fileName}</Text>}
+                    <Flex
+                      mt={1}
+                      justify='center'
+                      px={6}
+                      pt={5}
+                      pb={6}
+                      borderWidth={2}
+                      borderColor='gray.300'
+                      borderStyle='dashed'
+                      rounded='md'
+                    >
+                      <Stack spacing={1} textAlign='center'>
+                        <Icon
+                          mx='auto'
+                          boxSize={12}
+                          color='gray.400'
+                          stroke='currentColor'
+                          fill='none'
+                          viewBox='0 0 48 48'
+                          aria-hidden='true'
+                        />
+                        <Flex
+                          fontSize='sm'
+                          color='gray.600'
+                          alignItems='baseline'
+                        >
+                          <chakra.label
+                            htmlFor='file-upload'
+                            cursor='pointer'
+                            rounded='md'
+                            fontSize='md'
+                            color='brand.600'
+                            pos='relative'
+                            _hover={{
+                              color: 'brand.400',
+                            }}
+                          >
+                            <span>Upload a file</span>
+                            <VisuallyHidden>
+                              <input
+                                id='file-upload'
+                                name='file-upload'
+                                type='file'
+                                accept='.csv'
+                                onChange={onFileChange}
+                              />
+                            </VisuallyHidden>
+                          </chakra.label>
+                        </Flex>
+                        <Text fontSize='xs' color='gray.500'>
+                          CSV up to 10MB
+                        </Text>
+                      </Stack>
+                    </Flex>
+                  </FormControl>
+
+                  {checkerString(errorMsgFile) && (
+                    <Stack align='center'>
+                      <Text>{errorMsgFile}</Text>
+                    </Stack>
+                  )}
+
+                  <Stack spacing={10}>
+                    <Button
+                      type='submit'
+                      bg='blue.400'
+                      color='white'
+                      disabled={submitButtonPressed}
+                      _hover={{
+                        bg: 'blue.500',
+                      }}
+                    >
+                      Create
+                    </Button>
+                  </Stack>
+                </Stack>
+              </form>
+            </Stack>
+          </Box>
+        )}
       </MotionSimpleGrid>
     </Auth>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (cont) => {
+  cont.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59',
+  );
+
+  let data: number = levelsUser.USER;
+  try {
+    const session: Session | null = await currentSession(null, null, cont);
+    if (session !== null) {
+      data = session.user.admin;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return {
+    props: {
+      data: data,
+    },
+  };
+};

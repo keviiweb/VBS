@@ -158,6 +158,43 @@ export const findVenueByID = async (
 };
 
 /**
+ * Find the specified venue filtered by its Name
+ *
+ * @param name Venue Name
+ * @returns A Result containing the status wrapped in a Promise
+ */
+export const findVenueByName = async (
+  name: string,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    const locations: Venue = await prisma.venue.findUnique({
+      where: { name: name },
+    });
+
+    if (locations) {
+      result = { status: true, error: null, msg: locations };
+    } else {
+      result = { status: false, error: 'Failed to fetch venues', msg: null };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: 'Failed to fetch venues', msg: null };
+
+    if (checkerString(name)) {
+      await logger(
+        `findVenueByName - ${name}`,
+        session.user.email,
+        error.message,
+      );
+    }
+  }
+
+  return result;
+};
+
+/**
  * Finds the opening hours of the venue filtered by the venue ID
  *
  * @param id Venue ID

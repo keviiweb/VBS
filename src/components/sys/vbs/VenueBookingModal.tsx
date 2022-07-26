@@ -41,6 +41,7 @@ import { Venue } from 'types/vbs/venue';
 import { TimeSlot } from 'types/vbs/timeslot';
 import { Result } from 'types/api';
 import { CCA } from 'types/cca/cca';
+import { BookingRequest } from '@root/src/types/vbs/bookingReq';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -398,6 +399,46 @@ export default function VenueBookingModal({
     setTimeSlotsConfirm(str);
   };
 
+  const fetchPendingCount = async (
+    venueField: string,
+    dateParsedField: string,
+    timeSlotsField: TimeSlot[],
+  ) => {
+    setSubmitButtonPressed(true);
+    try {
+      const rawResponse = await fetch('/api/bookingReq/pending', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          venue: venueField,
+          date: dateParsedField,
+          timeSlots: timeSlotsField,
+        }),
+      });
+      const content: Result = await rawResponse.json();
+      if (content.status) {
+        const bookRequest: BookingRequest[] = content.msg;
+        if (bookRequest.length > 0) {
+          toast.closeAll();
+
+          toast({
+            title: 'Info',
+            description: `There are currently ${bookRequest.length} pending request(s) with one or more same timeslots`,
+            status: 'warning',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setSubmitButtonPressed(false);
+  };
+
   const handleClick = async (next: boolean) => {
     if (progressLevel === levels.SELECT_VENUE) {
       if (
@@ -414,6 +455,12 @@ export default function VenueBookingModal({
 
         await buildText(
           venueNameDBConfirm.current,
+          dateParsedConfirm.current,
+          timeSlotsDBConfirm.current,
+        );
+
+        await fetchPendingCount(
+          venueDBConfirm.current,
           dateParsedConfirm.current,
           timeSlotsDBConfirm.current,
         );

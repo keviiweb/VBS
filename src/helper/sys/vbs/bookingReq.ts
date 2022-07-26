@@ -325,6 +325,54 @@ export const findAllBooking = async (
 };
 
 /**
+ * Find all pending booking requests by others in same date, time and venue
+ *
+ * @returns A list of pending booking requests wrapped in a Promise
+ */
+export const findPendingBookingWDetails = async (
+  venueField: string,
+  dateField: number,
+  timeSlotsField: string,
+  session: Session,
+): Promise<BookingRequest[]> => {
+  try {
+    const parsedBookings: BookingRequest[] = [];
+
+    const bookings: BookingRequest[] =
+      await prisma.venueBookingRequest.findMany({
+        where: {
+          isApproved: false,
+          isCancelled: false,
+          isRejected: false,
+          venue: venueField,
+          date: dateField,
+        },
+      });
+
+    if (bookings.length > 0) {
+      for (let key = 0; key < bookings.length; key += 1) {
+        if (bookings[key]) {
+          const book: BookingRequest = bookings[key];
+          if (isInside(timeSlotsField, book.timeSlots)) {
+            parsedBookings.push(book);
+          }
+        }
+      }
+    }
+
+    return parsedBookings;
+  } catch (error) {
+    console.error(error);
+    await logger(
+      'findPendingBookingWDetails',
+      session.user.email,
+      error.message,
+    );
+    return [];
+  }
+};
+
+/**
  * Find the specific booking request by its ID
  *
  * @param id BookingRequest ID

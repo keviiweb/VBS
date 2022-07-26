@@ -4,8 +4,13 @@ import { BookingRequest } from 'types/vbs/bookingReq';
 import { Result } from 'types/api';
 import { Booking } from 'types/vbs/booking';
 import { Session } from 'next-auth/core/types';
+import { Venue } from 'types/vbs/venue';
 
 import { logger } from '@helper/sys/misc/logger';
+import { checkerString, PERSONAL } from '@root/src/constants/sys/helper';
+import { findVenueByName } from '@helper/sys/vbs/venue';
+import { findCCAbyName } from '@helper/sys/cca/cca';
+
 /**
  * Finds all bookings filtered by the venue ID
  *
@@ -175,5 +180,86 @@ export const deleteVenueBooking = async (
     await logger('deleteVenueBooking', session.user.email, error.message);
   }
 
+  return result;
+};
+
+/**
+ * Populates the list of bookings read from a CSV file
+ *
+ * 1. The specific Booking record is fetched
+ * 2. If the record is available, throw Error
+ * 3. If the record cannot be found, a new record is created.
+ *
+ * @param dataField File content
+ * @returns A Result containing the status wrapped in a Promise
+ */
+export const createRecurringBooking = async (
+  dataField: any[],
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  let count = 0;
+
+  try {
+    for (let key = 0; key < dataField.length; key += 1) {
+      if (dataField[key]) {
+        const data = dataField[key];
+
+        const email: string = data.email !== undefined ? data.email : '';
+        const venueName: string =
+          data.venueName !== undefined ? data.venueName : '';
+        const dateStr: string = data.date !== undefined ? data.date : '';
+        const cca: string = data.cca !== undefined ? data.cca : PERSONAL;
+        const timeSlot: string =
+          data.timeSlot !== undefined ? data.timeSlot : '';
+        const purpose: string = data.purpose !== undefined ? data.purpose : '';
+
+        if (
+          checkerString(email) &&
+          checkerString(venueName) &&
+          checkerString(dateStr) &&
+          checkerString(cca) &&
+          checkerString(timeSlot) &&
+          checkerString(purpose)
+        ) {
+          const venueDetailsRes: Result = await findVenueByName(
+            venueName,
+            session,
+          );
+          if (venueDetailsRes.status && venueDetailsRes.msg !== null) {
+            const venueDetails: Venue = venueDetailsRes.msg;
+
+            if (cca !== PERSONAL) {
+              const ccaDetailsRes: Result = await findCCAbyName(cca, session);
+              if (ccaDetailsRes.status && ccaDetailsRes.msg !== null) {
+              } else {
+                // scold
+              }
+            }
+          } else {
+            // scold
+          }
+        }
+
+        count += 1;
+      }
+    }
+
+    await logger(
+      'createRecurringBooking',
+      session.user.email,
+      `Successfully created ${count} bookings`,
+    );
+    result = {
+      status: true,
+      error: null,
+      msg: `Successfully created ${count} bookings`,
+    };
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: 'Failed to create bookings', msg: '' };
+    await logger('createRecurringBooking', session.user.email, error.message);
+  }
   return result;
 };
