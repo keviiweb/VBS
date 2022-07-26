@@ -14,6 +14,7 @@ import { deleteVenueBooking } from '@helper/sys/vbs/booking';
 
 import { checkerString, convertSlotToArray } from '@constants/sys/helper';
 import { levels } from '@constants/sys/admin';
+import { compareDate } from '@constants/sys/date';
 
 /**
  * Rejects a venue booking request with a reason explaining why
@@ -60,49 +61,66 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           session,
         );
 
+        const minDay: number =
+          process.env.APPROVE_MIN_DAY !== undefined
+            ? Number(process.env.APPROVE_MIN_DAY)
+            : 0;
+        const currentDate: number = bookingRequest.date as number;
+
         if (isRequestApproved) {
-          const timeSlots: number[] = convertSlotToArray(
-            bookingRequest.timeSlots,
-            true,
-          ) as number[];
+          if (compareDate(currentDate, minDay)) {
+            const timeSlots: number[] = convertSlotToArray(
+              bookingRequest.timeSlots,
+              true,
+            ) as number[];
 
-          const deleteBooking: Result = await deleteVenueBooking(
-            bookingRequest,
-            timeSlots,
-            session,
-          );
-
-          if (!deleteBooking.status) {
-            result = {
-              status: false,
-              error: deleteBooking.error,
-              msg: '',
-            };
-            res.status(200).send(result);
-            res.end();
-          } else {
-            const reject: Result = await setReject(
+            const deleteBooking: Result = await deleteVenueBooking(
               bookingRequest,
-              reasonField,
+              timeSlots,
               session,
             );
-            if (reject.status) {
-              result = {
-                status: true,
-                error: null,
-                msg: reject.msg,
-              };
-              res.status(200).send(result);
-              res.end();
-            } else {
+
+            if (!deleteBooking.status) {
               result = {
                 status: false,
-                error: reject.error,
+                error: deleteBooking.error,
                 msg: '',
               };
               res.status(200).send(result);
               res.end();
+            } else {
+              const reject: Result = await setReject(
+                bookingRequest,
+                reasonField,
+                session,
+              );
+              if (reject.status) {
+                result = {
+                  status: true,
+                  error: null,
+                  msg: reject.msg,
+                };
+                res.status(200).send(result);
+                res.end();
+              } else {
+                result = {
+                  status: false,
+                  error: reject.error,
+                  msg: '',
+                };
+                res.status(200).send(result);
+                res.end();
+              }
             }
+          } else {
+            const msg = `Rejection only possible ${minDay} day(s) before`;
+            result = {
+              status: false,
+              error: msg,
+              msg: '',
+            };
+            res.status(200).send(result);
+            res.end();
           }
         } else if (isRequestCancelled) {
           result = {
@@ -120,7 +138,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           };
           res.status(200).send(result);
           res.end();
-        } else {
+        } else if (compareDate(currentDate, minDay)) {
           const reject: Result = await setReject(
             bookingRequest,
             reasonField,
@@ -143,6 +161,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             res.status(200).send(result);
             res.end();
           }
+        } else {
+          const msg = `Rejection only possible ${minDay} day(s) before`;
+          result = {
+            status: false,
+            error: msg,
+            msg: '',
+          };
+          res.status(200).send(result);
+          res.end();
         }
       } else {
         result = { status: false, error: 'No booking found', msg: '' };

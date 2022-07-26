@@ -282,7 +282,7 @@ export default function VenueBookingModal({
       if (slots.length > 0) {
         for (let key = 0; key < slots.length; key += 1) {
           if (Object.prototype.hasOwnProperty.call(slots, key)) {
-            if (slots[key]) {
+            if (slots[key] && slots[key].slot !== undefined) {
               counter += 1;
               if (counter !== total) {
                 text += ` ${slots[key].slot} ,`;
@@ -334,7 +334,7 @@ export default function VenueBookingModal({
         for (let key = 0; key < content.length; key += 1) {
           if (Object.prototype.hasOwnProperty.call(content, key)) {
             if (content[key]) {
-              const newID: string = selectedVenue.current + date.current + key;
+              const newID: string = `${selectedVenue.current}${date.current}${key}`;
               if (!content[key].booked) {
                 buttons.push(
                   <TimeSlotButton

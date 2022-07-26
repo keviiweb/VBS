@@ -34,6 +34,7 @@ import { Venue } from 'types/vbs/venue';
 import { Booking } from 'types/vbs/booking';
 
 import { checkerNumber, checkerString } from '@constants/sys/helper';
+import { levels } from '@constants/sys/bookingReq';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 
@@ -47,13 +48,6 @@ interface CalendarData {
     booking: Booking;
   };
 }
-
-const levels = {
-  PENDING: 1,
-  APPROVED: 2,
-  REJECTED: 3,
-  ALL: 4,
-};
 
 /**
  * Renders a component that displays the list of bookings and allow users to approve bookings
@@ -224,28 +218,46 @@ export default function ManageBooking() {
     async (content: BookingRequest, action: number) => {
       switch (action) {
         case levels.ALL: {
+          const { id, editable } = content;
           if (content.status === 'PENDING') {
-            const { id } = content;
-            if (id !== undefined) {
+            if (id !== undefined && editable !== undefined) {
+              if (editable) {
+                const button: JSX.Element = (
+                  <Stack direction='column'>
+                    <Button
+                      key={`approve-pending-all-button-${id}`}
+                      size='sm'
+                      leftIcon={<CheckIcon />}
+                      disabled={submitButtonPressed}
+                      onClick={() => handleApprove(id)}
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      key={`reject-pending-all-button-${id}`}
+                      size='sm'
+                      leftIcon={<CloseIcon />}
+                      disabled={submitButtonPressed}
+                      onClick={() => handleReject(content)}
+                    >
+                      Reject
+                    </Button>
+                    <Button
+                      key={`details-pending-all-button-${id}`}
+                      size='sm'
+                      leftIcon={<InfoOutlineIcon />}
+                      onClick={() => handleDetails(content)}
+                    >
+                      View Details
+                    </Button>
+                  </Stack>
+                );
+                return button;
+              }
               const button: JSX.Element = (
                 <Stack direction='column'>
                   <Button
-                    size='sm'
-                    leftIcon={<CheckIcon />}
-                    disabled={submitButtonPressed}
-                    onClick={() => handleApprove(id)}
-                  >
-                    Approve
-                  </Button>
-                  <Button
-                    size='sm'
-                    leftIcon={<CloseIcon />}
-                    disabled={submitButtonPressed}
-                    onClick={() => handleReject(content)}
-                  >
-                    Reject
-                  </Button>
-                  <Button
+                    key={`details-pending-all-button-${id}`}
                     size='sm'
                     leftIcon={<InfoOutlineIcon />}
                     onClick={() => handleDetails(content)}
@@ -259,17 +271,93 @@ export default function ManageBooking() {
             return null;
           }
           if (content.status === 'APPROVED') {
+            if (id !== undefined && editable !== undefined) {
+              if (editable) {
+                const button2: JSX.Element = (
+                  <Stack direction='column'>
+                    <Button
+                      key={`reject-approve-all-button-${id}`}
+                      size='sm'
+                      leftIcon={<CloseIcon />}
+                      disabled={submitButtonPressed}
+                      onClick={() => handleReject(content)}
+                    >
+                      Reject
+                    </Button>
+                    <Button
+                      key={`details-approve-all-button-${id}`}
+                      size='sm'
+                      leftIcon={<InfoOutlineIcon />}
+                      onClick={() => handleDetails(content)}
+                    >
+                      View Details
+                    </Button>
+                  </Stack>
+                );
+                return button2;
+              }
+              const button2: JSX.Element = (
+                <Stack direction='column'>
+                  <Button
+                    key={`details-approve-all-button-${id}`}
+                    size='sm'
+                    leftIcon={<InfoOutlineIcon />}
+                    onClick={() => handleDetails(content)}
+                  >
+                    View Details
+                  </Button>
+                </Stack>
+              );
+              return button2;
+            }
+            return null;
+          }
+          if (id !== undefined) {
+            const button: JSX.Element = (
+              <Button
+                key={`details-details-all-button-${id}`}
+                size='sm'
+                leftIcon={<InfoOutlineIcon />}
+                onClick={() => handleDetails(content)}
+              >
+                View Details
+              </Button>
+            );
+            return button;
+          }
+          return null;
+        }
+        case levels.APPROVED: {
+          const { id, editable } = content;
+          if (id !== undefined && editable !== undefined) {
+            if (editable) {
+              const button2: JSX.Element = (
+                <Stack direction='column'>
+                  <Button
+                    key={`reject-approve-button-${id}`}
+                    size='sm'
+                    leftIcon={<CloseIcon />}
+                    disabled={submitButtonPressed}
+                    onClick={() => handleReject(content)}
+                  >
+                    Reject
+                  </Button>
+                  <Button
+                    key={`details-approve-button-${id}`}
+                    size='sm'
+                    leftIcon={<InfoOutlineIcon />}
+                    onClick={() => handleDetails(content)}
+                  >
+                    View Details
+                  </Button>
+                </Stack>
+              );
+              return button2;
+            }
             const button2: JSX.Element = (
               <Stack direction='column'>
                 <Button
-                  size='sm'
-                  leftIcon={<CloseIcon />}
-                  disabled={submitButtonPressed}
-                  onClick={() => handleReject(content)}
-                >
-                  Reject
-                </Button>
-                <Button
+                  key={`details-approve-button-${id}`}
                   size='sm'
                   leftIcon={<InfoOutlineIcon />}
                   onClick={() => handleDetails(content)}
@@ -280,74 +368,66 @@ export default function ManageBooking() {
             );
             return button2;
           }
-          const button: JSX.Element = (
-            <Button
-              size='sm'
-              leftIcon={<InfoOutlineIcon />}
-              onClick={() => handleDetails(content)}
-            >
-              View Details
-            </Button>
-          );
-          return button;
+          return null;
         }
-        case levels.APPROVED: {
-          const button2: JSX.Element = (
-            <Stack direction='column'>
+        case levels.REJECTED: {
+          const { id } = content;
+          if (id !== undefined) {
+            const button3: JSX.Element = (
               <Button
-                size='sm'
-                leftIcon={<CloseIcon />}
-                disabled={submitButtonPressed}
-                onClick={() => handleReject(content)}
-              >
-                Reject
-              </Button>
-              <Button
+                key={`details-reject-button-${id}`}
                 size='sm'
                 leftIcon={<InfoOutlineIcon />}
                 onClick={() => handleDetails(content)}
               >
                 View Details
               </Button>
-            </Stack>
-          );
-          return button2;
-        }
-        case levels.REJECTED: {
-          const button3: JSX.Element = (
-            <Button
-              size='sm'
-              leftIcon={<InfoOutlineIcon />}
-              onClick={() => handleDetails(content)}
-            >
-              View Details
-            </Button>
-          );
-          return button3;
+            );
+            return button3;
+          }
+          return null;
         }
         case levels.PENDING: {
           if (content.status === 'PENDING') {
-            const { id } = content;
-            if (id !== undefined) {
+            const { id, editable } = content;
+            if (id !== undefined && editable !== undefined) {
+              if (editable) {
+                const button: JSX.Element = (
+                  <Stack direction='column'>
+                    <Button
+                      key={`approve-pending-button-${id}`}
+                      size='sm'
+                      leftIcon={<CheckIcon />}
+                      disabled={submitButtonPressed}
+                      onClick={() => handleApprove(id)}
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      key={`reject-pending-button-${id}`}
+                      size='sm'
+                      leftIcon={<CloseIcon />}
+                      disabled={submitButtonPressed}
+                      onClick={() => handleReject(content)}
+                    >
+                      Reject
+                    </Button>
+                    <Button
+                      key={`details-pending-button-${id}`}
+                      size='sm'
+                      leftIcon={<InfoOutlineIcon />}
+                      onClick={() => handleDetails(content)}
+                    >
+                      View Details
+                    </Button>
+                  </Stack>
+                );
+                return button;
+              }
               const button: JSX.Element = (
                 <Stack direction='column'>
                   <Button
-                    size='sm'
-                    leftIcon={<CheckIcon />}
-                    disabled={submitButtonPressed}
-                    onClick={() => handleApprove(id)}
-                  >
-                    Approve
-                  </Button>
-                  <Button
-                    size='sm'
-                    leftIcon={<CloseIcon />}
-                    disabled={submitButtonPressed}
-                    onClick={() => handleReject(content)}
-                  >
-                    Reject
-                  </Button>
-                  <Button
+                    key={`details-pending-button-${id}`}
                     size='sm'
                     leftIcon={<InfoOutlineIcon />}
                     onClick={() => handleDetails(content)}
@@ -360,16 +440,21 @@ export default function ManageBooking() {
             }
             return null;
           }
-          const button: JSX.Element = (
-            <Button
-              size='sm'
-              leftIcon={<InfoOutlineIcon />}
-              onClick={() => handleDetails(content)}
-            >
-              View Details
-            </Button>
-          );
-          return button;
+          const { id } = content;
+          if (id !== undefined) {
+            const button: JSX.Element = (
+              <Button
+                key={`details-no-status-pending-button-${id}`}
+                size='sm'
+                leftIcon={<InfoOutlineIcon />}
+                onClick={() => handleDetails(content)}
+              >
+                View Details
+              </Button>
+            );
+            return button;
+          }
+          return null;
         }
 
         default:

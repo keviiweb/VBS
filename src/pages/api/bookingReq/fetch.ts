@@ -132,6 +132,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const parsedBooking: BookingRequest[] = [];
     if (successBooking && sessionPresent) {
+      const minDayApproval: number =
+        process.env.APPROVE_MIN_DAY !== undefined
+          ? Number(process.env.APPROVE_MIN_DAY)
+          : 0;
+
       if (count > 0 && bookings !== null && bookings.length > 0) {
         for (let booking = 0; booking < bookings.length; booking += 1) {
           if (bookings[booking]) {
@@ -177,6 +182,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 : 3;
 
               let success: boolean = true;
+              const editable: boolean = compareDate(
+                bookingDate,
+                minDayApproval,
+              );
 
               if (!book.isApproved && !book.isCancelled && !book.isRejected) {
                 status = 'PENDING';
@@ -240,6 +249,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   status: status,
                   reason: book.reason,
                   userName: username,
+                  editable: editable,
                 };
 
                 parsedBooking.push(data);

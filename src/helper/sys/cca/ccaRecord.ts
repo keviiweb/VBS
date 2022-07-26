@@ -6,7 +6,7 @@ import { Session } from 'next-auth/core/types';
 import { prisma } from '@constants/sys/db';
 import { checkerString } from '@constants/sys/helper';
 
-import { findCCAbyName } from '@helper/sys/cca/cca';
+import { findCCAbyID, findCCAbyName } from '@helper/sys/cca/cca';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
 import { logger } from '@helper/sys/misc/logger';
 
@@ -76,6 +76,63 @@ export const fetchAllCCARecordByUser = async (
     console.error(error);
     result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
     await logger('fetchAllCCARecordByUser', session.user.email, error.message);
+  }
+
+  return result;
+};
+
+/**
+ * Finds all CCA Records filtered by the user email
+ *
+ * @param session Next-Auth Session object
+ * @returns A Result containing the status wrapped in a Promise
+ */
+export const fetchAllCCARecordByUserWDetails = async (
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    const query: Result = await fetchAllCCARecordByUser(session);
+
+    if (query.status) {
+      const ccaData: CCARecord[] = query.msg;
+      const parsedCCARecord: CCARecord[] = [];
+
+      if (ccaData.length > 0) {
+        for (let ven = 0; ven < ccaData.length; ven += 1) {
+          if (ccaData[ven]) {
+            const record: CCARecord = ccaData[ven];
+            const { ccaID } = record;
+            const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
+            if (ccaDetailsRes.status && ccaDetailsRes.msg) {
+              const ccaDetails: CCA = ccaDetailsRes.msg;
+              const data: CCARecord = {
+                id: record.id,
+                ccaID: record.ccaID,
+                leader: record.leader,
+                ccaName: ccaDetails.name,
+                image: ccaDetails.image,
+              };
+
+              parsedCCARecord.push(data);
+            }
+          }
+        }
+      }
+
+      result = { status: true, error: null, msg: parsedCCARecord };
+    } else {
+      result = { status: false, error: query.error, msg: [] };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
+    await logger(
+      'fetchAllCCARecordByUserWDetails',
+      session.user.email,
+      error.message,
+    );
   }
 
   return result;

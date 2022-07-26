@@ -5,6 +5,7 @@ import safeJsonStringify from 'safe-json-stringify';
 import { GetServerSideProps } from 'next';
 
 import { currentSession } from '@helper/sys/sessionServer';
+import { fetchAllCCARecordByUserWDetails } from '@helper/sys/cca/ccaRecord';
 
 import Auth from '@components/sys/Auth';
 
@@ -46,9 +47,8 @@ export default function CCA(props: any) {
 
       if (propsField.data) {
         const res: Result = propsField.data;
-        if (res.status && res.msg.count > 0) {
-          const resField: { count: number; res: CCARecord[] } = res.msg;
-          const result: CCARecord[] = resField.res;
+        if (res.status && res.msg.length > 0) {
+          const result: CCARecord[] = res.msg;
           if (result !== [] && result !== null && result !== undefined) {
             const leaderRes: JSX.Element[] = [];
             const memberRes: JSX.Element[] = [];
@@ -203,20 +203,9 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
   let data: Result | null = null;
   try {
     const session: Session | null = await currentSession(null, null, cont);
-    if (session !== null && process.env.NEXTAUTH_URL !== undefined) {
-      console.log(process.env.NEXTAUTH_URL);
-      const rawResponse = await fetch(
-        `${process.env.NEXTAUTH_URL}/api/ccaRecord/fetch`,
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      const content: Result = await rawResponse.json();
-      const stringifiedData = safeJsonStringify(content);
+    if (session !== null) {
+      const res: Result = await fetchAllCCARecordByUserWDetails(session);
+      const stringifiedData = safeJsonStringify(res);
       data = JSON.parse(stringifiedData);
     }
   } catch (error) {

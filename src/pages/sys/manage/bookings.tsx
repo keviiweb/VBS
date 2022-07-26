@@ -126,19 +126,36 @@ export default function ManageBooking() {
   generateActionButton = useCallback(
     async (content: BookingRequest) => {
       if (content.status === 'PENDING' || content.status === 'APPROVED') {
-        if (content.id !== undefined) {
-          const { id } = content;
+        const { id, editable } = content;
+        if (id !== undefined && editable !== undefined) {
+          if (editable) {
+            const button: JSX.Element = (
+              <Stack direction='column'>
+                <Button
+                  key={`cancel-button-${id}`}
+                  size='sm'
+                  leftIcon={<CloseIcon />}
+                  disabled={submitButtonPressed}
+                  onClick={() => handleCancel(id)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  key={`details-button-${id}`}
+                  size='sm'
+                  leftIcon={<InfoOutlineIcon />}
+                  onClick={() => handleDetails(content)}
+                >
+                  View Details
+                </Button>
+              </Stack>
+            );
+            return button;
+          }
           const button: JSX.Element = (
             <Stack direction='column'>
               <Button
-                size='sm'
-                leftIcon={<CloseIcon />}
-                disabled={submitButtonPressed}
-                onClick={() => handleCancel(id)}
-              >
-                Cancel
-              </Button>
-              <Button
+                key={`details-button-${id}`}
                 size='sm'
                 leftIcon={<InfoOutlineIcon />}
                 onClick={() => handleDetails(content)}
@@ -151,16 +168,21 @@ export default function ManageBooking() {
         }
         return null;
       }
-      const button: JSX.Element = (
-        <Button
-          size='sm'
-          leftIcon={<InfoOutlineIcon />}
-          onClick={() => handleDetails(content)}
-        >
-          View Details
-        </Button>
-      );
-      return button;
+      const { id } = content;
+      if (id !== undefined) {
+        const button: JSX.Element = (
+          <Button
+            key={`details-button-${id}`}
+            size='sm'
+            leftIcon={<InfoOutlineIcon />}
+            onClick={() => handleDetails(content)}
+          >
+            View Details
+          </Button>
+        );
+        return button;
+      }
+      return null;
     },
     [handleDetails, handleCancel, submitButtonPressed],
   );

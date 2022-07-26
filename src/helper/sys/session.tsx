@@ -12,7 +12,10 @@ import { levels } from '@constants/sys/admin';
 export const currentSession = async (
   req: NextApiRequest | null = null,
 ): Promise<Session | null> => {
-  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  if (
+    process.env.NEXT_PUBLIC_SETDEV === 'true' &&
+    (!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+  ) {
     let session: Session | null = null;
     session = {
       expires: '1',

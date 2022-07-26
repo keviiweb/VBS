@@ -350,7 +350,7 @@ export default function BookingModal({
                           {checkerString(id) && (
                             <ListItem key='book-ref'>
                               <Text as='span' fontWeight='bold'>
-                                Reference No:
+                                Reference No:{' '}
                               </Text>
                               {id}
                             </ListItem>
@@ -359,7 +359,7 @@ export default function BookingModal({
                           {checkerString(venue) && (
                             <ListItem key='book-ven'>
                               <Text as='span' fontWeight='bold'>
-                                Venue:
+                                Venue:{' '}
                               </Text>
                               {venue}
                             </ListItem>
@@ -368,7 +368,7 @@ export default function BookingModal({
                           {checkerString(date) && (
                             <ListItem key='book-date'>
                               <Text as='span' fontWeight='bold'>
-                                Date:
+                                Date:{' '}
                               </Text>
                               {date}
                             </ListItem>
@@ -377,7 +377,7 @@ export default function BookingModal({
                           {checkerString(timeSlots) && (
                             <ListItem key='book-times'>
                               <Text as='span' fontWeight='bold'>
-                                Timeslot(s):
+                                Timeslot(s):{' '}
                               </Text>
                               {timeSlots}
                             </ListItem>
@@ -386,7 +386,7 @@ export default function BookingModal({
                           {checkerString(userName) && (
                             <ListItem key='book-name'>
                               <Text as='span' fontWeight='bold'>
-                                Contact Name:
+                                Contact Name:{' '}
                               </Text>
                               {userName}
                             </ListItem>
@@ -395,7 +395,7 @@ export default function BookingModal({
                           {checkerString(email) && (
                             <ListItem key='book-email'>
                               <Text as='span' fontWeight='bold'>
-                                Contact Email:
+                                Contact Email:{' '}
                               </Text>
                               {email}
                             </ListItem>
@@ -404,7 +404,7 @@ export default function BookingModal({
                           {checkerString(cca) && (
                             <ListItem key='book-cca'>
                               <Text as='span' fontWeight='bold'>
-                                CCA:
+                                CCA:{' '}
                               </Text>
                               {cca}
                             </ListItem>
@@ -413,7 +413,7 @@ export default function BookingModal({
                           {checkerString(purpose) && (
                             <ListItem key='book-purp'>
                               <Text as='span' fontWeight='bold'>
-                                Purpose:
+                                Purpose:{' '}
                               </Text>
                               {purpose}
                             </ListItem>
@@ -422,7 +422,7 @@ export default function BookingModal({
                           {checkerString(status) && (
                             <ListItem key='book-status'>
                               <Text as='span' fontWeight='bold'>
-                                Status:
+                                Status:{' '}
                               </Text>
                               {status}
                             </ListItem>
@@ -431,7 +431,7 @@ export default function BookingModal({
                           {checkerString(reason) && (
                             <ListItem key='book-reason'>
                               <Text as='span' fontWeight='bold'>
-                                Rejected Reason:
+                                Rejected Reason:{' '}
                               </Text>
                               {reason}
                             </ListItem>
@@ -501,7 +501,7 @@ export default function BookingModal({
                               textTransform='uppercase'
                               mb='4'
                             >
-                              Conflicting Requests
+                              Conflicting Requests{' '}
                             </Text>
                             <Text
                               fontSize={{ base: '16px', lg: '18px' }}

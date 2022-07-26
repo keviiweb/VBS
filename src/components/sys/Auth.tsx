@@ -33,7 +33,10 @@ export default function Auth({ children, admin }) {
   useEffect(() => {
     async function fetchData() {
       try {
-        if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+        if (
+          process.env.NEXT_PUBLIC_SETDEV === 'true' &&
+          (!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+        ) {
           devSession.current = await currentSession();
           if (isAdmin && devSession.current !== null) {
             if (!devSession.current.user.admin) {
@@ -69,7 +72,10 @@ export default function Auth({ children, admin }) {
     fetchData();
   }, [loading, hasUser, isAdmin, router, session, status]);
 
-  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  if (
+    process.env.NEXT_PUBLIC_SETDEV === 'true' &&
+    (!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+  ) {
     return <Layout session={devSession.current}>{children}</Layout>;
   }
 

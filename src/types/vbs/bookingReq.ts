@@ -16,6 +16,7 @@ export type BookingRequest = {
   conflictRequestObj?: BookingRequest[];
   status?: string;
   reason?: string;
+  editable?: boolean;
   action?: any;
   updated_at?: string;
 };

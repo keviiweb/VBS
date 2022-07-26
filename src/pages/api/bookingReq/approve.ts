@@ -16,6 +16,7 @@ import {
 import { currentSession } from '@helper/sys/sessionServer';
 import { createVenueBooking } from '@helper/sys/vbs/booking';
 import { levels } from '@constants/sys/admin';
+import { compareDate } from '@constants/sys/date';
 
 /**
  * Approves a venue booking request
@@ -85,42 +86,57 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           res.status(200).send(result);
           res.end();
         } else {
-          const isThereConflict: boolean = await isConflict(
-            bookingRequest,
-            session,
-          );
-          const timeSlots: number[] = convertSlotToArray(
-            bookingRequest.timeSlots,
-            true,
-          ) as number[];
-
-          if (!isThereConflict) {
-            const approve: Result = await setApprove(bookingRequest, session);
-            const cancel: Result = await setRejectConflicts(
+          const minDay: number =
+            process.env.APPROVE_MIN_DAY !== undefined
+              ? Number(process.env.APPROVE_MIN_DAY)
+              : 0;
+          const currentDate: number = bookingRequest.date as number;
+          if (compareDate(currentDate, minDay)) {
+            const isThereConflict: boolean = await isConflict(
               bookingRequest,
               session,
             );
+            const timeSlots: number[] = convertSlotToArray(
+              bookingRequest.timeSlots,
+              true,
+            ) as number[];
 
-            if (approve.status && cancel.status) {
-              const createBooking = await createVenueBooking(
+            if (!isThereConflict) {
+              const approve: Result = await setApprove(bookingRequest, session);
+              const cancel: Result = await setRejectConflicts(
                 bookingRequest,
-                timeSlots,
                 session,
               );
 
-              if (!createBooking.status) {
-                result = {
-                  status: false,
-                  error: createBooking.error,
-                  msg: '',
-                };
-                res.status(200).send(result);
-                res.end();
+              if (approve.status && cancel.status) {
+                const createBooking = await createVenueBooking(
+                  bookingRequest,
+                  timeSlots,
+                  session,
+                );
+
+                if (!createBooking.status) {
+                  result = {
+                    status: false,
+                    error: createBooking.error,
+                    msg: '',
+                  };
+                  res.status(200).send(result);
+                  res.end();
+                } else {
+                  result = {
+                    status: true,
+                    error: null,
+                    msg: createBooking.msg,
+                  };
+                  res.status(200).send(result);
+                  res.end();
+                }
               } else {
                 result = {
-                  status: true,
-                  error: null,
-                  msg: createBooking.msg,
+                  status: false,
+                  error: 'Either failed to approve slot or cancel conflicting',
+                  msg: '',
                 };
                 res.status(200).send(result);
                 res.end();
@@ -128,16 +144,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             } else {
               result = {
                 status: false,
-                error: 'Either failed to approve slot or cancel conflicting',
+                error: 'Conflicts found in booking',
                 msg: '',
               };
               res.status(200).send(result);
               res.end();
             }
           } else {
+            const msg = `Approval only possible ${minDay} day(s) before`;
             result = {
               status: false,
-              error: 'Conflicts found in booking',
+              error: msg,
               msg: '',
             };
             res.status(200).send(result);

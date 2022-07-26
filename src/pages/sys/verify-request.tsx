@@ -22,7 +22,8 @@ export default function VerifyRequest() {
             </Text>
             <Text fontSize='sm' color='gray.600' mt={5}>
               If you do not see the email in a few minutes, check your “junk
-              mail” folder or “spam” folder.
+              mail” folder or “spam” folder. Please move the email out of the
+              “spam” folder so as to not disrupt the authentication process.
             </Text>
           </Stack>
         </Box>

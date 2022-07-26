@@ -175,52 +175,44 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           for (let ven = 0; ven < ccaData.length; ven += 1) {
             if (ccaData[ven]) {
               const record: CCARecord = ccaData[ven];
-              const { ccaID } = record;
-              const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
-              if (ccaDetailsRes.status && ccaDetailsRes.msg) {
-                const ccaDetails: CCA = ccaDetailsRes.msg;
-
-                const ccaAttendanceHours: number =
-                  await countTotalSessionHoursByCCAID(record.ccaID, session);
-                const userAttendance: Result =
-                  await fetchSpecificCCAAttendanceByUserEmail(
-                    record.ccaID,
-                    session.user.email,
-                    100000,
-                    0,
-                    session,
-                  );
-                if (userAttendance.status) {
-                  const userAttendanceHours = await countTotalAttendanceHours(
-                    userAttendance.msg as CCAAttendance[],
-                  );
-                  let rate: string = '100%';
-                  if (ccaAttendanceHours !== 0) {
-                    if (userAttendanceHours > ccaAttendanceHours) {
-                      rate = '100%';
-                    } else {
-                      rate = `${(
-                        (userAttendanceHours / ccaAttendanceHours) *
-                        100
-                      ).toFixed(1)}%`;
-                    }
+              const ccaAttendanceHours: number =
+                await countTotalSessionHoursByCCAID(record.ccaID, session);
+              const userAttendance: Result =
+                await fetchSpecificCCAAttendanceByUserEmail(
+                  record.ccaID,
+                  session.user.email,
+                  100000,
+                  0,
+                  session,
+                );
+              if (userAttendance.status) {
+                const userAttendanceHours = await countTotalAttendanceHours(
+                  userAttendance.msg as CCAAttendance[],
+                );
+                let rate: string = '100%';
+                if (ccaAttendanceHours !== 0) {
+                  if (userAttendanceHours > ccaAttendanceHours) {
+                    rate = '100%';
                   } else {
-                    rate = 'No sessions found';
+                    rate = `${(
+                      (userAttendanceHours / ccaAttendanceHours) *
+                      100
+                    ).toFixed(1)}%`;
                   }
-
-                  const data: CCARecord = {
-                    id: record.id,
-                    ccaID: record.ccaID,
-                    leader: record.leader,
-                    ccaName: ccaDetails.name,
-                    rate: rate,
-                    image: ccaDetails.image,
-                  };
-
-                  parsedCCARecord.push(data);
+                } else {
+                  rate = 'No sessions found';
                 }
-              } else {
-                console.error(ccaDetailsRes.error);
+
+                const data: CCARecord = {
+                  id: record.id,
+                  ccaID: record.ccaID,
+                  leader: record.leader,
+                  ccaName: record.ccaName,
+                  rate: rate,
+                  image: record.image,
+                };
+
+                parsedCCARecord.push(data);
               }
             }
           }

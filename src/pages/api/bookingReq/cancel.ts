@@ -80,7 +80,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           res.status(200).send(result);
           res.end();
         } else {
-          const minDay: number = Number(process.env.CANCEL_MIN_DAY);
+          const minDay: number =
+            process.env.CANCEL_MIN_DAY !== undefined
+              ? Number(process.env.CANCEL_MIN_DAY)
+              : 1;
           const currentDate: number = bookingRequest.date as number;
 
           if (compareDate(currentDate, minDay)) {

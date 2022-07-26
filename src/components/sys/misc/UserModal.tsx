@@ -224,7 +224,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
                           {checkerString(id) && (
                             <ListItem key='user-id'>
                               <Text as='span' fontWeight='bold'>
-                                User ID:
+                                User ID:{' '}
                               </Text>
                               {id}
                             </ListItem>
@@ -232,7 +232,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
                           {checkerString(name) && (
                             <ListItem key='user-name'>
                               <Text as='span' fontWeight='bold'>
-                                Name:
+                                Name:{' '}
                               </Text>
                               {name}
                             </ListItem>
@@ -240,7 +240,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
                           {checkerString(email) && (
                             <ListItem key='user-email'>
                               <Text as='span' fontWeight='bold'>
-                                Email:
+                                Email:{' '}
                               </Text>
                               {email}
                             </ListItem>
@@ -248,7 +248,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
                           {checkerString(studentID) && (
                             <ListItem key='user-stud'>
                               <Text as='span' fontWeight='bold'>
-                                Student ID
+                                Student ID:{' '}
                               </Text>
                               {studentID}
                             </ListItem>
@@ -256,7 +256,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
                           {checkerString(roomNum) && (
                             <ListItem key='user-rm'>
                               <Text as='span' fontWeight='bold'>
-                                Room Num:
+                                Room Num:{' '}
                               </Text>
                               {roomNum}
                             </ListItem>
@@ -264,7 +264,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
                           {checkerString(adminStr) && (
                             <ListItem key='user-admin'>
                               <Text as='span' fontWeight='bold'>
-                                Admin:
+                                Admin:{' '}
                               </Text>
                               {adminStr}
                             </ListItem>

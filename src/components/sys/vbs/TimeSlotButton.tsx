@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@chakra-ui/react';
+import { checkerString } from '@constants/sys/helper';
 
 /**
  * TimeSlot button used for creating a new Venue Booking
@@ -17,8 +18,12 @@ export default function TimeSlotButton({
   const [selected, setSelected] = useState(false);
 
   const click = async () => {
-    setSelected(!selected);
-    if (handleClick !== null && handleClick !== undefined) {
+    if (
+      checkerString(slot) &&
+      handleClick !== null &&
+      handleClick !== undefined
+    ) {
+      setSelected(!selected);
       await handleClick(id);
     }
   };
