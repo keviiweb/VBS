@@ -19,6 +19,7 @@ module.exports = withTM({
       'https://vbs-kevii.vercel.app/',
       'https://vbs-hikoya.vercel.app',
       'https://kevii-vbs.herokuapp.com/',
+      'https://kevii.azurewebsites.net/',
     ],
   },
 });
