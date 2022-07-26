@@ -16,12 +16,16 @@ import {
   Select,
   useToast,
 } from '@chakra-ui/react';
-import { CheckIcon, CloseIcon, InfoOutlineIcon } from '@chakra-ui/icons';
+import {
+  CheckIcon,
+  CloseIcon,
+  InfoOutlineIcon,
+  InfoIcon,
+} from '@chakra-ui/icons';
 
 import Auth from '@components/sys/Auth';
 import TableWidget from '@components/sys/misc/TableWidget';
 import BookingModal from '@components/sys/vbs/BookingModal';
-import BookingCalendar from '@components/sys/vbs/BookingCalendar';
 import BookingRejectModal from '@components/sys/vbs/BookingRejectModal';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 
@@ -30,24 +34,11 @@ import { motion } from 'framer-motion';
 
 import { Result } from 'types/api';
 import { BookingRequest } from 'types/vbs/bookingReq';
-import { Venue } from 'types/vbs/venue';
-import { Booking } from 'types/vbs/booking';
 
 import { checkerNumber, checkerString } from '@constants/sys/helper';
 import { levels } from '@constants/sys/bookingReq';
 
 const MotionSimpleGrid = motion(SimpleGrid);
-
-interface CalendarData {
-  id: string | undefined;
-  title: string | undefined;
-  start: string | undefined;
-  end: string | undefined;
-  extendedProps: {
-    description: string;
-    booking: Booking;
-  };
-}
 
 /**
  * Renders a component that displays the list of bookings and allow users to approve bookings
@@ -67,20 +58,7 @@ export default function ManageBooking() {
   const [rejectModalData, setRejectModalData] = useState<BookingRequest | null>(
     null,
   );
-  const [modalBookingData, setModalBookingData] =
-    useState<BookingRequest | null>(null);
 
-  const venueData = useRef<Venue[]>([]);
-  const [venueDropdown, setVenueDropdown] = useState<JSX.Element[]>([]);
-  const [venueID, setVenueID] = useState('');
-  const venueIDDB = useRef('');
-  const [selectedVenue, setSelectedVenue] = useState('');
-
-  const [events, setEvents] = useState<CalendarData[]>([]);
-  const [startTime, setStartTime] = useState('08:00:00');
-  const [endTime, setEndTime] = useState('23:00:00');
-
-  let fetchBookings: any;
   let handleTabChange: any;
   const bookingChoiceDB = useRef(0);
 
@@ -97,6 +75,18 @@ export default function ManageBooking() {
   const [bookingChoiceDropdown, setBookingChoiceDropdown] = useState<
     JSX.Element[]
   >([]);
+
+  const handleHover = () => {
+    toast.closeAll();
+
+    toast({
+      description:
+        'Select between different dropdown menu items to retrieve the latest data',
+      status: 'info',
+      duration: 2000,
+      isClosable: true,
+    });
+  };
 
   const handleApprove = useCallback(
     async (id: string) => {
@@ -123,7 +113,6 @@ export default function ManageBooking() {
               isClosable: true,
             });
             await handleTabChange(bookingChoiceDB.current);
-            await fetchBookings(venueIDDB.current);
           } else {
             toast({
               title: 'Error',
@@ -139,7 +128,7 @@ export default function ManageBooking() {
         setSubmitButtonPressed(false);
       }
     },
-    [handleTabChange, toast, fetchBookings],
+    [handleTabChange, toast],
   );
 
   const handleRejectWReason = useCallback(
@@ -169,7 +158,6 @@ export default function ManageBooking() {
               isClosable: true,
             });
             await handleTabChange(bookingChoiceDB.current);
-            await fetchBookings(venueIDDB.current);
           } else {
             toast({
               title: 'Error',
@@ -185,7 +173,7 @@ export default function ManageBooking() {
         setSubmitButtonPressed(false);
       }
     },
-    [handleTabChange, toast, fetchBookings],
+    [handleTabChange, toast],
   );
 
   const dataFromBookingRejectVenueModal = useCallback(
@@ -666,170 +654,6 @@ export default function ManageBooking() {
     [fetchPendingData, fetchApprovedData, fetchRejectedData, fetchAllData],
   );
 
-  const generateVenueDropdown = useCallback(
-    async (contentRes: { count: number; res: Venue[] }) => {
-      const content: Venue[] = contentRes.res;
-      const selection: JSX.Element[] = [];
-      venueData.current = [];
-
-      selection.push(<option key='' value='' aria-label='Default' />);
-
-      for (let key = 0; key < content.length; key += 1) {
-        if (content[key]) {
-          const dataField: Venue = content[key];
-          selection.push(
-            <option key={dataField.id} value={dataField.id}>
-              {dataField.name}
-            </option>,
-          );
-
-          venueData.current.push(dataField);
-        }
-      }
-
-      setVenueDropdown(selection);
-    },
-    [],
-  );
-
-  const fetchVenue = useCallback(async () => {
-    setSubmitButtonPressed(true);
-    try {
-      const rawResponse = await fetch('/api/venue/fetch', {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-      const content: Result = await rawResponse.json();
-      if (content.status) {
-        generateVenueDropdown(content.msg);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-    setSubmitButtonPressed(false);
-  }, [generateVenueDropdown]);
-
-  const populateCalendar = useCallback(async (content: Booking[]) => {
-    const event: CalendarData[] = [];
-    let count = 0;
-
-    for (let key = 0; key < content.length; key += 1) {
-      if (content[key]) {
-        const dataField: Booking = content[key];
-
-        const description = `CCA: ${dataField.cca} EMAIL: ${dataField.email}`;
-
-        const e = {
-          id: dataField.id,
-          title: dataField.title,
-          start: dataField.start,
-          end: dataField.end,
-          extendedProps: {
-            description: description,
-            booking: dataField,
-          },
-        };
-
-        event.push(e);
-
-        if (count === 0) {
-          const start = dataField.startHour;
-          const end = dataField.endHour;
-
-          if (start !== undefined && end !== undefined) {
-            setStartTime(start);
-            setEndTime(end);
-            count += 1;
-          }
-        }
-      }
-    }
-
-    setEvents(event);
-  }, []);
-
-  fetchBookings = useCallback(
-    async (id: string) => {
-      if (checkerString(id)) {
-        setSubmitButtonPressed(true);
-        try {
-          const rawResponse = await fetch('/api/booking/fetch', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              id: id,
-            }),
-          });
-          const content: Result = await rawResponse.json();
-          if (content.status) {
-            await populateCalendar(content.msg);
-          }
-        } catch (error) {
-          console.error(error);
-        }
-        setSubmitButtonPressed(false);
-      }
-    },
-    [populateCalendar],
-  );
-
-  const onVenueIDChange = async (event: { target: { value: string } }) => {
-    if (event.target.value) {
-      const { value } = event.target;
-
-      for (let key = 0; key < venueData.current.length; key += 1) {
-        if (venueData.current[key]) {
-          const ven: Venue = venueData.current[key];
-          if (ven.id === value) {
-            await fetchBookings(value);
-            venueIDDB.current = value;
-            setVenueID(value);
-            setSelectedVenue(ven.name);
-            break;
-          }
-        }
-      }
-    }
-  };
-
-  const handleEventClick = (info: {
-    event: {
-      extendedProps: {
-        booking: BookingRequest;
-        description: string;
-      };
-      title: string;
-    };
-  }) => {
-    if (info.event.extendedProps.description) {
-      const bookings: BookingRequest = info.event.extendedProps.booking;
-      setModalBookingData(bookings);
-    }
-  };
-
-  const handleMouseEnter = (info: {
-    event: { extendedProps: { description: string }; title: string };
-  }) => {
-    if (info.event.extendedProps.description) {
-      toast({
-        title: info.event.title,
-        description: info.event.extendedProps.description,
-        status: 'info',
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  };
-
-  const handleMouseLeave = () => {
-    toast.closeAll();
-  };
-
   const columns = useMemo(
     () => [
       {
@@ -887,8 +711,7 @@ export default function ManageBooking() {
 
   useEffect(() => {
     createBookingChoiceDropDownMenu();
-    fetchVenue();
-  }, [fetchVenue, createBookingChoiceDropDownMenu]);
+  }, [createBookingChoiceDropDownMenu]);
 
   return (
     <Auth admin>
@@ -910,58 +733,6 @@ export default function ManageBooking() {
           bg='white'
           borderRadius='lg'
           width={{ base: 'full', md: 'full', lg: 'full' }}
-          p={4}
-          color='gray.900'
-          shadow='base'
-          key='info-counter'
-        >
-          <Text>
-            Select between different dropdown menu items to retrieve the latest
-            data
-          </Text>
-        </Box>
-
-        <Box
-          bg='white'
-          borderRadius='lg'
-          width={{ base: 'full', md: 'full', lg: 'full' }}
-          p={8}
-          color='gray.700'
-          shadow='base'
-          key='booking-calendar'
-        >
-          <Stack direction='row'>
-            <Heading size='sm' mb={4}>
-              Booking Calendar
-            </Heading>
-          </Stack>
-          {selectedVenue && <Text>Selected Venue: {selectedVenue}</Text>}
-
-          {venueDropdown && (
-            <Stack spacing={2} w='full' mb='10'>
-              <FormLabel>Select Venue</FormLabel>
-              <Select value={venueID} onChange={onVenueIDChange} size='sm'>
-                {venueDropdown}
-              </Select>
-            </Stack>
-          )}
-
-          {venueDropdown && selectedVenue && (
-            <BookingCalendar
-              slotMax={endTime}
-              slotMin={startTime}
-              events={events}
-              eventClick={handleEventClick}
-              eventMouseEnter={handleMouseEnter}
-              eventMouseLeave={handleMouseLeave}
-            />
-          )}
-        </Box>
-
-        <Box
-          bg='white'
-          borderRadius='lg'
-          width={{ base: 'full', md: 'full', lg: 'full' }}
           p={8}
           color='gray.700'
           shadow='base'
@@ -971,6 +742,7 @@ export default function ManageBooking() {
             <Heading size='sm' mb={4}>
               Booking Table
             </Heading>
+            <InfoIcon onMouseEnter={handleHover} />
           </Stack>
 
           <Stack spacing={2} w='full' mb='10'>
@@ -1014,13 +786,6 @@ export default function ManageBooking() {
             </Box>
           )}
 
-          <BookingModal
-            isBookingRequest={false}
-            isOpen={!!modalBookingData}
-            onClose={() => setModalBookingData(null)}
-            modalData={modalBookingData}
-            isAdmin
-          />
           <BookingModal
             isBookingRequest
             isOpen={!!modalData}

@@ -1,5 +1,6 @@
 import { BookingRequest } from 'types/vbs/bookingReq';
 import nodemailer from 'nodemailer';
+import { checkerString } from '@constants/sys/helper';
 
 /**
  * Returns a HTML Email template for Approval Bookings
@@ -418,6 +419,44 @@ export const sendApproveMail = async (target: string, data: BookingRequest) => {
         {
           from: process.env.EMAIL_FROM,
           to: target,
+          subject: 'KEVII VBS: Request Approved',
+          text: text(),
+          html: html({ data }),
+        },
+        function (err) {
+          if (err) {
+            console.error('Error ' + err);
+          }
+        },
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  if (
+    process.env.SEND_EMAIL_SECRETARY &&
+    (process.env.SEND_EMAIL_SECRETARY === '1' ||
+      Number(process.env.SEND_EMAIL_SECRETARY) === 1) &&
+    process.env.SECRETARY_EMAIL &&
+    checkerString(process.env.SECRETARY_EMAIL)
+  ) {
+    try {
+      const config = {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: Number(process.env.EMAIL_SERVER_PORT),
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      };
+
+      let transporter = nodemailer.createTransport(config);
+
+      transporter.sendMail(
+        {
+          from: process.env.EMAIL_FROM,
+          to: process.env.SECRETARY_EMAIL,
           subject: 'KEVII VBS: Request Approved',
           text: text(),
           html: html({ data }),

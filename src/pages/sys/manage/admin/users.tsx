@@ -33,10 +33,10 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 import UserModal from '@components/sys/misc/UserModal';
 
 import { checkerString } from '@constants/sys/helper';
+import { levels } from '@constants/sys/admin';
 
 import { User } from 'types/misc/user';
 import { Result } from 'types/api';
-import { levels } from '@root/src/constants/sys/admin';
 
 import { Session } from 'next-auth/core/types';
 
@@ -189,6 +189,27 @@ export default function ManageUsers(props: any) {
 
     return true;
   };
+
+  const handleSubmitCCADownload = useCallback(
+    async (event: { preventDefault: () => void }) => {
+      event.preventDefault();
+      setSubmitButtonPressed(true);
+
+      try {
+        const rawResponse = await fetch('/api/ccaAttendance/file', {
+          method: 'POST',
+        });
+        const content: Result = await rawResponse.json();
+        if (content.status) {
+          console.log('hello');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+      setSubmitButtonPressed(false);
+    },
+    [],
+  );
 
   const handleSubmitFile = useCallback(
     async (event: { preventDefault: () => void }) => {
@@ -714,7 +735,44 @@ export default function ManageUsers(props: any) {
       >
         {level === levels.OWNER && (
           <MotionBox>
-            {' '}
+            <Stack
+              spacing={4}
+              w='full'
+              maxW='md'
+              bg='white'
+              rounded='xl'
+              boxShadow='lg'
+              p={6}
+              my={12}
+            >
+              <Heading size='md'>Generate CCA Attendance Report</Heading>
+              <form onSubmit={handleSubmitCCADownload}>
+                <Stack spacing={4}>
+                  <Stack spacing={10}>
+                    <Text>
+                      This will generate all CCA attendance records for all
+                      users
+                    </Text>
+                    <Button
+                      type='submit'
+                      bg='blue.400'
+                      color='white'
+                      disabled={submitButtonPressed}
+                      _hover={{
+                        bg: 'blue.500',
+                      }}
+                    >
+                      Download
+                    </Button>
+                  </Stack>
+                </Stack>
+              </form>
+            </Stack>
+          </MotionBox>
+        )}
+
+        {level === levels.OWNER && (
+          <MotionBox>
             <Stack
               spacing={4}
               w='full'
@@ -816,7 +874,6 @@ export default function ManageUsers(props: any) {
 
         {level === levels.OWNER && (
           <MotionBox>
-            {' '}
             <Stack
               spacing={4}
               w='full'

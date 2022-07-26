@@ -4,6 +4,9 @@ import {
   Button,
   Box,
   Flex,
+  Heading,
+  InputGroup,
+  InputLeftAddon,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -11,11 +14,17 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Radio,
+  RadioGroup,
   Select,
   SimpleGrid,
   Stack,
+  Switch,
   Text,
+  Textarea,
+  useToast,
 } from '@chakra-ui/react';
+import { CheckCircleIcon } from '@chakra-ui/icons';
 import CalendarWidget from '@components/sys/vbs/CalendarWidget';
 import TimeSlotButton from '@components/sys/vbs/TimeSlotButton';
 import Loading from '@components/sys/misc/Loading';
@@ -26,14 +35,20 @@ import { cardVariant, parentVariant } from '@root/motion';
 import moment from 'moment-timezone';
 
 import { isValidDate, prettifyDate } from '@constants/sys/date';
-import { checkerArray, checkerString } from '@constants/sys/helper';
+import { checkerArray, checkerString, PERSONAL } from '@constants/sys/helper';
 
 import { Venue } from 'types/vbs/venue';
 import { TimeSlot } from 'types/vbs/timeslot';
 import { Result } from 'types/api';
+import { CCA } from 'types/cca/cca';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
+
+const levels = {
+  SELECT_VENUE: 0,
+  CONFIRM: 1,
+};
 
 /**
  * Renders a modal that represents the data flow in creating a Venue Booking Request
@@ -45,11 +60,12 @@ const MotionBox = motion(Box);
 export default function VenueBookingModal({
   isOpen,
   onClose,
-  dataHandler,
   modalData,
   calendarMin,
   calendarMax,
 }) {
+  const toast = useToast();
+
   const [selectedDate, changeDate] = useState('');
   const date = useRef('');
   const rawDate = useRef<Date | null>(null);
@@ -78,6 +94,37 @@ export default function VenueBookingModal({
 
   const [errorMsg, setError] = useState('');
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+
+  const [progressLevel, setProgressLevel] = useState(levels.SELECT_VENUE);
+
+  // Confirmation Modal
+  const [venueConfirm, setVenueConfirm] = useState('');
+  const [dateConfirm, setDateConfirm] = useState('');
+  const [timeSlotsConfirm, setTimeSlotsConfirm] = useState('');
+  const [purposeConfirm, setPurposeConfirm] = useState('');
+  const [typeConfirm, setTypeConfirm] = useState('1');
+  const [errorMsgConfirm, setErrorConfirm] = useState('');
+  const [successConfirm, setSuccessBookingConfirm] = useState(false);
+  const [ccaSelectionConfirm, setCCASelectionConfirm] = useState('');
+
+  const [ccaListConfirm, setCCAListConfirm] = useState<JSX.Element[]>([]);
+  const [showCCAsConfirm, setShowCCAsConfirm] = useState(false);
+  const CCALISTConfirm = useRef<CCA[]>([]);
+
+  const [isSwitchConfirm, setIsSwitchConfirm] = useState(false);
+  const isSwitchDBConfirm = useRef(false);
+
+  const venueNameDBConfirm = useRef('');
+  const venueDBConfirm = useRef('');
+  const timeSlotsDBConfirm = useRef<TimeSlot[]>([]);
+  const typeDBConfirm = useRef(PERSONAL);
+  const purposeDBConfirm = useRef('');
+
+  const dateParsedConfirm = useRef('');
+
+  const [submittingConfirm, setSubmittingConfirm] = useState(false);
+
+  const timeoutsConfirm = useRef<NodeJS.Timeout[]>([]);
 
   const check = (timeSlotsField: TimeSlot[]) => {
     if (timeSlotsField.length === 0) {
@@ -120,6 +167,64 @@ export default function VenueBookingModal({
     return true;
   };
 
+  const validateFieldsConfirm = (
+    venueField: string,
+    venueNameField: string,
+    dateField: string,
+    timeSlotsField: TimeSlot[],
+    typeField: string,
+    purposeField: string,
+  ) => {
+    // super basic validation here
+    if (!checkerString(dateField) || !isValidDate(new Date(dateField))) {
+      setErrorConfirm('No date found');
+      return false;
+    }
+
+    if (!checkerString(venueField)) {
+      setErrorConfirm('No venues found');
+      return false;
+    }
+
+    if (!checkerString(venueNameField)) {
+      setErrorConfirm('No venues found');
+      return false;
+    }
+
+    if (timeSlotsField === [] || !check(timeSlotsField)) {
+      setErrorConfirm('No timeslots found');
+      return false;
+    }
+
+    if (!checkerString(typeField)) {
+      setErrorConfirm('No type found');
+      return false;
+    }
+
+    if (typeField !== PERSONAL) {
+      let found = false;
+
+      for (let i = 0; i < CCALISTConfirm.current.length; i += 1) {
+        if (typeField === CCALISTConfirm.current[i].id) {
+          found = true;
+        }
+      }
+
+      if (!found) {
+        setErrorConfirm('Not valid CCA');
+        return false;
+      }
+    }
+
+    if (!checkerString(purposeField)) {
+      setErrorConfirm('Please write a purpose for the booking.');
+      return false;
+    }
+
+    setErrorConfirm('');
+    return true;
+  };
+
   const reset = () => {
     changeDate('');
     setHasChildVenue(false);
@@ -139,6 +244,27 @@ export default function VenueBookingModal({
     setDescription('');
     setOpeningHours('');
     setCapacity('');
+
+    setVenueConfirm('');
+    setDateConfirm('');
+    setTimeSlotsConfirm('');
+    setPurposeConfirm('');
+    setTypeConfirm('1');
+    setErrorConfirm('');
+    setCCAListConfirm([]);
+    setShowCCAsConfirm(false);
+    setSuccessBookingConfirm(false);
+    setIsSwitchConfirm(false);
+    setCCASelectionConfirm('');
+
+    venueNameDBConfirm.current = '';
+    venueDBConfirm.current = '';
+    timeSlotsDBConfirm.current = [];
+    typeDBConfirm.current = PERSONAL;
+    purposeDBConfirm.current = '';
+    isSwitchDBConfirm.current = false;
+
+    setProgressLevel(levels.SELECT_VENUE);
   };
 
   const handleModalCloseButton = () => {
@@ -146,6 +272,93 @@ export default function VenueBookingModal({
       reset();
       onClose();
     }, 200);
+  };
+
+  const submitBookingRequest = async (
+    venueIDField: string,
+    venueNameField: string,
+    dateField: string,
+    timeSlotsField: TimeSlot[],
+    typeField: string,
+    purposeField: string,
+  ) => {
+    setSubmittingConfirm(true);
+    try {
+      const rawResponse = await fetch('/api/bookingReq/create', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          venue: venueIDField,
+          venueName: venueNameField,
+          date: dateField,
+          timeSlots: timeSlotsField,
+          type: typeField,
+          purpose: purposeField,
+        }),
+      });
+      const content: Result = await rawResponse.json();
+      if (content.status) {
+        setSubmittingConfirm(false);
+        setSuccessBookingConfirm(true);
+
+        for (let key = 0; key < timeoutsConfirm.current.length; key += 1) {
+          const t = timeoutsConfirm.current[key];
+          clearTimeout(t);
+        }
+
+        const time = setTimeout(() => {
+          handleModalCloseButton();
+        }, 5000);
+
+        timeoutsConfirm.current.push(time);
+      } else {
+        toast({
+          title: 'Error',
+          description: content.error,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+        setSuccessBookingConfirm(false);
+        setSubmittingConfirm(false);
+        setIsSwitchConfirm(false);
+        isSwitchDBConfirm.current = false;
+      }
+    } catch (error) {
+      setSubmittingConfirm(false);
+      setSuccessBookingConfirm(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    setErrorConfirm('');
+    if (!isSwitchDBConfirm.current) {
+      setErrorConfirm('Please toggle the confirmation switch.');
+      return;
+    }
+
+    if (
+      validateFieldsConfirm(
+        venueDBConfirm.current,
+        venueNameDBConfirm.current,
+        dateParsedConfirm.current,
+        timeSlotsDBConfirm.current,
+        typeDBConfirm.current,
+        purposeDBConfirm.current,
+      )
+    ) {
+      await submitBookingRequest(
+        venueDBConfirm.current,
+        venueNameDBConfirm.current,
+        dateParsedConfirm.current,
+        timeSlotsDBConfirm.current,
+        typeDBConfirm.current,
+        purposeDBConfirm.current,
+      );
+    }
   };
 
   const displayVenue = (venue: string): string => {
@@ -166,27 +379,53 @@ export default function VenueBookingModal({
     return '';
   };
 
-  const handleSubmit = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    setError('');
-    if (
-      validateFields(
-        selectedVenue.current,
-        dateParsed.current,
-        selectedTimeSlots.current,
-      )
-    ) {
-      dataHandler(
-        selectedVenue.current,
-        displayVenue(selectedVenue.current),
-        selectedTimeSlots.current,
-        dateParsed.current,
-      );
+  const buildText = async (
+    venueNameField: string,
+    dateParsedField: string,
+    timeSlotsField: TimeSlot[],
+  ) => {
+    setVenueConfirm(venueNameField);
+    setDateConfirm(dateParsedField);
+    let str = '';
+    for (let key = 0; key < timeSlotsField.length; key += 1) {
+      if (timeSlotsField[key]) {
+        if (timeSlotsField[key].slot !== undefined) {
+          str += `\n${timeSlotsField[key].slot}`;
+        }
+      }
+    }
 
-      setTimeout(() => {
-        reset();
-        onClose();
-      }, 200);
+    setTimeSlotsConfirm(str);
+  };
+
+  const handleClick = async (next: boolean) => {
+    if (progressLevel === levels.SELECT_VENUE) {
+      if (
+        validateFields(
+          selectedVenue.current,
+          dateParsed.current,
+          selectedTimeSlots.current,
+        )
+      ) {
+        venueNameDBConfirm.current = displayVenue(selectedVenue.current);
+        venueDBConfirm.current = selectedVenue.current;
+        timeSlotsDBConfirm.current = selectedTimeSlots.current;
+        dateParsedConfirm.current = dateParsed.current;
+
+        await buildText(
+          venueNameDBConfirm.current,
+          dateParsedConfirm.current,
+          timeSlotsDBConfirm.current,
+        );
+
+        if (next) {
+          setProgressLevel(levels.CONFIRM);
+        }
+      }
+    } else if (progressLevel === levels.CONFIRM) {
+      if (!next) {
+        setProgressLevel(levels.SELECT_VENUE);
+      }
     }
   };
 
@@ -221,6 +460,49 @@ export default function VenueBookingModal({
     [modalData],
   );
 
+  const buildCCAList = async () => {
+    const selection: JSX.Element[] = [];
+    setSubmitButtonPressed(true);
+    try {
+      const rawResponse = await fetch('/api/cca', {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      const content: Result = await rawResponse.json();
+      if (content.status) {
+        if (content.msg !== null && content.msg !== undefined) {
+          CCALISTConfirm.current = [];
+          const ccaContent: CCA[] = content.msg;
+
+          selection.push(<option key='' value='' aria-label='default' />);
+
+          if (ccaContent.length > 0) {
+            for (let key = 0; key < ccaContent.length; key += 1) {
+              if (ccaContent[key]) {
+                CCALISTConfirm.current.push({
+                  id: ccaContent[key].id,
+                  name: ccaContent[key].name,
+                });
+                selection.push(
+                  <option key={ccaContent[key].id} value={ccaContent[key].id}>
+                    {ccaContent[key].name}
+                  </option>,
+                );
+              }
+            }
+          }
+
+          setCCAListConfirm(selection);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setSubmitButtonPressed(false);
+  };
+
   useEffect(() => {
     async function fetchData() {
       if (!isChildVenue) {
@@ -248,6 +530,8 @@ export default function VenueBookingModal({
         }
         setSubmitButtonPressed(false);
       }
+
+      await buildCCAList();
     }
 
     if (modalData) {
@@ -265,7 +549,7 @@ export default function VenueBookingModal({
     let counter: number = 0;
     for (let key = 0; key < slots.length; key += 1) {
       if (Object.prototype.hasOwnProperty.call(slots, key)) {
-        if (slots[key]) {
+        if (slots[key] && slots[key].slot !== undefined) {
           counter += 1;
         }
       }
@@ -445,6 +729,37 @@ export default function VenueBookingModal({
     }
   };
 
+  const setTypeHelper = (event: any) => {
+    try {
+      if (event) {
+        if (Number(event) === 2) {
+          typeDBConfirm.current = '';
+          setShowCCAsConfirm(true);
+        } else {
+          typeDBConfirm.current = PERSONAL;
+          setShowCCAsConfirm(false);
+        }
+
+        setTypeConfirm(event);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onCCASelectionChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    try {
+      if (event.target.value) {
+        typeDBConfirm.current = event.target.value;
+        setCCASelectionConfirm(event.target.value);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Modal
       closeOnOverlayClick={false}
@@ -465,162 +780,316 @@ export default function VenueBookingModal({
             onClose={() => setSubmitButtonPressed(false)}
           />
 
-          <Text>Description: {description}</Text>
-          <Text>Opening Hours: {openingHours}</Text>
-          <Text>Capacity: {capacity}</Text>
-          {hasChildVenue && childVenueDrop && (
-            <Box>
-              <Flex
-                w='full'
-                h='full'
-                alignItems='center'
-                justifyContent='center'
-                bg='white'
-                rounded='xl'
-                shadow='lg'
-                borderWidth='1px'
-                m='4'
-              >
-                <Stack spacing={5} w='full' align='center'>
-                  <Text>Select Venue</Text>
-                  <Select onChange={onChildVenueChange} size='sm'>
-                    {childVenueDrop}
-                  </Select>
-                </Stack>
-              </Flex>
-            </Box>
-          )}
-
-          <MotionSimpleGrid
-            mt='3'
-            minChildWidth='250px'
-            spacing='2em'
-            minH='full'
-            variants={parentVariant}
-            initial='initial'
-            animate='animate'
+          <Box
+            display={progressLevel === levels.SELECT_VENUE ? 'block' : 'none'}
           >
-            <CalendarWidget
-              selectedDate={handleDate}
-              calendarMin={calendarMin}
-              calendarMax={calendarMax}
-            />
-            <MotionBox variants={cardVariant} key='timeslot-box'>
-              <Flex
-                w='full'
-                h='full'
-                alignItems='center'
-                justifyContent='center'
-                bg='white'
-                rounded='xl'
-                shadow='lg'
-                borderWidth='1px'
-              >
-                {selectedDate && timeSlots.length > 0 && (
-                  <Box
-                    w='100%'
-                    h='full'
-                    position='relative'
-                    overflow='hidden'
-                    roundedTop='lg'
-                  >
-                    <Box>
-                      <Stack align='center'>
-                        <Box>{selectedDate}</Box>
-                        <Box mb={5}>Select Timeslot(s)</Box>
-                        <Stack direction={['column', 'row']} align='center'>
-                          <ButtonGroup display='flex' flexWrap='wrap'>
-                            {timeSlots}
-                          </ButtonGroup>
+            <Text>Description: {description}</Text>
+            <Text>Opening Hours: {openingHours}</Text>
+            <Text>Capacity: {capacity}</Text>
+            {hasChildVenue && childVenueDrop && (
+              <Box>
+                <Flex
+                  w='full'
+                  h='full'
+                  alignItems='center'
+                  justifyContent='center'
+                  bg='white'
+                  rounded='xl'
+                  shadow='lg'
+                  borderWidth='1px'
+                  m='4'
+                >
+                  <Stack spacing={5} w='full' align='center'>
+                    <Text>Select Venue</Text>
+                    <Select onChange={onChildVenueChange} size='sm'>
+                      {childVenueDrop}
+                    </Select>
+                  </Stack>
+                </Flex>
+              </Box>
+            )}
+
+            <MotionSimpleGrid
+              mt='3'
+              minChildWidth='250px'
+              spacing='2em'
+              minH='full'
+              variants={parentVariant}
+              initial='initial'
+              animate='animate'
+            >
+              <CalendarWidget
+                selectedDate={handleDate}
+                calendarMin={calendarMin}
+                calendarMax={calendarMax}
+              />
+              <MotionBox variants={cardVariant} key='timeslot-box'>
+                <Flex
+                  w='full'
+                  h='full'
+                  alignItems='center'
+                  justifyContent='center'
+                  bg='white'
+                  rounded='xl'
+                  shadow='lg'
+                  borderWidth='1px'
+                >
+                  {selectedDate && timeSlots.length > 0 && (
+                    <Box
+                      w='100%'
+                      h='full'
+                      position='relative'
+                      overflow='hidden'
+                      roundedTop='lg'
+                    >
+                      <Box>
+                        <Stack align='center'>
+                          <Box>{selectedDate}</Box>
+                          <Box mb={5}>Select Timeslot(s)</Box>
+                          <Stack direction={['column', 'row']} align='center'>
+                            <ButtonGroup display='flex' flexWrap='wrap'>
+                              {timeSlots}
+                            </ButtonGroup>
+                          </Stack>
                         </Stack>
-                      </Stack>
+                      </Box>
                     </Box>
-                  </Box>
-                )}
+                  )}
 
-                {!selectedDate && timeSlots.length === 0 && (
-                  <Box>
-                    <Stack spacing={600} align='center'>
-                      <Text>Please select a date</Text>
-                    </Stack>
-                  </Box>
-                )}
-
-                {selectedDate && timeSlots.length === 0 && (
-                  <Box
-                    w='100%'
-                    h='full'
-                    position='relative'
-                    overflow='hidden'
-                    roundedTop='lg'
-                  >
+                  {!selectedDate && timeSlots.length === 0 && (
                     <Box>
-                      <Stack align='center'>
-                        <Box>{selectedDate}</Box>
-                        <Box mb={5}>Select Timeslot(s)</Box>
-                        <Box>
-                          <Loading message='Fetching all timeslots...' />
-                        </Box>
+                      <Stack spacing={600} align='center'>
+                        <Text>Please select a date</Text>
                       </Stack>
                     </Box>
-                  </Box>
-                )}
-              </Flex>
-            </MotionBox>
-          </MotionSimpleGrid>
+                  )}
 
-          {displayedSlots && (
-            <Box>
-              <Flex
-                w='full'
-                h='full'
-                alignItems='center'
-                justifyContent='center'
-                bg='white'
-                rounded='xl'
-                shadow='lg'
-                borderWidth='1px'
-                m='4'
-              >
-                <Stack align='center'>
-                  <Text>Venue: {displayedVenue}</Text>
-                  <Text>{displayedSlots}</Text>
-                </Stack>
-              </Flex>
-            </Box>
-          )}
+                  {selectedDate && timeSlots.length === 0 && (
+                    <Box
+                      w='100%'
+                      h='full'
+                      position='relative'
+                      overflow='hidden'
+                      roundedTop='lg'
+                    >
+                      <Box>
+                        <Stack align='center'>
+                          <Box>{selectedDate}</Box>
+                          <Box mb={5}>Select Timeslot(s)</Box>
+                          <Box>
+                            <Loading message='Fetching all timeslots...' />
+                          </Box>
+                        </Stack>
+                      </Box>
+                    </Box>
+                  )}
+                </Flex>
+              </MotionBox>
+            </MotionSimpleGrid>
 
-          {checkerString(errorMsg) && (
-            <Box>
-              <Flex
-                w='full'
-                h='full'
-                alignItems='center'
-                justifyContent='center'
-                bg='white'
-                rounded='xl'
-                shadow='lg'
-                borderWidth='1px'
-                m='4'
+            {displayedSlots && (
+              <Box>
+                <Flex
+                  w='full'
+                  h='full'
+                  alignItems='center'
+                  justifyContent='center'
+                  bg='white'
+                  rounded='xl'
+                  shadow='lg'
+                  borderWidth='1px'
+                  m='4'
+                >
+                  <Stack align='center'>
+                    <Text>Venue: {displayedVenue}</Text>
+                    <Text>{displayedSlots}</Text>
+                  </Stack>
+                </Flex>
+              </Box>
+            )}
+
+            {checkerString(errorMsg) && (
+              <Box>
+                <Flex
+                  w='full'
+                  h='full'
+                  alignItems='center'
+                  justifyContent='center'
+                  bg='white'
+                  rounded='xl'
+                  shadow='lg'
+                  borderWidth='1px'
+                  m='4'
+                >
+                  <Stack align='center'>
+                    <Text>{errorMsg}</Text>
+                  </Stack>
+                </Flex>
+              </Box>
+            )}
+          </Box>
+
+          <Box display={progressLevel === levels.CONFIRM ? 'block' : 'none'}>
+            {submittingConfirm && (
+              <Box>
+                <Loading message='Submitting request...' />
+              </Box>
+            )}
+
+            {successConfirm && !submittingConfirm && (
+              <Box textAlign='center' py={10} px={6}>
+                <CheckCircleIcon boxSize='50px' color='green.500' />
+                <Heading as='h2' size='xl' mt={6} mb={2}>
+                  Booking request submitted!
+                </Heading>
+                <Text color='gray.500'>
+                  Please wait a few days for the admin to approve your request..
+                </Text>
+                <Text color='gray.500'>
+                  The page will be closed after 5 seconds...
+                </Text>
+              </Box>
+            )}
+
+            {!successConfirm && !submittingConfirm && (
+              <MotionSimpleGrid
+                mt='3'
+                minChildWidth='250px'
+                spacing='2em'
+                minH='full'
+                variants={parentVariant}
+                initial='initial'
+                animate='animate'
               >
-                <Stack align='center'>
-                  <Text>{errorMsg}</Text>
-                </Stack>
-              </Flex>
-            </Box>
-          )}
+                <MotionBox variants={cardVariant} key='cca-confirm'>
+                  <Flex align='center' justify='center' mt={-10}>
+                    <Stack spacing={8} mx='auto' maxW='lg' py={12} px={6}>
+                      <Stack align='center'>
+                        <Heading fontSize='3xl'>Confirm your booking</Heading>
+                        {checkerString(errorMsgConfirm) && (
+                          <Text>{errorMsgConfirm}</Text>
+                        )}
+                      </Stack>
+                      <Box rounded='lg' boxShadow='lg' p={8}>
+                        <Stack spacing={3}>
+                          <Text fontSize='xl'>Venue: {venueConfirm}</Text>
+                          <Text fontSize='xl'>Date: {dateConfirm}</Text>
+                          <Text fontSize='xl'>
+                            Timeslot: {timeSlotsConfirm}
+                          </Text>
+                          <RadioGroup
+                            onChange={setTypeHelper}
+                            value={typeConfirm}
+                            name={venueConfirm}
+                          >
+                            <Stack direction='row'>
+                              <Radio value='1'>{PERSONAL}</Radio>
+                              {ccaListConfirm.length > 0 && (
+                                <Radio value='2'>CCA</Radio>
+                              )}
+                            </Stack>
+                          </RadioGroup>
+
+                          {showCCAsConfirm && ccaListConfirm.length > 0 && (
+                            <Select
+                              onChange={onCCASelectionChange}
+                              value={ccaSelectionConfirm}
+                              size='sm'
+                            >
+                              {ccaListConfirm}
+                            </Select>
+                          )}
+
+                          <InputGroup>
+                            <InputLeftAddon>Purpose </InputLeftAddon>
+                            <Textarea
+                              isRequired
+                              value={purposeConfirm}
+                              onChange={(event) => {
+                                setPurposeConfirm(event.currentTarget.value);
+                                purposeDBConfirm.current =
+                                  event.currentTarget.value;
+                              }}
+                              placeholder='Enter your purpose'
+                            />
+                          </InputGroup>
+                        </Stack>
+                      </Box>
+
+                      <Stack direction='row'>
+                        <Text mr={8}>
+                          I have confirmed that the details are correct
+                        </Text>
+                        <Switch
+                          isRequired
+                          checked={isSwitchConfirm}
+                          onChange={(event) => {
+                            setIsSwitchConfirm(event.target.checked);
+                            isSwitchDBConfirm.current = event.target.checked;
+                          }}
+                        />
+                      </Stack>
+                    </Stack>
+                  </Flex>
+                </MotionBox>
+              </MotionSimpleGrid>
+            )}
+          </Box>
         </ModalBody>
         <ModalFooter>
-          <Button
-            bg='cyan.700'
-            color='white'
-            w='150px'
-            size='lg'
-            onClick={handleSubmit}
-            _hover={{ bg: 'cyan.800' }}
-          >
-            Confirm
-          </Button>
+          {progressLevel !== levels.SELECT_VENUE &&
+            !successConfirm &&
+            !submittingConfirm && (
+              <Button
+                key='previous-button'
+                bg='blue.400'
+                color='white'
+                w='150px'
+                size='lg'
+                _hover={{ bg: 'blue.600' }}
+                mr={5}
+                onClick={async () => {
+                  await handleClick(false);
+                }}
+              >
+                Previous
+              </Button>
+          )}
+
+          {progressLevel !== levels.CONFIRM &&
+            !successConfirm &&
+            !submittingConfirm && (
+              <Button
+                key='next-button'
+                bg='blue.400'
+                color='white'
+                w='150px'
+                size='lg'
+                _hover={{ bg: 'blue.600' }}
+                onClick={async () => {
+                  await handleClick(true);
+                }}
+              >
+                Next
+              </Button>
+          )}
+
+          {progressLevel === levels.CONFIRM &&
+            !successConfirm &&
+            !submittingConfirm && (
+              <Button
+                key='submit-button'
+                disabled={!isSwitchConfirm}
+                bg='red.400'
+                color='white'
+                w='150px'
+                size='lg'
+                _hover={{ bg: 'red.600' }}
+                onClick={handleSubmit}
+              >
+                Submit
+              </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>

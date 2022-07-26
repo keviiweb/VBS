@@ -274,7 +274,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                           {checkerString(id) && (
                             <ListItem key='venue-id'>
                               <Text as='span' fontWeight='bold'>
-                                Venue ID:
+                                Venue ID:{' '}
                               </Text>
                               {id}
                             </ListItem>
@@ -282,7 +282,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                           {checkerString(name) && (
                             <ListItem key='venue-name'>
                               <Text as='span' fontWeight='bold'>
-                                Name:
+                                Name:{' '}
                               </Text>
                               {name}
                             </ListItem>
@@ -290,7 +290,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                           {checkerString(description) && (
                             <ListItem key='venue-desc'>
                               <Text as='span' fontWeight='bold'>
-                                Description:
+                                Description:{' '}
                               </Text>
                               {description}
                             </ListItem>
@@ -298,7 +298,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                           {checkerString(openingHours) && (
                             <ListItem key='venue-opening'>
                               <Text as='span' fontWeight='bold'>
-                                Opening Hours:
+                                Opening Hours:{' '}
                               </Text>
                               {openingHours}
                             </ListItem>
@@ -306,7 +306,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                           {checkerNumber(capacity) && (
                             <ListItem key='venue-capacity'>
                               <Text as='span' fontWeight='bold'>
-                                Capacity:
+                                Capacity:{' '}
                               </Text>
                               {capacity}
                             </ListItem>
@@ -314,7 +314,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                           {checkerString(childVenue) && (
                             <ListItem key='venue-child'>
                               <Text as='span' fontWeight='bold'>
-                                Child Venue:
+                                Child Venue:{' '}
                               </Text>
                               {childVenue}
                             </ListItem>
@@ -322,7 +322,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                           {checkerString(instantBook) && (
                             <ListItem key='venue-ib'>
                               <Text as='span' fontWeight='bold'>
-                                Instant Book:
+                                Instant Book:{' '}
                               </Text>
                               {instantBook}
                             </ListItem>
@@ -330,7 +330,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                           {checkerString(isAvailable) && (
                             <ListItem key='venue-ia'>
                               <Text as='span' fontWeight='bold'>
-                                Available for Booking:
+                                Available for Booking:{' '}
                               </Text>
                               {isAvailable}
                             </ListItem>

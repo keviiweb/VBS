@@ -209,6 +209,7 @@ export default function BookingModal({
       }
 
       if (
+        isAdmin &&
         isBookingRequest &&
         modalDataField.conflictRequestObj &&
         modalDataField.conflictRequestObj.length > 0
@@ -225,6 +226,7 @@ export default function BookingModal({
 
         await processConflicts(modalDataField.conflictRequestObj);
       } else if (
+        isAdmin &&
         isBookingRequest &&
         modalDataField.conflictRequestObj &&
         modalDataField.conflictRequestObj?.length === 0
@@ -240,7 +242,7 @@ export default function BookingModal({
 
       setLoadingData(false);
     },
-    [isBookingRequest, processConflicts],
+    [isBookingRequest, processConflicts, isAdmin],
   );
 
   useEffect(() => {

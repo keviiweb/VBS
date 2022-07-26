@@ -1,5 +1,6 @@
 import { BookingRequest } from 'types/vbs/bookingReq';
 import nodemailer from 'nodemailer';
+import { checkerString } from '@constants/sys/helper';
 
 /**
  * Returns a HTML Email template for Notifying Conflict Bookings
@@ -252,7 +253,7 @@ function html({ data }) {
                                   <div style="line-height: 160%; text-align: center; word-wrap: break-word;">
                                     <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 18px; line-height: 28.8px;">Reference No: ${id}</span></p>
                                     <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 18px; line-height: 28.8px;">Hi, ${email}</span></p>
-                                    <p style="font-size: 14px; line-height: 160%;">Your booking timeslot is now <strong>available</strong></p>
+                                    <p style="font-size: 14px; line-height: 160%;">One of your booking timeslot(s) is now <strong>available</strong></p>
                                     <p style="font-size: 14px; line-height: 160%;">Please make a new booking request in the system.</p>
                                   </div>
     
@@ -419,6 +420,44 @@ export const sendNotifyMail = async (target: string, data: BookingRequest) => {
         {
           from: process.env.EMAIL_FROM,
           to: target,
+          subject: 'KEVII VBS: Request Available',
+          text: text(),
+          html: html({ data }),
+        },
+        function (err) {
+          if (err) {
+            console.error('Error ' + err);
+          }
+        },
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  if (
+    process.env.SEND_EMAIL_SECRETARY &&
+    (process.env.SEND_EMAIL_SECRETARY === '1' ||
+      Number(process.env.SEND_EMAIL_SECRETARY) === 1) &&
+    process.env.SECRETARY_EMAIL &&
+    checkerString(process.env.SECRETARY_EMAIL)
+  ) {
+    try {
+      const config = {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: Number(process.env.EMAIL_SERVER_PORT),
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      };
+
+      let transporter = nodemailer.createTransport(config);
+
+      transporter.sendMail(
+        {
+          from: process.env.EMAIL_FROM,
+          to: process.env.SECRETARY_EMAIL,
           subject: 'KEVII VBS: Request Available',
           text: text(),
           html: html({ data }),
