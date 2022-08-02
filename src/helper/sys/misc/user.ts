@@ -110,12 +110,14 @@ export const createUserFile = async (
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
-  let count = 0;
+  let count: number = 0;
+  let totalCount: number = 0;
 
   try {
     for (let key = 0; key < dataField.length; key += 1) {
       if (dataField[key]) {
         const data = dataField[key];
+        totalCount += 1;
 
         const name: string = data.name !== undefined ? data.name : '';
         const email: string = data.email !== undefined ? data.email : '';
@@ -156,12 +158,12 @@ export const createUserFile = async (
     await logger(
       'createUserFile',
       session.user.email,
-      `Successfully created ${count} User records`,
+      `Successfully created ${count} User records out of total ${totalCount}`,
     );
     result = {
       status: true,
       error: null,
-      msg: `Successfully created ${count} User records`,
+      msg: `Successfully created ${count} User records out of total ${totalCount}`,
     };
   } catch (error) {
     console.error(error);

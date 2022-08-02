@@ -761,7 +761,7 @@ export default function ManageBooking(props: any) {
               title: 'Error',
               description: content.error,
               status: 'error',
-              duration: 5000,
+              duration: 20000,
               isClosable: true,
             });
           }

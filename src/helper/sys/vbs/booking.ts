@@ -7,9 +7,23 @@ import { Session } from 'next-auth/core/types';
 import { Venue } from 'types/vbs/venue';
 
 import { logger } from '@helper/sys/misc/logger';
-import { checkerString, PERSONAL } from '@root/src/constants/sys/helper';
+import {
+  checkerString,
+  convertSlotToArray,
+  findSlots,
+  PERSONAL,
+  splitHours,
+} from '@root/src/constants/sys/helper';
 import { findVenueByName } from '@helper/sys/vbs/venue';
 import { findCCAbyName } from '@helper/sys/cca/cca';
+import { CCA } from '@root/src/types/cca/cca';
+import { convertDateToUnix } from '@root/src/constants/sys/date';
+import {
+  createVenueBookingRequest,
+  isConflict,
+  setApprove,
+  setRejectConflicts,
+} from './bookingReq';
 
 /**
  * Finds all bookings filtered by the venue ID
@@ -199,12 +213,16 @@ export const createRecurringBooking = async (
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
-  let count = 0;
+  let totalCount: number = 0;
+  let count: number = 0;
+  let success: boolean = true;
+  let errorMsg: string = '';
 
   try {
     for (let key = 0; key < dataField.length; key += 1) {
       if (dataField[key]) {
         const data = dataField[key];
+        totalCount += 1;
 
         const email: string = data.email !== undefined ? data.email : '';
         const venueName: string =
@@ -229,33 +247,159 @@ export const createRecurringBooking = async (
           );
           if (venueDetailsRes.status && venueDetailsRes.msg !== null) {
             const venueDetails: Venue = venueDetailsRes.msg;
+            let successCCA: boolean = true;
 
-            if (cca !== PERSONAL) {
-              const ccaDetailsRes: Result = await findCCAbyName(cca, session);
-              if (ccaDetailsRes.status && ccaDetailsRes.msg !== null) {
+            if (venueDetails.id !== undefined) {
+              const venueID: string = venueDetails.id;
+              let ccaID: string = '';
+
+              if (cca !== PERSONAL) {
+                const ccaDetailsRes: Result = await findCCAbyName(cca, session);
+                if (!ccaDetailsRes.status || ccaDetailsRes.msg === null) {
+                  success = false;
+                  successCCA = false;
+                  errorMsg += `Invalid CCA detected for ${email} ${venueName} ${dateStr} ${cca} ${timeSlot} ${purpose} \n\n`;
+                } else {
+                  const ccaDetails: CCA = ccaDetailsRes.msg;
+                  if (ccaDetails.id !== undefined) {
+                    ccaID = ccaDetails.id;
+                  }
+                }
               } else {
-                // scold
+                ccaID = PERSONAL;
+              }
+
+              const { start, end } = await splitHours(timeSlot);
+              if (start !== null && end !== null) {
+                const startTiming: string = start.toString().padStart(4, '0');
+                const timeSlotID: string | null = await findSlots(
+                  startTiming,
+                  true,
+                );
+
+                const endTiming: string = end.toString().padStart(4, '0');
+                const timeSlotIDEnd: string | null = await findSlots(
+                  endTiming,
+                  false,
+                );
+
+                if (
+                  timeSlotID !== null &&
+                  timeSlotIDEnd !== null &&
+                  timeSlotID === timeSlotIDEnd
+                ) {
+                  const dateTiming: number = convertDateToUnix(dateStr);
+
+                  if (timeSlotID !== null && dateTiming !== 0) {
+                    if (successCCA) {
+                      const dataDB: BookingRequest = {
+                        email: email.trim(),
+                        venue: venueID.trim(),
+                        date: dateTiming,
+                        cca: ccaID.trim(),
+                        timeSlots: timeSlotID.trim(),
+                        purpose: purpose.trim(),
+                        sessionEmail: session.user.email,
+                      };
+
+                      const isThereConflict: boolean = await isConflict(
+                        dataDB,
+                        session,
+                      );
+                      if (!isThereConflict) {
+                        const bookingRequest: BookingRequest | null =
+                          await createVenueBookingRequest(dataDB, session);
+                        if (
+                          bookingRequest !== null &&
+                          bookingRequest !== undefined
+                        ) {
+                          if (bookingRequest.id !== undefined) {
+                            const timeSlotsNum: number[] = convertSlotToArray(
+                              bookingRequest.timeSlots,
+                              true,
+                            ) as number[];
+
+                            const createBooking: Result =
+                              await createVenueBooking(
+                                bookingRequest,
+                                timeSlotsNum,
+                                session,
+                              );
+
+                            if (!createBooking.status) {
+                              errorMsg += `Creating booking error detected for ${email} ${venueName} ${dateStr} ${cca} ${timeSlot} ${purpose} \n\n`;
+                              success = false;
+                            } else {
+                              const approve: Result = await setApprove(
+                                bookingRequest,
+                                session,
+                              );
+
+                              const cancel: Result = await setRejectConflicts(
+                                bookingRequest,
+                                session,
+                              );
+
+                              if (!approve.status || !cancel.status) {
+                                errorMsg += `Approval/ Cancellation booking error detected for ${email} ${venueName} ${dateStr} ${cca} ${timeSlot} ${purpose} \n\n`;
+                                success = false;
+                              } else {
+                                count += 1;
+                              }
+                            }
+                          }
+                        } else {
+                          errorMsg += `Booking request not created for ${email} ${venueName} ${dateStr} ${cca} ${timeSlot} ${purpose} \n\n`;
+                          success = false;
+                        }
+                      } else {
+                        errorMsg += `Conflict booking detected for ${email} ${venueName} ${dateStr} ${cca} ${timeSlot} ${purpose} \n\n`;
+                        success = false;
+                      }
+                    }
+                  } else {
+                    errorMsg += `Invalid date format for ${email} ${venueName} ${dateStr} ${cca} ${timeSlot} ${purpose} \n\n`;
+                    success = false;
+                  }
+                } else {
+                  errorMsg += `Please ensure you book 1 slot at a time for ${email} ${venueName} ${dateStr} ${cca} ${timeSlot} ${purpose} \n\n`;
+                  success = false;
+                }
+              } else {
+                errorMsg += `Invalid timeslot detected for ${email} ${venueName} ${dateStr} ${cca} ${timeSlot} ${purpose} \n\n`;
+                success = false;
               }
             }
           } else {
-            // scold
+            errorMsg += `Invalid venue name detected for ${email} ${venueName} ${dateStr} ${cca} ${timeSlot} ${purpose} \n\n`;
+            success = false;
           }
+        } else {
+          errorMsg += `Incomplete information detected for ${email} ${venueName} ${dateStr} ${cca} ${timeSlot} ${purpose} \n\n`;
+          success = false;
         }
-
-        count += 1;
       }
     }
 
-    await logger(
-      'createRecurringBooking',
-      session.user.email,
-      `Successfully created ${count} bookings`,
-    );
-    result = {
-      status: true,
-      error: null,
-      msg: `Successfully created ${count} bookings`,
-    };
+    if (success) {
+      await logger(
+        'createRecurringBooking',
+        session.user.email,
+        `Successfully created ${count} bookings out of total ${totalCount}`,
+      );
+      result = {
+        status: true,
+        error: null,
+        msg: `Successfully created ${count} bookings out of total ${totalCount}`,
+      };
+    } else {
+      await logger('createRecurringBooking', session.user.email, errorMsg);
+      result = {
+        status: false,
+        error: errorMsg,
+        msg: null,
+      };
+    }
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to create bookings', msg: '' };

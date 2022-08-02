@@ -402,11 +402,14 @@ export const createCCARecordFile = async (
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   let success: boolean = true;
+  let totalCount: number = 0;
+  let count: number = 0;
 
   try {
     for (let key = 0; key < dataField.length; key += 1) {
       if (dataField[key]) {
         const data = dataField[key];
+        totalCount += 1;
 
         const ccaName: string = data.ccaName !== undefined ? data.ccaName : '';
         const email: string = data.email !== undefined ? data.email : '';
@@ -448,6 +451,8 @@ export const createCCARecordFile = async (
                     };
                     break;
                   }
+
+                  count += 1;
                 } else {
                   const userData: CCARecord = {
                     sessionEmail: email.trim(),
@@ -468,6 +473,8 @@ export const createCCARecordFile = async (
                     };
                     break;
                   }
+
+                  count += 1;
                 }
               }
             } else {
@@ -506,12 +513,12 @@ export const createCCARecordFile = async (
       await logger(
         'createCCARecordFile',
         session.user.email,
-        'Successfully populated CCA Records',
+        `Successfully populated ${count} CCA Records out of total ${totalCount}`,
       );
       result = {
         status: true,
         error: null,
-        msg: 'Successfully populated CCA Records',
+        msg: `Successfully populated ${count} CCA Records out of total ${totalCount}`,
       };
     }
   } catch (error) {
