@@ -31,7 +31,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     session !== undefined &&
     session.user.admin === levels.OWNER
   ) {
-    const limit: number = limitQuery !== undefined ? Number(limitQuery) : 100;
+    const limit: number =
+      limitQuery !== undefined ? Number(limitQuery) : 100000;
     const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
     const userDB: Result = await fetchAllUser(limit, skip, session);

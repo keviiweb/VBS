@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 import { CCAAttendance } from 'types/cca/ccaAttendance';
 import { CCASession } from 'types/cca/ccaSession';
+import { CCA } from 'types/cca/cca';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { findCCAbyID } from '@helper/sys/cca/cca';
@@ -55,11 +56,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const limitQuery = req.body.limit;
         const skipQuery = req.body.skip;
         const limit: number =
-          limitQuery !== undefined ? Number(limitQuery) : 100;
+          limitQuery !== undefined ? Number(limitQuery) : 100000;
         const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
         const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
         if (ccaDetailsRes.status && ccaDetailsRes.msg) {
+          const ccaDetails: CCA = ccaDetailsRes.msg;
           const ccaDB: Result = await fetchSpecificCCAAttendanceByUserEmail(
             ccaID,
             userEmail,
@@ -120,6 +122,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
                         const data: CCAAttendance = {
                           id: filteredA.id,
+                          sessionName: sess.name,
+                          sessionEmail: userEmail,
+                          ccaName: ccaDetails.name,
+                          time: sess.time,
                           date: date,
                           dateStr: dateStr,
                           durationStr: durationStr,
@@ -135,6 +141,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
                         const data: CCAAttendance = {
                           date: date,
+                          sessionName: sess.name,
+                          sessionEmail: userEmail,
+                          ccaName: ccaDetails.name,
+                          time: sess.time,
                           dateStr: dateStr,
                           durationStr: durationStr,
                           ccaID: ccaID,
@@ -149,59 +159,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 }
               }
             }
-            /*
-            const ccaAttendanceMsg: CCAAttendance[] = ccaDB.msg;
-            if (ccaAttendanceMsg && ccaAttendanceMsg.length > 0) {
-              for (let key = 0; key < ccaAttendanceMsg.length; key += 1) {
-                if (ccaAttendanceMsg[key]) {
-                  const attendance: CCAAttendance = ccaAttendanceMsg[key];
-                  const { sessionID } = attendance;
-
-                  if (sessionID !== undefined) {
-                    const sessionRes: Result = await findCCASessionByID(
-                      sessionID,
-                    );
-                    if (sessionRes.status && sessionRes.msg) {
-                      const ccaSession: CCASession = sessionRes.msg;
-
-                      const { date } = ccaSession;
-                      const dateObj: Date | null = convertUnixToDate(date);
-                      let dateStr: string = '';
-
-                      if (dateObj !== null) {
-                        dateStr = dateISO(dateObj);
-                      }
-
-                      const sessionAttendanceHourStr: string = ccaSession.time;
-                      const { start, end } = await splitHours(
-                        sessionAttendanceHourStr,
-                      );
-                      if (start !== null && end !== null) {
-                        const sessionDuration: number = await calculateDuration(
-                          start,
-                          end,
-                        );
-
-                        const userDuration: number = attendance.ccaAttendance;
-
-                        const durationStr: string = `${userDuration} out of ${sessionDuration}`;
-
-                        const data: CCAAttendance = {
-                          id: attendance.id,
-                          date: date,
-                          dateStr: dateStr,
-                          durationStr: durationStr,
-                          ccaID: attendance.ccaID,
-                          ccaAttendance: userDuration,
-                        };
-
-                        parsedCCAAttendance.push(data);
-                      }
-                    }
-                  }
-                }
-              }
-            } */
 
             result = {
               status: true,

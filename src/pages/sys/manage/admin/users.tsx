@@ -37,11 +37,13 @@ import { levels } from '@constants/sys/admin';
 
 import { User } from 'types/misc/user';
 import { Result } from 'types/api';
-
+import { CCAAttendance } from 'types/cca/ccaAttendance';
 import { Session } from 'next-auth/core/types';
 
 import { GetServerSideProps } from 'next';
-import { currentSession } from '@root/src/helper/sys/sessionServer';
+import { currentSession } from '@helper/sys/sessionServer';
+
+import { CSVLink } from 'react-csv';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -115,6 +117,17 @@ export default function ManageUsers(props: any) {
   const [fileNameCCA, setFileNameCCA] = useState(null);
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+
+  const CSVheaders = [
+    { label: 'Session Name', key: 'sessionName' },
+    { label: 'CCA Name', key: 'ccaName' },
+    { label: 'Date', key: 'dateStr' },
+    { label: 'Time', key: 'time' },
+    { label: 'Email', key: 'sessionEmail' },
+    { label: 'Attendance', key: 'ccaAttendance' },
+  ];
+
+  const [CSVdata, setCSVdata] = useState<CCAAttendance[]>([]);
 
   const handleDetails = useCallback((content: User) => {
     setModalData(content);
@@ -192,16 +205,24 @@ export default function ManageUsers(props: any) {
 
   const handleSubmitCCADownload = useCallback(
     async (event: { preventDefault: () => void }) => {
+      setCSVdata([]);
       event.preventDefault();
       setSubmitButtonPressed(true);
 
       try {
         const rawResponse = await fetch('/api/ccaAttendance/file', {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
+
         const content: Result = await rawResponse.json();
         if (content.status) {
-          console.log('hello');
+          const attendanceData: CCAAttendance[] = content.msg;
+          if (attendanceData.length > 0) {
+            setCSVdata(attendanceData);
+          }
         }
       } catch (error) {
         console.error(error);
@@ -762,11 +783,32 @@ export default function ManageUsers(props: any) {
                         bg: 'blue.500',
                       }}
                     >
-                      Download
+                      Generate
                     </Button>
                   </Stack>
                 </Stack>
               </form>
+
+              {CSVdata.length > 0 && (
+                <Button
+                  type='submit'
+                  bg='red.400'
+                  color='white'
+                  disabled={submitButtonPressed}
+                  _hover={{
+                    bg: 'red.500',
+                  }}
+                >
+                  <CSVLink
+                    data={CSVdata}
+                    headers={CSVheaders}
+                    filename='overall.csv'
+                    target='_blank'
+                  >
+                    Download
+                  </CSVLink>
+                </Button>
+              )}
             </Stack>
           </MotionBox>
         )}

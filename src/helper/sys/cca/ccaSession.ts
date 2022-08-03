@@ -9,26 +9,6 @@ import { checkerString, findSlots, splitHours } from '@constants/sys/helper';
 import { logger } from '@helper/sys/misc/logger';
 
 /**
- * Fetches all CCA Sessions
- *
- * @param session Next-Auth Session object
- */
-export const fetchAllCCASession = async (session: Session) => {
-  let result: Result = { status: false, error: null, msg: '' };
-
-  try {
-    const query: CCASession[] = await prisma.cCASessions.findMany();
-    result = { status: true, error: null, msg: query };
-  } catch (error) {
-    console.error(error);
-    result = { status: false, error: 'Failed to find session', msg: [] };
-    await logger('fetchAllCCASession', session.user.email, error.message);
-  }
-
-  return result;
-};
-
-/**
  * Finds all CCA Sessions filtered by CCA ID
  *
  * @param id CCA ID
@@ -105,7 +85,7 @@ export const countAllCCASessionByCCAID = async (
 };
 
 /**
- * Finds the specific CCA Session filtered by CCA ID
+ * Finds the specific CCA Session filtered by Session ID
  *
  * @param id Session ID
  * @returns A Result containing the status wrapped in a Promise

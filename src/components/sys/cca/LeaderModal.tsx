@@ -33,6 +33,8 @@ import {
 import { parentVariant } from '@root/motion';
 
 import { checkerString } from '@constants/sys/helper';
+import { convertDateToUnix } from '@constants/sys/date';
+
 import TableWidget from '@components/sys/misc/TableWidget';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 import LeaderStudentModalComponent from '@components/sys/cca/LeaderStudentModal';
@@ -45,9 +47,10 @@ import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
 import { PopoverTriggerProps } from 'types/popover';
 import { CCASession } from 'types/cca/ccaSession';
+import { CCAAttendance } from 'types/cca/ccaAttendance';
 
 import moment from 'moment';
-import { convertDateToUnix } from '@root/src/constants/sys/date';
+import { CSVLink } from 'react-csv';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -113,6 +116,32 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
   const pageSizeDB = useRef(PAGESIZE);
   const pageIndexDB = useRef(PAGEINDEX);
 
+  const CSVheaders = [
+    { label: 'Session Name', key: 'sessionName' },
+    { label: 'CCA Name', key: 'ccaName' },
+    { label: 'Date', key: 'dateStr' },
+    { label: 'Time', key: 'time' },
+    { label: 'Email', key: 'sessionEmail' },
+    { label: 'Attendance', key: 'ccaAttendance' },
+  ];
+
+  const [CSVdata, setCSVdata] = useState<CCAAttendance[]>([]);
+
+  const CSVheadersSession = [
+    { label: 'Session Name', key: 'name' },
+    { label: 'CCA Name', key: 'ccaName' },
+    { label: 'Date', key: 'dateStr' },
+    { label: 'Time', key: 'time' },
+    { label: 'Duration', key: 'duration' },
+    { label: 'Editable', key: 'editableStr' },
+    { label: 'Optional', key: 'optionalStr' },
+    { label: 'Remarks', key: 'remarks' },
+    { label: 'Leader Notes', key: 'ldrNotes' },
+    { label: 'Expected Members', key: 'expectedMName' },
+  ];
+
+  const [CSVdataSession, setCSVdataSession] = useState<CCASession[]>([]);
+
   const currentDate = async (): Promise<string> => {
     const res = moment.tz(new Date(), 'Asia/Singapore').format('YYYY-MM-DD');
     return res;
@@ -168,6 +197,37 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
         time: '',
       };
       setSessionCreateData(sess);
+    }
+  }, []);
+
+  const handleFetchAttendance = useCallback(async () => {
+    if (checkerString(ccaRecordIDDB.current)) {
+      setSubmitButtonPressed(true);
+
+      try {
+        const rawResponse = await fetch('/api/ccaAttendance/file', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ccaID: ccaRecordIDDB.current,
+          }),
+        });
+
+        const content: Result = await rawResponse.json();
+        if (content.status) {
+          const attendanceData: CCAAttendance[] = content.msg;
+          if (attendanceData.length > 0) {
+            setCSVdata(attendanceData);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      setSubmitButtonPressed(false);
     }
   }, []);
 
@@ -352,6 +412,36 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
     [includeActionButton],
   );
 
+  const fetchSessionOverall = useCallback(async (id: string) => {
+    if (checkerString(id)) {
+      try {
+        const rawResponse = await fetch('/api/ccaSession/fetch', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: id,
+          }),
+        });
+        const content: Result = await rawResponse.json();
+
+        if (content.status) {
+          const dataField: { count: number; res: CCASession[] } = content.msg;
+          if (dataField.count > 0 && dataField.res.length > 0) {
+            setCSVdataSession(dataField.res);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      return true;
+    }
+    return false;
+  }, []);
+
   const fetchMembers = useCallback(
     async (id: string) => {
       if (checkerString(id)) {
@@ -495,6 +585,8 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           modalData && modalData.ccaID ? modalData.ccaID : '';
 
         await buildDropDownMenu();
+        await handleFetchAttendance();
+        await fetchSessionOverall(ccaRecordIDDB.current);
       }
     }
 
@@ -502,7 +594,12 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
       setData([]);
       setupData();
     }
-  }, [modalData, buildDropDownMenu]);
+  }, [
+    modalData,
+    buildDropDownMenu,
+    handleFetchAttendance,
+    fetchSessionOverall,
+  ]);
 
   const columnsSession = useMemo(
     () => [
@@ -671,16 +768,56 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
                 alignItems='center'
                 justifyContent='center'
               >
-                <Button
-                  bg='cyan.700'
-                  color='white'
-                  w='150px'
-                  size='lg'
-                  _hover={{ bg: 'cyan.800' }}
-                  onClick={handleCreateSession}
-                >
-                  Add Session
-                </Button>
+                <Stack direction='row' spacing={5}>
+                  <Button
+                    bg='cyan.700'
+                    color='white'
+                    w='150px'
+                    size='lg'
+                    _hover={{ bg: 'cyan.800' }}
+                    onClick={handleCreateSession}
+                  >
+                    Add Session
+                  </Button>
+
+                  {CSVdata.length > 0 && (
+                    <Button
+                      bg='gray.400'
+                      color='white'
+                      w='180px'
+                      size='lg'
+                      _hover={{ bg: 'gray.600' }}
+                    >
+                      <CSVLink
+                        data={CSVdata}
+                        headers={CSVheaders}
+                        filename={`${ccaName}.csv`}
+                        target='_blank'
+                      >
+                        Export Attendance
+                      </CSVLink>
+                    </Button>
+                  )}
+
+                  {CSVdataSession.length > 0 && (
+                    <Button
+                      bg='gray.400'
+                      color='white'
+                      w='180px'
+                      size='lg'
+                      _hover={{ bg: 'gray.600' }}
+                    >
+                      <CSVLink
+                        data={CSVdataSession}
+                        headers={CSVheadersSession}
+                        filename={`${ccaName}.csv`}
+                        target='_blank'
+                      >
+                        Export Sessions
+                      </CSVLink>
+                    </Button>
+                  )}
+                </Stack>
               </Flex>
             </MotionBox>
           </MotionSimpleGrid>

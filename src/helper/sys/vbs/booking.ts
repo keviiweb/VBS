@@ -1,29 +1,31 @@
 import { prisma } from '@constants/sys/db';
-
-import { BookingRequest } from 'types/vbs/bookingReq';
-import { Result } from 'types/api';
-import { Booking } from 'types/vbs/booking';
-import { Session } from 'next-auth/core/types';
-import { Venue } from 'types/vbs/venue';
-
-import { logger } from '@helper/sys/misc/logger';
 import {
   checkerString,
   convertSlotToArray,
   findSlots,
   PERSONAL,
   splitHours,
-} from '@root/src/constants/sys/helper';
+} from '@constants/sys/helper';
+import { convertDateToUnix } from '@constants/sys/date';
+
+import { BookingRequest } from 'types/vbs/bookingReq';
+import { Result } from 'types/api';
+import { Booking } from 'types/vbs/booking';
+import { Session } from 'next-auth/core/types';
+import { Venue } from 'types/vbs/venue';
+import { CCA } from 'types/cca/cca';
+
 import { findVenueByName } from '@helper/sys/vbs/venue';
 import { findCCAbyName } from '@helper/sys/cca/cca';
-import { CCA } from '@root/src/types/cca/cca';
-import { convertDateToUnix } from '@root/src/constants/sys/date';
+
 import {
   createVenueBookingRequest,
   isConflict,
   setApprove,
   setRejectConflicts,
-} from './bookingReq';
+} from '@helper/sys/vbs/bookingReq';
+
+import { logger } from '@helper/sys/misc/logger';
 
 /**
  * Finds all bookings filtered by the venue ID

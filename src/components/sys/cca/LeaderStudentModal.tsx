@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import {
   Box,
+  Button,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -21,7 +22,9 @@ import TableWidget from '@components/sys/misc/TableWidget';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { Result } from 'types/api';
-import { CCARecord } from 'types/cca/ccaRecord';
+import { CCAAttendance } from 'types/cca/ccaAttendance';
+
+import { CSVLink } from 'react-csv';
 
 /**
  * Renders a modal for a specific user, displaying all the CCA attendance for the particular user and CCA
@@ -39,7 +42,7 @@ export default function LeaderStudentModalComponent({
   const [sessionUserName, setSessionUserName] = useState('');
   const [sessionUserStudentID, setSessionUserStudentID] = useState('');
 
-  const [data, setData] = useState<CCARecord[]>([]);
+  const [data, setData] = useState<CCAAttendance[]>([]);
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
@@ -52,6 +55,17 @@ export default function LeaderStudentModalComponent({
 
   const ccaRecordIDDB = useRef('');
   const sessionEmailDB = useRef('');
+
+  const CSVheaders = [
+    { label: 'Session Name', key: 'sessionName' },
+    { label: 'CCA Name', key: 'ccaName' },
+    { label: 'Date', key: 'dateStr' },
+    { label: 'Time', key: 'time' },
+    { label: 'Email', key: 'sessionEmail' },
+    { label: 'Attendance', key: 'durationStr' },
+  ];
+
+  const [CSVdata, setCSVdata] = useState<CCAAttendance[]>([]);
 
   const reset = () => {
     setData([]);
@@ -73,7 +87,7 @@ export default function LeaderStudentModalComponent({
   };
 
   const includeActionButton = useCallback(
-    async (content: { count: number; res: CCARecord[] }) => {
+    async (content: { count: number; res: CCAAttendance[] }) => {
       if (content.res !== [] && content.count > 0) {
         setData(content.res);
 
@@ -82,6 +96,39 @@ export default function LeaderStudentModalComponent({
         } else {
           setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
         }
+      }
+    },
+    [],
+  );
+
+  const fetchMemberSessionOverall = useCallback(
+    async (ccaID: string, userEmail: string) => {
+      if (checkerString(ccaID) && checkerString(userEmail)) {
+        setSubmitButtonPressed(true);
+        try {
+          const rawResponse = await fetch('/api/ccaAttendance/fetch', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: ccaID,
+              email: userEmail,
+            }),
+          });
+          const content: Result = await rawResponse.json();
+          if (content.status) {
+            const dataField: { count: number; res: CCAAttendance[] } =
+              content.msg;
+            if (dataField.count > 0 && dataField.res.length > 0) {
+              setCSVdata(dataField.res);
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+        setSubmitButtonPressed(false);
       }
     },
     [],
@@ -159,6 +206,10 @@ export default function LeaderStudentModalComponent({
           modalData && modalData.sessionEmail ? modalData.sessionEmail : '';
 
         await tableChange();
+        await fetchMemberSessionOverall(
+          ccaRecordIDDB.current,
+          sessionEmailDB.current,
+        );
       }
     }
 
@@ -166,7 +217,7 @@ export default function LeaderStudentModalComponent({
       setData([]);
       setupData();
     }
-  }, [modalData, tableChange]);
+  }, [modalData, tableChange, fetchMemberSessionOverall]);
 
   const columns = useMemo(
     () => [
@@ -227,7 +278,7 @@ export default function LeaderStudentModalComponent({
 
           {checkerString(sessionUserStudentID) && (
             <Box>
-              <Stack direction='row'>
+              <Stack direction='row' align='center'>
                 <Text
                   textTransform='uppercase'
                   fontWeight='bold'
@@ -237,6 +288,24 @@ export default function LeaderStudentModalComponent({
                   Student No.
                 </Text>
                 <Text>{sessionUserStudentID}</Text>
+                {CSVdata.length > 0 && (
+                  <Button
+                    bg='gray.400'
+                    color='white'
+                    w='180px'
+                    size='lg'
+                    _hover={{ bg: 'gray.600' }}
+                  >
+                    <CSVLink
+                      data={CSVdata}
+                      headers={CSVheaders}
+                      filename={`${sessionUserName}.csv`}
+                      target='_blank'
+                    >
+                      Export Attendance
+                    </CSVLink>
+                  </Button>
+                )}
               </Stack>
             </Box>
           )}

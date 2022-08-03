@@ -24,7 +24,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   };
 
   if (session !== null && session !== undefined) {
-    const limit: number = limitQuery !== undefined ? Number(limitQuery) : 100;
+    const limit: number =
+      limitQuery !== undefined ? Number(limitQuery) : 100000;
     const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
     const announcementDB: Result = await fetchAllAnnouncements(

@@ -52,7 +52,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const limitQuery = req.body.limit;
         const skipQuery = req.body.skip;
         const limit: number =
-          limitQuery !== undefined ? Number(limitQuery) : 100;
+          limitQuery !== undefined ? Number(limitQuery) : 100000;
         const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
         const ccaDetailsRes: Result = await findCCAbyID(ccaIDRes, session);

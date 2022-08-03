@@ -6,6 +6,34 @@ import { prisma } from '@constants/sys/db';
 import { checkerString } from '@constants/sys/helper';
 
 import { logger } from '@helper/sys/misc/logger';
+
+/**
+ * Finds all the CCA attendance
+ *
+ * @returns A Result containing the list of attendance wrapped in a Promise
+ */
+export const fetchAllCCAAttendance = async (
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    const query: CCAAttendance[] = await prisma.cCAAttendance.findMany();
+
+    if (query) {
+      result = { status: true, error: null, msg: query };
+    } else {
+      result = { status: false, error: 'Failed to fetch attendance', msg: [] };
+    }
+  } catch (error) {
+    console.error(error);
+    await logger('fetchAllCCAAttendance', session.user.email, error.message);
+    result = { status: false, error: 'Failed to fetch attendance', msg: [] };
+  }
+
+  return result;
+};
+
 /**
  * Finds all the attendance by the user in the specified CCA
  *
@@ -80,6 +108,43 @@ export const fetchAllCCAAttendanceBySession = async (
     console.error(error);
     await logger(
       'fetchAllCCAAttendanceBySession',
+      session.user.email,
+      error.message,
+    );
+    result = { status: false, error: 'Failed to fetch attendance', msg: [] };
+  }
+
+  return result;
+};
+
+/**
+ * Finds all the CCA attendance filtered by CCA ID
+ *
+ * @param ccaID CCA ID
+ * @returns A Result containing the list of attendance wrapped in a Promise
+ */
+export const fetchAllCCAAttendanceByCCA = async (
+  ccaID: string,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    const query: CCAAttendance[] = await prisma.cCAAttendance.findMany({
+      where: {
+        ccaID: ccaID,
+      },
+    });
+
+    if (query) {
+      result = { status: true, error: null, msg: query };
+    } else {
+      result = { status: false, error: 'Failed to fetch attendance', msg: [] };
+    }
+  } catch (error) {
+    console.error(error);
+    await logger(
+      'fetchAllCCAAttendanceByCCA',
       session.user.email,
       error.message,
     );
