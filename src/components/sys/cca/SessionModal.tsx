@@ -425,7 +425,7 @@ export default function SessionModal({
                             </ListItem>
                           )}
 
-                          {realityBool && (
+                          {leader && realityBool && (
                             <ListItem key='real-list'>
                               <Stack direction='column'>
                                 <Stack spacing={20} direction='row'>

@@ -37,7 +37,7 @@ describe('Home', () => {
     const ig = screen.getByRole('link', {
       name: 'Instagram Page',
     });
-    expect(experience).toBeInTheDocument();
+    expect(ig).toBeInTheDocument();
     const yt = screen.getByRole('link', {
       name: 'Youtube Page',
     });
