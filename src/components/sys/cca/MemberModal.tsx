@@ -313,7 +313,7 @@ export default function LeaderStudentModalComponent({
           {!loadingData && data.length > 0 && (
             <Box w='full' overflow='auto'>
               <TableWidget
-                key='table-widget-session'
+                id='table-widget-session'
                 columns={columns}
                 data={data}
                 controlledPageCount={pageCount}

@@ -5,14 +5,18 @@ import {
   Box,
   FormLabel,
   Heading,
+  List,
+  ListItem,
   Input,
   InputGroup,
   InputLeftAddon,
   SimpleGrid,
   Stack,
+  StackDivider,
   Select,
   Text,
   useToast,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 
 import Auth from '@components/sys/Auth';
@@ -78,6 +82,7 @@ export default function VBS(props: any) {
   const [venueDropdown, setVenueDropdown] = useState<JSX.Element[]>([]);
   const [venueID, setVenueID] = useState('');
   const [events, setEvents] = useState<CalendarData[]>([]);
+  const [allBooking, setAllBooking] = useState<Booking[]>([]);
   const [startTime, setStartTime] = useState('08:00:00');
   const [endTime, setEndTime] = useState('23:00:00');
   const [modalBookingData, setModalBookingData] = useState<Booking | null>(
@@ -88,6 +93,9 @@ export default function VBS(props: any) {
   const [level, setLevel] = useState(levels.USER);
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
+
+  const variantDesktop = useBreakpointValue({ base: 'none', md: 'flex' });
+  const variantMobile = useBreakpointValue({ base: 'flex', md: 'none' });
 
   const generateVenueDropdown = useCallback(async (content: Venue[]) => {
     const selection: JSX.Element[] = [];
@@ -147,6 +155,7 @@ export default function VBS(props: any) {
       }
     }
 
+    setAllBooking(content);
     setEvents(event);
   }, []);
 
@@ -332,37 +341,87 @@ export default function VBS(props: any) {
                 </Stack>
               )}
 
-              {venueDropdown && selectedVenue && (
-                <BookingCalendar
-                  slotMax={endTime}
-                  slotMin={startTime}
-                  events={events}
-                  eventClick={handleEventClick}
-                  eventMouseEnter={handleMouseEnter}
-                  eventMouseLeave={handleMouseLeave}
-                />
-              )}
+              <Stack display={variantDesktop}>
+                {venueDropdown && selectedVenue && (
+                  <BookingCalendar
+                    slotMax={endTime}
+                    slotMin={startTime}
+                    events={events}
+                    eventClick={handleEventClick}
+                    eventMouseEnter={handleMouseEnter}
+                    eventMouseLeave={handleMouseLeave}
+                  />
+                )}
+              </Stack>
 
-              {(level === levels.ADMIN || level === levels.OWNER) && (
-                <BookingModal
-                  isBookingRequest={false}
-                  isOpen={!!modalBookingData}
-                  onClose={() => setModalBookingData(null)}
-                  modalData={modalBookingData}
-                  isAdmin
-                />
-              )}
-
-              {level === levels.USER && (
-                <BookingModal
-                  isBookingRequest={false}
-                  isOpen={!!modalBookingData}
-                  onClose={() => setModalBookingData(null)}
-                  modalData={modalBookingData}
-                  isAdmin={false}
-                />
-              )}
+              <Stack display={variantMobile}>
+                {venueDropdown && selectedVenue && (
+                  <Stack divider={<StackDivider borderColor='gray.600' />}>
+                    {allBooking.map((item: Booking, idx: number) => (
+                      <List spacing={2} key={`booking--${item.id}-`}>
+                        {item.cca !== undefined && checkerString(item.cca) && (
+                          <ListItem key={`booking-${item.id}-cca-${idx}`}>
+                            <Text as='span' fontWeight='bold'>
+                              CCA:{' '}
+                            </Text>
+                            {item.cca}
+                          </ListItem>
+                        )}
+                        {item.purpose !== undefined &&
+                          checkerString(item.purpose) && (
+                            <ListItem key={`booking-${item.id}-purpose-${idx}`}>
+                              <Text as='span' fontWeight='bold'>
+                                Purpose:{' '}
+                              </Text>
+                              {item.purpose}
+                            </ListItem>
+                        )}
+                        {item.dateStr !== undefined &&
+                          checkerString(item.dateStr) && (
+                            <ListItem key={`booking-${item.id}-dateStr-${idx}`}>
+                              <Text as='span' fontWeight='bold'>
+                                Date:{' '}
+                              </Text>
+                              {item.dateStr}
+                            </ListItem>
+                        )}
+                        {item.timeSlots !== undefined &&
+                          checkerString(item.timeSlots) && (
+                            <ListItem
+                              key={`booking-${item.id}-timeSlots-${idx}`}
+                            >
+                              <Text as='span' fontWeight='bold'>
+                                Timing:{' '}
+                              </Text>
+                              {item.timeSlots}
+                            </ListItem>
+                        )}
+                      </List>
+                    ))}
+                  </Stack>
+                )}
+              </Stack>
             </Box>
+
+            {(level === levels.ADMIN || level === levels.OWNER) && (
+              <BookingModal
+                isBookingRequest={false}
+                isOpen={!!modalBookingData}
+                onClose={() => setModalBookingData(null)}
+                modalData={modalBookingData}
+                isAdmin
+              />
+            )}
+
+            {level === levels.USER && (
+              <BookingModal
+                isBookingRequest={false}
+                isOpen={!!modalBookingData}
+                onClose={() => setModalBookingData(null)}
+                modalData={modalBookingData}
+                isAdmin={false}
+              />
+            )}
 
             <Box
               bg='white'
@@ -381,6 +440,7 @@ export default function VBS(props: any) {
                 />
               </InputGroup>
             </Box>
+
             <MotionSimpleGrid
               mt='3'
               minChildWidth={{ base: 'full', md: '30vh', lg: '50vh' }}
@@ -392,6 +452,7 @@ export default function VBS(props: any) {
             >
               {filteredData && filteredData.length ? filteredData : cards}
             </MotionSimpleGrid>
+
             <VenueBookingModal
               isOpen={!!modalData}
               onClose={() => setModalData(null)}

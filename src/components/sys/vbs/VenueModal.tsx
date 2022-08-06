@@ -374,7 +374,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
                       Child Venues
                     </Text>
                     <TableWidget
-                      key={2}
+                      id='venuemodal-table'
                       columns={columns}
                       data={childVenues}
                       controlledPageCount={

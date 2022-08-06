@@ -2,8 +2,6 @@ import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import {
   Box,
   Button,
-  List,
-  ListItem,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -12,9 +10,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Stack,
-  StackDivider,
   Text,
-  useBreakpointValue,
 } from '@chakra-ui/react';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 
@@ -47,9 +43,6 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
 
   const [pageCount, setPageCount] = useState(0);
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
-
-  const variantDesktop = useBreakpointValue({ base: 'none', md: 'flex' });
-  const variantMobile = useBreakpointValue({ base: 'flex', md: 'none' });
 
   const reset = useCallback(() => {
     setMATNET('');
@@ -329,13 +322,13 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
 
           {modalData && !loadingData && successData && (
             <Stack align='center'>
-              <Box display={variantDesktop}>
+              <Box>
                 <Stack spacing={30}>
                   {data.length > 0 && (
                     <Box w='900px' overflow='auto' key='box-overall'>
                       <Stack align='center' justify='center' spacing={10}>
                         <TableWidget
-                          key='overall-table'
+                          id='overall-modal-table'
                           columns={columns}
                           data={data}
                           controlledPageCount={pageCount}
@@ -351,7 +344,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
                       <Stack align='center' justify='center'>
                         <Text>Top CCAs</Text>
                         <TableWidget
-                          key='topcca-table'
+                          id='topcca-modal-table'
                           columns={columnsData}
                           data={topCCA}
                           controlledPageCount={pageCount}
@@ -367,7 +360,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
                       <Stack align='center' justify='center'>
                         <Text>All CCAs</Text>
                         <TableWidget
-                          key='allcca-table'
+                          id='allcca-modal-table'
                           columns={columnsData}
                           data={allCCA}
                           controlledPageCount={pageCount}
@@ -383,233 +376,13 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
                       <Stack align='center' justify='center'>
                         <Text>Bonus</Text>
                         <TableWidget
-                          key='bonus-table'
+                          id='bonus-modal-table'
                           columns={columnsBonus}
                           data={bonusCCA}
                           controlledPageCount={pageCount}
                           dataHandler={null}
                           showPage={false}
                         />
-                      </Stack>
-                    </Box>
-                  )}
-                </Stack>
-              </Box>
-            </Stack>
-          )}
-
-          {modalData && !loadingData && successData && (
-            <Stack align='center'>
-              <Box display={variantMobile}>
-                <Stack spacing={30}>
-                  <Box w='full' overflow='auto'>
-                    <Stack align='center' justify='center' spacing={10}>
-                      <Text
-                        fontSize='20px'
-                        fontWeight='500'
-                        textTransform='uppercase'
-                        mb='4'
-                      >
-                        Overall
-                      </Text>
-
-                      {data.map((item) => (
-                        <List fontSize='20px' spacing={5}>
-                          <ListItem key='keips-osa'>
-                            <Text as='span' fontWeight='bold'>
-                              OSA:{' '}
-                            </Text>
-                            {item.OSA}
-                          </ListItem>
-                          <ListItem key='keips-osaper'>
-                            <Text as='span' fontWeight='bold'>
-                              OSA Percentile:{' '}
-                            </Text>
-                            {item.osaPercentile}
-                          </ListItem>
-                          <ListItem key='keips-rmdraw'>
-                            <Text as='span' fontWeight='bold'>
-                              Room Draw Points:{' '}
-                            </Text>
-                            {item.roomDraw}
-                          </ListItem>
-                          {item.contrastingStr !== undefined &&
-                            checkerString(item.contrastingStr) && (
-                              <ListItem key='keips-contrastingstr'>
-                                <Text as='span' fontWeight='bold'>
-                                  Contrasting:{' '}
-                                </Text>
-                                {item.contrastingStr}
-                              </ListItem>
-                          )}
-                          {item.semesterStay !== undefined &&
-                            checkerString(item.semesterStay) && (
-                              <ListItem key='keips-contrastingstr'>
-                                <Text as='span' fontWeight='bold'>
-                                  Semester Stayed:{' '}
-                                </Text>
-                                {item.semesterStay}
-                              </ListItem>
-                          )}
-                          {item.fulfilledStr !== undefined &&
-                            checkerString(item.fulfilledStr) && (
-                              <ListItem key='keips-fulfilledStr'>
-                                <Text as='span' fontWeight='bold'>
-                                  Fullfilled Criteria:{' '}
-                                </Text>
-                                {item.fulfilledStr}
-                              </ListItem>
-                          )}
-                        </List>
-                      ))}
-                    </Stack>
-                  </Box>
-
-                  {showTop && topCCA.length > 0 && (
-                    <Box w='full' overflow='auto'>
-                      <Stack align='center' justify='center'>
-                        <Text
-                          fontSize='20px'
-                          fontWeight='500'
-                          textTransform='uppercase'
-                          mb='4'
-                        >
-                          Top CCAs
-                        </Text>
-                        <Stack
-                          divider={<StackDivider borderColor='gray.600' />}
-                        >
-                          {topCCA.map((item: KEIPSCCA, idx: number) => (
-                            <List fontSize='20px' spacing={5}>
-                              <ListItem key={`topcca-cca-${idx}`}>
-                                <Text as='span' fontWeight='bold'>
-                                  CCA:{' '}
-                                </Text>
-                                {item.cca}
-                              </ListItem>
-                              <ListItem key={`topcca-cat-${idx}`}>
-                                <Text as='span' fontWeight='bold'>
-                                  Category:{' '}
-                                </Text>
-                                {item.cat}
-                              </ListItem>
-                              <ListItem key={`topcca-atte-${idx}`}>
-                                <Text as='span' fontWeight='bold'>
-                                  Attendance:{' '}
-                                </Text>
-                                {item.atte}
-                              </ListItem>
-
-                              <ListItem key={`topcca-outs-${idx}`}>
-                                <Text as='span' fontWeight='bold'>
-                                  Outstanding:{' '}
-                                </Text>
-                                {item.outs}
-                              </ListItem>
-                              <ListItem key={`topcca-total-${idx}`}>
-                                <Text as='span' fontWeight='bold'>
-                                  Total:{' '}
-                                </Text>
-                                {item.total}
-                              </ListItem>
-                            </List>
-                          ))}
-                        </Stack>
-                      </Stack>
-                    </Box>
-                  )}
-
-                  {showAll && allCCA.length > 0 && (
-                    <Box w='full' overflow='auto'>
-                      <Stack align='center' justify='center'>
-                        <Text
-                          fontSize='20px'
-                          fontWeight='500'
-                          textTransform='uppercase'
-                          mb='4'
-                        >
-                          All CCAs
-                        </Text>
-                        <Stack
-                          divider={<StackDivider borderColor='gray.600' />}
-                        >
-                          {allCCA.map((item: KEIPSCCA, idx: number) => (
-                            <List fontSize='20px' spacing={5}>
-                              <ListItem key={`allCCA-cca-${idx}`}>
-                                <Text as='span' fontWeight='bold'>
-                                  CCA:{' '}
-                                </Text>
-                                {item.cca}
-                              </ListItem>
-                              <ListItem key={`allCCA-cat-${idx}`}>
-                                <Text as='span' fontWeight='bold'>
-                                  Category:{' '}
-                                </Text>
-                                {item.cat}
-                              </ListItem>
-                              <ListItem key={`allCCA-atte-${idx}`}>
-                                <Text as='span' fontWeight='bold'>
-                                  Attendance:{' '}
-                                </Text>
-                                {item.atte}
-                              </ListItem>
-
-                              <ListItem key={`allCCA-outs-${idx}`}>
-                                <Text as='span' fontWeight='bold'>
-                                  Outstanding:{' '}
-                                </Text>
-                                {item.outs}
-                              </ListItem>
-                              <ListItem key={`allCCA-total-${idx}`}>
-                                <Text as='span' fontWeight='bold'>
-                                  Total:{' '}
-                                </Text>
-                                {item.total}
-                              </ListItem>
-                            </List>
-                          ))}
-                        </Stack>
-                      </Stack>
-                    </Box>
-                  )}
-
-                  {showBonus && bonusCCA.length > 0 && (
-                    <Box w='full' overflow='auto'>
-                      <Stack align='center' justify='center'>
-                        <Text
-                          fontSize='20px'
-                          fontWeight='500'
-                          textTransform='uppercase'
-                          mb='4'
-                        >
-                          Bonus
-                        </Text>
-                        <Stack
-                          divider={<StackDivider borderColor='gray.600' />}
-                        >
-                          {bonusCCA.map((item: KEIPSBonus, idx: number) => (
-                            <List fontSize='20px' spacing={5}>
-                              <ListItem key={`bonusCCA-cca-${idx}`}>
-                                <Text as='span' fontWeight='bold'>
-                                  CCA:{' '}
-                                </Text>
-                                {item.cca}
-                              </ListItem>
-                              <ListItem key={`bonusCCA-cat-${idx}`}>
-                                <Text as='span' fontWeight='bold'>
-                                  Description:{' '}
-                                </Text>
-                                {item.description}
-                              </ListItem>
-                              <ListItem key={`bonusCCA-total-${idx}`}>
-                                <Text as='span' fontWeight='bold'>
-                                  Total:{' '}
-                                </Text>
-                                {item.total}
-                              </ListItem>
-                            </List>
-                          ))}
-                        </Stack>
                       </Stack>
                     </Box>
                   )}

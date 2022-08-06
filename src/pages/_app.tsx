@@ -3,7 +3,6 @@ import { SessionProvider } from 'next-auth/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import Head from 'next/head';
 
-import '@styles/sys/Table.css';
 import '@styles/sys/Calendar.css';
 import '@styles/landing/styles.css';
 

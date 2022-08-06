@@ -23,6 +23,7 @@ import {
   Text,
   Textarea,
   useToast,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import { CheckCircleIcon } from '@chakra-ui/icons';
 import CalendarWidget from '@components/sys/vbs/CalendarWidget';
@@ -126,6 +127,9 @@ export default function VenueBookingModal({
   const [submittingConfirm, setSubmittingConfirm] = useState(false);
 
   const timeoutsConfirm = useRef<NodeJS.Timeout[]>([]);
+
+  const variantDesktop = useBreakpointValue({ base: 'none', md: 'flex' });
+  const variantMobile = useBreakpointValue({ base: 'flex', md: 'none' });
 
   const check = (timeSlotsField: TimeSlot[]) => {
     if (timeSlotsField.length === 0) {
@@ -779,6 +783,10 @@ export default function VenueBookingModal({
   const setTypeHelper = (event: any) => {
     try {
       if (event) {
+        if (event.cancelable) {
+          event.preventDefault();
+        }
+
         if (Number(event) === 2) {
           typeDBConfirm.current = '';
           setShowCCAsConfirm(true);
@@ -1047,18 +1055,40 @@ export default function VenueBookingModal({
                             </Select>
                           )}
 
-                          <InputGroup>
+                          <InputGroup display={variantDesktop}>
                             <InputLeftAddon>Purpose </InputLeftAddon>
                             <Textarea
                               isRequired
                               value={purposeConfirm}
                               onChange={(event) => {
+                                if (event.cancelable) {
+                                  event.preventDefault();
+                                }
                                 setPurposeConfirm(event.currentTarget.value);
                                 purposeDBConfirm.current =
                                   event.currentTarget.value;
                               }}
                               placeholder='Enter your purpose'
                             />
+                          </InputGroup>
+
+                          <InputGroup display={variantMobile}>
+                            <Stack>
+                              <Text>Purpose </Text>
+                              <Textarea
+                                isRequired
+                                value={purposeConfirm}
+                                onChange={(event) => {
+                                  if (event.cancelable) {
+                                    event.preventDefault();
+                                  }
+                                  setPurposeConfirm(event.currentTarget.value);
+                                  purposeDBConfirm.current =
+                                    event.currentTarget.value;
+                                }}
+                                placeholder='Enter your purpose'
+                              />
+                            </Stack>
                           </InputGroup>
                         </Stack>
                       </Box>

@@ -728,7 +728,7 @@ export default function ManageUsers(props: any) {
             <Box w='full' overflow='auto'>
               <Stack spacing={30} align='center' justify='center'>
                 <TableWidget
-                  key={1}
+                  id='manage-users-table'
                   columns={columns}
                   data={data}
                   controlledPageCount={pageCount}

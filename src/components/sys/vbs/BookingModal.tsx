@@ -469,7 +469,7 @@ export default function BookingModal({
                               Conflicting Requests
                             </Text>
                             <TableWidget
-                              key={2}
+                              id='conflicting-request-bookingModal'
                               columns={columns}
                               data={conflict}
                               controlledPageCount={pageCount}

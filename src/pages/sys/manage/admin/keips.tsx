@@ -325,7 +325,7 @@ export default function ManageKEIPS(props: any) {
             <Box w='full' overflow='auto'>
               <Stack spacing={30} align='center' justify='center'>
                 <TableWidget
-                  key={1}
+                  id='manage-keips-table'
                   columns={columns}
                   data={data}
                   controlledPageCount={pageCount}

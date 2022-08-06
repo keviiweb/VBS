@@ -301,7 +301,7 @@ export default function ManageBooking() {
             <Box w='full' overflow='auto'>
               <Stack align='center' justify='center' spacing={30}>
                 <TableWidget
-                  key={1}
+                  id='manage-booking-table'
                   columns={columns}
                   data={data}
                   controlledPageCount={pageCount}

@@ -455,7 +455,7 @@ export default function ManageAnnouncement() {
             <Box w='full' overflow='auto'>
               <Stack spacing={30} align='center' justify='center'>
                 <TableWidget
-                  key={1}
+                  id='manage-announcement-table'
                   columns={columns}
                   data={data}
                   controlledPageCount={pageCount}

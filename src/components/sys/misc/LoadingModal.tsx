@@ -35,12 +35,15 @@ export default function LoadingModal({ isOpen, onClose }) {
         <ModalHeader />
         <ModalBody>
           <Box>
-            <Stack mx='auto' maxW='lg' py={6} px={6}>
-              <Stack align='center'>
+            <Stack mx='auto' maxW='lg' px={6}>
+              <Stack align='center' textAlign='center'>
                 <Text fontSize='sm' color='gray.600'>
-                  Submitting request... Please wait a few moment
+                  Submitting request...
                 </Text>
-                <Spinner />
+                <Text fontSize='sm' color='gray.600'>
+                  Please wait a few moment
+                </Text>
+                <Spinner mb={10} />
               </Stack>
             </Stack>
           </Box>

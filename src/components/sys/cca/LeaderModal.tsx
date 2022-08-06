@@ -825,7 +825,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           {!loadingData && data.length > 0 && selectedChoice === choice.MEMBER && (
             <Box w='full' overflow='auto'>
               <TableWidget
-                key='table-widget-member'
+                id='table-widget-member'
                 columns={columnsMember}
                 data={data}
                 controlledPageCount={pageCount}
@@ -849,7 +849,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
             selectedChoice === choice.SESSION && (
               <Box w='full' overflow='auto'>
                 <TableWidget
-                  key='table-widget-session'
+                  id='table-widget-session'
                   columns={columnsSession}
                   data={data}
                   controlledPageCount={pageCount}

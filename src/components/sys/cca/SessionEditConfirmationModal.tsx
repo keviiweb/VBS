@@ -487,7 +487,7 @@ export default function SessionEditConfirmationModal({
                               </Text>
                             </Stack>
                             <TableWidget
-                              key='realityM-table'
+                              id='realityM-table'
                               columns={columns}
                               data={dataM}
                               controlledPageCount={pageCount}

@@ -1,19 +1,28 @@
 import React, { useEffect } from 'react';
 import { useTable, usePagination } from 'react-table';
 import {
-  Box,
   Flex,
+  List,
+  ListItem,
   IconButton,
   Text,
   Tooltip,
+  Table,
+  Tbody,
+  Thead,
+  Th,
+  Tr,
+  Td,
   Select,
+  Stack,
+  StackDivider,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  useBreakpointValue,
 } from '@chakra-ui/react';
-import { Table, Tbody, Thead, Th, Tr, Td } from '@components/sys/misc/table';
 import {
   ArrowRightIcon,
   ArrowLeftIcon,
@@ -28,6 +37,7 @@ import {
  * @returns A rendered table
  */
 export default function TableWidget({
+  id,
   columns,
   data,
   controlledPageCount,
@@ -56,6 +66,9 @@ export default function TableWidget({
     usePagination,
   );
 
+  const variantDesktop = useBreakpointValue({ base: 'none', md: 'flex' });
+  const variantMobile = useBreakpointValue({ base: 'flex', md: 'none' });
+
   useEffect(() => {
     async function sendData() {
       if (dataHandler) {
@@ -67,32 +80,62 @@ export default function TableWidget({
   }, [dataHandler, pageIndex, pageSize]);
 
   return (
-    <Box
-      style={{
-        maxHeight: '600px',
-      }}
-    >
-      <Table variant='striped' size='md' colorScheme='facebook'>
-        <Thead>
-          <Tr>
-            {columns.map((item: { Header: string; accessor: string }) => (
-              <Th>{item.Header}</Th>
-            ))}
-          </Tr>
-        </Thead>
-        <Tbody>
+    <>
+      <Stack direction='row' display={variantDesktop}>
+        <Table
+          key={`${id}-desktop-table`}
+          variant='striped'
+          size='md'
+          colorScheme='facebook'
+          style={{
+            maxHeight: '600px',
+          }}
+        >
+          <Thead>
+            <Tr>
+              {columns.map(
+                (item: { Header: string; accessor: string }, idx: number) => (
+                  <Th key={`th-${id}-${idx}`}>{item.Header}</Th>
+                ),
+              )}
+            </Tr>
+          </Thead>
+          <Tbody>
+            {page.map((row, idx) => {
+              prepareRow(row);
+              return (
+                <Tr id={`tr-${id}-${idx}`} key={`tr-${id}-${idx}-${row.id}`}>
+                  {row.cells.map((cell) => (
+                    <Td key={`td-${id}-${idx}-${row.id}`}>
+                      {cell.render('Cell')}
+                    </Td>
+                  ))}
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
+      </Stack>
+
+      <Stack display={variantMobile} key={`${id}-mobile-table`}>
+        <Stack divider={<StackDivider borderColor='gray.600' />}>
           {page.map((row, idx) => {
             prepareRow(row);
             return (
-              <Tr id={`tr-${idx}`}>
-                {row.cells.map((cell) => (
-                  <Td>{cell.render('Cell')}</Td>
+              <List w='full' key={`mobile-table-${idx}-${row.id}`}>
+                {row.cells.map((cell, idx2) => (
+                  <ListItem key={`mobile-table-text-${idx2 + 10000}`}>
+                    <Text as='span' fontWeight='bold'>
+                      {columns[idx2].Header}:{' '}
+                    </Text>
+                    {cell.render('Cell')}
+                  </ListItem>
                 ))}
-              </Tr>
+              </List>
             );
           })}
-        </Tbody>
-      </Table>
+        </Stack>
+      </Stack>
 
       {showPage && (
         <Flex justifyContent='space-between' m={4} alignItems='center'>
@@ -182,6 +225,6 @@ export default function TableWidget({
           </Flex>
         </Flex>
       )}
-    </Box>
+    </>
   );
 }

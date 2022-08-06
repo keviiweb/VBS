@@ -38,7 +38,6 @@ export default function VenueCard({ product, setModalData }) {
         >
           <Image
             src={image}
-            priority
             objectFit='cover'
             alt='picture of a venue'
             layout='fill'

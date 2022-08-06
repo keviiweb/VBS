@@ -771,7 +771,7 @@ export default function ManageVenues(props: any) {
             <Box w='full' overflow='auto'>
               <Stack spacing={30} align='center' justify='center'>
                 <TableWidget
-                  key={1}
+                  id='manage-venues-admin-table'
                   columns={columns}
                   data={data}
                   controlledPageCount={pageCount}

@@ -67,11 +67,10 @@ export default function ContactUs() {
                   lineHeight='shorter'
                   color='brand.600'
                   mb={6}
+                  display='block'
                 >
-                  <Text display='block'>
-                    We are minutes away by foot or bus from your schools! Buses
-                    are available right at our doorstep
-                  </Text>
+                  We are minutes away by foot or bus from your schools! Buses
+                  are available right at our doorstep
                 </Text>
                 <Text
                   style={{ whiteSpace: 'pre-line' }}

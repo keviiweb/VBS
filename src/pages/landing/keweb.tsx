@@ -69,8 +69,9 @@ export default function KEWeb() {
                 lineHeight='shorter'
                 color='brand.600'
                 mb={6}
+                display='block'
               >
-                <Text display='block'>&quot;Master of Coding&quot;</Text>
+                &quot;Master of Coding&quot;
               </Text>
               <Text
                 style={{ whiteSpace: 'pre-line' }}
@@ -79,6 +80,7 @@ export default function KEWeb() {
                 color='gray.600'
               >
                 We build websites and we make them fancy. {'\n'}
+                {'\n'}
                 Fun fact: this website is also built by us.
                 {'\n'}
               </Text>
