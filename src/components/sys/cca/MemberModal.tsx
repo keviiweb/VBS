@@ -61,17 +61,21 @@ export default function LeaderStudentModalComponent({
   const ccaNameDB = useRef('');
 
   const reset = () => {
-    setData([]);
     setSpecificCCAData(null);
+    setLoadingData(true);
+
     setCCAName('');
     setAttendance('');
 
-    ccaRecordIDDB.current = '';
-    ccaNameDB.current = '';
+    setData([]);
+    setSubmitButtonPressed(false);
 
     setPageCount(0);
     pageSizeDB.current = PAGESIZE;
     pageIndexDB.current = PAGEINDEX;
+
+    ccaRecordIDDB.current = '';
+    ccaNameDB.current = '';
   };
 
   const handleModalCloseButton = () => {

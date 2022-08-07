@@ -9,6 +9,7 @@ import {
   Stack,
   Text,
   Spinner,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 
 /**
@@ -20,12 +21,14 @@ import {
  * @returns A loading modal
  */
 export default function LoadingModal({ isOpen, onClose }) {
+  const variant = useBreakpointValue({ base: 'xs', md: 'md' });
+
   return (
     <Modal
       closeOnOverlayClick={false}
       isOpen={isOpen}
       onClose={onClose}
-      size='md'
+      size={variant}
       isCentered
       motionPreset='slideInBottom'
       scrollBehavior='inside'
@@ -43,7 +46,10 @@ export default function LoadingModal({ isOpen, onClose }) {
                 <Text fontSize='sm' color='gray.600'>
                   Please wait a few moment
                 </Text>
-                <Spinner mb={10} />
+
+                <Stack spacing={10}>
+                  <Spinner mb={10} />
+                </Stack>
               </Stack>
             </Stack>
           </Box>

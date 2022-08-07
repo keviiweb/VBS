@@ -71,20 +71,24 @@ export default function SessionCreateConfirmationModal({
   const [isSubmitting, setIsSubmit] = useState(false);
 
   const reset = () => {
-    setDateStr('');
-    setCCAName('');
+    selectedData.current = null;
+    setLoadingData(true);
     setError('');
+
     setName('');
+    setCCAName('');
+    setDateStr('');
     setOptionalStr('');
     setTime('');
     setDuration('');
     setRemarks('');
     setLdrNotes('');
-    setIsSubmit(false);
 
     setDisplayedExpected([]);
-
     setExpectedBool(false);
+
+    setSubmitButtonPressed(false);
+    setIsSubmit(false);
   };
 
   const handleModalCloseButton = () => {

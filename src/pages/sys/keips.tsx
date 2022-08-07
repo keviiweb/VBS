@@ -207,10 +207,8 @@ export default function KEIPSComponent() {
 
         setSubmitButtonPressed(false);
         setLoadingData(false);
-        return true;
       }
       setError('Please enter a valid MATNET');
-      return false;
     },
     [includeActionButton],
   );

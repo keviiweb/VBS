@@ -76,6 +76,12 @@ export default function SessionModal({
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
   const reset = () => {
+    setLoadingData(true);
+
+    setSpecificSessionData(null);
+    setSpecificSessionDeleteData(null);
+
+    setCCAName('');
     setDateStr('');
     setTime('');
     setOptionalStr('');
@@ -84,8 +90,15 @@ export default function SessionModal({
     setEditable(false);
     setDuration(0);
 
+    setDisplayedExpected([]);
+    setExpectedBool(false);
+
     setDataM([]);
+    setRealityBool(false);
+
     setPageCount(0);
+
+    setSubmitButtonPressed(false);
   };
 
   const handleModalCloseButton = useCallback(() => {

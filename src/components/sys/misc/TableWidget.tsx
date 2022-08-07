@@ -105,8 +105,8 @@ export default function TableWidget({
               prepareRow(row);
               return (
                 <Tr id={`tr-${id}-${idx}`} key={`tr-${id}-${idx}-${row.id}`}>
-                  {row.cells.map((cell) => (
-                    <Td key={`td-${id}-${idx}-${row.id}`}>
+                  {row.cells.map((cell, idx2) => (
+                    <Td key={`td-${id}-${idx}-${idx2}-${row.id}`}>
                       {cell.render('Cell')}
                     </Td>
                   ))}

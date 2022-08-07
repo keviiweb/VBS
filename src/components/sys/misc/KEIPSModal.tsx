@@ -45,6 +45,9 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
   const reset = useCallback(() => {
+    setLoadingData(true);
+    setSuccessData(false);
+
     setMATNET('');
     setData([]);
     setTopCCA([]);

@@ -69,6 +69,8 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
   }, []);
 
   const reset = () => {
+    setLoadingData(true);
+
     setID('');
     setName('');
     setDescription('');
@@ -78,6 +80,10 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
     setIsAvailable('');
     setInstantBook('');
     setChildVenues(null);
+
+    pageIndexDB.current = 0;
+    pageSizeDB.current = 0;
+    setSubmitButtonPressed(false);
   };
 
   const handleModalCloseButton = () => {

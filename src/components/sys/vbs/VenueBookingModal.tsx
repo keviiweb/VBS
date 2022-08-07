@@ -131,6 +131,61 @@ export default function VenueBookingModal({
   const variantDesktop = useBreakpointValue({ base: 'none', md: 'flex' });
   const variantMobile = useBreakpointValue({ base: 'flex', md: 'none' });
 
+  const reset = () => {
+    changeDate('');
+
+    date.current = '';
+    rawDate.current = null;
+    dateParsed.current = '';
+
+    setID('');
+    setName('');
+    setDescription('');
+    setOpeningHours('');
+    setCapacity('');
+    setHasChildVenue(false);
+    setChildVenueDrop([]);
+    setRawChildVenue([]);
+    setDisplayedVenue('');
+
+    selectedVenue.current = '';
+
+    setTimeSlots([]);
+    setDisplayedSlots('');
+    rawVenue.current = [];
+    selectedTimeSlots.current = [];
+    rawSlots.current = [];
+
+    setError('');
+    setSubmitButtonPressed(false);
+    setProgressLevel(levels.SELECT_VENUE);
+
+    setVenueConfirm('');
+    setDateConfirm('');
+    setTimeSlotsConfirm('');
+    setPurposeConfirm('');
+    setTypeConfirm('1');
+    setErrorConfirm('');
+    setSuccessBookingConfirm(false);
+    setCCASelectionConfirm('');
+    setCCAListConfirm([]);
+    setShowCCAsConfirm(false);
+    setIsSwitchConfirm(false);
+
+    CCALISTConfirm.current = [];
+
+    isSwitchDBConfirm.current = false;
+    venueNameDBConfirm.current = '';
+    venueDBConfirm.current = '';
+    timeSlotsDBConfirm.current = [];
+    typeDBConfirm.current = PERSONAL;
+    purposeDBConfirm.current = '';
+    dateParsedConfirm.current = '';
+
+    setSubmittingConfirm(false);
+    timeoutsConfirm.current = [];
+  };
+
   const check = (timeSlotsField: TimeSlot[]) => {
     if (timeSlotsField.length === 0) {
       return false;
@@ -228,48 +283,6 @@ export default function VenueBookingModal({
 
     setErrorConfirm('');
     return true;
-  };
-
-  const reset = () => {
-    changeDate('');
-    setHasChildVenue(false);
-    setChildVenueDrop([]);
-    setRawChildVenue([]);
-    setDisplayedVenue('');
-    setDisplayedSlots('');
-    setTimeSlots([]);
-    setError('');
-    selectedTimeSlots.current = [];
-    rawSlots.current = [];
-    selectedVenue.current = '';
-    dateParsed.current = '';
-
-    setID('');
-    setName('');
-    setDescription('');
-    setOpeningHours('');
-    setCapacity('');
-
-    setVenueConfirm('');
-    setDateConfirm('');
-    setTimeSlotsConfirm('');
-    setPurposeConfirm('');
-    setTypeConfirm('1');
-    setErrorConfirm('');
-    setCCAListConfirm([]);
-    setShowCCAsConfirm(false);
-    setSuccessBookingConfirm(false);
-    setIsSwitchConfirm(false);
-    setCCASelectionConfirm('');
-
-    venueNameDBConfirm.current = '';
-    venueDBConfirm.current = '';
-    timeSlotsDBConfirm.current = [];
-    typeDBConfirm.current = PERSONAL;
-    purposeDBConfirm.current = '';
-    isSwitchDBConfirm.current = false;
-
-    setProgressLevel(levels.SELECT_VENUE);
   };
 
   const handleModalCloseButton = () => {

@@ -203,3 +203,27 @@ export const fetchAllKEIPS = async (
 
   return result;
 };
+
+/**
+ * Delete all KEIPS records
+ *
+ * @returns A Result wrapped in a Promise
+ */
+export const deleteAllKEIPS = async (session: Session): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    const query: KEIPS[] = await prisma.kEIPS.deleteMany({});
+
+    if (query) {
+      result = { status: true, error: null, msg: 'Successfully deleted KEIPS' };
+    } else {
+      result = { status: false, error: 'Failed to delete KEIPS', msg: '' };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: 'Failed to delete KEIPS', msg: '' };
+    await logger('deleteAllKEIPS', session.user.email, error.message);
+  }
+
+  return result;
+};

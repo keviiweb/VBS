@@ -66,17 +66,27 @@ export default function LeaderStudentModalComponent({
   ];
 
   const [CSVdata, setCSVdata] = useState<CCAAttendance[]>([]);
+  const [downloadCSV, setDownloadCSV] = useState(false);
 
   const reset = () => {
-    setData([]);
+    setLoadingData(true);
+
     setSessionUserName('');
     setSessionUserStudentID('');
+
+    setData([]);
+
+    setSubmitButtonPressed(false);
+
     setPageCount(0);
+    pageSizeDB.current = PAGESIZE;
+    pageIndexDB.current = PAGEINDEX;
 
     ccaRecordIDDB.current = '';
     sessionEmailDB.current = '';
-    pageSizeDB.current = PAGESIZE;
-    pageIndexDB.current = PAGEINDEX;
+
+    setCSVdata([]);
+    setDownloadCSV(false);
   };
 
   const handleModalCloseButton = () => {
@@ -188,6 +198,20 @@ export default function LeaderStudentModalComponent({
     [tableChange],
   );
 
+  const handleDownload = useCallback(async () => {
+    if (
+      checkerString(ccaRecordIDDB.current) &&
+      checkerString(sessionEmailDB.current)
+    ) {
+      await fetchMemberSessionOverall(
+        ccaRecordIDDB.current,
+        sessionEmailDB.current,
+      );
+
+      setDownloadCSV(true);
+    }
+  }, [fetchMemberSessionOverall]);
+
   useEffect(() => {
     async function setupData() {
       if (modalData) {
@@ -206,10 +230,6 @@ export default function LeaderStudentModalComponent({
           modalData && modalData.sessionEmail ? modalData.sessionEmail : '';
 
         await tableChange();
-        await fetchMemberSessionOverall(
-          ccaRecordIDDB.current,
-          sessionEmailDB.current,
-        );
       }
     }
 
@@ -217,7 +237,7 @@ export default function LeaderStudentModalComponent({
       setData([]);
       setupData();
     }
-  }, [modalData, tableChange, fetchMemberSessionOverall]);
+  }, [modalData, tableChange]);
 
   const columns = useMemo(
     () => [
@@ -288,7 +308,21 @@ export default function LeaderStudentModalComponent({
                   Student No.
                 </Text>
                 <Text>{sessionUserStudentID}</Text>
-                {CSVdata.length > 0 && (
+
+                {!downloadCSV && (
+                  <Button
+                    bg='gray.400'
+                    color='white'
+                    w='180px'
+                    size='lg'
+                    _hover={{ bg: 'gray.600' }}
+                    onClick={handleDownload}
+                  >
+                    Download CSV
+                  </Button>
+                )}
+
+                {downloadCSV && CSVdata.length > 0 && (
                   <Button
                     bg='gray.400'
                     color='white'

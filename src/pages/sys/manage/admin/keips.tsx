@@ -141,6 +141,47 @@ export default function ManageKEIPS(props: any) {
     [fetchData, resetFileKEIPS, toast],
   );
 
+  const handleSubmitTruncateKEIPS = useCallback(
+    async (event: { preventDefault: () => void }) => {
+      setErrorFileKEIPS('');
+      event.preventDefault();
+      setSubmitButtonPressed(true);
+      try {
+        const rawResponse = await fetch('/api/keips/delete', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        });
+        const content: Result = await rawResponse.json();
+        if (content.status) {
+          toast({
+            title: 'KEIPS Truncated.',
+            description: content.msg,
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          await fetchData();
+        } else {
+          toast({
+            title: 'Error',
+            description: content.error,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+      setSubmitButtonPressed(false);
+    },
+    [fetchData, toast],
+  );
+
   const generateActionButton = useCallback(
     async (content: KEIPS) => {
       const button: JSX.Element = (
@@ -448,6 +489,38 @@ export default function ManageKEIPS(props: any) {
                       Populate
                     </Button>
                   </Stack>
+                </Stack>
+              </form>
+            </Stack>
+          </MotionBox>
+        )}
+
+        {level === levels.OWNER && (
+          <MotionBox key='delete-all-keips'>
+            <Stack
+              spacing={4}
+              w='full'
+              maxW='md'
+              bg='white'
+              rounded='xl'
+              boxShadow='lg'
+              p={6}
+              my={12}
+            >
+              <Heading size='md'>Truncate KEIPS Records</Heading>
+              <form onSubmit={handleSubmitTruncateKEIPS}>
+                <Stack spacing={10}>
+                  <Button
+                    type='submit'
+                    bg='blue.400'
+                    color='white'
+                    disabled={submitButtonPressed}
+                    _hover={{
+                      bg: 'blue.500',
+                    }}
+                  >
+                    Truncate
+                  </Button>
                 </Stack>
               </form>
             </Stack>

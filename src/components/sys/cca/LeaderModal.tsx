@@ -18,10 +18,12 @@ import {
   Popover,
   PopoverContent,
   SimpleGrid,
+  StackDirection,
   Stack,
   Select,
   Text,
   usePopoverContext,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import {
@@ -116,6 +118,8 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
   const pageSizeDB = useRef(PAGESIZE);
   const pageIndexDB = useRef(PAGEINDEX);
 
+  const [downloadCSV, setDownloadCSV] = useState(false);
+
   const CSVheaders = [
     { label: 'Session Name', key: 'sessionName' },
     { label: 'CCA Name', key: 'ccaName' },
@@ -142,24 +146,42 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
 
   const [CSVdataSession, setCSVdataSession] = useState<CCASession[]>([]);
 
+  const variantButtons = useBreakpointValue({
+    base: 'column' as StackDirection,
+    lg: 'row' as StackDirection,
+  });
+
   const currentDate = async (): Promise<string> => {
     const res = moment.tz(new Date(), 'Asia/Singapore').format('YYYY-MM-DD');
     return res;
   };
 
   const reset = () => {
-    setSelectedChoice(0);
-    setSelectedDropDown([]);
-    setData([]);
-    setCCAName('');
-    setSpecificCCAData(null);
     setSpecificMemberData(null);
-    setPageCount(0);
+    setSpecificCCAData(null);
+    setSpecificSessionData(null);
+    setSessionCreateData(null);
+    setSpecificSessionDeleteData(null);
+
+    setLoadingData(true);
+
+    setCCAName('');
+    setSelectedDropDown([]);
+    setSelectedChoice(0);
 
     ccaRecordIDDB.current = '';
     selectionChoiceDB.current = 0;
+
+    setData([]);
+    setSubmitButtonPressed(false);
+
+    setPageCount(0);
     pageSizeDB.current = PAGESIZE;
     pageIndexDB.current = PAGEINDEX;
+
+    setDownloadCSV(false);
+    setCSVdata([]);
+    setCSVdataSession([]);
   };
 
   const handleModalCloseButton = () => {
@@ -574,6 +596,15 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
     [tableChange],
   );
 
+  const handleDownload = useCallback(async () => {
+    if (checkerString(ccaRecordIDDB.current)) {
+      await handleFetchAttendance();
+      await fetchSessionOverall(ccaRecordIDDB.current);
+
+      setDownloadCSV(true);
+    }
+  }, [handleFetchAttendance, fetchSessionOverall]);
+
   useEffect(() => {
     async function setupData() {
       if (modalData) {
@@ -585,8 +616,6 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           modalData && modalData.ccaID ? modalData.ccaID : '';
 
         await buildDropDownMenu();
-        await handleFetchAttendance();
-        await fetchSessionOverall(ccaRecordIDDB.current);
       }
     }
 
@@ -594,12 +623,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
       setData([]);
       setupData();
     }
-  }, [
-    modalData,
-    buildDropDownMenu,
-    handleFetchAttendance,
-    fetchSessionOverall,
-  ]);
+  }, [modalData, buildDropDownMenu]);
 
   const columnsSession = useMemo(
     () => [
@@ -722,8 +746,13 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           </Stack>
 
           <MotionSimpleGrid
-            columns={{ base: 1, md: 1, lg: 2, xl: 2 }}
-            minChildWidth={{ base: 'full', md: '200px', lg: '400px' }}
+            columns={{ base: 1, md: 2, lg: 2, xl: 2 }}
+            minChildWidth={{
+              base: 'full',
+              sm: 'full',
+              md: '200px',
+              lg: '400px',
+            }}
             pos='relative'
             gap={{ base: 2, sm: 4 }}
             px={5}
@@ -768,11 +797,11 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
                 alignItems='center'
                 justifyContent='center'
               >
-                <Stack direction='row' spacing={5}>
+                <Stack direction={variantButtons} spacing={5}>
                   <Button
                     bg='cyan.700'
                     color='white'
-                    w='150px'
+                    w={{ base: 'full', md: '150px' }}
                     size='lg'
                     _hover={{ bg: 'cyan.800' }}
                     onClick={handleCreateSession}
@@ -780,11 +809,24 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
                     Add Session
                   </Button>
 
-                  {CSVdata.length > 0 && (
+                  {!downloadCSV && (
                     <Button
                       bg='gray.400'
                       color='white'
-                      w='180px'
+                      w={{ base: 'full', md: '150px' }}
+                      size='lg'
+                      _hover={{ bg: 'cyan.800' }}
+                      onClick={handleDownload}
+                    >
+                      Download CSV
+                    </Button>
+                  )}
+
+                  {downloadCSV && CSVdata.length > 0 && (
+                    <Button
+                      bg='gray.400'
+                      color='white'
+                      w={{ base: 'full', md: '180px' }}
                       size='lg'
                       _hover={{ bg: 'gray.600' }}
                     >
@@ -799,11 +841,11 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
                     </Button>
                   )}
 
-                  {CSVdataSession.length > 0 && (
+                  {downloadCSV && CSVdataSession.length > 0 && (
                     <Button
                       bg='gray.400'
                       color='white'
-                      w='180px'
+                      w={{ base: 'full', md: '180px' }}
                       size='lg'
                       _hover={{ bg: 'gray.600' }}
                     >

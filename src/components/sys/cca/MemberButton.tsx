@@ -46,7 +46,7 @@ export default function MemberButton({
 
           <Input
             type='text'
-            placeholder='Hours'
+            placeholder={`Hours for ${name}`}
             size='lg'
             onChange={(event) => {
               if (event.cancelable) {

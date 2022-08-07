@@ -157,46 +157,57 @@ export default function SessionEditModal({
   const realityMemberHours = useRef<CCAAttendance[]>([]);
 
   const reset = () => {
-    setDateStr('');
+    selectedData.current = null;
+    setConfirmationData(null);
+
+    setProgressLevel(levels.TIME);
+    setProgressBar(progressBarLevel.TIME);
+    setLoadingData(true);
+
+    setError('');
+
+    sessionIDDB.current = '';
+    ccaIDDB.current = '';
+
     setCCAName('');
+    setDateStr('');
+    setName('');
+    setUpcoming(false);
     setOptional(false);
     setEndTimeDropdown([]);
     setStartTimeDropdown([]);
     setStartTime('');
     setEndTime('');
-    setProgressLevel(levels.TIME);
-    setProgressBar(progressBarLevel.TIME);
-    setError('');
-    setName('');
-    setUpcoming(false);
-    setRemarks('');
-    setLdrNotes('');
 
-    setDisplayedExpected('');
-    setDisplayedReality('');
-
-    setDisableButton(false);
-    setSubmitButtonPressed(false);
-
-    setEditable(false);
+    dateStrDB.current = '';
+    nameDB.current = '';
+    optionalDB.current = false;
+    optionalStrDB.current = 'No';
 
     startTimeDB.current = '';
     endTimeDB.current = '';
-    optionalDB.current = false;
-    optionalStrDB.current = 'No';
-    dateStrDB.current = '';
-    sessionIDDB.current = '';
-    ccaIDDB.current = '';
-    nameDB.current = '';
+
+    setRemarks('');
+    setLdrNotes('');
     remarksDB.current = '';
     ldrNotesDB.current = '';
 
+    setEditable(false);
+    setSubmitButtonPressed(false);
+    setDisableButton(false);
+
     memberData.current = [];
 
-    selectedRealityMembers.current = [];
-    selectedExpectedMembers.current = [];
+    setExpectedMemberButtons([]);
 
+    selectedExpectedMembers.current = [];
     selectedExpectedMembersName.current = [];
+    setDisplayedExpected('');
+
+    setRealityMemberButtons([]);
+    setDisplayedReality('');
+    selectedRealityMembers.current = [];
+
     selectedRealityMembersName.current = [];
     realityMemberHours.current = [];
   };

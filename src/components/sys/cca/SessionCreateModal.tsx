@@ -136,37 +136,42 @@ export default function SessionCreateModal({
   const [displayedExpected, setDisplayedExpected] = useState('');
 
   const reset = () => {
-    setDateStr('');
-    setCCAName('');
-    setOptional(false);
-    setEndTimeDropdown([]);
-    setStartTimeDropdown([]);
-    setStartTime('');
-    setEndTime('');
+    selectedData.current = null;
+    setConfirmationData(null);
+
     setProgressLevel(levels.TIME);
     setProgressBar(progressBarLevel.TIME);
+    setLoadingData(true);
     setError('');
+
+    setCCAName('');
+    setDateStr('');
     setName('');
+    setOptional(false);
+    setStartTimeDropdown([]);
+    setEndTimeDropdown([]);
+    setStartTime('');
+    setEndTime('');
     setRemarks('');
     setLdrNotes('');
 
-    setDisplayedExpected('');
-
-    setDisableButton(false);
-    setSubmitButtonPressed(false);
-
-    startTimeDB.current = '';
-    endTimeDB.current = '';
+    ccaIDDB.current = '';
+    dateStrDB.current = '';
+    nameDB.current = '';
     optionalDB.current = false;
     optionalStrDB.current = 'No';
-    dateStrDB.current = '';
-    ccaIDDB.current = '';
-    nameDB.current = '';
+    startTimeDB.current = '';
+    endTimeDB.current = '';
     remarksDB.current = '';
     ldrNotesDB.current = '';
 
+    setSubmitButtonPressed(false);
+    setDisableButton(false);
+
     memberData.current = [];
 
+    setDisplayedExpected('');
+    setExpectedMemberButtons([]);
     selectedExpectedMembers.current = [];
     selectedExpectedMembersName.current = [];
   };

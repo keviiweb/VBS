@@ -67,6 +67,8 @@ export default function BookingModal({
   let generateData: any;
 
   const reset = useCallback(() => {
+    setLoadingData(true);
+
     setID('');
     setVenue('');
     setDate('');
@@ -78,6 +80,9 @@ export default function BookingModal({
     setStatus('');
     setReason('');
     setUserName('');
+
+    setPageCount(0);
+    setSubmitButtonPressed(false);
   }, []);
 
   const handleDetails = useCallback(

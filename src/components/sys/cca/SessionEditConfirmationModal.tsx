@@ -85,21 +85,27 @@ export default function SessionEditConfirmationModal({
   const [pageCount, setPageCount] = useState(0);
 
   const reset = () => {
-    setDateStr('');
-    setCCAName('');
+    selectedData.current = null;
+    setLoadingData(true);
     setError('');
+
     setName('');
+    setCCAName('');
+    setDateStr('');
     setOptionalStr('');
     setTime('');
     setDuration('');
     setRemarks('');
     setLdrNotes('');
-    setIsSubmit(false);
 
     setDisplayedExpected([]);
-
     setExpectedBool(false);
+
     setRealityBool(false);
+
+    setSubmitButtonPressed(false);
+
+    setIsSubmit(false);
 
     setDataM([]);
     setPageCount(0);
