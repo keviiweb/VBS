@@ -103,7 +103,7 @@ export default function KEWeb() {
                 w='full'
                 rounded='lg'
                 shadow='2xl'
-                src='/landing/cca/keweb.png'
+                src='/landing/cca/landing_keweb.png'
                 alt='KEWEB'
               />
             </MotionBox>
