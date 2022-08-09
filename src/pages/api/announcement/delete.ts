@@ -21,7 +21,7 @@ export const config = {
  *
  * Used in:
  * /pages/sys/manage/announcement
- * 
+ *
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

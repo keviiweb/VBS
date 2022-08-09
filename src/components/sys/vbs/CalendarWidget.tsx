@@ -4,6 +4,7 @@ import 'react-calendar/dist/Calendar.css';
 import moment from 'moment-timezone';
 
 import { monthNamesFull } from '@constants/sys/months';
+import { addDays, fetchCurrentDate, locale } from '@constants/sys/date';
 
 /**
  * Renders a small calendar that allow users to select dates.
@@ -20,26 +21,21 @@ export default function CalendarWidget({
   calendarMin,
   calendarMax,
 }) {
-  const locale: string = 'Asia/Singapore';
-  const [currentDate, setDate] = useState(moment().tz(locale).toDate());
-  const [minDate, setMinDate] = useState(moment().tz(locale).toDate());
-  const [maxDate, setMaxDate] = useState(moment().tz(locale).toDate());
+  const [currentDate, setDate] = useState(fetchCurrentDate());
+  const [minDate, setMinDate] = useState(fetchCurrentDate());
+  const [maxDate, setMaxDate] = useState(fetchCurrentDate());
 
   const min = useRef(0);
   const max = useRef(0);
-
-  function addDays(date: Date, days: number) {
-    return moment.tz(date, locale).add(days, 'days').toDate();
-  }
 
   useEffect(() => {
     async function setDates(minField: number, maxField: number) {
       min.current = minField;
       max.current = maxField;
 
-      const current = new Date();
-      setMinDate(addDays(current, Number(min.current)));
-      setMaxDate(addDays(current, Number(max.current)));
+      const currentDateField: Date = fetchCurrentDate();
+      setMinDate(addDays(currentDateField, locale, Number(min.current)));
+      setMaxDate(addDays(currentDateField, locale, Number(max.current)));
     }
 
     if (calendarMax && calendarMin) {

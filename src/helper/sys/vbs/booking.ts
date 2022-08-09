@@ -1,12 +1,19 @@
 import { prisma } from '@constants/sys/db';
 import {
+  checkerNumber,
   checkerString,
   convertSlotToArray,
   findSlots,
   PERSONAL,
   splitHours,
 } from '@constants/sys/helper';
-import { convertDateToUnix } from '@constants/sys/date';
+import {
+  addDays,
+  convertDateToUnix,
+  dateISO,
+  fetchCurrentDate,
+  locale,
+} from '@constants/sys/date';
 
 import { BookingRequest } from 'types/vbs/bookingReq';
 import { Result } from 'types/api';
@@ -38,19 +45,60 @@ export const findAllBookingByVenueID = async (
   session: Session,
 ): Promise<Booking[]> => {
   try {
-    const bookings: Booking[] = await prisma.venueBooking.findMany({
-      orderBy: [
-        {
-          date: 'desc',
+    const viewingDate: number = process.env.VIEW_BOOKING_CALENDAR_DAY
+      ? Number(process.env.VIEW_BOOKING_CALENDAR_DAY)
+      : 0;
+    let bookings: Booking[] = [];
+
+    if (checkerNumber(viewingDate)) {
+      const currentDate: Date = fetchCurrentDate();
+
+      const newStart: Date = addDays(currentDate, locale, -Number(viewingDate));
+      const newEnd: Date = addDays(currentDate, locale, Number(viewingDate));
+
+      const newStartTime: number = convertDateToUnix(dateISO(newStart));
+      const newEndTime: number = convertDateToUnix(dateISO(newEnd));
+
+      bookings = await prisma.venueBooking.findMany({
+        orderBy: [
+          {
+            date: 'desc',
+          },
+          {
+            timingSlot: 'asc',
+          },
+        ],
+        where: {
+          venue: id,
+          AND: [
+            {
+              date: {
+                lte: newEndTime,
+              },
+            },
+            {
+              date: {
+                gte: newStartTime,
+              },
+            },
+          ],
         },
-        {
-          timingSlot: 'asc',
+      });
+    } else {
+      bookings = await prisma.venueBooking.findMany({
+        orderBy: [
+          {
+            date: 'desc',
+          },
+          {
+            timingSlot: 'asc',
+          },
+        ],
+        where: {
+          venue: id,
         },
-      ],
-      where: {
-        venue: id,
-      },
-    });
+      });
+    }
 
     return bookings;
   } catch (error) {

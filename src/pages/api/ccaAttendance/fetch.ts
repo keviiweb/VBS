@@ -25,7 +25,7 @@ import { isLeader } from '@helper/sys/cca/ccaRecord';
  *
  * Used in:
  * @components/sys/cca/LeaderStudentModal
- * 
+ *
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

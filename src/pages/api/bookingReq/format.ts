@@ -29,7 +29,7 @@ import { getConflictingRequest } from '@helper/sys/vbs/bookingReq';
  *
  * Used in:
  * @components/sys/vbs/BookingModal
- * 
+ *
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

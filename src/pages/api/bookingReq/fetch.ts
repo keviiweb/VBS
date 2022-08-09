@@ -44,7 +44,7 @@ import { fetchUserByEmail } from '@helper/sys/misc/user';
  * Used in:
  * /pages/sys/manage/bookings
  * /pages/sys/manage/admin/bookings
- * 
+ *
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

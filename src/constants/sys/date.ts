@@ -3,6 +3,32 @@ import { monthNamesFull } from '@constants/sys/months';
 
 import moment from 'moment-timezone';
 
+export const locale: string = process.env.TZ
+  ? process.env.TZ
+  : 'Asia/Singapore';
+export const timeFormat: string = 'YYYY-MM-DD';
+
+/**
+ * Gets the current date in Date object
+ *
+ * @returns Date object representing today's date
+ */
+export const fetchCurrentDate = (): Date => {
+  return moment().tz(locale).toDate();
+};
+
+/**
+ * Add * number of days to the particular date object
+ *
+ * @param date Date object
+ * @param locale Timezone
+ * @param days Number of days to add
+ * @returns Date object
+ */
+export const addDays = (date: Date, locale: string, days: number) => {
+  return moment.tz(date, locale).add(days, 'days').toDate();
+};
+
 /**
  * Converts a string to Unix timestamp in seconds to store
  * in the database.
@@ -11,9 +37,7 @@ import moment from 'moment-timezone';
  * @returns UNIX timestamp in seconds
  */
 export const convertDateToUnix = (date: string): number => {
-  const prettified = moment
-    .tz(date, 'YYYY-MM-DD', true, 'Asia/Singapore')
-    .startOf('day');
+  const prettified = moment.tz(date, timeFormat, true, locale).startOf('day');
   if (prettified.isValid()) {
     return Math.floor(prettified.valueOf() / 1000);
   } else {
@@ -35,9 +59,9 @@ export const convertUnixToDate = (date: number): Date | null => {
     return null;
   }
 
-  const converted = moment.tz(date * 1000, 'Asia/Singapore').startOf('day');
+  const converted = moment.tz(date * 1000, locale).startOf('day');
   if (converted.isValid()) {
-    const today = moment.tz(new Date(), 'Asia/Singapore').startOf('day');
+    const today = moment.tz(new Date(), locale).startOf('day');
     const diff = converted.diff(today, 'years', true);
     if (diff > 1 || diff < -1) {
       return null;
@@ -66,8 +90,8 @@ export const compareDate = (comparedDate: number, number: number): boolean => {
   let compared = convertUnixToDate(comparedDate);
 
   if (compared !== null) {
-    let date = new Date();
-    date.setDate(date.getDate() + Number(number));
+    let date: Date = fetchCurrentDate();
+    date = addDays(date, locale, number);
 
     return date <= compared;
   } else {
@@ -105,10 +129,7 @@ export const isValidDate = (d: Date): boolean => {
  */
 export const dateISO = (date: Date): string => {
   if (date && isValidDate(date)) {
-    return moment
-      .tz(date, 'Asia/Singapore')
-      .startOf('day')
-      .format('YYYY-MM-DD');
+    return moment.tz(date, locale).startOf('day').format(timeFormat);
   }
 
   return `Unknown Date`;
@@ -124,7 +145,7 @@ export const dateISO = (date: Date): string => {
  */
 export const prettifyDate = (date: Date): string => {
   if (date && isValidDate(date)) {
-    const dateObj = moment.tz(date, 'Asia/Singapore');
+    const dateObj = moment.tz(date, locale);
     const day = numberToWeekday[dateObj.day()];
     const month = monthNamesFull[dateObj.month()];
     const prettyDate = `${day}, ${dateObj.format(

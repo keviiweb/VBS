@@ -32,6 +32,12 @@ import { currentSession } from '@helper/sys/sessionServer';
 
 import { checkerString } from '@constants/sys/helper';
 import { levels } from '@constants/sys/admin';
+import {
+  addDays,
+  dateISO,
+  fetchCurrentDate,
+  locale,
+} from '@constants/sys/date';
 
 import safeJsonStringify from 'safe-json-stringify';
 import { GetServerSideProps } from 'next';
@@ -81,6 +87,7 @@ export default function VBS(props: any) {
   const [selectedVenue, setSelectedVenue] = useState('');
   const [venueDropdown, setVenueDropdown] = useState<JSX.Element[]>([]);
   const [venueID, setVenueID] = useState('');
+
   const [events, setEvents] = useState<CalendarData[]>([]);
   const [allBooking, setAllBooking] = useState<Booking[]>([]);
   const [startTime, setStartTime] = useState('08:00:00');
@@ -88,7 +95,9 @@ export default function VBS(props: any) {
   const [modalBookingData, setModalBookingData] = useState<Booking | null>(
     null,
   );
-  const venueIDDB = useRef('');
+  const viewingDate = useRef(90);
+  const [startDateCalendar, setCalendarStartDate] = useState('');
+  const [endDateCalendar, setCalendarEndDate] = useState('');
 
   const [level, setLevel] = useState(levels.USER);
 
@@ -196,7 +205,6 @@ export default function VBS(props: any) {
           const ven: Venue = venueData.current[key];
           if (ven.id === value) {
             await fetchBookings(value);
-            venueIDDB.current = value;
             setVenueID(value);
             setSelectedVenue(ven.name);
             break;
@@ -239,6 +247,24 @@ export default function VBS(props: any) {
     toast.closeAll();
   };
 
+  const changeCalendarDates = useCallback(async () => {
+    const currentDate: Date = fetchCurrentDate();
+
+    const newStart: Date = addDays(
+      currentDate,
+      locale,
+      -Number(viewingDate.current),
+    );
+    const newEnd: Date = addDays(
+      currentDate,
+      locale,
+      Number(viewingDate.current),
+    );
+
+    setCalendarStartDate(dateISO(newStart));
+    setCalendarEndDate(dateISO(newEnd));
+  }, []);
+
   useEffect(() => {
     async function fetchData(propsField: any) {
       setIsLoading(true);
@@ -251,6 +277,12 @@ export default function VBS(props: any) {
       maxDate.current = propsField.maxDate
         ? propsField.maxDate
         : maxDate.current;
+
+      viewingDate.current = propsField.viewingDate
+        ? propsField.viewingDate
+        : viewingDate.current;
+
+      await changeCalendarDates();
 
       if (propsField.data) {
         const res: Result = propsField.data;
@@ -279,7 +311,7 @@ export default function VBS(props: any) {
       }
     }
     fetchData(props);
-  }, [props, generateVenueDropdown]);
+  }, [props, generateVenueDropdown, changeCalendarDates]);
 
   const handleSearch = (event: { target: { value: string } }) => {
     if (event.target.value !== null && event.target.value !== undefined) {
@@ -350,6 +382,8 @@ export default function VBS(props: any) {
                     eventClick={handleEventClick}
                     eventMouseEnter={handleMouseEnter}
                     eventMouseLeave={handleMouseLeave}
+                    startDate={startDateCalendar}
+                    endDate={endDateCalendar}
                   />
                 )}
               </Stack>
@@ -492,6 +526,7 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
     props: {
       minDate: process.env.CALENDAR_MIN_DAY,
       maxDate: process.env.CALENDAR_MAX_DAY,
+      viewingDate: process.env.VIEW_BOOKING_CALENDAR_DAY,
       data: data,
       level: level,
     },

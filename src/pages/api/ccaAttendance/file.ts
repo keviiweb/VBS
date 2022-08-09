@@ -22,7 +22,7 @@ import { CCA } from '@root/src/types/cca/cca';
  * Used in:
  * /pages/sys/manage/admin/users
  * @components/sys/cca/LeaderModal
- * 
+ *
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

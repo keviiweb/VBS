@@ -12,7 +12,7 @@ import { createSession, isConflict } from '@helper/sys/cca/ccaSession';
  *
  * Used in:
  * @components/sys/cca/SessionCreateConfirmationModal
- * 
+ *
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

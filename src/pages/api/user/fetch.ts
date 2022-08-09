@@ -13,7 +13,7 @@ import { levels } from '@constants/sys/admin';
  *
  * Used in:
  * /pages/sys/manage/admin/users
- * 
+ *
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

@@ -18,6 +18,10 @@ import listPlugin from '@fullcalendar/list';
  * eventMouseEnter: Function that is triggered when user hovers on box
  *
  * eventMouseLeave: Function that is triggered when user move away from box
+ *
+ * validRange: Set the start date and end date that the user is able to view based on current date
+ * Default is set to 3 months before - 3 months after
+ *
  * @param param0 Parameters for the calendar
  * @returns A calendar
  */
@@ -28,6 +32,8 @@ export default function BookingCalendar({
   eventClick,
   eventMouseEnter,
   eventMouseLeave,
+  startDate,
+  endDate,
 }) {
   return (
     <FullCalendar
@@ -47,6 +53,10 @@ export default function BookingCalendar({
       eventMouseEnter={eventMouseEnter}
       eventMouseLeave={eventMouseLeave}
       eventClick={eventClick}
+      validRange={{
+        start: startDate,
+        end: endDate,
+      }}
     />
   );
 }

@@ -22,7 +22,7 @@ import { deleteVenueBooking } from '@helper/sys/vbs/booking';
  *
  * Used in:
  * /pages/sys/manage/bookings
- * 
+ *
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

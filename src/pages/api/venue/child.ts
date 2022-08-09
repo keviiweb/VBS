@@ -12,7 +12,7 @@ import { findVenueByID, fetchChildVenue } from '@helper/sys/vbs/venue';
  *
  * Used in:
  * @components/sys/vbs/VenueBookingModal
- * 
+ *
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

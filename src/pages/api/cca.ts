@@ -10,7 +10,7 @@ import { findAllCCA } from '@helper/sys/cca/cca';
  *
  * Used in:
  * @components/sys/vbs/VenueBookingModal
- * 
+ *
  * @param req NextJS API Request
  * @param res NextJS API Response
  */
