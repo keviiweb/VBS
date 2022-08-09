@@ -13,6 +13,9 @@ import { countTotalSessionHoursByCCAID } from '@helper/sys/cca/ccaSession';
 /**
  * Fetches the total attendance by the current user in the specific CCA
  *
+ * Used in:
+ * @components/sys/cca/MemberModal
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

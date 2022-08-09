@@ -16,6 +16,9 @@ import { fetchBookedTimeSlots } from '@helper/sys/vbs/timeslot';
  *
  * This includes booked timeslots as well
  *
+ * Used in:
+ * @components/sys/vbs/VenueBookingModal
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

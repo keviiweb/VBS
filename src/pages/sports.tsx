@@ -16,6 +16,18 @@ const MotionSimpleGrid = motion(SimpleGrid);
  * @returns Sports Page
  */
 export default function Sports() {
+  // Format for adding new CCAs
+  /*
+  const content = [
+    {
+      img: '/landing/cca/landing_keweb.png',
+      title: 'KE Web',
+      description: 'We work hard to give you the website you deserve.',
+      link: '/landing/keweb',
+    },
+  ];
+  */
+ 
   const content = [];
 
   return (

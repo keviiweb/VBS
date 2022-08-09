@@ -83,6 +83,7 @@ export default function SignIn(props: any) {
                 <FormLabel>Email address</FormLabel>
                 <Input
                   type='email'
+                  isDisabled={loading}
                   placeholder='test@u.nus.edu'
                   size='lg'
                   onChange={(event) => {

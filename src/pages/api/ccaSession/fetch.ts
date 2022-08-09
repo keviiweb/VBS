@@ -24,7 +24,10 @@ import { splitHours } from '@constants/sys/helper';
 /**
  * Fetches the list of CCA sessions filtered by CCA ID
  *
- *
+ * Used in:
+ * @components/sys/cca/MemberModal
+ * @components/sys/cca/LeaderModal
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

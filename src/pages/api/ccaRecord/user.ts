@@ -14,6 +14,9 @@ import { findCCAbyID } from '@root/src/helper/sys/cca/cca';
  *
  * This is an OWNER and ADMIN level request only
  *
+ * Used in:
+ * @components/sys/misc/UserModal
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

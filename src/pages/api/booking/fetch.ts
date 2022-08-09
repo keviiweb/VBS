@@ -26,6 +26,9 @@ import { findAllBookingByVenueID } from '@helper/sys/vbs/booking';
  * Fetches all booking made filtered by venue ID
  *
  * This is an ADMIN level or OWNER level request only.
+ * 
+ * Used in:
+ * /pages/sys/vbs
  *
  * @param req NextJS API Request
  * @param res NextJS API Response

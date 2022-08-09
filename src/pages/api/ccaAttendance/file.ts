@@ -19,6 +19,10 @@ import { CCA } from '@root/src/types/cca/cca';
 /**
  * Fetches the total attendance of everyone and extract into a file
  *
+ * Used in:
+ * /pages/sys/manage/admin/users
+ * @components/sys/cca/LeaderModal
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

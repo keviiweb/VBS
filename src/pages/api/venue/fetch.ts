@@ -12,6 +12,9 @@ import {
 /**
  * Fetches all venues based on pagination limit and skip
  *
+ * Used in:
+ * /pages/sys/manage/admin/venues
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

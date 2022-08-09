@@ -20,6 +20,9 @@ import { deleteVenueBooking } from '@helper/sys/vbs/booking';
 /**
  * Cancels an existing Venue Booking Request
  *
+ * Used in:
+ * /pages/sys/manage/bookings
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

@@ -34,6 +34,9 @@ import { createVenueBooking } from '@helper/sys/vbs/booking';
 /**
  * Creates a new Venue Booking Request
  *
+ * Used in:
+ * @components/sys/vbs/VenueBookingModal
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

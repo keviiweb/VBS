@@ -31,6 +31,8 @@ export default function BookingRejectModal({
   modalData,
   dataHandler,
 }) {
+  const [isSubmit, setIsSubmit] = useState(false);
+
   const [reason, setReason] = useState('');
   const reasonDB = useRef('');
 
@@ -42,6 +44,8 @@ export default function BookingRejectModal({
   const [errorMsg, setErrorMsg] = useState('');
 
   const reset = () => {
+    setIsSubmit(false);
+
     setReason('');
     setDate('');
     setVenue('');
@@ -68,6 +72,7 @@ export default function BookingRejectModal({
     }
 
     if (checkerString(reasonDB.current)) {
+      setIsSubmit(true);
       setErrorMsg('');
       await dataHandler(reasonDB.current, modalData);
 
@@ -76,6 +81,7 @@ export default function BookingRejectModal({
         onClose();
       }, 200);
     } else {
+      setIsSubmit(false);
       setErrorMsg('Please type in a reason!');
     }
   };
@@ -142,6 +148,7 @@ export default function BookingRejectModal({
                       type='text'
                       placeholder='Type in a reason'
                       value={reason}
+                      isDisabled={isSubmit}
                       size='lg'
                       onChange={(event) => {
                         setReason(event.currentTarget.value);

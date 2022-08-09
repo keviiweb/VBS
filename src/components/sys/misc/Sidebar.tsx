@@ -17,7 +17,7 @@ import NavLink from '@components/sys/misc/NavLink';
 import { Session } from 'next-auth/core/types';
 import { levels } from '@root/src/constants/sys/admin';
 
-const adminMenu = [
+const ownerMenu = [
   { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },
   { label: 'CCA ATTENDANCE', icon: FiSettings, href: '/sys/cca' },
   { label: 'KEIPS', icon: FiStar, href: '/sys/keips' },
@@ -54,9 +54,42 @@ const adminMenu = [
   },
 ];
 
+const adminMenu = [
+  { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },
+  { label: 'CCA ATTENDANCE', icon: FiSettings, href: '/sys/cca' },
+  { label: 'KEIPS', icon: FiStar, href: '/sys/keips' },
+  { label: 'CONTACT US', icon: FiCompass, href: '/sys/contact' },
+  {
+    label: 'APPROVE BOOKINGS',
+    icon: FiCalendar,
+    href: '/sys/manage/admin/bookings',
+  },
+  {
+    label: 'MANAGE VENUES',
+    icon: FiMapPin,
+    href: '/sys/manage/admin/venues',
+  },
+  {
+    label: 'MANAGE BOOKINGS',
+    icon: FiCalendar,
+    href: '/sys/manage/bookings',
+  },
+  {
+    label: 'MANAGE USERS',
+    icon: FiUser,
+    href: '/sys/manage/admin/users',
+  },
+  {
+    label: 'MANAGE KEIPS',
+    icon: FiStar,
+    href: '/sys/manage/admin/keips',
+  },
+];
+
 const userMenu = [
   { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },
   { label: 'CCA ATTENDANCE', icon: FiSettings, href: '/sys/cca' },
+  { label: 'KEIPS', icon: FiStar, href: '/sys/keips' },
   { label: 'CONTACT US', icon: FiCompass, href: '/sys/contact' },
   {
     label: 'MANAGE BOOKINGS',
@@ -77,11 +110,10 @@ export default function Sidebar({ session, onClose, ...rest }) {
 
   useEffect(() => {
     function setData(sessionField: Session) {
-      if (
-        sessionField.user.admin === levels.ADMIN ||
-        sessionField.user.admin === levels.OWNER
-      ) {
+      if (sessionField.user.admin === levels.ADMIN) {
         setMenu(adminMenu);
+      } else if (sessionField.user.admin === levels.OWNER) {
+        setMenu(ownerMenu);
       }
     }
     if (session) {

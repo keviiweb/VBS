@@ -10,6 +10,9 @@ import { findVenueByID, fetchChildVenue } from '@helper/sys/vbs/venue';
 /**
  * Fetches all child venue under the specified parent venue ID
  *
+ * Used in:
+ * @components/sys/vbs/VenueBookingModal
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

@@ -8,6 +8,10 @@ import { fetchAllAnnouncements } from '@helper/sys/misc/announcement';
 /**
  * Fetches the list of announcements with pagination and skip
  *
+ * Used in:
+ * /pages/sys/manage/announcement
+ * @components/sys/misc/Announcement
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

@@ -24,6 +24,11 @@ import { countTotalSessionHoursByCCAID } from '@helper/sys/cca/ccaSession';
 /**
  * Fetches the list of CCA records filtered by CCA ID
  *
+ * Used in:
+ * @components/sys/cca/SessionEditModal
+ * @components/sys/cca/SessionCreateModal
+ * @components/sys/cca/LeaderModal
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

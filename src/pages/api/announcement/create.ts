@@ -21,6 +21,9 @@ export const config = {
  *
  * This is an ADMIN level or OWNER level request only.
  *
+ * Used in:
+ * /pages/sys/manage/announcement
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

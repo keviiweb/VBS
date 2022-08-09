@@ -11,6 +11,9 @@ import { levels } from '@constants/sys/admin';
  *
  * This is an OWNER level request only
  *
+ * Used in:
+ * /pages/sys/manage/admin/users
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */
@@ -29,7 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== null &&
     session !== undefined &&
-    session.user.admin === levels.OWNER
+    (session.user.admin === levels.OWNER || session.user.admin === levels.ADMIN)
   ) {
     const limit: number =
       limitQuery !== undefined ? Number(limitQuery) : 100000;

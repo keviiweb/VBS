@@ -27,6 +27,9 @@ import { getConflictingRequest } from '@helper/sys/vbs/bookingReq';
  *
  * This is an ADMIN level or OWNER level request only.
  *
+ * Used in:
+ * @components/sys/vbs/BookingModal
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */

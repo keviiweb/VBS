@@ -21,6 +21,9 @@ import { compareDate } from '@constants/sys/date';
  *
  * This is an ADMIN level or OWNER level request only.
  *
+ * Used in:
+ * /pages/sys/manage/admin/bookings
+ * 
  * @param req NextJS API Request
  * @param res NextJS API Response
  */
