@@ -11,7 +11,8 @@ import {
   splitHours,
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
-import { levels } from '@constants/sys/admin';
+import { actions } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import {
@@ -42,10 +43,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (checkerString(id)) {
       const venueID: string = (id as string).trim();
       let bookings: Booking[] = [];
-      if (
-        session.user.admin === levels.ADMIN ||
-        session.user.admin === levels.OWNER
-      ) {
+      if (hasPermission(session.user.admin, actions.FETCH_BOOKING)) {
         bookings = await findAllBookingByVenueID(venueID, session);
 
         if (bookings !== [] && bookings !== undefined && bookings !== null) {

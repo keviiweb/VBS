@@ -4,7 +4,9 @@ import { User } from 'types/misc/user';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { fetchAllUser, countUser } from '@helper/sys/misc/user';
-import { levels } from '@constants/sys/admin';
+
+import { actions } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 /**
  * Fetches the list of users
@@ -32,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== null &&
     session !== undefined &&
-    (session.user.admin === levels.OWNER || session.user.admin === levels.ADMIN)
+    hasPermission(session.user.admin, actions.FETCH_USER_DATA)
   ) {
     const limit: number =
       limitQuery !== undefined ? Number(limitQuery) : 100000;

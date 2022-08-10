@@ -15,8 +15,9 @@ import {
 } from '@helper/sys/vbs/bookingReq';
 import { currentSession } from '@helper/sys/sessionServer';
 import { createVenueBooking } from '@helper/sys/vbs/booking';
-import { levels } from '@constants/sys/admin';
+import { actions } from '@constants/sys/admin';
 import { compareDate } from '@constants/sys/date';
+import hasPermission from '@constants/sys/permission';
 
 /**
  * Approves a venue booking request
@@ -42,7 +43,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== undefined &&
     session !== null &&
-    (session.user.admin === levels.ADMIN || session.user.admin === levels.OWNER)
+    hasPermission(session.user.admin, actions.MANAGE_BOOKING_REQUEST)
   ) {
     if (checkerString(id)) {
       const bookingID: string = (id as string).trim();

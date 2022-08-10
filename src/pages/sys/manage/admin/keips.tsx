@@ -32,12 +32,14 @@ import { checkerString } from '@constants/sys/helper';
 
 import { KEIPS } from 'types/misc/keips';
 import { Result } from 'types/api';
-import { levels } from '@root/src/constants/sys/admin';
+
+import { actions, levels } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 import { Session } from 'next-auth/core/types';
 
 import { GetServerSideProps } from 'next';
-import { currentSession } from '@root/src/helper/sys/sessionServer';
+import { currentSession } from '@helper/sys/sessionServer';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 
 const MotionSimpleGrid = motion(SimpleGrid);
@@ -392,7 +394,7 @@ export default function ManageKEIPS(props: any) {
         initial='initial'
         animate='animate'
       >
-        {level === levels.OWNER && (
+        {hasPermission(level, actions.POPULATE_KEIPS) && (
           <MotionBox key='populate-keips'>
             <Stack
               spacing={4}
@@ -495,7 +497,7 @@ export default function ManageKEIPS(props: any) {
           </MotionBox>
         )}
 
-        {level === levels.OWNER && (
+        {hasPermission(level, actions.DELETE_KEIPS) && (
           <MotionBox key='delete-all-keips'>
             <Stack
               spacing={4}

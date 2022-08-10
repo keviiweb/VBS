@@ -33,7 +33,8 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 import UserModal from '@components/sys/misc/UserModal';
 
 import { checkerString } from '@constants/sys/helper';
-import { levels } from '@constants/sys/admin';
+import { actions, levels } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 import { User } from 'types/misc/user';
 import { Result } from 'types/api';
@@ -754,7 +755,7 @@ export default function ManageUsers(props: any) {
         initial='initial'
         animate='animate'
       >
-        {level === levels.OWNER && (
+        {hasPermission(level, actions.FETCH_ALL_CCA_ATTENDANCE) && (
           <MotionBox>
             <Stack
               spacing={4}
@@ -813,7 +814,7 @@ export default function ManageUsers(props: any) {
           </MotionBox>
         )}
 
-        {level === levels.OWNER && (
+        {hasPermission(level, actions.CREATE_USER) && (
           <MotionBox>
             <Stack
               spacing={4}
@@ -914,7 +915,7 @@ export default function ManageUsers(props: any) {
           </MotionBox>
         )}
 
-        {level === levels.OWNER && (
+        {hasPermission(level, actions.POPULATE_CCA_RECORD) && (
           <MotionBox>
             <Stack
               spacing={4}
@@ -1015,7 +1016,7 @@ export default function ManageUsers(props: any) {
           </MotionBox>
         )}
 
-        {level === levels.OWNER && (
+        {hasPermission(level, actions.CREATE_USER) && (
           <MotionBox key='create-user'>
             <Stack
               spacing={4}
@@ -1123,7 +1124,7 @@ export default function ManageUsers(props: any) {
           </MotionBox>
         )}
 
-        {level === levels.OWNER && userDropdown && (
+        {hasPermission(level, actions.EDIT_USER) && userDropdown && (
           <MotionBox key='edit-user'>
             <Stack
               spacing={4}

@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 
-import { levels } from '@constants/sys/admin';
+import { actions } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 import formidable, { IncomingForm } from 'formidable';
 import fs from 'fs';
@@ -39,7 +40,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== undefined &&
     session !== null &&
-    session.user.admin === levels.OWNER
+    hasPermission(session.user.admin, actions.POPULATE_CCA_RECORD)
   ) {
     const dataField: { fields: formidable.Fields; files: formidable.Files } =
       await new Promise((resolve, reject) => {

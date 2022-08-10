@@ -16,7 +16,8 @@ import {
   compareDate,
   prettifyDate,
 } from '@constants/sys/date';
-import { levels } from '@constants/sys/admin';
+import { actions } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { findVenueByID } from '@helper/sys/vbs/venue';
@@ -81,8 +82,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       successBooking = true;
     } else if (
-      session.user.admin === levels.ADMIN ||
-      session.user.admin === levels.OWNER
+      hasPermission(session.user.admin, actions.FETCH_BOOKING_REQUEST)
     ) {
       if (query !== undefined) {
         if (typeof query === 'string') {

@@ -7,7 +7,8 @@ import { currentSession } from '@helper/sys/session';
 import Layout from '@layout/sys/index';
 import Loading from '@layout/sys/Loading';
 import { Session } from 'next-auth/core/types';
-import { levels } from '@constants/sys/admin';
+import { actions } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 /**
  * This component checks if the user is authenticated.
@@ -42,9 +43,9 @@ export default function Auth({ children, admin }) {
             if (!devSession.current.user.admin) {
               router.push('/unauthorized');
             } else if (
-              !(
-                devSession.current.user.admin === levels.ADMIN ||
-                devSession.current.user.admin === levels.OWNER
+              !hasPermission(
+                devSession.current.user.admin,
+                actions.VIEW_ADMIN_PAGE,
               )
             ) {
               router.push('/unauthorized');
@@ -56,10 +57,7 @@ export default function Auth({ children, admin }) {
           if (!session.user.admin) {
             router.push('/unauthorized');
           } else if (
-            !(
-              session.user.admin === levels.ADMIN ||
-              session.user.admin === levels.OWNER
-            )
+            !hasPermission(session.user.admin, actions.VIEW_ADMIN_PAGE)
           ) {
             router.push('/unauthorized');
           }

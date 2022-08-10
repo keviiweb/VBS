@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 
-import { levels } from '@constants/sys/admin';
+import { actions } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { deleteAllKEIPS } from '@helper/sys/misc/keips';
@@ -43,7 +44,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== undefined &&
     session !== null &&
-    session.user.admin === levels.OWNER
+    hasPermission(session.user.admin, actions.DELETE_KEIPS)
   ) {
     const keipsRes: Result = await deleteAllKEIPS(session);
     if (keipsRes.status) {

@@ -1,16 +1,39 @@
 /**
  * Levels define the permission granted for each user
  *
- * USER: Can only view CCA attendance, book venues
- *
- * ADMIN: Everything a USER does, as well as approve venue bookings,
- * see venue details etc
- *
- * OWNER: All permissions granted, including ability to add new users,
- * populate CCA records, and manage KEIPS.
+ * New levels can be added through here
  */
 export const levels = {
   USER: 0,
   ADMIN: 1,
   OWNER: 2,
+};
+
+/**
+ * Actions define the type of actions available in the system
+ *
+ * New actions can be added here
+ */
+export const actions = {
+  VIEW_ADMIN_PAGE: 'VIEW_ADMIN_PAGE',
+  VIEW_FULL_ADMIN_PAGE: 'VIEW_FULL_ADMIN_PAGE',
+  FETCH_BOOKING: 'FETCH_BOOKING',
+  FETCH_BOOKING_REQUEST: 'FETCH_BOOKING_REQUEST',
+  MANAGE_BOOKING_REQUEST: 'MANAGE_BOOKING_REQUEST',
+  CREATE_RECURRING_BOOKING_REQUEST: 'CREATE_RECURRING_BOOKING_REQUEST',
+  CREATE_VENUE: 'CREATE_VENUE',
+  EDIT_VENUE: 'EDIT_VENUE',
+  CREATE_ANNOUNCEMENT: 'CREATE_ANNOUNCEMENT',
+  EDIT_ANNOUNCEMENT: 'EDIT_ANNOUNCEMENT',
+  DELETE_ANNOUNCEMENT: 'DELETE_ANNOUNCEMENT',
+  FETCH_ALL_CCA_ATTENDANCE: 'FETCH_ALL_CCA_ATTENDANCE',
+  POPULATE_CCA_RECORD: 'POPULATE_CCA_RECORD',
+  FETCH_USER_CCA_RECORD: 'FETCH_USER_CCA_RECORD',
+  FETCH_ALL_KEIPS: 'FETCH_ALL_KEIPS',
+  POPULATE_KEIPS: 'POPULATE_KEIPS',
+  DELETE_KEIPS: 'DELETE_KEIPS',
+  CREATE_USER: 'CREATE_USER',
+  EDIT_USER: 'EDIT_USER',
+  FETCH_USER_DATA: 'FETCH_USER_DATA',
+  POPULATE_USER: 'POPULATE_USER',
 };

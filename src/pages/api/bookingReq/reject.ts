@@ -13,8 +13,9 @@ import {
 import { deleteVenueBooking } from '@helper/sys/vbs/booking';
 
 import { checkerString, convertSlotToArray } from '@constants/sys/helper';
-import { levels } from '@constants/sys/admin';
+import { actions } from '@constants/sys/admin';
 import { compareDate } from '@constants/sys/date';
+import hasPermission from '@constants/sys/permission';
 
 /**
  * Rejects a venue booking request with a reason explaining why
@@ -40,7 +41,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== undefined &&
     session !== null &&
-    (session.user.admin === levels.ADMIN || session.user.admin === levels.OWNER)
+    hasPermission(session.user.admin, actions.MANAGE_BOOKING_REQUEST)
   ) {
     if (checkerString(id) && checkerString(reason)) {
       const bookingID: string = (id as string).trim();

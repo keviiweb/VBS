@@ -6,7 +6,8 @@ import { currentSession } from '@helper/sys/sessionServer';
 
 import formidable, { IncomingForm } from 'formidable';
 
-import { levels } from '@constants/sys/admin';
+import { actions } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 export const config = {
   api: {
@@ -36,7 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== undefined &&
     session !== null &&
-    (session.user.admin === levels.ADMIN || session.user.admin === levels.OWNER)
+    hasPermission(session.user.admin, actions.DELETE_ANNOUNCEMENT)
   ) {
     const data: { fields: formidable.Fields; files: formidable.Files } =
       await new Promise((resolve, reject) => {

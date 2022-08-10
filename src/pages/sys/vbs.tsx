@@ -31,13 +31,14 @@ import { fetchVenue } from '@helper/sys/vbs/venue';
 import { currentSession } from '@helper/sys/sessionServer';
 
 import { checkerString } from '@constants/sys/helper';
-import { levels } from '@constants/sys/admin';
+import { actions, levels } from '@constants/sys/admin';
 import {
   addDays,
   dateISO,
   fetchCurrentDate,
   locale,
 } from '@constants/sys/date';
+import hasPermission from '@constants/sys/permission';
 
 import safeJsonStringify from 'safe-json-stringify';
 import { GetServerSideProps } from 'next';
@@ -437,7 +438,7 @@ export default function VBS(props: any) {
               </Stack>
             </Box>
 
-            {(level === levels.ADMIN || level === levels.OWNER) && (
+            {hasPermission(level, actions.MANAGE_BOOKING_REQUEST) && (
               <BookingModal
                 isBookingRequest={false}
                 isOpen={!!modalBookingData}
@@ -447,7 +448,7 @@ export default function VBS(props: any) {
               />
             )}
 
-            {level === levels.USER && (
+            {!hasPermission(level, actions.MANAGE_BOOKING_REQUEST) && (
               <BookingModal
                 isBookingRequest={false}
                 isOpen={!!modalBookingData}

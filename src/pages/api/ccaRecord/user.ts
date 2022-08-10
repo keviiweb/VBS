@@ -5,9 +5,10 @@ import { CCA } from 'types/cca/cca';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { fetchAllCCARecordByUserEmail } from '@helper/sys/cca/ccaRecord';
+import { findCCAbyID } from '@helper/sys/cca/cca';
 
-import { levels } from '@constants/sys/admin';
-import { findCCAbyID } from '@root/src/helper/sys/cca/cca';
+import { actions } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 /**
  * Fetches the CCA records for a specific user
@@ -34,7 +35,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== null &&
     session !== undefined &&
-    (session.user.admin === levels.ADMIN || session.user.admin === levels.OWNER)
+    hasPermission(session.user.admin, actions.FETCH_USER_CCA_RECORD)
   ) {
     const parsedCCARecord: CCARecord[] = [];
 

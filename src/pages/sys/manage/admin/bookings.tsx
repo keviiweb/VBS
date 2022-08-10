@@ -43,8 +43,9 @@ import { GetServerSideProps } from 'next';
 import { Session } from 'next-auth/core/types';
 
 import { checkerNumber, checkerString } from '@constants/sys/helper';
-import { levels as levelsUser } from '@constants/sys/admin';
+import { actions, levels as levelsUser } from '@constants/sys/admin';
 import { levels } from '@constants/sys/bookingReq';
+import hasPermission from '@constants/sys/permission';
 
 import { currentSession } from '@helper/sys/sessionServer';
 
@@ -890,7 +891,7 @@ export default function ManageBooking(props: any) {
           />
         </Box>
 
-        {levelUser === levelsUser.OWNER && (
+        {hasPermission(levelUser, actions.CREATE_RECURRING_BOOKING_REQUEST) && (
           <Box>
             <Stack
               spacing={4}

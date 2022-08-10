@@ -4,7 +4,9 @@ import { KEIPS } from 'types/misc/keips';
 
 import { fetchAllKEIPS, countKEIPS } from '@helper/sys/misc/keips';
 import { currentSession } from '@helper/sys/sessionServer';
-import { levels } from '@constants/sys/admin';
+
+import { actions } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 /**
  * In this file, MATNET is defined as
@@ -40,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== null &&
     session !== undefined &&
-    session.user.admin === levels.OWNER
+    hasPermission(session.user.admin, actions.FETCH_ALL_KEIPS)
   ) {
     const limit: number =
       limitQuery !== undefined ? Number(limitQuery) : 100000;

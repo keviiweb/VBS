@@ -2,19 +2,19 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 import { CCAAttendance } from 'types/cca/ccaAttendance';
 import { CCASession } from 'types/cca/ccaSession';
+import { CCA } from 'types/cca/cca';
 
 import { currentSession } from '@helper/sys/sessionServer';
-
-import { levels } from '@constants/sys/admin';
+import { actions } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
+import { convertUnixToDate, dateISO } from '@constants/sys/date';
 
 import {
   fetchAllCCAAttendance,
   fetchAllCCAAttendanceByCCA,
 } from '@helper/sys/cca/ccaAttendance';
-import { findCCASessionByID } from '@root/src/helper/sys/cca/ccaSession';
-import { findCCAbyID } from '@root/src/helper/sys/cca/cca';
-import { convertUnixToDate, dateISO } from '@root/src/constants/sys/date';
-import { CCA } from '@root/src/types/cca/cca';
+import { findCCASessionByID } from '@helper/sys/cca/ccaSession';
+import { findCCAbyID } from '@helper/sys/cca/cca';
 
 /**
  * Fetches the total attendance of everyone and extract into a file
@@ -43,7 +43,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (ccaID !== undefined) {
       allAttendanceRes = await fetchAllCCAAttendanceByCCA(ccaID, session);
-    } else if (session.user.admin === levels.OWNER) {
+    } else if (
+      hasPermission(session.user.admin, actions.FETCH_ALL_CCA_ATTENDANCE)
+    ) {
       allAttendanceRes = await fetchAllCCAAttendance(session);
     }
 

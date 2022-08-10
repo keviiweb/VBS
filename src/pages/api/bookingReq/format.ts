@@ -14,7 +14,8 @@ import {
   checkerString,
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
-import { levels } from '@constants/sys/admin';
+import { actions } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { findVenueByID } from '@helper/sys/vbs/venue';
@@ -47,7 +48,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== undefined &&
     session !== null &&
-    (session.user.admin === levels.ADMIN || session.user.admin === levels.OWNER)
+    hasPermission(session.user.admin, actions.FETCH_BOOKING_REQUEST)
   ) {
     const parsedBooking: BookingRequest[] = [];
     const bookingsRes: BookingRequest[] = bookings as BookingRequest[];

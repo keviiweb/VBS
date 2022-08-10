@@ -15,7 +15,8 @@ import {
 
 import NavLink from '@components/sys/misc/NavLink';
 import { Session } from 'next-auth/core/types';
-import { levels } from '@root/src/constants/sys/admin';
+import { actions } from '@root/src/constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 const ownerMenu = [
   { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },
@@ -110,10 +111,14 @@ export default function Sidebar({ session, onClose, ...rest }) {
 
   useEffect(() => {
     function setData(sessionField: Session) {
-      if (sessionField.user.admin === levels.ADMIN) {
-        setMenu(adminMenu);
-      } else if (sessionField.user.admin === levels.OWNER) {
+      if (
+        hasPermission(sessionField.user.admin, actions.VIEW_FULL_ADMIN_PAGE)
+      ) {
         setMenu(ownerMenu);
+      } else if (
+        hasPermission(sessionField.user.admin, actions.VIEW_ADMIN_PAGE)
+      ) {
+        setMenu(adminMenu);
       }
     }
     if (session) {

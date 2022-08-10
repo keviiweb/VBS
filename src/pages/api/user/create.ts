@@ -3,8 +3,9 @@ import { Result } from 'types/api';
 import { User } from 'types/misc/user';
 
 import { checkerString } from '@constants/sys/helper';
-import { levels } from '@constants/sys/admin';
+import { actions, levels } from '@constants/sys/admin';
 
+import hasPermission from '@constants/sys/permission';
 import { currentSession } from '@helper/sys/sessionServer';
 import { createUser } from '@helper/sys/misc/user';
 
@@ -33,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== undefined &&
     session !== null &&
-    session.user.admin === levels.OWNER
+    hasPermission(session.user.admin, actions.CREATE_USER)
   ) {
     if (
       checkerString(name) &&

@@ -34,14 +34,15 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { timeSlots } from '@constants/sys/timeslot';
 import { checkerNumber, checkerString } from '@constants/sys/helper';
-import { levels } from '@constants/sys/admin';
+import { actions, levels } from '@constants/sys/admin';
+import hasPermission from '@constants/sys/permission';
 
 import { Venue } from 'types/vbs/venue';
 import { Result } from 'types/api';
 import { Session } from 'next-auth/core/types';
 
 import { GetServerSideProps } from 'next';
-import { currentSession } from '@root/src/helper/sys/sessionServer';
+import { currentSession } from '@helper/sys/sessionServer';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -797,7 +798,7 @@ export default function ManageVenues(props: any) {
         initial='initial'
         animate='animate'
       >
-        {level === levels.OWNER && (
+        {hasPermission(level, actions.CREATE_VENUE) && (
           <MotionBox key='create-venue'>
             <Stack
               spacing={4}
@@ -1008,7 +1009,7 @@ export default function ManageVenues(props: any) {
           </MotionBox>
         )}
 
-        {level === levels.OWNER && (
+        {hasPermission(level, actions.EDIT_VENUE) && (
           <MotionBox key='edit-venue'>
             <Stack
               spacing={4}
