@@ -42,7 +42,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let allAttendanceRes: Result = { status: false, error: '', msg: '' };
 
     if (ccaID !== undefined) {
-      allAttendanceRes = await fetchAllCCAAttendanceByCCA(ccaID, session);
+      const ccaIDField: string = (ccaID as string).trim();
+      allAttendanceRes = await fetchAllCCAAttendanceByCCA(ccaIDField, session);
     } else if (
       hasPermission(session.user.admin, actions.FETCH_ALL_CCA_ATTENDANCE)
     ) {

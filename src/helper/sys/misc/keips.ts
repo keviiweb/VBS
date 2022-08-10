@@ -90,15 +90,15 @@ export const createKEIPSFile = async (
 
         if (checkerString(matnet)) {
           const userData: KEIPS = {
-            matnet: matnet,
-            topCCA: top,
-            allCCA: all,
-            bonusCCA: bonus,
+            matnet: matnet.trim(),
+            topCCA: top.trim(),
+            allCCA: all.trim(),
+            bonusCCA: bonus.trim(),
             contrasting: contrasting,
             OSA: OSA,
             osaPercentile: osaPercentile,
             roomDraw: roomDraw,
-            semesterStay: sem,
+            semesterStay: sem.trim(),
             fulfilled: fulfil,
           };
 

@@ -130,7 +130,7 @@ export const createUserFile = async (
         if (checkerString(name) && checkerString(email)) {
           const userData: User = {
             name: name.trim(),
-            email: email.trim(),
+            email: email.trim().toLowerCase(),
             admin: admin,
             studentID: studentID.trim(),
             roomNum: roomNum.trim(),
