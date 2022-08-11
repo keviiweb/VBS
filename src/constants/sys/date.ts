@@ -87,7 +87,7 @@ export const convertUnixToDate = (date: number): Date | null => {
  * @returns Boolean whether date exceeds compared date
  */
 export const compareDate = (comparedDate: number, number: number): boolean => {
-  let compared = convertUnixToDate(comparedDate);
+  let compared: Date | null = convertUnixToDate(comparedDate);
 
   if (compared !== null) {
     let date: Date = fetchCurrentDate();

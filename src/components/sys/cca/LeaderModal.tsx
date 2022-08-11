@@ -80,7 +80,12 @@ const PopoverTriggerNew: React.FC<
  * @param param0 Modal function and data
  * @returns
  */
-export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
+export default function LeaderModalComponent({
+  isOpen,
+  onClose,
+  calendarThreshold,
+  modalData,
+}) {
   const [specificMemberData, setSpecificMemberData] =
     useState<CCARecord | null>(null);
   const [specificCCAData, setSpecificCCAData] = useState<CCASession | null>(
@@ -329,20 +334,21 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
           <PopoverTriggerNew>
             <Button
               key='not-editable-session-button'
-              size='sm'
+              size='md'
               isDisabled={submitButtonPressed}
               leftIcon={<InfoOutlineIcon />}
             >
               Options
             </Button>
           </PopoverTriggerNew>
-          <PopoverContent w='10vw' maxW='sm'>
+          <PopoverContent w='22vw' maxW='md'>
             <Button
               key='not-editable-session'
               py={5}
-              size='sm'
+              size='md'
               isDisabled={submitButtonPressed}
               leftIcon={<BellIcon />}
+              onClick={() => handleDetailsSession(content)}
             >
               Details
             </Button>
@@ -518,7 +524,9 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
   );
 
   const successEditSession = useCallback(async () => {
-    await fetchSession(ccaRecordIDDB.current);
+    if (checkerString(ccaRecordIDDB.current)) {
+      await fetchSession(ccaRecordIDDB.current);
+    }
   }, [fetchSession]);
 
   const deleteSession = useCallback(
@@ -692,6 +700,7 @@ export default function LeaderModalComponent({ isOpen, onClose, modalData }) {
             isOpen={sessionCreate}
             onClose={() => setSessionCreateData(null)}
             modalData={sessionCreate}
+            threshold={calendarThreshold}
             dataHandler={successEditSession}
           />
 

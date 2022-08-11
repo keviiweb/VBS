@@ -51,13 +51,11 @@ export default function SignIn(props: any) {
         });
       } catch (error) {
         console.log(error);
-        setLoading(false);
       }
 
-      return true;
+      setLoading(false);
     }
     setError('Please enter a valid email');
-    return false;
   };
 
   return (
@@ -95,6 +93,7 @@ export default function SignIn(props: any) {
               <Stack spacing={10}>
                 <Button
                   type='submit'
+                  isDisabled={loading}
                   bg='blue.400'
                   color='white'
                   _hover={{

@@ -22,7 +22,7 @@ import { cardVariant, parentVariant } from '@root/motion';
 
 import { Result } from 'types/api';
 import { CCASession } from 'types/cca/ccaSession';
-import { CCAAttendance } from '@root/src/types/cca/ccaAttendance';
+import { CCAAttendance } from 'types/cca/ccaAttendance';
 
 import { checkerString } from '@constants/sys/helper';
 
@@ -30,6 +30,8 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 import TableWidget from '@components/sys/misc/TableWidget';
 import SessionEditModal from '@components/sys/cca/SessionEditModal';
 import SessionDeleteConfirmationModal from '@components/sys/cca/SessionDeleteConfirmationModal';
+
+import { removeDuplicate } from '@helper/sys/cca/ccaAttendance';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -181,7 +183,7 @@ export default function SessionModal({
     if (members.length > 0) {
       const membersA: CCAAttendance[] = JSON.parse(members) as CCAAttendance[];
       if (membersA.length > 0) {
-        setDataM(membersA);
+        setDataM(removeDuplicate(membersA));
         setRealityBool(true);
 
         if (membersA.length % PAGESIZE === 0) {

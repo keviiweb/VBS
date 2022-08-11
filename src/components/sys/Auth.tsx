@@ -39,31 +39,39 @@ export default function Auth({ children, admin }) {
           (!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
         ) {
           devSession.current = await currentSession();
-          if (isAdmin && devSession.current !== null) {
-            if (!devSession.current.user.admin) {
-              router.push('/unauthorized');
-            } else if (
-              !hasPermission(
-                devSession.current.user.admin,
-                actions.VIEW_ADMIN_PAGE,
-              )
-            ) {
-              router.push('/unauthorized');
+          if (
+            isAdmin &&
+            devSession.current !== null &&
+            devSession.current.user !== null
+          ) {
+            const permission: boolean = hasPermission(
+              devSession.current.user.admin,
+              actions.VIEW_ADMIN_PAGE,
+            );
+
+            if (permission !== null && !permission) {
+              router.push('/sys/unauthorized');
             }
           }
         } else if (!loading && !hasUser) {
           router.push('/sys/signin');
-        } else if (isAdmin && session !== null && status === 'authenticated') {
-          if (!session.user.admin) {
-            router.push('/unauthorized');
-          } else if (
-            !hasPermission(session.user.admin, actions.VIEW_ADMIN_PAGE)
-          ) {
-            router.push('/unauthorized');
+        } else if (
+          isAdmin &&
+          session !== null &&
+          session.user !== null &&
+          status === 'authenticated'
+        ) {
+          const permission: boolean = hasPermission(
+            session.user.admin,
+            actions.VIEW_ADMIN_PAGE,
+          );
+
+          if (permission !== null && !permission) {
+            router.push('/sys/unauthorized');
           }
         }
       } catch (error) {
-        router.push('/unauthorized');
+        router.push('/sys/unauthorized');
       }
     }
 

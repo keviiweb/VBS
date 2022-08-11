@@ -41,6 +41,8 @@ export default function CCA(props: any) {
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
+  const [calendarThreshold, setCalendarThreshold] = useState('');
+
   useEffect(() => {
     async function generate(propsField: any) {
       setSubmitButtonPressed(true);
@@ -86,6 +88,10 @@ export default function CCA(props: any) {
             setMemberCards(memberRes);
           }
         }
+      }
+
+      if (propsField.threshold) {
+        setCalendarThreshold(propsField.threshold);
       }
 
       setSubmitButtonPressed(false);
@@ -183,6 +189,7 @@ export default function CCA(props: any) {
       <LeaderModalComponent
         isOpen={leaderModalData}
         onClose={() => setLeaderModalData(null)}
+        calendarThreshold={calendarThreshold}
         modalData={leaderModalData}
       />
       <MemberModalComponent
@@ -215,6 +222,7 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
   return {
     props: {
       data: data,
+      threshold: process.env.SESSION_EDITABLE_DAY,
     },
   };
 };

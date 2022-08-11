@@ -43,8 +43,12 @@ import {
   convertDateToUnix,
   isValidDate,
   calculateDuration,
-} from '@root/src/constants/sys/date';
+  dateISO,
+  fetchCurrentDate,
+  locale,
+} from '@constants/sys/date';
 import moment from 'moment';
+import { removeDuplicate } from '@helper/sys/cca/ccaAttendance';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -212,10 +216,10 @@ export default function SessionEditModal({
     realityMemberHours.current = [];
   };
 
-  const handleModalCloseButton = useCallback(() => {
-    setTimeout(() => {
+  const handleModalCloseButton = useCallback(async () => {
+    setTimeout(async () => {
       reset();
-      dataHandler();
+      await dataHandler();
       onClose();
     }, 200);
   }, [dataHandler, onClose]);
@@ -340,6 +344,55 @@ export default function SessionEditModal({
     }
   };
 
+  const displayExpectedMembers = (members: string[]) => {
+    if (members.length > 0) {
+      let text: string = 'Selected members(s): ';
+      let counter: number = 0;
+
+      for (let key = 0; key < members.length; key += 1) {
+        if (members[key]) {
+          counter += 1;
+          if (counter !== members.length) {
+            text += ` ${members[key]} ,`;
+          } else {
+            text += ` ${members[key]} `;
+          }
+        }
+      }
+
+      setDisplayedExpected(text);
+    } else {
+      setDisplayedExpected('');
+    }
+  };
+
+  const displayRealityMembers = (members: CCAAttendance[]) => {
+    if (members.length > 0) {
+      let text: string = 'Selected members(s): ';
+      let counter: number = 0;
+
+      for (let key = 0; key < members.length; key += 1) {
+        if (members[key]) {
+          counter += 1;
+          if (
+            members[key].sessionName !== undefined &&
+            members[key].ccaAttendance !== undefined
+          ) {
+            if (counter !== members.length) {
+              text += ` ${members[key].sessionName} (${members[key].ccaAttendance} hours) ,`;
+            } else {
+              text += ` ${members[key].sessionName} (${members[key].ccaAttendance} hours)  `;
+            }
+          }
+        }
+      }
+
+      setDisplayedReality(text);
+    } else {
+      setDisplayedReality('');
+    }
+  };
+
   const handleClick = async (next: boolean) => {
     if (progressLevel === levels.TIME) {
       if (selectedData.current !== null) {
@@ -393,6 +446,14 @@ export default function SessionEditModal({
       if (selectedData.current !== null) {
         setError('');
         const data: CCASession = selectedData.current;
+
+        if (realityMemberHours.current.length > 0) {
+          realityMemberHours.current = removeDuplicate(
+            realityMemberHours.current,
+          );
+          displayRealityMembers(realityMemberHours.current);
+        }
+
         data.realityM = JSON.stringify(realityMemberHours.current);
         selectedData.current = data;
         if (next) {
@@ -502,55 +563,6 @@ export default function SessionEditModal({
     setStartTimeDropdown(start);
     setEndTimeDropdown(end);
   }, []);
-
-  const displayExpectedMembers = (members: string[]) => {
-    if (members.length > 0) {
-      let text: string = 'Selected members(s): ';
-      let counter: number = 0;
-
-      for (let key = 0; key < members.length; key += 1) {
-        if (members[key]) {
-          counter += 1;
-          if (counter !== members.length) {
-            text += ` ${members[key]} ,`;
-          } else {
-            text += ` ${members[key]} `;
-          }
-        }
-      }
-
-      setDisplayedExpected(text);
-    } else {
-      setDisplayedExpected('');
-    }
-  };
-
-  const displayRealityMembers = (members: CCAAttendance[]) => {
-    if (members.length > 0) {
-      let text: string = 'Selected members(s): ';
-      let counter: number = 0;
-
-      for (let key = 0; key < members.length; key += 1) {
-        if (members[key]) {
-          counter += 1;
-          if (
-            members[key].sessionName !== undefined &&
-            members[key].ccaAttendance !== undefined
-          ) {
-            if (counter !== members.length) {
-              text += ` ${members[key].sessionName} (${members[key].ccaAttendance} hours) ,`;
-            } else {
-              text += ` ${members[key].sessionName} (${members[key].ccaAttendance} hours)  `;
-            }
-          }
-        }
-      }
-
-      setDisplayedReality(text);
-    } else {
-      setDisplayedReality('');
-    }
-  };
 
   const fetchNameOfUser = async (email: string): Promise<string> => {
     let res: string = '';
@@ -669,7 +681,10 @@ export default function SessionEditModal({
 
           realityHours.push(attendance);
         }
-        realityMemberHours.current = realityHours;
+
+        realityMemberHours.current = removeDuplicate(
+          realityMemberHours.current,
+        );
       } else if (
         selectedData.current !== null &&
         selectedData.current.duration !== undefined
@@ -833,15 +848,20 @@ export default function SessionEditModal({
 
       const day: Date = new Date(dateStrField);
       if (isValidDate(day)) {
-        if (day > new Date()) {
-          const currentTime: string = moment
-            .tz(moment(), 'Asia/Singapore')
-            .format('HH:mm')
-            .replace(':', '');
-          if (Number(currentTime) >= Number(start)) {
-            setUpcoming(true);
+        if (day > fetchCurrentDate()) {
+          if (dateISO(day) === dateISO(fetchCurrentDate())) {
+            const currentTime: string = moment
+              .tz(moment(), locale)
+              .format('HH:mm')
+              .replace(':', '');
+
+            if (Number(currentTime) >= Number(start)) {
+              setUpcoming(true);
+            } else {
+              setUpcoming(false);
+            }
           } else {
-            setUpcoming(false);
+            setUpcoming(true);
           }
         } else {
           setUpcoming(false);

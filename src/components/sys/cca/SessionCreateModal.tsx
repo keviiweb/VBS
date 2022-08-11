@@ -36,12 +36,16 @@ import { CCASession } from 'types/cca/ccaSession';
 import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
 
-import { checkerString } from '@constants/sys/helper';
+import { checkerNumber, checkerString } from '@constants/sys/helper';
 import { timeSlots } from '@constants/sys/timeslot';
 import {
   convertDateToUnix,
   isValidDate,
   calculateDuration,
+  fetchCurrentDate,
+  addDays,
+  locale,
+  dateISO,
 } from '@root/src/constants/sys/date';
 
 const MotionSimpleGrid = motion(SimpleGrid);
@@ -75,6 +79,7 @@ export default function SessionCreateModal({
   isOpen,
   onClose,
   modalData,
+  threshold,
   dataHandler,
 }) {
   const toast = useToast();
@@ -135,6 +140,9 @@ export default function SessionCreateModal({
   const selectedExpectedMembersName = useRef<string[]>([]);
   const [displayedExpected, setDisplayedExpected] = useState('');
 
+  const [startDateCalendar, setCalendarStartDate] = useState('');
+  const [endDateCalendar, setCalendarEndDate] = useState('');
+
   const reset = () => {
     selectedData.current = null;
     setConfirmationData(null);
@@ -174,12 +182,15 @@ export default function SessionCreateModal({
     setExpectedMemberButtons([]);
     selectedExpectedMembers.current = [];
     selectedExpectedMembersName.current = [];
+
+    setCalendarStartDate('');
+    setCalendarEndDate('');
   };
 
-  const handleModalCloseButton = useCallback(() => {
-    setTimeout(() => {
+  const handleModalCloseButton = useCallback(async () => {
+    setTimeout(async () => {
       reset();
-      dataHandler();
+      await dataHandler();
       onClose();
     }, 200);
   }, [dataHandler, onClose]);
@@ -594,6 +605,18 @@ export default function SessionCreateModal({
     }
   }, [buildMemberList]);
 
+  const changeCalendarDates = useCallback(async () => {
+    if (checkerNumber(Number(threshold))) {
+      const currentDate: Date = fetchCurrentDate();
+
+      const newStart: Date = addDays(currentDate, locale, -Number(threshold));
+      const newEnd: Date = addDays(currentDate, locale, Number(threshold));
+
+      setCalendarStartDate(dateISO(newStart));
+      setCalendarEndDate(dateISO(newEnd));
+    }
+  }, [threshold]);
+
   useEffect(() => {
     async function setupData(modalDataField: CCASession) {
       setLoadingData(true);
@@ -613,13 +636,15 @@ export default function SessionCreateModal({
       await generateTimeSlots();
       await generateMemberList();
 
+      await changeCalendarDates();
+
       setLoadingData(false);
     }
 
     if (modalData) {
       setupData(modalData);
     }
-  }, [modalData, generateTimeSlots, generateMemberList]);
+  }, [modalData, generateTimeSlots, generateMemberList, changeCalendarDates]);
 
   return (
     <Modal
@@ -735,6 +760,8 @@ export default function SessionCreateModal({
                           placeholder='Date'
                           value={dateStr}
                           size='lg'
+                          min={startDateCalendar}
+                          max={endDateCalendar}
                           onChange={(event) => {
                             setDateStr(event.currentTarget.value);
                             dateStrDB.current = event.currentTarget.value;

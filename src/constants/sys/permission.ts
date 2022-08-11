@@ -1,4 +1,5 @@
 import { actions, levels } from '@constants/sys/admin';
+import { Session } from 'next-auth/core/types';
 
 /**
  * The different types of actions each level can perform
@@ -50,7 +51,7 @@ mappings.set(actions.POPULATE_USER, [levels.OWNER]);
  * @returns Boolean whether the action is permitted
  */
 const hasPermission = (level: number, action: string): boolean => {
-  if (isNaN(level) || level === null || level !== undefined) {
+  if (isNaN(Number(level)) || level === null || level === undefined) {
     return false;
   }
 

@@ -11,9 +11,15 @@ import {
   isConflict,
   lockSession,
 } from '@helper/sys/cca/ccaSession';
-import { editAttendance } from '@helper/sys/cca/ccaAttendance';
+import { editAttendance, removeDuplicate } from '@helper/sys/cca/ccaAttendance';
 
-import { isValidDate, compareDate } from '@constants/sys/date';
+import {
+  isValidDate,
+  compareDate,
+  convertDateToUnix,
+  fetchCurrentDate,
+  dateISO,
+} from '@constants/sys/date';
 
 /**
  * Edit the CCA session
@@ -43,13 +49,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         : false;
 
       if (parsedData.date !== undefined) {
+        const currentDate: number = convertDateToUnix(
+          dateISO(fetchCurrentDate()),
+        );
         const sessionDate: number = parsedData.date;
         const threshold: number =
           process.env.SESSION_EDITABLE_DAY !== undefined
             ? Number(process.env.SESSION_EDITABLE_DAY)
             : 14;
 
-        if (compareDate(sessionDate, threshold)) {
+        if (
+          sessionDate <= currentDate &&
+          !compareDate(sessionDate, threshold)
+        ) {
           let lockSessionSuccess = true;
           if (editable) {
             const lockRes: Result = await lockSession(parsedData, session);
@@ -145,21 +157,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                           parsedRealityData.length > 0 &&
                           parsedData.id !== undefined
                         ) {
-                          const editRes: Result = await editAttendance(
-                            parsedData.id,
-                            parsedRealityData,
-                            session,
-                          );
-                          if (!editRes.status) {
-                            success = false;
+                          if (parsedRealityData.length > 0) {
+                            const editRes: Result = await editAttendance(
+                              parsedData.id,
+                              removeDuplicate(parsedRealityData),
+                              session,
+                            );
+                            if (!editRes.status) {
+                              success = false;
 
-                            result = {
-                              status: false,
-                              error: editRes.error,
-                              msg: '',
-                            };
-                            res.status(200).send(result);
-                            res.end();
+                              result = {
+                                status: false,
+                                error: editRes.error,
+                                msg: '',
+                              };
+                              res.status(200).send(result);
+                              res.end();
+                            }
                           }
                         }
                       }
