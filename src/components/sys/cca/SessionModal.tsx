@@ -25,13 +25,13 @@ import { CCASession } from 'types/cca/ccaSession';
 import { CCAAttendance } from 'types/cca/ccaAttendance';
 
 import { checkerString } from '@constants/sys/helper';
+import { removeDuplicate } from '@constants/sys/ccaAttendance';
 
 import LoadingModal from '@components/sys/misc/LoadingModal';
 import TableWidget from '@components/sys/misc/TableWidget';
 import SessionEditModal from '@components/sys/cca/SessionEditModal';
 import SessionDeleteConfirmationModal from '@components/sys/cca/SessionDeleteConfirmationModal';
-
-import { removeDuplicate } from '@helper/sys/cca/ccaAttendance';
+import { Session } from 'next-auth/core/types';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -48,6 +48,7 @@ export default function SessionModal({
   leader,
   modalData,
   dataHandler,
+  userSession,
 }) {
   const [loadingData, setLoadingData] = useState(true);
   const [specificSession, setSpecificSessionData] = useState<CCASession | null>(
@@ -77,6 +78,8 @@ export default function SessionModal({
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
+  const [session, setSession] = useState<Session | null>(null);
+
   const reset = () => {
     setLoadingData(true);
 
@@ -101,6 +104,8 @@ export default function SessionModal({
     setPageCount(0);
 
     setSubmitButtonPressed(false);
+
+    setSession(null);
   };
 
   const handleModalCloseButton = useCallback(() => {
@@ -199,8 +204,13 @@ export default function SessionModal({
   };
 
   useEffect(() => {
-    async function setupData(modalDataField: CCASession) {
+    async function setupData(
+      modalDataField: CCASession,
+      userSessionField: Session | null,
+    ) {
       setLoadingData(true);
+
+      setSession(userSessionField);
 
       const dateStrField: string =
         modalDataField && modalDataField.dateStr ? modalDataField.dateStr : '';
@@ -254,9 +264,9 @@ export default function SessionModal({
     }
 
     if (modalData) {
-      setupData(modalData);
+      setupData(modalData, userSession);
     }
-  }, [modalData]);
+  }, [modalData, userSession]);
 
   const columns = useMemo(
     () => [
@@ -297,6 +307,7 @@ export default function SessionModal({
             onClose={() => setSpecificSessionData(null)}
             modalData={specificSession}
             dataHandler={handleModalSuccessEdit}
+            userSession={session}
           />
 
           <SessionDeleteConfirmationModal

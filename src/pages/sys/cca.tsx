@@ -42,6 +42,7 @@ export default function CCA(props: any) {
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
   const [calendarThreshold, setCalendarThreshold] = useState('');
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     async function generate(propsField: any) {
@@ -92,6 +93,10 @@ export default function CCA(props: any) {
 
       if (propsField.threshold) {
         setCalendarThreshold(propsField.threshold);
+      }
+
+      if (propsField.session) {
+        setSession(propsField.session);
       }
 
       setSubmitButtonPressed(false);
@@ -191,11 +196,13 @@ export default function CCA(props: any) {
         onClose={() => setLeaderModalData(null)}
         calendarThreshold={calendarThreshold}
         modalData={leaderModalData}
+        userSession={session}
       />
       <MemberModalComponent
         isOpen={memberModalData}
         onClose={() => setMemberModalData(null)}
         modalData={memberModalData}
+        userSession={session}
       />
     </Auth>
   );
@@ -208,8 +215,10 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
   );
 
   let data: Result | null = null;
+  let session: Session | null = null;
+
   try {
-    const session: Session | null = await currentSession(null, null, cont);
+    session = await currentSession(null, null, cont);
     if (session !== null) {
       const res: Result = await fetchAllCCARecordByUserWDetails(session);
       const stringifiedData = safeJsonStringify(res);
@@ -222,6 +231,7 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
   return {
     props: {
       data: data,
+      session: session,
       threshold: process.env.SESSION_EDITABLE_DAY,
     },
   };

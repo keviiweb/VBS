@@ -10,6 +10,9 @@ import {
 import { isLeader } from '@helper/sys/cca/ccaRecord';
 import { deleteAttendanceBySessionID } from '@helper/sys/cca/ccaAttendance';
 
+import hasPermission from '@constants/sys/permission';
+import { actions } from '@constants/sys/admin';
+
 /**
  * Delete the CCA session
  *
@@ -34,6 +37,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (session !== null && session !== undefined) {
     const sessionID: string = (id as string).trim();
     if (sessionID !== undefined) {
+      const userPermission: boolean = hasPermission(
+        session.user.admin,
+        actions.OVERRIDE_DELETE_SESSION,
+      );
+
       const sessionRes: Result = await findCCASessionByID(sessionID, session);
       if (sessionRes.status && sessionRes.msg) {
         const ccaSession: CCASession = sessionRes.msg;
@@ -41,9 +49,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           ? ccaSession.editable === true
           : false;
 
-        if (editable) {
+        if (userPermission || editable) {
           const ldrRes: Result = await isLeader(ccaSession.ccaID, session);
-          if (ldrRes.status && ldrRes.msg) {
+          if (userPermission || (ldrRes.status && ldrRes.msg)) {
             const deleteAttendanceRes: Result =
               await deleteAttendanceBySessionID(id, session);
             if (deleteAttendanceRes.status) {

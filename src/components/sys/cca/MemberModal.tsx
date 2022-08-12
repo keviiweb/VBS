@@ -24,6 +24,8 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { Result } from 'types/api';
 import { CCASession } from 'types/cca/ccaSession';
+import { Session } from 'next-auth/core/types';
+
 import SessionModal from '@components/sys/cca/SessionModal';
 
 /**
@@ -36,6 +38,7 @@ export default function LeaderStudentModalComponent({
   isOpen,
   onClose,
   modalData,
+  userSession,
 }) {
   const [specificCCAData, setSpecificCCAData] = useState<CCASession | null>(
     null,
@@ -60,6 +63,8 @@ export default function LeaderStudentModalComponent({
   const ccaRecordIDDB = useRef('');
   const ccaNameDB = useRef('');
 
+  const [session, setSession] = useState<Session | null>(null);
+
   const reset = () => {
     setSpecificCCAData(null);
     setLoadingData(true);
@@ -76,6 +81,8 @@ export default function LeaderStudentModalComponent({
 
     ccaRecordIDDB.current = '';
     ccaNameDB.current = '';
+
+    setSession(null);
   };
 
   const handleModalCloseButton = () => {
@@ -209,8 +216,13 @@ export default function LeaderStudentModalComponent({
   );
 
   useEffect(() => {
-    async function setupData(modalDataField: CCASession) {
+    async function setupData(
+      modalDataField: CCASession,
+      userSessionField: Session | null,
+    ) {
       if (modalData) {
+        setSession(userSessionField);
+
         const ccaRecordField: string =
           modalDataField && modalDataField.ccaID ? modalDataField.ccaID : '';
         ccaRecordIDDB.current = ccaRecordField;
@@ -229,9 +241,9 @@ export default function LeaderStudentModalComponent({
 
     if (modalData) {
       setData([]);
-      setupData(modalData);
+      setupData(modalData, userSession);
     }
-  }, [modalData, tableChange, fetchAttendance]);
+  }, [modalData, userSession, tableChange, fetchAttendance]);
 
   const columns = useMemo(
     () => [
@@ -272,6 +284,7 @@ export default function LeaderStudentModalComponent({
             modalData={specificCCAData}
             leader={false}
             dataHandler={null}
+            userSession={session}
           />
 
           <LoadingModal

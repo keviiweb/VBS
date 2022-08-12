@@ -36,6 +36,7 @@ import { CCASession } from 'types/cca/ccaSession';
 import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
 import { CCAAttendance } from 'types/cca/ccaAttendance';
+import { Session } from 'next-auth/core/types';
 
 import { checkerString } from '@constants/sys/helper';
 import { timeSlots } from '@constants/sys/timeslot';
@@ -47,8 +48,11 @@ import {
   fetchCurrentDate,
   locale,
 } from '@constants/sys/date';
+import { removeDuplicate } from '@constants/sys/ccaAttendance';
+import hasPermission from '@constants/sys/permission';
+import { actions } from '@constants/sys/admin';
+
 import moment from 'moment';
-import { removeDuplicate } from '@helper/sys/cca/ccaAttendance';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -85,6 +89,7 @@ export default function SessionEditModal({
   onClose,
   modalData,
   dataHandler,
+  userSession,
 }) {
   const toast = useToast();
 
@@ -160,6 +165,8 @@ export default function SessionEditModal({
   >([]);
   const realityMemberHours = useRef<CCAAttendance[]>([]);
 
+  const [session, setSession] = useState<Session | null>(null);
+
   const reset = () => {
     selectedData.current = null;
     setConfirmationData(null);
@@ -214,6 +221,8 @@ export default function SessionEditModal({
 
     selectedRealityMembersName.current = [];
     realityMemberHours.current = [];
+
+    setSession(null);
   };
 
   const handleModalCloseButton = useCallback(async () => {
@@ -801,9 +810,14 @@ export default function SessionEditModal({
   }, [buildMemberList]);
 
   useEffect(() => {
-    async function setupData(modalDataField: CCASession) {
+    async function setupData(
+      modalDataField: CCASession,
+      userSessionField: Session | null,
+    ) {
       setLoadingData(true);
       setSubmitButtonPressed(true);
+
+      setSession(userSessionField);
 
       const editableField: boolean =
         modalDataField && modalDataField.editable
@@ -914,9 +928,9 @@ export default function SessionEditModal({
     }
 
     if (modalData) {
-      setupData(modalData);
+      setupData(modalData, userSession);
     }
-  }, [modalData, generateTimeSlots, generateMemberList]);
+  }, [modalData, userSession, generateTimeSlots, generateMemberList]);
 
   return (
     <Modal
@@ -945,7 +959,12 @@ export default function SessionEditModal({
             onClose={() => setSubmitButtonPressed(false)}
           />
 
-          {editable && (
+          {(editable ||
+            (session !== null &&
+              hasPermission(
+                session.user.admin,
+                actions.OVERRIDE_EDIT_SESSION,
+              ))) && (
             <Box>
               {checkerString(ccaName) && (
                 <Stack spacing={5} w='full' align='center'>
@@ -1360,10 +1379,15 @@ export default function SessionEditModal({
             </Box>
           )}
 
-          {!editable && (
-            <Box>
-              <Text>Sorry, this session is not editable.</Text>
-            </Box>
+          {!editable &&
+            session !== null &&
+            !hasPermission(
+              session.user.admin,
+              actions.OVERRIDE_EDIT_SESSION,
+            ) && (
+              <Box>
+                <Text>Sorry, this session is not editable.</Text>
+              </Box>
           )}
         </ModalBody>
         <ModalFooter>

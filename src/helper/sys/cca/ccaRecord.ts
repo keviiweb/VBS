@@ -5,8 +5,10 @@ import { Session } from 'next-auth/core/types';
 
 import { prisma } from '@constants/sys/db';
 import { checkerString } from '@constants/sys/helper';
+import hasPermission from '@constants/sys/permission';
+import { actions } from '@constants/sys/admin';
 
-import { findCCAbyID, findCCAbyName } from '@helper/sys/cca/cca';
+import { findAllCCA, findCCAbyID, findCCAbyName } from '@helper/sys/cca/cca';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
 import { logger } from '@helper/sys/misc/logger';
 
@@ -93,29 +95,59 @@ export const fetchAllCCARecordByUserWDetails = async (
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
-    const query: Result = await fetchAllCCARecordByUser(session);
+    let query: Result;
+    let permission: boolean = hasPermission(
+      session.user.admin,
+      actions.FETCH_ALL_CCA,
+    );
 
+    if (permission) {
+      query = await findAllCCA(session);
+    } else {
+      query = await fetchAllCCARecordByUser(session);
+    }
+
+    const parsedCCARecord: CCARecord[] = [];
     if (query.status) {
-      const ccaData: CCARecord[] = query.msg;
-      const parsedCCARecord: CCARecord[] = [];
-
-      if (ccaData.length > 0) {
+      if (permission) {
+        const ccaData: CCA[] = query.msg;
         for (let ven = 0; ven < ccaData.length; ven += 1) {
           if (ccaData[ven]) {
-            const record: CCARecord = ccaData[ven];
-            const { ccaID } = record;
-            const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
-            if (ccaDetailsRes.status && ccaDetailsRes.msg) {
-              const ccaDetails: CCA = ccaDetailsRes.msg;
+            const ccaDetails: CCA = ccaData[ven];
+            if (ccaDetails.id !== undefined) {
               const data: CCARecord = {
-                id: record.id,
-                ccaID: record.ccaID,
-                leader: record.leader,
+                id: ccaDetails.id,
+                ccaID: ccaDetails.id,
+                leader: true,
                 ccaName: ccaDetails.name,
                 image: ccaDetails.image,
               };
 
               parsedCCARecord.push(data);
+            }
+          }
+        }
+      } else {
+        const ccaData: CCARecord[] = query.msg;
+
+        if (ccaData.length > 0) {
+          for (let ven = 0; ven < ccaData.length; ven += 1) {
+            if (ccaData[ven]) {
+              const record: CCARecord = ccaData[ven];
+              const { ccaID } = record;
+              const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
+              if (ccaDetailsRes.status && ccaDetailsRes.msg) {
+                const ccaDetails: CCA = ccaDetailsRes.msg;
+                const data: CCARecord = {
+                  id: record.id,
+                  ccaID: record.ccaID,
+                  leader: record.leader,
+                  ccaName: ccaDetails.name,
+                  image: ccaDetails.image,
+                };
+
+                parsedCCARecord.push(data);
+              }
             }
           }
         }

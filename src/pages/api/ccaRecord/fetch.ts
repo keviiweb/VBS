@@ -21,6 +21,9 @@ import {
 } from '@helper/sys/cca/ccaAttendance';
 import { countTotalSessionHoursByCCAID } from '@helper/sys/cca/ccaSession';
 
+import hasPermission from '@constants/sys/permission';
+import { actions } from '@constants/sys/admin';
+
 /**
  * Fetches the list of CCA records filtered by CCA ID
  *
@@ -51,9 +54,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       ccaIDRes = (id as string).trim();
     }
 
+    const userPermission: boolean = hasPermission(
+      session.user.admin,
+      actions.FETCH_USER_CCA_RECORD,
+    );
+
     if (ccaIDRes !== undefined) {
       const checkLdr: Result = await isLeader(ccaIDRes, session);
-      if (checkLdr.status && checkLdr.msg) {
+      if (userPermission || (checkLdr.status && checkLdr.msg)) {
         const limitQuery = req.body.limit;
         const skipQuery = req.body.skip;
         const limit: number =

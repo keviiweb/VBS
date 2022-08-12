@@ -11,8 +11,9 @@ import {
   isConflict,
   lockSession,
 } from '@helper/sys/cca/ccaSession';
-import { editAttendance, removeDuplicate } from '@helper/sys/cca/ccaAttendance';
+import { editAttendance } from '@helper/sys/cca/ccaAttendance';
 
+import { removeDuplicate } from '@constants/sys/ccaAttendance';
 import {
   isValidDate,
   compareDate,
@@ -20,6 +21,8 @@ import {
   fetchCurrentDate,
   dateISO,
 } from '@constants/sys/date';
+import hasPermission from '@constants/sys/permission';
+import { actions } from '@constants/sys/admin';
 
 /**
  * Edit the CCA session
@@ -43,6 +46,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (session !== null && session !== undefined) {
     if (data !== null && data !== undefined) {
+      const userPermission: boolean = hasPermission(
+        session.user.admin,
+        actions.OVERRIDE_EDIT_SESSION,
+      );
+
       const parsedData: CCASession = data as CCASession;
       const editable: boolean = parsedData.editable
         ? parsedData.editable === true
@@ -60,7 +68,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         if (
           sessionDate <= currentDate &&
-          !compareDate(sessionDate, threshold)
+          !compareDate(sessionDate, threshold) &&
+          !userPermission
         ) {
           let lockSessionSuccess = true;
           if (editable) {
@@ -90,9 +99,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         } else {
           const findCCA: Result = await findCCAbyID(parsedData.ccaID, session);
           if (findCCA.status && findCCA.msg) {
-            if (editable) {
+            if (userPermission || editable) {
               const ldrRes: Result = await isLeader(parsedData.ccaID, session);
-              if (ldrRes.status && ldrRes.msg) {
+              if (userPermission || (ldrRes.status && ldrRes.msg)) {
                 const expectedM: string =
                   parsedData && parsedData.expectedM
                     ? parsedData.expectedM.trim()

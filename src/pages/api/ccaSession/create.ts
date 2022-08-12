@@ -7,6 +7,9 @@ import { findCCAbyID } from '@helper/sys/cca/cca';
 import { isLeader } from '@helper/sys/cca/ccaRecord';
 import { createSession, isConflict } from '@helper/sys/cca/ccaSession';
 
+import hasPermission from '@constants/sys/permission';
+import { actions } from '@constants/sys/admin';
+
 /**
  * Create a new CCA session
  *
@@ -31,10 +34,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (data !== null && data !== undefined) {
       const parsedData: CCASession = data as CCASession;
 
+      const userPermission: boolean = hasPermission(
+        session.user.admin,
+        actions.OVERRIDE_CREATE_SESSION,
+      );
+
       const findCCA: Result = await findCCAbyID(parsedData.ccaID, session);
       if (findCCA.status && findCCA.msg) {
         const ldrRes: Result = await isLeader(parsedData.ccaID, session);
-        if (ldrRes.status && ldrRes.msg) {
+        if (userPermission || (ldrRes.status && ldrRes.msg)) {
           const expectedM: string =
             parsedData && parsedData.expectedM
               ? parsedData.expectedM.trim()

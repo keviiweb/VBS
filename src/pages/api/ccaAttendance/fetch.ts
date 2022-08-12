@@ -11,14 +11,16 @@ import {
   countAllCCASessionByCCAID,
   fetchAllCCASessionByCCAID,
 } from '@helper/sys/cca/ccaSession';
-import { splitHours } from '@constants/sys/helper';
+import { isLeader } from '@helper/sys/cca/ccaRecord';
 
+import { splitHours } from '@constants/sys/helper';
 import {
   convertUnixToDate,
   dateISO,
   calculateDuration,
 } from '@constants/sys/date';
-import { isLeader } from '@helper/sys/cca/ccaRecord';
+import hasPermission from '@constants/sys/permission';
+import { actions } from '@constants/sys/admin';
 
 /**
  * Fetches the list of CCA attendance by the specific user email and CCA ID
@@ -53,9 +55,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       userEmail = (email as string).trim();
     }
 
+    const userPermission: boolean = hasPermission(
+      session.user.admin,
+      actions.FETCH_ALL_CCA_ATTENDANCE,
+    );
+
     if (ccaID !== undefined && userEmail !== undefined) {
       const checkLdr: Result = await isLeader(ccaID, session);
-      if (checkLdr.status && checkLdr.msg) {
+      if (userPermission || (checkLdr.status && checkLdr.msg)) {
         const limitQuery = req.body.limit;
         const skipQuery = req.body.skip;
         const limit: number =

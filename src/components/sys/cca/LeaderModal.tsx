@@ -54,6 +54,10 @@ import { CCAAttendance } from 'types/cca/ccaAttendance';
 import moment from 'moment';
 import { CSVLink } from 'react-csv';
 
+import hasPermission from '@constants/sys/permission';
+import { actions } from '@constants/sys/admin';
+import { Session } from 'next-auth/core/types';
+
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
 
@@ -85,6 +89,7 @@ export default function LeaderModalComponent({
   onClose,
   calendarThreshold,
   modalData,
+  userSession,
 }) {
   const [specificMemberData, setSpecificMemberData] =
     useState<CCARecord | null>(null);
@@ -151,6 +156,8 @@ export default function LeaderModalComponent({
 
   const [CSVdataSession, setCSVdataSession] = useState<CCASession[]>([]);
 
+  const [session, setSession] = useState<Session | null>(null);
+
   const variantButtons = useBreakpointValue({
     base: 'column' as StackDirection,
     lg: 'row' as StackDirection,
@@ -187,6 +194,8 @@ export default function LeaderModalComponent({
     setDownloadCSV(false);
     setCSVdata([]);
     setCSVdataSession([]);
+
+    setSession(null);
   };
 
   const handleModalCloseButton = () => {
@@ -277,7 +286,11 @@ export default function LeaderModalComponent({
 
   const generateActionButtonSession = useCallback(
     async (content: CCASession) => {
-      if (content.editable) {
+      if (
+        content.editable ||
+        (session !== null &&
+          hasPermission(session.user.admin, actions.OVERRIDE_EDIT_SESSION))
+      ) {
         const button: JSX.Element = (
           <Popover>
             <PopoverTriggerNew>
@@ -360,6 +373,7 @@ export default function LeaderModalComponent({
     },
     [
       submitButtonPressed,
+      session,
       handleDetailsSession,
       handleEditSession,
       handleDeleteSession,
@@ -614,7 +628,7 @@ export default function LeaderModalComponent({
   }, [handleFetchAttendance, fetchSessionOverall]);
 
   useEffect(() => {
-    async function setupData() {
+    async function setupData(userSessionField: Session | null) {
       if (modalData) {
         const ccaNameField: string =
           modalData && modalData.ccaName ? modalData.ccaName : '';
@@ -624,14 +638,16 @@ export default function LeaderModalComponent({
           modalData && modalData.ccaID ? modalData.ccaID : '';
 
         await buildDropDownMenu();
+
+        setSession(userSessionField);
       }
     }
 
     if (modalData) {
       setData([]);
-      setupData();
+      setupData(userSession);
     }
-  }, [modalData, buildDropDownMenu]);
+  }, [modalData, userSession, buildDropDownMenu]);
 
   const columnsSession = useMemo(
     () => [
@@ -716,6 +732,7 @@ export default function LeaderModalComponent({
             onClose={() => setSpecificSessionData(null)}
             modalData={specificSession}
             dataHandler={successEditSession}
+            userSession={session}
           />
 
           <LeaderStudentModalComponent
@@ -730,6 +747,7 @@ export default function LeaderModalComponent({
             modalData={specificCCAData}
             leader
             dataHandler={successEditSession}
+            userSession={session}
           />
 
           <LoadingModal

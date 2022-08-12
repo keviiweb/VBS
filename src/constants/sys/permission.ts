@@ -1,5 +1,4 @@
 import { actions, levels } from '@constants/sys/admin';
-import { Session } from 'next-auth/core/types';
 
 /**
  * The different types of actions each level can perform
@@ -27,6 +26,14 @@ mappings.set(actions.DELETE_ANNOUNCEMENT, [levels.ADMIN, levels.OWNER]);
 
 // CCA Attendance
 mappings.set(actions.FETCH_ALL_CCA_ATTENDANCE, [levels.ADMIN, levels.OWNER]);
+
+// CCA Session
+mappings.set(actions.OVERRIDE_CREATE_SESSION, [levels.ADMIN, levels.OWNER]);
+mappings.set(actions.OVERRIDE_EDIT_SESSION, [levels.ADMIN, levels.OWNER]);
+mappings.set(actions.OVERRIDE_DELETE_SESSION, [levels.ADMIN, levels.OWNER]);
+
+// CCA
+mappings.set(actions.FETCH_ALL_CCA, [levels.OWNER]);
 
 // CCA Record
 mappings.set(actions.POPULATE_CCA_RECORD, [levels.OWNER]);
