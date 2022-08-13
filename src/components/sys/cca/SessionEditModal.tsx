@@ -227,8 +227,9 @@ export default function SessionEditModal({
 
   const handleModalCloseButton = useCallback(async () => {
     setTimeout(async () => {
-      reset();
+      setSubmitButtonPressed(true);
       await dataHandler();
+      reset();
       onClose();
     }, 200);
   }, [dataHandler, onClose]);
@@ -1391,7 +1392,12 @@ export default function SessionEditModal({
           )}
         </ModalBody>
         <ModalFooter>
-          {editable && (
+          {(editable ||
+            (session !== null &&
+              hasPermission(
+                session.user.admin,
+                actions.OVERRIDE_EDIT_SESSION,
+              ))) && (
             <Box>
               {progressLevel !== levels.TIME && (
                 <Button

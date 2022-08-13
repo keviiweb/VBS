@@ -287,9 +287,9 @@ export default function LeaderModalComponent({
   const generateActionButtonSession = useCallback(
     async (content: CCASession) => {
       if (
-        content.editable ||
         (session !== null &&
-          hasPermission(session.user.admin, actions.OVERRIDE_EDIT_SESSION))
+          hasPermission(session.user.admin, actions.OVERRIDE_EDIT_SESSION)) ||
+        content.editable
       ) {
         const button: JSX.Element = (
           <Popover>
@@ -639,6 +639,7 @@ export default function LeaderModalComponent({
 
         await buildDropDownMenu();
 
+        console.log(`LeaderModal: ${userSessionField}`);
         setSession(userSessionField);
       }
     }

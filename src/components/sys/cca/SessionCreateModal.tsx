@@ -189,8 +189,9 @@ export default function SessionCreateModal({
 
   const handleModalCloseButton = useCallback(async () => {
     setTimeout(async () => {
-      reset();
+      setSubmitButtonPressed(true);
       await dataHandler();
+      reset();
       onClose();
     }, 200);
   }, [dataHandler, onClose]);

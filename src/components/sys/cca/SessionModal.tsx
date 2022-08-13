@@ -26,6 +26,8 @@ import { CCAAttendance } from 'types/cca/ccaAttendance';
 
 import { checkerString } from '@constants/sys/helper';
 import { removeDuplicate } from '@constants/sys/ccaAttendance';
+import hasPermission from '@constants/sys/permission';
+import { actions } from '@constants/sys/admin';
 
 import LoadingModal from '@components/sys/misc/LoadingModal';
 import TableWidget from '@components/sys/misc/TableWidget';
@@ -209,7 +211,6 @@ export default function SessionModal({
       userSessionField: Session | null,
     ) {
       setLoadingData(true);
-
       setSession(userSessionField);
 
       const dateStrField: string =
@@ -492,8 +493,13 @@ export default function SessionModal({
                         </List>
                       </Box>
 
-                      {leader && (
-                        <Stack direction='row'>
+                      <Stack direction='row'>
+                        {((session !== null &&
+                          hasPermission(
+                            session.user.admin,
+                            actions.OVERRIDE_DELETE_SESSION,
+                          )) ||
+                          (editable && leader)) && (
                           <Button
                             key='delete-button'
                             bg='gray.400'
@@ -505,21 +511,27 @@ export default function SessionModal({
                           >
                             Delete
                           </Button>
-                          {editable && (
-                            <Button
-                              key='edit-button'
-                              bg='red.700'
-                              color='white'
-                              w='150px'
-                              size='lg'
-                              onClick={handleEdit}
-                              _hover={{ bg: 'cyan.800' }}
-                            >
-                              Edit
-                            </Button>
-                          )}
-                        </Stack>
-                      )}
+                        )}
+
+                        {((session !== null &&
+                          hasPermission(
+                            session.user.admin,
+                            actions.OVERRIDE_EDIT_SESSION,
+                          )) ||
+                          (editable && leader)) && (
+                          <Button
+                            key='edit-button'
+                            bg='red.700'
+                            color='white'
+                            w='150px'
+                            size='lg'
+                            onClick={handleEdit}
+                            _hover={{ bg: 'cyan.800' }}
+                          >
+                            Edit
+                          </Button>
+                        )}
+                      </Stack>
                     </Stack>
                   </Stack>
                 </Flex>

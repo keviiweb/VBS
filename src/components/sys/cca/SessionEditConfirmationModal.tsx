@@ -118,9 +118,10 @@ export default function SessionEditConfirmationModal({
     }, 200);
   };
 
-  const handleModalCloseSuccess = useCallback(() => {
-    setTimeout(() => {
-      dataHandler();
+  const handleModalCloseSuccess = useCallback(async () => {
+    setTimeout(async () => {
+      setSubmitButtonPressed(true);
+      await dataHandler();
       reset();
       onClose();
     }, 200);

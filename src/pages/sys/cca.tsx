@@ -95,8 +95,8 @@ export default function CCA(props: any) {
         setCalendarThreshold(propsField.threshold);
       }
 
-      if (propsField.session) {
-        setSession(propsField.session);
+      if (propsField.userSession) {
+        setSession(propsField.userSession);
       }
 
       setSubmitButtonPressed(false);
@@ -231,7 +231,7 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
   return {
     props: {
       data: data,
-      session: session,
+      userSession: session,
       threshold: process.env.SESSION_EDITABLE_DAY,
     },
   };
