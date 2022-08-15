@@ -39,35 +39,38 @@ export default function Auth({ children, admin }) {
           (!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
         ) {
           devSession.current = await currentSession();
-          if (
-            isAdmin &&
-            devSession.current !== null &&
-            devSession.current.user !== null
-          ) {
+          if (devSession.current !== null && devSession.current.user !== null) {
+            if (!devSession.current.user.acceptedTerm) {
+              router.push('/sys/acceptTerms');
+            } else if (isAdmin) {
+              const permission: boolean = hasPermission(
+                devSession.current.user.admin,
+                actions.VIEW_ADMIN_PAGE,
+              );
+
+              if (permission !== null && !permission) {
+                router.push('/sys/unauthorized');
+              }
+            }
+          }
+        } else if (!loading && !hasUser) {
+          router.push('/sys/signin');
+        } else if (
+          session !== null &&
+          session.user !== null &&
+          status === 'authenticated'
+        ) {
+          if (!session.user.acceptedTerm) {
+            router.push('/sys/acceptTerms');
+          } else if (isAdmin) {
             const permission: boolean = hasPermission(
-              devSession.current.user.admin,
+              session.user.admin,
               actions.VIEW_ADMIN_PAGE,
             );
 
             if (permission !== null && !permission) {
               router.push('/sys/unauthorized');
             }
-          }
-        } else if (!loading && !hasUser) {
-          router.push('/sys/signin');
-        } else if (
-          isAdmin &&
-          session !== null &&
-          session.user !== null &&
-          status === 'authenticated'
-        ) {
-          const permission: boolean = hasPermission(
-            session.user.admin,
-            actions.VIEW_ADMIN_PAGE,
-          );
-
-          if (permission !== null && !permission) {
-            router.push('/sys/unauthorized');
           }
         }
       } catch (error) {

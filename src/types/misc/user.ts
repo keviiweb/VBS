@@ -7,6 +7,8 @@ export type User = {
   admin: number;
   adminStr?: string;
   roomNum: string;
+  acceptedTerm?: boolean;
+  acceptedTermStr?: string;
   updated_at?: string;
   action?: any;
 };

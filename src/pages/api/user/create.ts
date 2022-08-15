@@ -55,6 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         roomNum: roomNumField,
         studentID: studentIDField,
         admin: adminField,
+        acceptedTerm: false,
       };
 
       const userRes = await createUser(user, session);

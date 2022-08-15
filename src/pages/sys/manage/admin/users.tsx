@@ -542,6 +542,10 @@ export default function ManageUsers(props: any) {
         accessor: 'adminStr',
       },
       {
+        Header: 'Accepted Terms',
+        accessor: 'acceptedTermStr',
+      },
+      {
         Header: 'Actions',
         accessor: 'action',
       },

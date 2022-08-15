@@ -47,6 +47,73 @@ export const fetchUserByEmail = async (
 };
 
 /**
+ * Accepts the terms and condition for the user
+ *
+ * @param data User object
+ * @returns A Result containing the status wrapped in a Promise
+ */
+export const acceptTermsForUser = async (
+  data: User,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    const user: User = await prisma.users.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        acceptedTerm: true,
+      },
+    });
+
+    if (user) {
+      if (data.id !== undefined && checkerString(data.id)) {
+        await logger(
+          `acceptTermsForUser - ${data.id}`,
+          session.user.email,
+          `Successfully accepted terms for ${user.name}`,
+        );
+      }
+      result = {
+        status: true,
+        error: '',
+        msg: `Successfully accepted terms for ${user.name}`,
+      };
+    } else {
+      if (data.id !== undefined && checkerString(data.id)) {
+        await logger(
+          `acceptTermsForUser - ${data.id}`,
+          session.user.email,
+          'Failed to accepted terms for user',
+        );
+      }
+      result = {
+        status: false,
+        error: 'Failed to accepted terms for user',
+        msg: '',
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    result = {
+      status: false,
+      error: 'Failed to accepted terms for user',
+      msg: '',
+    };
+    if (data.id !== undefined && checkerString(data.id)) {
+      await logger(
+        `acceptTermsForUser - ${data.id}`,
+        session.user.email,
+        error.message,
+      );
+    }
+  }
+
+  return result;
+};
+
+/**
  * Creates a new User
  *
  * @param data User Object

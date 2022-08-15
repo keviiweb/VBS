@@ -43,6 +43,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
   const [roomNum, setRoomNum] = useState('');
   const [studentID, setStudentID] = useState('');
   const [adminStr, setAdminStr] = useState('');
+  const [acceptedTermStr, setAcceptedTermStr] = useState('');
 
   const [ccaList, setCCAList] = useState<JSX.Element[]>([]);
 
@@ -55,8 +56,11 @@ export default function UserModal({ isOpen, onClose, modalData }) {
     setRoomNum('');
     setStudentID('');
     setAdminStr('');
+    setAcceptedTermStr('');
 
     setCCAList([]);
+
+    setSubmitButtonPressed(false);
   }, []);
 
   const handleModalCloseButton = () => {
@@ -157,6 +161,15 @@ export default function UserModal({ isOpen, onClose, modalData }) {
         setAdminStr(modalDataField.adminStr);
       } else {
         setAdminStr('');
+      }
+
+      if (
+        modalDataField.acceptedTermStr &&
+        checkerString(modalDataField.acceptedTermStr)
+      ) {
+        setAcceptedTermStr(modalDataField.acceptedTermStr);
+      } else {
+        setAcceptedTermStr('');
       }
 
       await fetchCCARecords(modalDataField.email);
@@ -267,6 +280,14 @@ export default function UserModal({ isOpen, onClose, modalData }) {
                                 Admin:{' '}
                               </Text>
                               {adminStr}
+                            </ListItem>
+                          )}
+                          {checkerString(acceptedTermStr) && (
+                            <ListItem key='user-acceptedTerm'>
+                              <Text as='span' fontWeight='bold'>
+                                Accepted Terms and Conditions:{' '}
+                              </Text>
+                              {acceptedTermStr}
                             </ListItem>
                           )}
 

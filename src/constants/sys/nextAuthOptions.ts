@@ -516,6 +516,10 @@ export const options = {
             newSession.user.admin = userFromDB.admin;
             newSession.user.roomNum = userFromDB.roomNum;
 
+            if (userFromDB.acceptedTerm !== undefined) {
+              newSession.user.acceptedTerm = userFromDB.acceptedTerm;
+            }
+
             return newSession;
           }
         } else {

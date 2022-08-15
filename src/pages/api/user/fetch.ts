@@ -53,6 +53,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             const user: User = userData[ven];
 
             const isAdmin: string = user.admin ? 'Yes' : 'No';
+            const acceptedTermStr: string = user.acceptedTerm ? 'Yes' : 'No';
 
             const data: User = {
               id: user.id,
@@ -62,6 +63,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               email: user.email,
               admin: user.admin,
               adminStr: isAdmin,
+              acceptedTermStr: acceptedTermStr,
             };
 
             parsedUser.push(data);

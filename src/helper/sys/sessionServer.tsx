@@ -29,6 +29,7 @@ export const currentSession = async (
         admin: levels.OWNER,
         studentID: 'A7654321',
         roomNum: 'C124',
+        acceptedTerm: true,
       },
     };
 

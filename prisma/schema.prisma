@@ -36,6 +36,7 @@ model Users {
   admin      Int?     @default(0)
   studentID  String?   @unique(map: "studentID")
   roomNum   String?    @unique
+  acceptedTerm Boolean @default(false)
 }
 
 model VerificationToken {
