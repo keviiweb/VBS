@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTable, usePagination } from 'react-table';
 import {
   Flex,
@@ -69,9 +69,12 @@ export default function TableWidget({
   const variantDesktop = useBreakpointValue({ base: 'none', md: 'flex' });
   const variantMobile = useBreakpointValue({ base: 'flex', md: 'none' });
 
+  const buttonClicked = useRef(false);
+
   useEffect(() => {
     async function sendData() {
-      if (dataHandler) {
+      if (dataHandler && buttonClicked.current) {
+        buttonClicked.current = false;
         await dataHandler({ pageIndex, pageSize });
       }
     }
@@ -142,7 +145,10 @@ export default function TableWidget({
           <Flex>
             <Tooltip label='First Page'>
               <IconButton
-                onClick={() => gotoPage(0)}
+                onClick={() => {
+                  buttonClicked.current = true;
+                  gotoPage(0);
+                }}
                 isDisabled={!canPreviousPage}
                 icon={<ArrowLeftIcon h={3} w={3} />}
                 mr={4}
@@ -151,7 +157,10 @@ export default function TableWidget({
             </Tooltip>
             <Tooltip label='Previous Page'>
               <IconButton
-                onClick={previousPage}
+                onClick={() => {
+                  buttonClicked.current = true;
+                  previousPage();
+                }}
                 isDisabled={!canPreviousPage}
                 icon={<ChevronLeftIcon h={6} w={6} />}
                 aria-label=''
@@ -179,6 +188,7 @@ export default function TableWidget({
               max={pageOptions.length}
               onChange={(value) => {
                 const pageID = Number(value) ? Number(value) - 1 : 0;
+                buttonClicked.current = true;
                 gotoPage(pageID);
               }}
               defaultValue={pageIndex + 1}
@@ -193,6 +203,7 @@ export default function TableWidget({
               w={32}
               value={pageSize}
               onChange={(e) => {
+                buttonClicked.current = true;
                 setPageSize(Number(e.target.value));
               }}
             >
@@ -207,7 +218,10 @@ export default function TableWidget({
           <Flex>
             <Tooltip label='Next Page'>
               <IconButton
-                onClick={nextPage}
+                onClick={() => {
+                  buttonClicked.current = true;
+                  nextPage();
+                }}
                 isDisabled={!canNextPage}
                 icon={<ChevronRightIcon h={6} w={6} />}
                 aria-label=''
@@ -215,7 +229,10 @@ export default function TableWidget({
             </Tooltip>
             <Tooltip label='Last Page'>
               <IconButton
-                onClick={() => gotoPage(pageCount - 1)}
+                onClick={() => {
+                  buttonClicked.current = true;
+                  gotoPage(pageCount - 1)
+                }}
                 isDisabled={!canNextPage}
                 icon={<ArrowRightIcon h={3} w={3} />}
                 ml={4}

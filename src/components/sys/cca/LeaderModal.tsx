@@ -118,6 +118,7 @@ export default function LeaderModalComponent({
   const selectionChoiceDB = useRef(0);
 
   const [data, setData] = useState<CCARecord[]>([]);
+  const [dataSession, setDataSession] = useState<CCASession[]>([]);
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
@@ -125,8 +126,12 @@ export default function LeaderModalComponent({
   const PAGEINDEX: number = 0;
 
   const [pageCount, setPageCount] = useState(0);
+  const [pageCountSession, setPageCountSession] = useState(0);
   const pageSizeDB = useRef(PAGESIZE);
   const pageIndexDB = useRef(PAGEINDEX);
+
+  const pageSizeSessionDB = useRef(PAGESIZE);
+  const pageIndexSessionDB = useRef(PAGEINDEX);
 
   const [downloadCSV, setDownloadCSV] = useState(false);
 
@@ -185,11 +190,16 @@ export default function LeaderModalComponent({
     selectionChoiceDB.current = 0;
 
     setData([]);
+    setDataSession([]);
     setSubmitButtonPressed(false);
 
     setPageCount(0);
+    setPageCountSession(0);
     pageSizeDB.current = PAGESIZE;
     pageIndexDB.current = PAGEINDEX;
+
+    pageSizeSessionDB.current = PAGESIZE;
+    pageIndexSessionDB.current = PAGEINDEX;
 
     setDownloadCSV(false);
     setCSVdata([]);
@@ -401,6 +411,7 @@ export default function LeaderModalComponent({
 
                 const buttons = await generateActionButtonSession(dataField);
                 dataField.action = buttons;
+                
                 break;
               }
               default:
@@ -408,15 +419,46 @@ export default function LeaderModalComponent({
             }
           }
         }
-        setData(content.res);
 
-        if (content.count % pageSizeDB.current === 0) {
-          setPageCount(Math.floor(content.count / pageSizeDB.current));
-        } else {
-          setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
+        switch (action) {
+          case choice.MEMBER: {
+            const dataS: CCARecord[] = content.res as CCARecord[];
+            setData(dataS);
+            if (content.count % pageSizeDB.current === 0) {
+              setPageCount(Math.floor(content.count / pageSizeDB.current));
+            } else {
+              setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
+            }
+            break;
+          }
+          case choice.SESSION: {
+            const dataS: CCASession[] = content.res as CCASession[];
+            setDataSession(dataS);
+            if (content.count % pageSizeSessionDB.current === 0) {
+              setPageCountSession(Math.floor(content.count / pageSizeSessionDB.current));
+            } else {
+              setPageCountSession(Math.floor(content.count / pageSizeSessionDB.current) + 1);
+            }
+            break;
+          }
+          default:
+            break;
         }
+          
+      
       } else {
-        setData([]);
+        switch (action) {
+          case choice.MEMBER: {
+            setData([]);
+            break;
+          }
+          case choice.SESSION: {
+            setDataSession([]);
+            break;
+          }
+          default:
+            break;
+        }
       }
     },
     [generateActionButtonRecord, generateActionButtonSession],
@@ -434,8 +476,8 @@ export default function LeaderModalComponent({
             },
             body: JSON.stringify({
               id: id,
-              limit: pageSizeDB.current,
-              skip: pageIndexDB.current,
+              limit: pageSizeSessionDB.current,
+              skip: pageIndexSessionDB.current,
             }),
           });
           const content: Result = await rawResponse.json();
@@ -487,6 +529,7 @@ export default function LeaderModalComponent({
   const fetchMembers = useCallback(
     async (id: string) => {
       if (checkerString(id)) {
+        console.log('fetchMembers called');
         try {
           const rawResponse = await fetch('/api/ccaRecord/fetch', {
             method: 'POST',
@@ -502,15 +545,13 @@ export default function LeaderModalComponent({
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
+            console.log(content.msg);
             await includeActionButton(content.msg, choice.MEMBER);
           }
         } catch (error) {
           console.error(error);
         }
-
-        return true;
       }
-      return false;
     },
     [includeActionButton],
   );
@@ -574,11 +615,12 @@ export default function LeaderModalComponent({
     [successEditSession],
   );
 
-  const onSelectionChange = async (event: { target: { value: string } }) => {
-    if (event.target.value && checkerString(event.target.value)) {
+  const onSelectionChange = async (event: any) => {
+    if (event.target.value) {
       const choiceSelection: string = event.target.value;
       setSelectedChoice(Number(choiceSelection));
-
+      
+      selectionChoiceDB.current = Number(choiceSelection);
       await tableChange(Number(choiceSelection));
     }
   };
@@ -609,8 +651,26 @@ export default function LeaderModalComponent({
         pageSize !== pageSizeDB.current ||
         pageIndex !== pageIndexDB.current
       ) {
+
+        console.log('onTableChange called');
         pageSizeDB.current = pageSize;
         pageIndexDB.current = pageIndex;
+
+        await tableChange(selectionChoiceDB.current);
+      }
+    },
+    [tableChange],
+  );
+
+  const onTableChangeSession = useCallback(
+    async ({ pageIndex, pageSize }) => {
+      if (
+        pageSize !== pageSizeSessionDB.current ||
+        pageIndex !== pageIndexSessionDB.current
+      ) {
+
+        pageSizeSessionDB.current = pageSize;
+        pageIndexSessionDB.current = pageIndex;
 
         await tableChange(selectionChoiceDB.current);
       }
@@ -639,15 +699,16 @@ export default function LeaderModalComponent({
 
         await buildDropDownMenu();
 
-        console.log(`LeaderModal: ${userSessionField}`);
         setSession(userSessionField);
       }
     }
-
+    
     if (modalData) {
       setData([]);
+      setDataSession([]);
       setupData(userSession);
     }
+
   }, [modalData, userSession, buildDropDownMenu]);
 
   const columnsSession = useMemo(
@@ -895,6 +956,7 @@ export default function LeaderModalComponent({
           {!loadingData && data.length > 0 && selectedChoice === choice.MEMBER && (
             <Box w='full' overflow='auto'>
               <TableWidget
+                key="table-widget-member"
                 id='table-widget-member'
                 columns={columnsMember}
                 data={data}
@@ -915,21 +977,22 @@ export default function LeaderModalComponent({
           )}
 
           {!loadingData &&
-            data.length > 0 &&
+            dataSession.length > 0 &&
             selectedChoice === choice.SESSION && (
               <Box w='full' overflow='auto'>
                 <TableWidget
+                  key='table-widget-session'
                   id='table-widget-session'
                   columns={columnsSession}
-                  data={data}
-                  controlledPageCount={pageCount}
-                  dataHandler={onTableChange}
+                  data={dataSession}
+                  controlledPageCount={pageCountSession}
+                  dataHandler={onTableChangeSession}
                 />
               </Box>
           )}
 
           {!loadingData &&
-            data.length === 0 &&
+            dataSession.length === 0 &&
             selectedChoice === choice.SESSION && (
               <Box mt={30}>
                 <Stack align='center' justify='center'>
