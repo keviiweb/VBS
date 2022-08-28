@@ -411,7 +411,7 @@ export default function LeaderModalComponent({
 
                 const buttons = await generateActionButtonSession(dataField);
                 dataField.action = buttons;
-                
+
                 break;
               }
               default:
@@ -435,17 +435,19 @@ export default function LeaderModalComponent({
             const dataS: CCASession[] = content.res as CCASession[];
             setDataSession(dataS);
             if (content.count % pageSizeSessionDB.current === 0) {
-              setPageCountSession(Math.floor(content.count / pageSizeSessionDB.current));
+              setPageCountSession(
+                Math.floor(content.count / pageSizeSessionDB.current),
+              );
             } else {
-              setPageCountSession(Math.floor(content.count / pageSizeSessionDB.current) + 1);
+              setPageCountSession(
+                Math.floor(content.count / pageSizeSessionDB.current) + 1,
+              );
             }
             break;
           }
           default:
             break;
         }
-          
-      
       } else {
         switch (action) {
           case choice.MEMBER: {
@@ -619,7 +621,7 @@ export default function LeaderModalComponent({
     if (event.target.value) {
       const choiceSelection: string = event.target.value;
       setSelectedChoice(Number(choiceSelection));
-      
+
       selectionChoiceDB.current = Number(choiceSelection);
       await tableChange(Number(choiceSelection));
     }
@@ -651,7 +653,6 @@ export default function LeaderModalComponent({
         pageSize !== pageSizeDB.current ||
         pageIndex !== pageIndexDB.current
       ) {
-
         console.log('onTableChange called');
         pageSizeDB.current = pageSize;
         pageIndexDB.current = pageIndex;
@@ -668,7 +669,6 @@ export default function LeaderModalComponent({
         pageSize !== pageSizeSessionDB.current ||
         pageIndex !== pageIndexSessionDB.current
       ) {
-
         pageSizeSessionDB.current = pageSize;
         pageIndexSessionDB.current = pageIndex;
 
@@ -702,13 +702,12 @@ export default function LeaderModalComponent({
         setSession(userSessionField);
       }
     }
-    
+
     if (modalData) {
       setData([]);
       setDataSession([]);
       setupData(userSession);
     }
-
   }, [modalData, userSession, buildDropDownMenu]);
 
   const columnsSession = useMemo(
@@ -956,7 +955,7 @@ export default function LeaderModalComponent({
           {!loadingData && data.length > 0 && selectedChoice === choice.MEMBER && (
             <Box w='full' overflow='auto'>
               <TableWidget
-                key="table-widget-member"
+                key='table-widget-member'
                 id='table-widget-member'
                 columns={columnsMember}
                 data={data}

@@ -19,7 +19,6 @@ export default function Unauthorized() {
   }, [router, router.isReady]);
 
   return (
-    <Flex minH='100vh' align='center' justify='center' bg='gray.50'>
-    </Flex>
+    <Flex minH='100vh' align='center' justify='center' bg='gray.50' />
   );
 }

@@ -231,7 +231,7 @@ export default function TableWidget({
               <IconButton
                 onClick={() => {
                   buttonClicked.current = true;
-                  gotoPage(pageCount - 1)
+                  gotoPage(pageCount - 1);
                 }}
                 isDisabled={!canNextPage}
                 icon={<ArrowRightIcon h={3} w={3} />}
