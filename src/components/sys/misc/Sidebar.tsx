@@ -80,11 +80,6 @@ const adminMenu = [
     icon: FiUser,
     href: '/sys/manage/admin/users',
   },
-  {
-    label: 'MANAGE KEIPS',
-    icon: FiStar,
-    href: '/sys/manage/admin/keips',
-  },
 ];
 
 const userMenu = [

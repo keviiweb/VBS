@@ -11,7 +11,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { BsPerson } from 'react-icons/bs';
-import { MdOutlineEmail, MdAccountBox, MdLocationOn } from 'react-icons/md';
+import { MdOutlineEmail } from 'react-icons/md';
 
 import Auth from '@components/sys/Auth';
 import Loading from '@components/sys/misc/Loading';
@@ -25,29 +25,20 @@ import { checkerString } from '@constants/sys/helper';
  * @returns Profile Page
  */
 export default function Profile() {
-  const [studentID, setStudentID] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [room, setRoom] = useState('');
-
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
       const session = await currentSession();
-      const studentIDField: string =
-        session && session.user.studentID ? session.user.studentID : '';
       const usernameField: string =
         session && session.user.username ? session.user.username : '';
       const emailField: string =
         session && session.user.email ? session.user.email : '';
-      const roomField: string =
-        session && session.user.roomNum ? session.user.roomNum : '';
 
-      setStudentID(studentIDField);
       setUsername(usernameField);
       setEmail(emailField);
-      setRoom(roomField);
 
       setLoading(true);
     }
@@ -114,42 +105,6 @@ export default function Profile() {
                             name='email'
                             placeholder='Your Email'
                             value={email}
-                          />
-                        </InputGroup>
-                      </FormControl>
-                    )}
-
-                    {checkerString(studentID) && (
-                      <FormControl isDisabled>
-                        <FormLabel>Student ID</FormLabel>
-
-                        <InputGroup>
-                          <InputLeftElement>
-                            <MdAccountBox />
-                          </InputLeftElement>
-                          <Input
-                            type='text'
-                            name='studentID'
-                            placeholder='Your Student ID'
-                            value={studentID}
-                          />
-                        </InputGroup>
-                      </FormControl>
-                    )}
-
-                    {checkerString(room) && (
-                      <FormControl isDisabled>
-                        <FormLabel>Room Number</FormLabel>
-
-                        <InputGroup>
-                          <InputLeftElement>
-                            <MdLocationOn />
-                          </InputLeftElement>
-                          <Input
-                            type='text'
-                            name='roomNum'
-                            placeholder='Your Room Number'
-                            value={room}
                           />
                         </InputGroup>
                       </FormControl>

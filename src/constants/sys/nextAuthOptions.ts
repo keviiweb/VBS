@@ -6,6 +6,7 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '@constants/sys/db';
 import { User } from 'types/misc/user';
 import { Session } from 'next-auth/core/types';
+import { logger } from '@helper/sys/misc/logger';
 
 /**
  * Generates an email using the given template
@@ -495,6 +496,7 @@ export const options = {
         }
       } catch (error) {
         console.log(error);
+        await logger('nextAuthOptions Signin', 'user', error.message);
       }
 
       return '/sys/unauthorized';
@@ -512,9 +514,7 @@ export const options = {
             const newSession: Session = JSON.parse(JSON.stringify(session));
             newSession.user.email = userFromDB.email;
             newSession.user.username = userFromDB.name;
-            newSession.user.studentID = userFromDB.studentID;
             newSession.user.admin = userFromDB.admin;
-            newSession.user.roomNum = userFromDB.roomNum;
 
             if (userFromDB.acceptedTerm !== undefined) {
               newSession.user.acceptedTerm = userFromDB.acceptedTerm;
@@ -527,6 +527,7 @@ export const options = {
         }
       } catch (error) {
         console.log(error);
+        await logger('nextAuthOptions Session', 'user', error.message);
       }
 
       return session;

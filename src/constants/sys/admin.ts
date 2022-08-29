@@ -5,8 +5,9 @@
  */
 export const levels = {
   USER: 0,
-  ADMIN: 1,
-  OWNER: 2,
+  APPROVER: 1,
+  JCRC: 2,
+  KEWEB: 3,
 };
 
 /**

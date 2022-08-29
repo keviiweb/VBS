@@ -190,30 +190,26 @@ export const createUserFile = async (
         const email: string = data.email !== undefined ? data.email : '';
         const admin: number =
           data.admin !== undefined ? Number(data.admin) : levels.USER;
-        const studentID: string =
-          data.studentID !== undefined ? data.studentID : '';
-        const roomNum: string = data.roomNum !== undefined ? data.roomNum : '';
 
         if (checkerString(name) && checkerString(email)) {
           const userData: User = {
             name: name.trim(),
             email: email.trim().toLowerCase(),
             admin: admin,
-            studentID: studentID.trim(),
-            roomNum: roomNum.trim(),
           };
 
           await prisma.users.upsert({
             where: {
               email: userData.email,
             },
-            update: {},
+            update: {
+              name: userData.name,
+              admin: userData.admin,
+            },
             create: {
               email: userData.email,
               name: userData.name,
               admin: userData.admin,
-              studentID: userData.studentID,
-              roomNum: userData.roomNum,
             },
           });
 

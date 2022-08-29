@@ -6,8 +6,7 @@ test('getting mock session in dev mode', async () => {
   if (process.env.NODE_ENV === 'development') {
     const data: Session | null = await currentSession();
     if (data !== null) {
-      expect(data.user.admin).toBe(levels.OWNER);
-      expect(data.user.studentID).toBe('A7654321');
+      expect(data.user.admin).toBe(levels.KEWEB);
       expect(data.expires).toBe('1');
       expect(data.user.email).toBe('testing@test.com');
     }

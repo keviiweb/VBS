@@ -8,7 +8,6 @@ import React, {
 import {
   Button,
   Box,
-  Checkbox,
   chakra,
   FormControl,
   FormLabel,
@@ -68,27 +67,19 @@ export default function ManageUsers(props: any) {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [roomNum, setRoomNum] = useState('');
-  const [studentID, setStudentID] = useState('');
-  const [admin, setAdmin] = useState(false);
+  const [admin, setAdmin] = useState(levels.USER);
 
   const nameDB = useRef('');
   const emailDB = useRef('');
-  const roomNumDB = useRef('');
-  const studentIDDB = useRef('');
-  const adminDB = useRef(false);
+  const adminDB = useRef(levels.USER);
 
   const [nameEdit, setNameEdit] = useState('');
   const [emailEdit, setEmailEdit] = useState('');
-  const [roomNumEdit, setRoomNumEdit] = useState('');
-  const [studentIDEdit, setStudentIDEdit] = useState('');
-  const [adminEdit, setAdminEdit] = useState(false);
+  const [adminEdit, setAdminEdit] = useState(levels.USER);
 
   const nameDBEdit = useRef('');
   const emailDBEdit = useRef('');
-  const roomNumDBEdit = useRef('');
-  const studentIDDBEdit = useRef('');
-  const adminDBEdit = useRef(false);
+  const adminDBEdit = useRef(levels.USER);
 
   const [errorMsg, setError] = useState('');
   const [errorMsgEdit, setErrorEdit] = useState('');
@@ -103,6 +94,8 @@ export default function ManageUsers(props: any) {
 
   const [userDropdown, setUserDropdown] = useState<JSX.Element[]>([]);
   const userData = useRef<User[]>([]);
+
+  const [levelDropdown, setLevelDropdown] = useState<JSX.Element[]>([]);
 
   const PAGESIZE: number = 10;
   const PAGEINDEX: number = 0;
@@ -137,15 +130,11 @@ export default function ManageUsers(props: any) {
   const reset = useCallback(async () => {
     nameDB.current = '';
     emailDB.current = '';
-    roomNumDB.current = '';
-    studentIDDB.current = '';
-    adminDB.current = false;
+    adminDB.current = levels.USER;
 
     setName('');
     setEmail('');
-    setRoomNum('');
-    setStudentID('');
-    setAdmin(false);
+    setAdmin(levels.USER);
   }, []);
 
   const resetFile = useCallback(async () => {
@@ -162,24 +151,15 @@ export default function ManageUsers(props: any) {
     userIDDBEdit.current = '';
     nameDBEdit.current = '';
     emailDBEdit.current = '';
-    roomNumDBEdit.current = '';
-    studentIDDBEdit.current = '';
-    adminDBEdit.current = false;
+    adminDBEdit.current = levels.USER;
 
     setUserIDEdit('');
     setNameEdit('');
     setEmailEdit('');
-    setRoomNumEdit('');
-    setStudentIDEdit('');
-    setAdminEdit(false);
+    setAdminEdit(levels.USER);
   }, []);
 
-  const validateFields = (
-    nameField: string,
-    emailField: string,
-    roomNumField: string,
-    studentIDField: string,
-  ) => {
+  const validateFields = (nameField: string, emailField: string) => {
     // super basic validation here
     if (!checkerString(nameField)) {
       setError('Name must not be empty!');
@@ -188,16 +168,6 @@ export default function ManageUsers(props: any) {
 
     if (!checkerString(emailField)) {
       setError('Email must not be empty!');
-      return false;
-    }
-
-    if (!checkerString(roomNumField)) {
-      setError('Room Number must not be empty!');
-      return false;
-    }
-
-    if (!checkerString(studentIDField)) {
-      setError('Student ID must not be empty!');
       return false;
     }
 
@@ -335,14 +305,7 @@ export default function ManageUsers(props: any) {
     async (event: { preventDefault: () => void }) => {
       setError('');
       event.preventDefault();
-      if (
-        validateFields(
-          nameDB.current,
-          emailDB.current,
-          roomNumDB.current,
-          studentIDDB.current,
-        )
-      ) {
+      if (validateFields(nameDB.current, emailDB.current)) {
         setSubmitButtonPressed(true);
         try {
           const rawResponse = await fetch('/api/user/create', {
@@ -354,8 +317,6 @@ export default function ManageUsers(props: any) {
             body: JSON.stringify({
               name: nameDB.current,
               email: emailDB.current,
-              roomNum: roomNumDB.current,
-              studentID: studentIDDB.current,
               admin: adminDB.current,
             }),
           });
@@ -509,15 +470,33 @@ export default function ManageUsers(props: any) {
     }
   };
 
+  const generateLevelDropdown = useCallback(async () => {
+    const selectionDropdown: JSX.Element[] = [];
+
+    const keys = Object.keys(levels);
+    const values = Object.values(levels);
+
+    for (let key = 0; key < keys.length; key += 1) {
+      selectionDropdown.push(
+        <option key={values[key]} value={values[key]}>
+          {keys[key]}
+        </option>,
+      );
+    }
+
+    setLevelDropdown(selectionDropdown);
+  }, []);
+
   useEffect(() => {
     async function generate(propsField: any) {
       setLevel(propsField.data);
 
       await fetchData();
+      await generateLevelDropdown();
     }
 
     generate(props);
-  }, [fetchData, props]);
+  }, [fetchData, props, generateLevelDropdown]);
 
   const columns = useMemo(
     () => [
@@ -528,14 +507,6 @@ export default function ManageUsers(props: any) {
       {
         Header: 'Email',
         accessor: 'email',
-      },
-      {
-        Header: 'StudentID',
-        accessor: 'studentID',
-      },
-      {
-        Header: 'Room Number',
-        accessor: 'roomNum',
       },
       {
         Header: 'Admin',
@@ -556,26 +527,17 @@ export default function ManageUsers(props: any) {
   const changeDataEdit = (dataField: User) => {
     setNameEdit(dataField.name);
     setEmailEdit(dataField.email);
-    setStudentIDEdit(dataField.studentID);
-    setRoomNumEdit(dataField.roomNum);
-
-    const ad: boolean =
-      dataField.admin === levels.OWNER || dataField.admin === levels.ADMIN;
-    setAdminEdit(ad);
+    setAdminEdit(dataField.admin);
 
     nameDBEdit.current = dataField.name;
     emailDBEdit.current = dataField.email;
-    studentIDDBEdit.current = dataField.studentID;
-    roomNumDBEdit.current = dataField.roomNum;
-    adminDBEdit.current = ad;
+    adminDBEdit.current = dataField.admin;
   };
 
   const validateFieldsEdit = (
     idField: string,
     nameField: string,
     emailField: string,
-    roomNumField: string,
-    studentIDField: string,
   ) => {
     // super basic validation here
     if (!checkerString(idField)) {
@@ -593,16 +555,6 @@ export default function ManageUsers(props: any) {
       return false;
     }
 
-    if (!checkerString(roomNumField)) {
-      setErrorEdit('Room Number must not be empty!');
-      return false;
-    }
-
-    if (!checkerString(studentIDField)) {
-      setErrorEdit('Student ID must not be empty!');
-      return false;
-    }
-
     return true;
   };
 
@@ -616,8 +568,6 @@ export default function ManageUsers(props: any) {
           userIDDBEdit.current,
           nameDBEdit.current,
           emailDBEdit.current,
-          roomNumDBEdit.current,
-          studentIDDBEdit.current,
         )
       ) {
         setSubmitButtonPressed(true);
@@ -632,8 +582,6 @@ export default function ManageUsers(props: any) {
               id: userIDDBEdit.current,
               name: nameDBEdit.current,
               email: emailDBEdit.current,
-              roomNum: roomNumDBEdit.current,
-              studentID: studentIDDBEdit.current,
               admin: adminDBEdit.current,
             }),
           });
@@ -1063,45 +1011,21 @@ export default function ManageUsers(props: any) {
                     />
                   </FormControl>
 
-                  <FormControl id='studentID'>
-                    <FormLabel>Student ID</FormLabel>
-                    <Input
-                      type='text'
-                      placeholder='Student ID'
-                      value={studentID}
-                      size='lg'
-                      onChange={(event) => {
-                        setStudentID(event.currentTarget.value);
-                        studentIDDB.current = event.currentTarget.value;
-                      }}
-                    />
-                  </FormControl>
-
-                  <FormControl id='roomNum'>
-                    <FormLabel>Room Num</FormLabel>
-                    <Input
-                      type='text'
-                      placeholder='Room Num'
-                      value={roomNum}
-                      size='lg'
-                      onChange={(event) => {
-                        setRoomNum(event.currentTarget.value);
-                        roomNumDB.current = event.currentTarget.value;
-                      }}
-                    />
-                  </FormControl>
-
-                  <Stack spacing={5} direction='row'>
-                    <Checkbox
-                      isChecked={admin}
-                      onChange={(event) => {
-                        setAdmin(event.target.checked);
-                        adminDB.current = event.target.checked;
-                      }}
-                    >
-                      Admin
-                    </Checkbox>
-                  </Stack>
+                  {levelDropdown && (
+                    <Stack spacing={3} w='full'>
+                      <FormLabel>Permission Level</FormLabel>
+                      <Select
+                        value={admin}
+                        onChange={(event) => {
+                          setAdmin(Number(event.target.value));
+                          adminDB.current = Number(event.target.value);
+                        }}
+                        size='sm'
+                      >
+                        {levelDropdown}
+                      </Select>
+                    </Stack>
+                  )}
 
                   {checkerString(errorMsg) && (
                     <Stack align='center'>
@@ -1184,45 +1108,21 @@ export default function ManageUsers(props: any) {
                     />
                   </FormControl>
 
-                  <FormControl id='studentIDEdit'>
-                    <FormLabel>Student ID</FormLabel>
-                    <Input
-                      type='text'
-                      placeholder='Student ID'
-                      value={studentIDEdit}
-                      size='lg'
-                      onChange={(event) => {
-                        setStudentIDEdit(event.currentTarget.value);
-                        studentIDDBEdit.current = event.currentTarget.value;
-                      }}
-                    />
-                  </FormControl>
-
-                  <FormControl id='roomNumEdit'>
-                    <FormLabel>Room Num</FormLabel>
-                    <Input
-                      type='text'
-                      placeholder='Room Num'
-                      value={roomNumEdit}
-                      size='lg'
-                      onChange={(event) => {
-                        setRoomNumEdit(event.currentTarget.value);
-                        roomNumDBEdit.current = event.currentTarget.value;
-                      }}
-                    />
-                  </FormControl>
-
-                  <Stack spacing={5} direction='row'>
-                    <Checkbox
-                      isChecked={adminEdit}
-                      onChange={(event) => {
-                        setAdminEdit(event.target.checked);
-                        adminDBEdit.current = event.target.checked;
-                      }}
-                    >
-                      Admin
-                    </Checkbox>
-                  </Stack>
+                  {levelDropdown && (
+                    <Stack spacing={3} w='full'>
+                      <FormLabel>Permission Level</FormLabel>
+                      <Select
+                        value={adminEdit}
+                        onChange={(event) => {
+                          setAdminEdit(Number(event.target.value));
+                          adminDBEdit.current = Number(event.target.value);
+                        }}
+                        size='sm'
+                      >
+                        {levelDropdown}
+                      </Select>
+                    </Stack>
+                  )}
 
                   {checkerString(errorMsgEdit) && (
                     <Stack align='center'>

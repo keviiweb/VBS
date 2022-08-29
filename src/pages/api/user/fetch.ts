@@ -5,7 +5,7 @@ import { User } from 'types/misc/user';
 import { currentSession } from '@helper/sys/sessionServer';
 import { fetchAllUser, countUser } from '@helper/sys/misc/user';
 
-import { actions } from '@constants/sys/admin';
+import { actions, levels } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
 
 /**
@@ -52,14 +52,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           if (userData[ven]) {
             const user: User = userData[ven];
 
-            const isAdmin: string = user.admin ? 'Yes' : 'No';
+            const isAdmin: string | undefined = Object.keys(levels).find(
+              (key) => levels[key] === user.admin,
+            );
             const acceptedTermStr: string = user.acceptedTerm ? 'Yes' : 'No';
 
             const data: User = {
               id: user.id,
               name: user.name,
-              studentID: user.studentID,
-              roomNum: user.roomNum,
               email: user.email,
               admin: user.admin,
               adminStr: isAdmin,

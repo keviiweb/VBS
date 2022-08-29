@@ -9,9 +9,7 @@ declare module 'next-auth' {
     user: {
       email: string;
       username: string;
-      studentID: string;
       admin: number;
-      roomNum: string;
       acceptedTerm: boolean;
     };
   }

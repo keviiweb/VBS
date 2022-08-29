@@ -22,9 +22,7 @@ export const currentSession = async (
       user: {
         username: 'Test user',
         email: 'testing@test.com',
-        admin: levels.OWNER,
-        studentID: 'A7654321',
-        roomNum: 'C124',
+        admin: levels.KEWEB,
         acceptedTerm: true,
       },
     };

@@ -40,8 +40,6 @@ export default function UserModal({ isOpen, onClose, modalData }) {
   const [id, setID] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [roomNum, setRoomNum] = useState('');
-  const [studentID, setStudentID] = useState('');
   const [adminStr, setAdminStr] = useState('');
   const [acceptedTermStr, setAcceptedTermStr] = useState('');
 
@@ -53,8 +51,6 @@ export default function UserModal({ isOpen, onClose, modalData }) {
     setID('');
     setName('');
     setEmail('');
-    setRoomNum('');
-    setStudentID('');
     setAdminStr('');
     setAcceptedTermStr('');
 
@@ -143,18 +139,6 @@ export default function UserModal({ isOpen, onClose, modalData }) {
         setEmail(modalDataField.email);
       } else {
         setEmail('');
-      }
-
-      if (modalDataField.roomNum && checkerString(modalDataField.roomNum)) {
-        setRoomNum(modalDataField.roomNum);
-      } else {
-        setRoomNum('');
-      }
-
-      if (modalDataField.studentID && checkerString(modalDataField.studentID)) {
-        setStudentID(modalDataField.studentID);
-      } else {
-        setStudentID('');
       }
 
       if (modalDataField.adminStr && checkerString(modalDataField.adminStr)) {
@@ -258,22 +242,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
                               {email}
                             </ListItem>
                           )}
-                          {checkerString(studentID) && (
-                            <ListItem key='user-stud'>
-                              <Text as='span' fontWeight='bold'>
-                                Student ID:{' '}
-                              </Text>
-                              {studentID}
-                            </ListItem>
-                          )}
-                          {checkerString(roomNum) && (
-                            <ListItem key='user-rm'>
-                              <Text as='span' fontWeight='bold'>
-                                Room Num:{' '}
-                              </Text>
-                              {roomNum}
-                            </ListItem>
-                          )}
+
                           {checkerString(adminStr) && (
                             <ListItem key='user-admin'>
                               <Text as='span' fontWeight='bold'>

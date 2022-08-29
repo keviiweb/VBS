@@ -3,7 +3,7 @@ import { Result } from 'types/api';
 import { User } from 'types/misc/user';
 
 import { checkerString } from '@constants/sys/helper';
-import { actions, levels } from '@constants/sys/admin';
+import { actions } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
 
 import { currentSession } from '@helper/sys/sessionServer';
@@ -29,34 +29,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     msg: '',
   };
 
-  const { id, name, email, roomNum, studentID, admin } = req.body;
+  const { id, name, email, admin } = req.body;
 
   if (
     session !== undefined &&
     session !== null &&
     hasPermission(session.user.admin, actions.EDIT_USER)
   ) {
-    if (
-      checkerString(id) &&
-      checkerString(name) &&
-      checkerString(email) &&
-      checkerString(roomNum) &&
-      checkerString(studentID)
-    ) {
+    if (checkerString(id) && checkerString(name) && checkerString(email)) {
       const idField: string = (id as string).trim();
       const nameField: string = (name as string).trim();
       const emailField: string = (email as string).trim().toLowerCase();
-      const roomNumField: string = (roomNum as string).trim();
-      const studentIDField: string = (studentID as string).trim();
-      const adminField: number =
-        (admin as boolean) === true ? levels.ADMIN : levels.USER;
+      const adminField: number = admin as number;
 
       const user: User = {
         id: idField,
         name: nameField,
         email: emailField,
-        roomNum: roomNumField,
-        studentID: studentIDField,
         admin: adminField,
         updated_at: new Date().toISOString(),
       };

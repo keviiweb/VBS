@@ -40,7 +40,6 @@ export default function LeaderStudentModalComponent({
   const [loadingData, setLoadingData] = useState(true);
 
   const [sessionUserName, setSessionUserName] = useState('');
-  const [sessionUserStudentID, setSessionUserStudentID] = useState('');
 
   const [data, setData] = useState<CCAAttendance[]>([]);
 
@@ -72,7 +71,6 @@ export default function LeaderStudentModalComponent({
     setLoadingData(true);
 
     setSessionUserName('');
-    setSessionUserStudentID('');
 
     setData([]);
 
@@ -217,12 +215,7 @@ export default function LeaderStudentModalComponent({
       if (modalData) {
         const sessionUserNameField: string =
           modalData && modalData.sessionName ? modalData.sessionName : '';
-        const sessionUserStudentIDField: string =
-          modalData && modalData.sessionStudentID
-            ? modalData.sessionStudentID
-            : '';
         setSessionUserName(sessionUserNameField);
-        setSessionUserStudentID(sessionUserStudentIDField);
 
         ccaRecordIDDB.current =
           modalData && modalData.ccaID ? modalData.ccaID : '';
@@ -296,53 +289,41 @@ export default function LeaderStudentModalComponent({
             </Stack>
           )}
 
-          {checkerString(sessionUserStudentID) && (
-            <Box>
-              <Stack direction='row' align='center'>
-                <Text
-                  textTransform='uppercase'
-                  fontWeight='bold'
-                  letterSpacing='tight'
-                  color='gray.900'
+          <Box>
+            <Stack direction='row' align='center'>
+              {!downloadCSV && (
+                <Button
+                  bg='gray.400'
+                  color='white'
+                  w='180px'
+                  size='lg'
+                  _hover={{ bg: 'gray.600' }}
+                  onClick={handleDownload}
                 >
-                  Student No.
-                </Text>
-                <Text>{sessionUserStudentID}</Text>
+                  Download CSV
+                </Button>
+              )}
 
-                {!downloadCSV && (
-                  <Button
-                    bg='gray.400'
-                    color='white'
-                    w='180px'
-                    size='lg'
-                    _hover={{ bg: 'gray.600' }}
-                    onClick={handleDownload}
+              {downloadCSV && CSVdata.length > 0 && (
+                <Button
+                  bg='gray.400'
+                  color='white'
+                  w='180px'
+                  size='lg'
+                  _hover={{ bg: 'gray.600' }}
+                >
+                  <CSVLink
+                    data={CSVdata}
+                    headers={CSVheaders}
+                    filename={`${sessionUserName}.csv`}
+                    target='_blank'
                   >
-                    Download CSV
-                  </Button>
-                )}
-
-                {downloadCSV && CSVdata.length > 0 && (
-                  <Button
-                    bg='gray.400'
-                    color='white'
-                    w='180px'
-                    size='lg'
-                    _hover={{ bg: 'gray.600' }}
-                  >
-                    <CSVLink
-                      data={CSVdata}
-                      headers={CSVheaders}
-                      filename={`${sessionUserName}.csv`}
-                      target='_blank'
-                    >
-                      Export Attendance
-                    </CSVLink>
-                  </Button>
-                )}
-              </Stack>
-            </Box>
-          )}
+                    Export Attendance
+                  </CSVLink>
+                </Button>
+              )}
+            </Stack>
+          </Box>
 
           {!loadingData && data.length > 0 && (
             <Box w='full' overflow='auto'>
