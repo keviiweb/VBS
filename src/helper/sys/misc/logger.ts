@@ -1,5 +1,5 @@
 import { prisma } from '@constants/sys/db';
-
+import { Result } from 'types/api';
 import { Log } from 'types/misc/logger';
 
 /**
@@ -28,4 +28,24 @@ export const logger = async (
   } catch (error) {
     console.error(error);
   }
+};
+
+export const deleteAllLog = async (): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    await prisma.log.deleteMany({});
+    result = {
+      status: true,
+      error: null,
+      msg: 'Successfully deleted all logs',
+    };
+  } catch (error) {
+    console.error(error);
+    result = {
+      status: false,
+      error: 'Failed to delete all logs',
+      msg: '',
+    };
+  }
+  return result;
 };

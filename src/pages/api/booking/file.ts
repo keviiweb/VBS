@@ -20,7 +20,7 @@ export const config = {
 /**
  * Populates the Booking database through a CSV file
  *
- * This is an OWNER level request only
+ * This is an KEWEB level request only
  *
  * Used in:
  * /pages/sys/manage/admin/bookings
@@ -61,7 +61,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const results: any[] = [];
 
         fs.createReadStream(path)
-          .pipe(csv())
+          .pipe(csv({ separator: ';' }))
           .on('data', (data) => results.push(data))
           .on('end', async () => {
             const user: Result = await createRecurringBooking(results, session);

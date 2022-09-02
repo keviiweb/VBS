@@ -457,3 +457,82 @@ export const createRecurringBooking = async (
   }
   return result;
 };
+
+/**
+ * Deletes all Bookings
+ *
+ * @param session Next-Auth Session object
+ * @returns A Result containing the status wrapped in a Promise
+ */
+export const deleteAllVenueBooking = async (
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    await prisma.venueBooking.deleteMany({});
+    await logger(
+      'deleteAllVenueBooking',
+      session.user.email,
+      'Successfully deleted all booking!',
+    );
+    result = {
+      status: true,
+      error: '',
+      msg: 'Successfully deleted all booking!',
+    };
+  } catch (error) {
+    console.error(error);
+    result = {
+      status: false,
+      error: 'Error in deleting all venue booking',
+      msg: '',
+    };
+    await logger('deleteAllVenueBooking', session.user.email, error.message);
+  }
+
+  return result;
+};
+
+/**
+ * Deletes all Bookings by Venue ID
+ *
+ * @param session Next-Auth Session object
+ * @returns A Result containing the status wrapped in a Promise
+ */
+export const deleteAllVenueBookingByVenueID = async (
+  id: string,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    await prisma.venueBooking.deleteMany({
+      where: {
+        venue: id,
+      },
+    });
+    await logger(
+      'deleteAllVenueBookingByVenueID',
+      session.user.email,
+      'Successfully deleted all booking!',
+    );
+    result = {
+      status: true,
+      error: '',
+      msg: 'Successfully deleted all booking!',
+    };
+  } catch (error) {
+    console.error(error);
+    result = {
+      status: false,
+      error: 'Error in deleting all venue booking',
+      msg: '',
+    };
+    await logger(
+      'deleteAllVenueBookingByVenueID',
+      session.user.email,
+      error.message,
+    );
+  }
+
+  return result;
+};

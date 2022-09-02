@@ -7,6 +7,9 @@ import { Result } from 'types/api';
 import { Session } from 'next-auth/core/types';
 
 import { logger } from '@helper/sys/misc/logger';
+import { deleteAllByVenueID } from '@helper/sys/vbs/bookingReq';
+import { deleteAllVenueBookingByVenueID } from '@helper/sys/vbs/booking';
+
 /**
  * Count the total of venues
  *
@@ -493,6 +496,97 @@ export const editVenue = async (
     console.error(error);
     result = { status: false, error: 'Failed to update venue', msg: '' };
     await logger('editVenue', session.user.email, error.message);
+  }
+
+  return result;
+};
+
+/**
+ * Deletes a Venue
+ *
+ * First it deletes the booking requests tagged with the venue
+ * Next, it deletes the existing bookings tagged with the venue
+ * Lastly, it deletes the venue
+ *
+ * @param id Venue id
+ * @returns A Result containing the status wrapped in a Promise
+ */
+export const deleteVenue = async (
+  id: string,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    const deleteBookingReq: Result = await deleteAllByVenueID(id, session);
+    if (deleteBookingReq.status) {
+      const deleteBookingRes: Result = await deleteAllVenueBookingByVenueID(
+        id,
+        session,
+      );
+      if (deleteBookingRes.status) {
+        const deleteVenueRes: Result = await deleteVenueByID(id, session);
+        if (deleteVenueRes.status) {
+          result = {
+            status: true,
+            error: '',
+            msg: deleteVenueRes.msg,
+          };
+        } else {
+          result = { status: false, error: deleteVenueRes.error, msg: '' };
+        }
+      } else {
+        result = { status: false, error: deleteBookingRes.error, msg: '' };
+      }
+    } else {
+      result = { status: false, error: deleteBookingReq.error, msg: '' };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: 'Failed to delete venue', msg: '' };
+    await logger('deleteVenue', session.user.email, error.message);
+  }
+
+  return result;
+};
+
+/**
+ * Deletes a Venue
+ *
+ * @param id Venue id
+ * @returns A Result containing the status wrapped in a Promise
+ */
+export const deleteVenueByID = async (
+  id: string,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    const venue: Venue = await prisma.venue.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    if (venue) {
+      result = {
+        status: true,
+        error: '',
+        msg: `Successfully updated venue`,
+      };
+    } else {
+      if (checkerString(id)) {
+        await logger(
+          'deleteVenueByID',
+          session.user.email,
+          `Failed to delete venue`,
+        );
+      }
+      result = { status: false, error: 'Failed to delete venue', msg: '' };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: 'Failed to delete venue', msg: '' };
+    await logger('deleteVenueByID', session.user.email, error.message);
   }
 
   return result;

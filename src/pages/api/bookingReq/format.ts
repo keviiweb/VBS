@@ -26,7 +26,7 @@ import { getConflictingRequest } from '@helper/sys/vbs/bookingReq';
 /**
  * Formats the list of Booking Request to specific format
  *
- * This is an ADMIN level or OWNER level request only.
+ * This is an JCRC level or KEWEB level request only.
  *
  * Used in:
  * @components/sys/vbs/BookingModal

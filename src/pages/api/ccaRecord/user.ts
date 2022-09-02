@@ -13,7 +13,7 @@ import hasPermission from '@constants/sys/permission';
 /**
  * Fetches the CCA records for a specific user
  *
- * This is an OWNER and ADMIN level request only
+ * This is an JCRC level or KEWEB level request only.
  *
  * Used in:
  * @components/sys/misc/UserModal

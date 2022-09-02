@@ -1,4 +1,4 @@
-name,email,admin
-Ahmad,ahmad@hotmail.com,2
-John Tan,johntan@u.nus.edu,2
-Tester,tester@u.nus.edu,2
+name;email;admin
+Ahmad;ahmad@hotmail.com;2
+John Tan;johntan@u.nus.edu;2
+Tester;tester@u.nus.edu;2

@@ -26,7 +26,7 @@ import { findAllBookingByVenueID } from '@helper/sys/vbs/booking';
 /**
  * Fetches all booking made filtered by venue ID
  *
- * This is an ADMIN level or OWNER level request only.
+ * This is an JCRC level or KEWEB level request only.
  *
  * Used in:
  * /pages/sys/vbs

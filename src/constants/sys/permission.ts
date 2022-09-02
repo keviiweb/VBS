@@ -38,6 +38,7 @@ mappings.set(actions.CREATE_RECURRING_BOOKING_REQUEST, [
 // Venue data for VBS
 mappings.set(actions.CREATE_VENUE, [levels.KEWEB]);
 mappings.set(actions.EDIT_VENUE, [levels.KEWEB]);
+mappings.set(actions.DELETE_VENUE, [levels.KEWEB]);
 
 // Announcement feature
 mappings.set(actions.CREATE_ANNOUNCEMENT, [levels.JCRC, levels.KEWEB]);
@@ -69,6 +70,11 @@ mappings.set(actions.CREATE_USER, [levels.KEWEB]);
 mappings.set(actions.EDIT_USER, [levels.KEWEB]);
 mappings.set(actions.FETCH_USER_DATA, [levels.JCRC, levels.KEWEB]);
 mappings.set(actions.POPULATE_USER, [levels.KEWEB]);
+
+// Misc
+mappings.set(actions.DELETE_LOGS, [levels.KEWEB]);
+mappings.set(actions.DELETE_BOOKING, [levels.KEWEB]);
+mappings.set(actions.DELETE_BOOKING_REQUEST, [levels.KEWEB]);
 
 /**
  * Check if the user has the permission to perform a certain action

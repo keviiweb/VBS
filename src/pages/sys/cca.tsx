@@ -182,7 +182,7 @@ export default function CCA(props: any) {
                   shadow='base'
                 >
                   <VStack spacing={5}>
-                    <Text>You are not in any CCAs...</Text>
+                    <Text>You are not registered in any CCAs here...</Text>
                   </VStack>
                 </Box>
               </VStack>

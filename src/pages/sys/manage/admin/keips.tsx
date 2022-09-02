@@ -509,9 +509,10 @@ export default function ManageKEIPS(props: any) {
               p={6}
               my={12}
             >
-              <Heading size='md'>Truncate KEIPS Records</Heading>
+              <Heading size='md'>Delete KEIPS Records</Heading>
               <form onSubmit={handleSubmitTruncateKEIPS}>
                 <Stack spacing={10}>
+                  <Text>This will delete all KEIPS record in the database</Text>
                   <Button
                     type='submit'
                     bg='blue.400'
@@ -521,7 +522,7 @@ export default function ManageKEIPS(props: any) {
                       bg: 'blue.500',
                     }}
                   >
-                    Truncate
+                    Delete
                   </Button>
                 </Stack>
               </form>

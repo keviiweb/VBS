@@ -12,7 +12,7 @@ import { createUser } from '@helper/sys/misc/user';
 /**
  * Creates a new user
  *
- * This is an OWNER level request only
+ * This is an KEWEB level request only
  *
  * Used in:
  * /pages/sys/manage/admin/users

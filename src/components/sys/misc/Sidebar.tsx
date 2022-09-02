@@ -11,6 +11,7 @@ import {
   FiMapPin,
   FiUser,
   FiAlertCircle,
+  FiGlobe,
 } from 'react-icons/fi';
 
 import NavLink from '@components/sys/misc/NavLink';
@@ -18,7 +19,7 @@ import { Session } from 'next-auth/core/types';
 import { actions } from '@root/src/constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
 
-const ownerMenu = [
+const fullMenu = [
   { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },
   { label: 'CCA ATTENDANCE', icon: FiSettings, href: '/sys/cca' },
   { label: 'KEIPS', icon: FiStar, href: '/sys/keips' },
@@ -52,6 +53,11 @@ const ownerMenu = [
     label: 'MANAGE KEIPS',
     icon: FiStar,
     href: '/sys/manage/admin/keips',
+  },
+  {
+    label: 'MISC',
+    icon: FiGlobe,
+    href: '/sys/manage/admin/misc',
   },
 ];
 
@@ -109,7 +115,7 @@ export default function Sidebar({ session, onClose, ...rest }) {
       if (
         hasPermission(sessionField.user.admin, actions.VIEW_FULL_ADMIN_PAGE)
       ) {
-        setMenu(ownerMenu);
+        setMenu(fullMenu);
       } else if (
         hasPermission(sessionField.user.admin, actions.VIEW_ADMIN_PAGE)
       ) {

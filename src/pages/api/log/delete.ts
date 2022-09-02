@@ -5,29 +5,15 @@ import { actions } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
 
 import { currentSession } from '@helper/sys/sessionServer';
-import { deleteAllKEIPS } from '@helper/sys/misc/keips';
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+import { deleteAllLog } from '@helper/sys/misc/logger';
 
 /**
- * In this file, MATNET is defined as
- * <last 4 digit of Student ID><last 4 digit of NUSNET ID>
- *
- * eg. Student ID: A1234567R, NUSNET: E0011232
- * eg. 567R1232
- */
-
-/**
- * Deletes all data stored in the KEIPS table
+ * Delete all Logs
  *
  * This is an KEWEB level request only
  *
  * Used in:
- * /pages/sys/manage/admin/keips
+ * /pages/sys/manage/admin/misc
  *
  * @param req NextJS API Request
  * @param res NextJS API Response
@@ -44,23 +30,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== undefined &&
     session !== null &&
-    hasPermission(session.user.admin, actions.DELETE_KEIPS)
+    hasPermission(session.user.admin, actions.EDIT_USER)
   ) {
-    const keipsRes: Result = await deleteAllKEIPS(session);
-    if (keipsRes.status) {
-      result = {
-        status: true,
-        error: null,
-        msg: keipsRes.msg,
-      };
+    const logRes: Result = await deleteAllLog();
+    if (logRes.status) {
+      result = { status: true, error: null, msg: logRes.msg };
       res.status(200).send(result);
       res.end();
     } else {
-      result = {
-        status: false,
-        error: keipsRes.error,
-        msg: '',
-      };
+      result = { status: false, error: logRes.error, msg: '' };
       res.status(200).send(result);
       res.end();
     }

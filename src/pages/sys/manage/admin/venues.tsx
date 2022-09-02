@@ -728,6 +728,51 @@ export default function ManageVenues(props: any) {
     [fetchData, resetEdit, toast],
   );
 
+  const handleSubmitDelete = useCallback(
+    async (event: { preventDefault: () => void }) => {
+      event.preventDefault();
+
+      if (checkerString(venueIDDBEdit.current)) {
+        setSubmitButtonPressed(true);
+        try {
+          const dataField = new FormData();
+          dataField.append('id', venueIDDBEdit.current);
+
+          const rawResponse = await fetch('/api/venue/delete', {
+            method: 'POST',
+            body: dataField,
+          });
+          const content: Result = await rawResponse.json();
+          if (content.status) {
+            await resetEdit();
+            toast({
+              title: 'Success',
+              description: content.msg,
+              status: 'success',
+              duration: 5000,
+              isClosable: true,
+            });
+
+            await fetchData();
+          } else {
+            toast({
+              title: 'Error',
+              description: content.error,
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+        } catch (error) {
+          console.error(error);
+        }
+
+        setSubmitButtonPressed(false);
+      }
+    },
+    [fetchData, resetEdit, toast],
+  );
+
   const onTableChange = useCallback(
     async ({ pageIndex, pageSize }) => {
       if (
@@ -1022,147 +1067,165 @@ export default function ManageVenues(props: any) {
               my={12}
             >
               <Heading size='md'>Edit existing venue</Heading>
-              <form onSubmit={handleSubmitEdit}>
-                <Stack spacing={4}>
-                  {venueDropdown && (
-                    <Stack spacing={3} w='full'>
-                      <FormLabel>Select Venue</FormLabel>
-                      <Select
-                        value={venueIDEdit}
-                        onChange={onVenueIDChangeEdit}
-                        size='sm'
-                      >
-                        {venueDropdown}
-                      </Select>
-                    </Stack>
-                  )}
 
-                  <FormControl id='name'>
-                    <FormLabel>Name</FormLabel>
-                    <Input
-                      type='text'
-                      placeholder='Name'
-                      value={nameEdit}
-                      size='lg'
-                      onChange={(event) => {
-                        setNameEdit(event.currentTarget.value);
-                        nameDBEdit.current = event.currentTarget.value;
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl id='description'>
-                    <FormLabel>Description</FormLabel>
-                    <Input
-                      type='text'
-                      placeholder='Description'
-                      value={descriptionEdit}
-                      size='lg'
-                      onChange={(event) => {
-                        setDescriptionEdit(event.currentTarget.value);
-                        descriptionDBEdit.current = event.currentTarget.value;
-                      }}
-                    />
-                  </FormControl>
-                  <FormControl id='capacity'>
-                    <FormLabel>Capacity</FormLabel>
-                    <Input
-                      type='number'
-                      placeholder='Capacity'
-                      value={capacityEdit}
-                      size='lg'
-                      onChange={(event) => {
-                        setCapacityEdit(Number(event.currentTarget.value));
-                        capacityDBEdit.current = Number(
-                          event.currentTarget.value,
-                        );
-                      }}
-                    />
-                  </FormControl>
-                  {startTimeDropdown && (
-                    <Stack w='full'>
-                      <FormLabel>Start Time</FormLabel>
-                      <Select
-                        value={startTimeEdit}
-                        onChange={onStartTimeChangeEdit}
-                        size='sm'
-                      >
-                        {endTimeDropdown}
-                      </Select>
-                    </Stack>
-                  )}
-
-                  {endTimeDropdown && (
-                    <Stack w='full'>
-                      <FormLabel>End Time</FormLabel>
-                      <Select
-                        value={endTimeEdit}
-                        onChange={onEndTimeChangeEdit}
-                        size='sm'
-                      >
-                        {endTimeDropdown}
-                      </Select>
-                    </Stack>
-                  )}
-
-                  <Stack spacing={5} direction='row'>
-                    <Checkbox
-                      isChecked={visibleEdit}
-                      onChange={(event) => {
-                        setVisibleEdit(event.target.checked);
-                        visibleDBEdit.current = event.target.checked;
-                      }}
+              <Stack spacing={4}>
+                {venueDropdown && (
+                  <Stack spacing={3} w='full'>
+                    <FormLabel>Select Venue</FormLabel>
+                    <Select
+                      value={venueIDEdit}
+                      onChange={onVenueIDChangeEdit}
+                      size='sm'
                     >
-                      Visible
-                    </Checkbox>
-                    <Checkbox
-                      isChecked={instantBookEdit}
-                      onChange={(event) => {
-                        setInstantBookEdit(event.target.checked);
-                        instantBookDBEdit.current = event.target.checked;
-                      }}
-                    >
-                      Instant Book
-                    </Checkbox>
-                    <Checkbox
-                      isChecked={isChildVenueEdit}
-                      onChange={(event) => {
-                        setIsChildVenueEdit(event.target.checked);
-                        isChildVenueDBEdit.current = event.target.checked;
-                      }}
-                    >
-                      Child Venue
-                    </Checkbox>
+                      {venueDropdown}
+                    </Select>
                   </Stack>
-                  {isChildVenueEdit && (
-                    <Stack spacing={5} w='full'>
-                      <Text>Select Venue</Text>
-                      <Select onChange={onParentVenueChangeEdit} size='sm'>
-                        {parentVenueDropdown}
-                      </Select>
-                    </Stack>
-                  )}
+                )}
 
-                  {checkerString(errorEdit) && (
-                    <Stack align='center'>
-                      <Text>{errorEdit}</Text>
-                    </Stack>
-                  )}
-
-                  <Stack spacing={10}>
-                    <Button
-                      type='submit'
-                      bg='blue.400'
-                      color='white'
-                      disabled={submitButtonPressed}
-                      _hover={{
-                        bg: 'blue.500',
-                      }}
+                <FormControl id='name'>
+                  <FormLabel>Name</FormLabel>
+                  <Input
+                    type='text'
+                    placeholder='Name'
+                    value={nameEdit}
+                    size='lg'
+                    onChange={(event) => {
+                      setNameEdit(event.currentTarget.value);
+                      nameDBEdit.current = event.currentTarget.value;
+                    }}
+                  />
+                </FormControl>
+                <FormControl id='description'>
+                  <FormLabel>Description</FormLabel>
+                  <Input
+                    type='text'
+                    placeholder='Description'
+                    value={descriptionEdit}
+                    size='lg'
+                    onChange={(event) => {
+                      setDescriptionEdit(event.currentTarget.value);
+                      descriptionDBEdit.current = event.currentTarget.value;
+                    }}
+                  />
+                </FormControl>
+                <FormControl id='capacity'>
+                  <FormLabel>Capacity</FormLabel>
+                  <Input
+                    type='number'
+                    placeholder='Capacity'
+                    value={capacityEdit}
+                    size='lg'
+                    onChange={(event) => {
+                      setCapacityEdit(Number(event.currentTarget.value));
+                      capacityDBEdit.current = Number(
+                        event.currentTarget.value,
+                      );
+                    }}
+                  />
+                </FormControl>
+                {startTimeDropdown && (
+                  <Stack w='full'>
+                    <FormLabel>Start Time</FormLabel>
+                    <Select
+                      value={startTimeEdit}
+                      onChange={onStartTimeChangeEdit}
+                      size='sm'
                     >
-                      Update
-                    </Button>
+                      {endTimeDropdown}
+                    </Select>
                   </Stack>
+                )}
+
+                {endTimeDropdown && (
+                  <Stack w='full'>
+                    <FormLabel>End Time</FormLabel>
+                    <Select
+                      value={endTimeEdit}
+                      onChange={onEndTimeChangeEdit}
+                      size='sm'
+                    >
+                      {endTimeDropdown}
+                    </Select>
+                  </Stack>
+                )}
+
+                <Stack spacing={5} direction='row'>
+                  <Checkbox
+                    isChecked={visibleEdit}
+                    onChange={(event) => {
+                      setVisibleEdit(event.target.checked);
+                      visibleDBEdit.current = event.target.checked;
+                    }}
+                  >
+                    Visible
+                  </Checkbox>
+                  <Checkbox
+                    isChecked={instantBookEdit}
+                    onChange={(event) => {
+                      setInstantBookEdit(event.target.checked);
+                      instantBookDBEdit.current = event.target.checked;
+                    }}
+                  >
+                    Instant Book
+                  </Checkbox>
+                  <Checkbox
+                    isChecked={isChildVenueEdit}
+                    onChange={(event) => {
+                      setIsChildVenueEdit(event.target.checked);
+                      isChildVenueDBEdit.current = event.target.checked;
+                    }}
+                  >
+                    Child Venue
+                  </Checkbox>
                 </Stack>
-              </form>
+                {isChildVenueEdit && (
+                  <Stack spacing={5} w='full'>
+                    <Text>Select Venue</Text>
+                    <Select onChange={onParentVenueChangeEdit} size='sm'>
+                      {parentVenueDropdown}
+                    </Select>
+                  </Stack>
+                )}
+
+                {checkerString(errorEdit) && (
+                  <Stack align='center'>
+                    <Text>{errorEdit}</Text>
+                  </Stack>
+                )}
+
+                <Stack spacing={10}>
+                  <Button
+                    bg='blue.400'
+                    color='white'
+                    disabled={submitButtonPressed}
+                    _hover={{
+                      bg: 'blue.500',
+                    }}
+                    onClick={handleSubmitEdit}
+                  >
+                    Update
+                  </Button>
+                  {hasPermission(level, actions.DELETE_VENUE) && (
+                    <Stack direction='column'>
+                      <Text>
+                        This will delete all bookings linked to this venue as
+                        well
+                      </Text>
+                      <Button
+                        bg='red.400'
+                        color='white'
+                        disabled={submitButtonPressed}
+                        _hover={{
+                          bg: 'blue.500',
+                        }}
+                        onClick={handleSubmitDelete}
+                      >
+                        Delete
+                      </Button>
+                    </Stack>
+                  )}
+                </Stack>
+              </Stack>
             </Stack>
           </MotionBox>
         )}

@@ -22,7 +22,7 @@ import hasPermission from '@constants/sys/permission';
 /**
  * Approves a venue booking request
  *
- * This is an ADMIN level or OWNER level request only.
+ * This is an JCRC level or KEWEB level request only.
  *
  * Used in:
  * /pages/sys/manage/admin/bookings

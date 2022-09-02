@@ -20,7 +20,7 @@ import hasPermission from '@constants/sys/permission';
 /**
  * Rejects a venue booking request with a reason explaining why
  *
- * This is an ADMIN level or OWNER level request only.
+ * This is an JCRC level or KEWEB level request only.
  *
  * Used in:
  * /pages/sys/manage/admin/bookings

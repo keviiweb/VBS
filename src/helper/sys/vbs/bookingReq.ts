@@ -1517,3 +1517,81 @@ export const notifyConflictsEmail = async (
 
   return result;
 };
+
+/**
+ * Delete all Venue Booking Requests
+ *
+ * @param session Next-Auth Session
+ * @returns A Result containing the status wrapped in a Promise
+ */
+export const deleteAllVenueBookingRequest = async (
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    await prisma.venueBookingRequest.deleteMany({});
+    await logger(
+      'deleteAllVenueBookingRequest',
+      session.user.email,
+      'Successfully deleted all booking requests!',
+    );
+    result = {
+      status: true,
+      error: null,
+      msg: 'Successfully deleted all booking requests!',
+    };
+  } catch (error) {
+    console.error(error);
+    await logger(
+      'deleteAllVenueBookingRequest',
+      session.user.email,
+      error.message,
+    );
+    result = {
+      status: false,
+      error: 'Error in deleting all booking requests!',
+      msg: '',
+    };
+  }
+  return result;
+};
+
+/**
+ * Delete all Venue Booking Requests by Venue ID
+ *
+ * @param id Venue ID
+ * @param session Next-Auth Session
+ * @returns A Result containing the status wrapped in a Promise
+ */
+export const deleteAllByVenueID = async (
+  id: string,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    await prisma.venueBookingRequest.deleteMany({
+      where: {
+        venue: id,
+      },
+    });
+    await logger(
+      'deleteAllByVenueID',
+      session.user.email,
+      'Successfully deleted all booking requests!',
+    );
+    result = {
+      status: true,
+      error: null,
+      msg: 'Successfully deleted all booking requests!',
+    };
+  } catch (error) {
+    console.error(error);
+    await logger('deleteAllByVenueID', session.user.email, error.message);
+    result = {
+      status: false,
+      error: 'Error in deleting all booking requests!',
+      msg: '',
+    };
+  }
+  return result;
+};

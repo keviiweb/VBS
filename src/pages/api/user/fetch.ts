@@ -11,7 +11,7 @@ import hasPermission from '@constants/sys/permission';
 /**
  * Fetches the list of users
  *
- * This is an OWNER level request only
+ * This is an KEWEB level request only
  *
  * Used in:
  * /pages/sys/manage/admin/users

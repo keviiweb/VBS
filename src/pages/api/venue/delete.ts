@@ -1,14 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
-import { Announcement } from 'types/misc/announcement';
 
-import { editAnnouncement } from '@helper/sys/misc/announcement';
+import { deleteVenue } from '@helper/sys/vbs/venue';
 import { currentSession } from '@helper/sys/sessionServer';
 
 import formidable, { IncomingForm } from 'formidable';
 
 import { actions } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
+import { checkerString } from '@root/src/constants/sys/helper';
 
 export const config = {
   api: {
@@ -17,12 +17,12 @@ export const config = {
 };
 
 /**
- * Edit the announcement
+ * Delete the venue
  *
- * This is an JCRC level or KEWEB level request only.
+ * This is an KEWEB level request only
  *
  * Used in:
- * /pages/sys/manage/announcement
+ * /pages/sys/manage/admin/venues
  *
  * @param req NextJS API Request
  * @param res NextJS API Response
@@ -38,7 +38,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== undefined &&
     session !== null &&
-    hasPermission(session.user.admin, actions.EDIT_ANNOUNCEMENT)
+    hasPermission(session.user.admin, actions.DELETE_VENUE)
   ) {
     const data: { fields: formidable.Fields; files: formidable.Files } =
       await new Promise((resolve, reject) => {
@@ -54,30 +54,29 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     try {
       const id: string = (data.fields.id as string).trim();
-      const description: string = (data.fields.description as string).trim();
-
-      const announceData: Announcement = {
-        id: id,
-        description: description,
-        updated_at: new Date().toISOString(),
-      };
-
-      const editAnnounceRequest: Result = await editAnnouncement(
-        announceData,
-        session,
-      );
-      if (editAnnounceRequest.status) {
-        result = {
-          status: true,
-          error: '',
-          msg: editAnnounceRequest.msg,
-        };
-        res.status(200).send(result);
-        res.end();
+      if (checkerString(id)) {
+        const delVenueRequest: Result = await deleteVenue(id, session);
+        if (delVenueRequest.status) {
+          result = {
+            status: true,
+            error: '',
+            msg: delVenueRequest.msg,
+          };
+          res.status(200).send(result);
+          res.end();
+        } else {
+          result = {
+            status: false,
+            error: delVenueRequest.error,
+            msg: '',
+          };
+          res.status(200).send(result);
+          res.end();
+        }
       } else {
         result = {
           status: false,
-          error: editAnnounceRequest.error,
+          error: 'Missing information',
           msg: '',
         };
         res.status(200).send(result);

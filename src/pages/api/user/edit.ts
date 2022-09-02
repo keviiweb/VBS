@@ -12,7 +12,7 @@ import { editUser } from '@helper/sys/misc/user';
 /**
  * Edit the user
  *
- * This is an OWNER level request only
+ * This is an KEWEB level request only
  *
  * Used in:
  * /pages/sys/manage/admin/users
@@ -34,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     session !== undefined &&
     session !== null &&
-    hasPermission(session.user.admin, actions.EDIT_USER)
+    hasPermission(session.user.admin, actions.DELETE_LOGS)
   ) {
     if (checkerString(id) && checkerString(name) && checkerString(email)) {
       const idField: string = (id as string).trim();
@@ -50,7 +50,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         updated_at: new Date().toISOString(),
       };
 
-      const userRes = await editUser(user, session);
+      const userRes: Result = await editUser(user, session);
       if (userRes.status) {
         result = { status: true, error: null, msg: userRes.msg };
         res.status(200).send(result);
