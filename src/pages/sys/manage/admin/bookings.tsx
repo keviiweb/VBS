@@ -686,8 +686,8 @@ export default function ManageBooking(props: any) {
         accessor: 'timeSlots',
       },
       {
-        Header: 'Email',
-        accessor: 'email',
+        Header: 'Name',
+        accessor: 'userName',
       },
       {
         Header: 'CCA',
@@ -854,7 +854,7 @@ export default function ManageBooking(props: any) {
             </Box>
           )}
 
-          {!loadingData && data && data.length === 0 && (
+          {!loadingData && data !== null && data.length === 0 && (
             <Box mt={30}>
               <Stack align='center' justify='center'>
                 <Text>No bookings found</Text>
@@ -862,7 +862,7 @@ export default function ManageBooking(props: any) {
             </Box>
           )}
 
-          {!loadingData && data && data !== [] && data.length > 0 && (
+          {!loadingData && data !== null && data.length > 0 && (
             <Box w='full' overflow='auto'>
               <Stack align='center' justify='center' spacing={30}>
                 <TableWidget

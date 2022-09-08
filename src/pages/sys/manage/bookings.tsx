@@ -102,7 +102,7 @@ export default function ManageBooking() {
         (content.res !== undefined || content.res !== null)
       ) {
         const booking: BookingRequest[] = content.res;
-        if (booking !== []) {
+        if (booking.length > 0) {
           for (let key = 0; key < booking.length; key += 1) {
             if (booking[key]) {
               const dataField: BookingRequest = booking[key];
@@ -254,8 +254,8 @@ export default function ManageBooking() {
         accessor: 'timeSlots',
       },
       {
-        Header: 'Email',
-        accessor: 'email',
+        Header: 'Name',
+        accessor: 'userName',
       },
       {
         Header: 'CCA',
