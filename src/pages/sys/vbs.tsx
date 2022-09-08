@@ -137,8 +137,13 @@ export default function VBS(props: any) {
       if (content[key]) {
         const dataField: Booking = content[key];
 
-        const description = `CCA: ${dataField.cca} EMAIL: ${dataField.email}`;
-
+        let description: string = '';
+        if (dataField.userName !== undefined && checkerString(dataField.userName)) {
+          description = `CCA: ${dataField.cca} NAME: ${dataField.userName}`;
+        } else {
+          description = `CCA: ${dataField.cca} EMAIL: ${dataField.email}`;
+        }
+        
         const e = {
           id: dataField.id,
           title: dataField.title,
@@ -290,7 +295,7 @@ export default function VBS(props: any) {
         if (res.msg.length > 0) {
           if (res.status) {
             const result: Venue[] = res.msg;
-            if (result !== [] && result !== null && result !== undefined) {
+            if (result.length > 0 && result !== null && result !== undefined) {
               const cardRes: JSX.Element[] = [];
               result.forEach((item) => {
                 if (item.visible) {

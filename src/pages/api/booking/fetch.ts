@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Result } from 'types/api';
 import { Venue } from 'types/vbs/venue';
 import { Booking } from 'types/vbs/booking';
+import { User } from 'types/misc/user';
 
 import {
   mapSlotToTiming,
@@ -22,6 +23,7 @@ import {
 } from '@helper/sys/vbs/venue';
 import { findCCAbyID } from '@helper/sys/cca/cca';
 import { findAllBookingByVenueID } from '@helper/sys/vbs/booking';
+import { fetchUserByEmail } from '@helper/sys/misc/user';
 
 /**
  * Fetches all booking made filtered by venue ID
@@ -46,7 +48,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (hasPermission(session.user.admin, actions.FETCH_BOOKING)) {
         bookings = await findAllBookingByVenueID(venueID, session);
 
-        if (bookings !== [] && bookings !== undefined && bookings !== null) {
+        if (bookings.length > 0 && bookings !== undefined && bookings !== null) {
           const parsedBooking: Booking[] = [];
           for (let booking = 0; booking < bookings.length; booking += 1) {
             if (bookings[booking]) {
@@ -230,6 +232,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     e = end;
                   }
 
+                  const userRes: Result = await fetchUserByEmail(
+                    book.email,
+                    session,
+                  );
+                  const user: User = userRes.msg;
+                  let username: string = '';
+                  if (user && checkerString(user.name)) {
+                    username = user.name;
+                  }
+
                   const data: Booking = {
                     id: book.id,
                     email: book.email,
@@ -244,6 +256,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     title: book.purpose,
                     start: s,
                     end: e,
+                    userName: username,
                   };
 
                   parsedBooking.push(data);
