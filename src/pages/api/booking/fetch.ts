@@ -48,7 +48,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (hasPermission(session.user.admin, actions.FETCH_BOOKING)) {
         bookings = await findAllBookingByVenueID(venueID, session);
 
-        if (bookings.length > 0 && bookings !== undefined && bookings !== null) {
+        if (
+          bookings.length > 0 &&
+          bookings !== undefined &&
+          bookings !== null
+        ) {
           const parsedBooking: Booking[] = [];
           for (let booking = 0; booking < bookings.length; booking += 1) {
             if (bookings[booking]) {

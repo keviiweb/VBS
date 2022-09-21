@@ -58,7 +58,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const name: string = (data.fields.name as string).trim();
       const description: string = (data.fields.description as string).trim();
       const isInstantBook: boolean = data.fields.isInstantBook === 'true';
-      const visible: boolean = data.fields.visible === 'true';
+      const visible: boolean =
+        data.fields.visible !== undefined
+          ? data.fields.visible === 'true'
+          : true;
       const isChildVenue: boolean = data.fields.isChildVenue === 'true';
       const parentVenue: string = isChildVenue
         ? (data.fields.parentVenue as string).trim()

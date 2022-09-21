@@ -205,7 +205,7 @@ export default function ManageVenues(props: any) {
       return false;
     }
 
-    if (checkerNumber(capacityField)) {
+    if (!checkerNumber(capacityField)) {
       setError('Capacity must not be empty!');
       return false;
     }
@@ -583,7 +583,7 @@ export default function ManageVenues(props: any) {
       venueIDDBEdit.current = value;
       setVenueIDEdit(value);
 
-      if (venueData.current !== []) {
+      if (venueData.current.length > 0) {
         for (let key = 0; key < venueData.current.length; key += 1) {
           if (venueData.current[key]) {
             const dataField: Venue = venueData.current[key];

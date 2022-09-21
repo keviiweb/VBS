@@ -482,9 +482,9 @@ export const createCCARecordFile = async (
                       msg: '',
                     };
                     break;
+                  } else {
+                    count += 1;
                   }
-
-                  count += 1;
                 } else {
                   const userData: CCARecord = {
                     sessionEmail: email.trim(),
@@ -504,9 +504,9 @@ export const createCCARecordFile = async (
                       msg: '',
                     };
                     break;
+                  } else {
+                    count += 1;
                   }
-
-                  count += 1;
                 }
               }
             } else {

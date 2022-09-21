@@ -138,12 +138,15 @@ export default function VBS(props: any) {
         const dataField: Booking = content[key];
 
         let description: string = '';
-        if (dataField.userName !== undefined && checkerString(dataField.userName)) {
+        if (
+          dataField.userName !== undefined &&
+          checkerString(dataField.userName)
+        ) {
           description = `CCA: ${dataField.cca} NAME: ${dataField.userName}`;
         } else {
           description = `CCA: ${dataField.cca} EMAIL: ${dataField.email}`;
         }
-        
+
         const e = {
           id: dataField.id,
           title: dataField.title,
@@ -177,6 +180,9 @@ export default function VBS(props: any) {
   const fetchBookings = useCallback(
     async (id: string) => {
       if (checkerString(id)) {
+        setAllBooking([]);
+        setEvents([]);
+
         setSubmitButtonPressed(true);
         try {
           const rawResponse = await fetch('/api/booking/fetch', {
