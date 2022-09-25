@@ -22,7 +22,7 @@ export const fetchUserByEmail = async (
   try {
     const userFromDB: User = await prisma.users.findUnique({
       where: {
-        email: email,
+        email: email.toLowerCase().trim(),
       },
     });
 
@@ -57,6 +57,12 @@ export const acceptTermsForUser = async (
   session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
+  let URL: string =
+    process.env.NEXTAUTH_URL !== undefined &&
+    process.env.VBS_DOMAIN !== undefined
+      ? process.env.NEXTAUTH_URL + process.env.VBS_DOMAIN
+      : 'https://kevii.azurewebsites.net/sys';
+
   try {
     const user: User = await prisma.users.update({
       where: {
@@ -72,7 +78,7 @@ export const acceptTermsForUser = async (
         await logger(
           `acceptTermsForUser - ${data.id}`,
           session.user.email,
-          `Successfully accepted terms for ${user.name}`,
+          `Successfully accepted terms for ${user.name}. Please head to ${URL} to access the system if it does not automatically redirect you.`,
         );
       }
       result = {

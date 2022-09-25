@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
  *
  * @returns Accept Terms Page
  */
-export default function Unauthorized() {
+export default function AcceptTerms() {
   const toast = useToast();
 
   const router = useRouter();
@@ -26,9 +26,20 @@ export default function Unauthorized() {
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
   const [isSubmitting, setIsSubmit] = useState(false);
 
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+  useEffect(() => {
+    if (acceptedTerms) {
+      setTimeout(() => {
+        router.push('/sys');
+      }, 500);
+    }
+  }, [router, acceptedTerms]);
+
   const handleAccept = useCallback(async () => {
     setSubmitButtonPressed(true);
     setIsSubmit(true);
+    setAcceptedTerms(false);
     try {
       const rawResponse = await fetch('/api/user/accept', {
         method: 'POST',
@@ -43,13 +54,9 @@ export default function Unauthorized() {
           title: 'Success',
           description: content.msg,
           status: 'success',
-          duration: 5000,
           isClosable: true,
         });
-
-        setTimeout(() => {
-          router.push('/sys');
-        }, 500);
+        setAcceptedTerms(true);
       } else {
         toast({
           title: 'Error',
@@ -67,7 +74,7 @@ export default function Unauthorized() {
     }
 
     setSubmitButtonPressed(false);
-  }, [router, toast]);
+  }, [toast]);
 
   return (
     <Flex minH='100vh' align='center' justify='center' bg='gray.50'>

@@ -25,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (session !== undefined && session !== null) {
     const doesUserExistRes: Result = await fetchUserByEmail(
-      session.user.email.toLowerCase().trim(),
+      session.user.email,
       session,
     );
     if (doesUserExistRes.status) {
