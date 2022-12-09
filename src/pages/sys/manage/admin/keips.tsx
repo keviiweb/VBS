@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useCallback
+  useCallback,
 } from 'react';
 import {
   Button,
@@ -18,7 +18,7 @@ import {
   SimpleGrid,
   Stack,
   useToast,
-  VisuallyHidden
+  VisuallyHidden,
 } from '@chakra-ui/react';
 import { cardVariant, parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
@@ -61,7 +61,7 @@ const MotionBox = motion(Box);
  * @param props Permission level of user
  * @returns Manage KEIPS page
  */
-export default function ManageKEIPS (props: any) {
+export default function ManageKEIPS(props: any) {
   const [modalData, setModalData] = useState<KEIPS | null>(null);
   const toast = useToast();
 
@@ -107,7 +107,7 @@ export default function ManageKEIPS (props: any) {
 
           const rawResponse = await fetch('/api/keips/file', {
             method: 'POST',
-            body: dataField
+            body: dataField,
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -116,7 +116,7 @@ export default function ManageKEIPS (props: any) {
               description: content.msg,
               status: 'success',
               duration: 5000,
-              isClosable: true
+              isClosable: true,
             });
 
             await resetFileKEIPS();
@@ -127,7 +127,7 @@ export default function ManageKEIPS (props: any) {
               description: content.error,
               status: 'error',
               duration: 5000,
-              isClosable: true
+              isClosable: true,
             });
           }
         } catch (error) {
@@ -140,7 +140,7 @@ export default function ManageKEIPS (props: any) {
 
       return false;
     },
-    [fetchData, resetFileKEIPS, toast]
+    [fetchData, resetFileKEIPS, toast],
   );
 
   const handleSubmitTruncateKEIPS = useCallback(
@@ -153,8 +153,8 @@ export default function ManageKEIPS (props: any) {
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         });
         const content: Result = await rawResponse.json();
         if (content.status) {
@@ -163,7 +163,7 @@ export default function ManageKEIPS (props: any) {
             description: content.msg,
             status: 'success',
             duration: 5000,
-            isClosable: true
+            isClosable: true,
           });
 
           await fetchData();
@@ -173,7 +173,7 @@ export default function ManageKEIPS (props: any) {
             description: content.error,
             status: 'error',
             duration: 5000,
-            isClosable: true
+            isClosable: true,
           });
         }
       } catch (error) {
@@ -181,7 +181,7 @@ export default function ManageKEIPS (props: any) {
       }
       setSubmitButtonPressed(false);
     },
-    [fetchData, toast]
+    [fetchData, toast],
   );
 
   const generateActionButton = useCallback(
@@ -198,7 +198,7 @@ export default function ManageKEIPS (props: any) {
 
       return button;
     },
-    [handleDetails]
+    [handleDetails],
   );
 
   const includeActionButton = useCallback(
@@ -226,7 +226,7 @@ export default function ManageKEIPS (props: any) {
         }
       }
     },
-    [generateActionButton]
+    [generateActionButton],
   );
 
   const fetchDataTable = useCallback(async () => {
@@ -237,9 +237,9 @@ export default function ManageKEIPS (props: any) {
         {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
-        }
+            'Content-Type': 'application/json',
+          },
+        },
       );
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -277,7 +277,7 @@ export default function ManageKEIPS (props: any) {
   };
 
   useEffect(() => {
-    async function generate (propsField: any) {
+    async function generate(propsField: any) {
       setLevel(propsField.data);
 
       await fetchData();
@@ -290,38 +290,38 @@ export default function ManageKEIPS (props: any) {
     () => [
       {
         Header: 'MATNET',
-        accessor: 'matnet'
+        accessor: 'matnet',
       },
       {
         Header: 'OSA Points',
-        accessor: 'OSA'
+        accessor: 'OSA',
       },
       {
         Header: 'OSA Percentile',
-        accessor: 'osaPercentile'
+        accessor: 'osaPercentile',
       },
       {
         Header: 'Room Draw Points',
-        accessor: 'roomDraw'
+        accessor: 'roomDraw',
       },
       {
         Header: 'Contrasting',
-        accessor: 'contrastingStr'
+        accessor: 'contrastingStr',
       },
       {
         Header: 'Semester stayed',
-        accessor: 'semesterStay'
+        accessor: 'semesterStay',
       },
       {
         Header: 'Fullfilled criteria?',
-        accessor: 'fulfilledStr'
+        accessor: 'fulfilledStr',
       },
       {
         Header: 'Actions',
-        accessor: 'action'
-      }
+        accessor: 'action',
+      },
     ],
-    []
+    [],
   );
 
   const onTableChange = useCallback(
@@ -336,7 +336,7 @@ export default function ManageKEIPS (props: any) {
         await fetchDataTable();
       }
     },
-    [fetchDataTable]
+    [fetchDataTable],
   );
 
   return (
@@ -450,7 +450,7 @@ export default function ManageKEIPS (props: any) {
                             color='brand.600'
                             pos='relative'
                             _hover={{
-                              color: 'brand.400'
+                              color: 'brand.400',
                             }}
                           >
                             <span>Upload a file</span>
@@ -485,7 +485,7 @@ export default function ManageKEIPS (props: any) {
                       color='white'
                       disabled={submitButtonPressed}
                       _hover={{
-                        bg: 'blue.500'
+                        bg: 'blue.500',
                       }}
                     >
                       Populate
@@ -519,7 +519,7 @@ export default function ManageKEIPS (props: any) {
                     color='white'
                     disabled={submitButtonPressed}
                     _hover={{
-                      bg: 'blue.500'
+                      bg: 'blue.500',
                     }}
                   >
                     Delete
@@ -537,7 +537,7 @@ export default function ManageKEIPS (props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=120, stale-while-revalidate=240'
+    'public, s-maxage=120, stale-while-revalidate=240',
   );
 
   let data: number = levels.USER;
@@ -552,7 +552,7 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
 
   return {
     props: {
-      data
-    }
+      data,
+    },
   };
 };

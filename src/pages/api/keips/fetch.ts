@@ -27,7 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   const { matnet } = req.body;
@@ -56,7 +56,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           semesterStay: keipsData.semesterStay,
           fulfilled: keipsData.fulfilled,
           contrastingStr,
-          fulfilledStr
+          fulfilledStr,
         };
 
         parsedKEIPS.push(data);
@@ -65,7 +65,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: true,
         error: null,
-        msg: parsedKEIPS
+        msg: parsedKEIPS,
       };
       res.status(200).send(result);
       res.end();
@@ -73,7 +73,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: keipsDB.error,
-        msg: []
+        msg: [],
       };
       res.status(200).send(result);
       res.end();
@@ -82,7 +82,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Missing Information',
-      msg: []
+      msg: [],
     };
     res.status(200).send(result);
     res.end();

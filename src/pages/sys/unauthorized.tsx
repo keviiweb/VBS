@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
  *
  * @returns Unauthorized Page
  */
-export default function Unauthorized () {
+export default function Unauthorized() {
   const router = useRouter();
 
   useEffect(() => {

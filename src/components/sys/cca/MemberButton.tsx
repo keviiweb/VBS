@@ -8,12 +8,12 @@ import { checkerString } from '@constants/sys/helper';
  * @param param0 List of functions available
  * @returns Renders a clickable button that represents a particular member
  */
-export default function MemberButton ({
+export default function MemberButton({
   reality,
   handleClick,
   newKey,
   id,
-  name
+  name,
 }) {
   const [selected, setSelected] = useState(false);
 

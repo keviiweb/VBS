@@ -15,7 +15,7 @@ const MotionSimpleGrid = motion(SimpleGrid);
  *
  * @returns Sports Page
  */
-export default function Sports () {
+export default function Sports() {
   // Format for adding new CCAs
   /*
   const content = [
@@ -79,7 +79,7 @@ export default function Sports () {
                 link={null}
               />
             </MotionBox>
-          )
+          ),
         )}
       </MotionSimpleGrid>
     </Landing>

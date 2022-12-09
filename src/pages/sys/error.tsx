@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
  *
  * @returns Error Page
  */
-export default function Error () {
+export default function Error() {
   const router = useRouter();
 
   useEffect(() => {

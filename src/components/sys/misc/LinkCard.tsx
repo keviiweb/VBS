@@ -9,7 +9,7 @@ import Image from 'next/image';
  * @param param0 Data
  * @returns A clickable card
  */
-export default function LinkCard ({ product }) {
+export default function LinkCard({ product }) {
   const img = (product && product.img) || null;
   const title = (product && product.title) || null;
   const link = (product && product.link) || null;
@@ -45,7 +45,7 @@ export default function LinkCard ({ product }) {
                     fill
                     sizes='100vw'
                     style={{
-                      objectFit: 'cover'
+                      objectFit: 'cover',
                     }}
                   />
                 </Box>

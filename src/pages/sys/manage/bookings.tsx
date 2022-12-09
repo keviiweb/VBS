@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
-  useRef
+  useRef,
 } from 'react';
 import { Button, Box, Stack, Text, useToast } from '@chakra-ui/react';
 import { CloseIcon, InfoOutlineIcon } from '@chakra-ui/icons';
@@ -29,7 +29,7 @@ const MotionBox = motion(Box);
  *
  * @returns ManageBooking page
  */
-export default function ManageBooking () {
+export default function ManageBooking() {
   const [modalData, setModalData] = useState<BookingRequest | null>(null);
 
   const toast = useToast();
@@ -61,11 +61,11 @@ export default function ManageBooking () {
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              id
-            })
+              id,
+            }),
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -74,7 +74,7 @@ export default function ManageBooking () {
               description: content.msg,
               status: 'success',
               duration: 5000,
-              isClosable: true
+              isClosable: true,
             });
             await fetchData();
           } else {
@@ -83,7 +83,7 @@ export default function ManageBooking () {
               description: content.error,
               status: 'error',
               duration: 5000,
-              isClosable: true
+              isClosable: true,
             });
           }
         } catch (error) {
@@ -92,7 +92,7 @@ export default function ManageBooking () {
         setSubmitButtonPressed(false);
       }
     },
-    [toast, fetchData]
+    [toast, fetchData],
   );
 
   const includeActionButton = useCallback(
@@ -120,7 +120,7 @@ export default function ManageBooking () {
         }
       }
     },
-    [generateActionButton]
+    [generateActionButton],
   );
 
   generateActionButton = useCallback(
@@ -184,7 +184,7 @@ export default function ManageBooking () {
       }
       return null;
     },
-    [handleDetails, handleCancel, submitButtonPressed]
+    [handleDetails, handleCancel, submitButtonPressed],
   );
 
   const fetchDataFromDB = useCallback(async () => {
@@ -194,9 +194,9 @@ export default function ManageBooking () {
         {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
-        }
+            'Content-Type': 'application/json',
+          },
+        },
       );
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -230,7 +230,7 @@ export default function ManageBooking () {
         await fetchDataFromDB();
       }
     },
-    [fetchDataFromDB]
+    [fetchDataFromDB],
   );
 
   useEffect(() => {
@@ -243,38 +243,38 @@ export default function ManageBooking () {
     () => [
       {
         Header: 'Venue',
-        accessor: 'venue'
+        accessor: 'venue',
       },
       {
         Header: 'Date',
-        accessor: 'dateStr'
+        accessor: 'dateStr',
       },
       {
         Header: 'Timeslot(s)',
-        accessor: 'timeSlots'
+        accessor: 'timeSlots',
       },
       {
         Header: 'Name',
-        accessor: 'userName'
+        accessor: 'userName',
       },
       {
         Header: 'CCA',
-        accessor: 'cca'
+        accessor: 'cca',
       },
       {
         Header: 'Purpose',
-        accessor: 'purpose'
+        accessor: 'purpose',
       },
       {
         Header: 'Status',
-        accessor: 'status'
+        accessor: 'status',
       },
       {
         Header: 'Actions',
-        accessor: 'action'
-      }
+        accessor: 'action',
+      },
     ],
-    []
+    [],
   );
 
   return (

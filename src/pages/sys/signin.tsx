@@ -9,7 +9,7 @@ import {
   Input,
   Stack,
   Spinner,
-  Text
+  Text,
 } from '@chakra-ui/react';
 import { signIn } from 'next-auth/react';
 
@@ -22,7 +22,7 @@ import { checkerString } from '@constants/sys/helper';
  * @param props Host URL
  * @returns SignIn Page
  */
-export default function SignIn (props: any) {
+export default function SignIn(props: any) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const emailDB = useRef('');
@@ -31,7 +31,7 @@ export default function SignIn (props: any) {
   const [url, setURL] = useState('https://kevii.azurewebsites.net'); // default
 
   useEffect(() => {
-    async function fetchData (propsField: any) {
+    async function fetchData(propsField: any) {
       if (checkerString(propsField.data)) {
         setURL(propsField.data);
       }
@@ -47,7 +47,7 @@ export default function SignIn (props: any) {
         setLoading(true);
         await signIn('email', {
           email,
-          callbackUrl: `${url}/sys`
+          callbackUrl: `${url}/sys`,
         });
       } catch (error) {
         console.log(error);
@@ -97,7 +97,7 @@ export default function SignIn (props: any) {
                   bg='blue.400'
                   color='white'
                   _hover={{
-                    bg: 'blue.500'
+                    bg: 'blue.500',
                   }}
                 >
                   Sign in
@@ -125,7 +125,7 @@ export default function SignIn (props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=240, stale-while-revalidate=480'
+    'public, s-maxage=240, stale-while-revalidate=480',
   );
 
   const data: string | null =
@@ -133,7 +133,7 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
 
   return {
     props: {
-      data
-    }
+      data,
+    },
   };
 };

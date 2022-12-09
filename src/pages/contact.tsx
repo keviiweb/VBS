@@ -11,7 +11,7 @@ const MotionBox = motion(Box);
  *
  * @returns Contact Us Page
  */
-export default function ContactUs () {
+export default function ContactUs() {
   return (
     <Landing>
       <MotionBox

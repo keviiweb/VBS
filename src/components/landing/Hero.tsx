@@ -4,7 +4,7 @@ import {
   Flex,
   Text,
   VStack,
-  useBreakpointValue
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import React from 'react';
@@ -16,7 +16,7 @@ const MotionBox = motion(Box);
  *
  * @returns A Hero component
  */
-export default function Hero () {
+export default function Hero() {
   return (
     <Flex
       w='full'
@@ -46,7 +46,7 @@ export default function Hero () {
                 base: 'xl',
                 md: '3xl',
                 lg: '4xl',
-                xl: '5xl'
+                xl: '5xl',
               })}
             >
               To Strive, To Seek, To Serve

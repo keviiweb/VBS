@@ -6,7 +6,7 @@ import { currentSession } from '@helper/sys/sessionServer';
 import {
   isLeader,
   createCCARecord,
-  fetchSpecificCCARecord
+  fetchSpecificCCARecord,
 } from '@helper/sys/cca/ccaRecord';
 
 import hasPermission from '@constants/sys/permission';
@@ -27,7 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   const { ccaID, email } = req.body;
@@ -45,16 +45,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const userPermission: boolean = hasPermission(
       session.user.admin,
-      actions.FETCH_USER_CCA_RECORD
+      actions.FETCH_USER_CCA_RECORD,
     );
 
     if (ccaIDRes !== undefined && emailRes !== undefined) {
       const checkLdr: Result = await isLeader(ccaIDRes, session);
-      if (userPermission || (checkLdr.status && checkLdr.msg)) {
+      if (userPermission || (checkLdr.status && (checkLdr.msg as boolean))) {
         const existCCARecordRes: Result = await fetchSpecificCCARecord(
           ccaIDRes,
           emailRes,
-          session
+          session,
         );
         if (
           existCCARecordRes.status &&
@@ -64,7 +64,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: 'Resident is already a member of the CCA!',
-            msg: ''
+            msg: '',
           };
           res.status(200).send(result);
           res.end();
@@ -72,18 +72,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const ccaRecord: CCARecord = {
             ccaID: ccaIDRes,
             sessionEmail: emailRes,
-            leader: false
+            leader: false,
           };
 
           const ccaRecordRes: Result = await createCCARecord(
             ccaRecord,
-            session
+            session,
           );
           if (ccaRecordRes.status) {
             result = {
               status: true,
               error: null,
-              msg: ccaRecordRes.msg
+              msg: ccaRecordRes.msg,
             };
             res.status(200).send(result);
             res.end();
@@ -91,7 +91,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: ccaRecordRes.error,
-              msg: ''
+              msg: '',
             };
             res.status(200).send(result);
             res.end();
@@ -101,7 +101,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: 'Not a CCA leader',
-          msg: { count: 0, res: [] }
+          msg: { count: 0, res: [] },
         };
         res.status(200).send(result);
         res.end();
@@ -111,7 +111,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: { count: 0, res: [] }
+      msg: { count: 0, res: [] },
     };
     res.status(200).send(result);
     res.end();

@@ -5,14 +5,14 @@ import {
   convertSlotToArray,
   findSlots,
   PERSONAL,
-  splitHours
+  splitHours,
 } from '@constants/sys/helper';
 import {
   addDays,
   convertDateToUnix,
   dateISO,
   fetchCurrentDate,
-  locale
+  locale,
 } from '@constants/sys/date';
 
 import { BookingRequest } from 'types/vbs/bookingReq';
@@ -29,7 +29,7 @@ import {
   createVenueBookingRequest,
   isConflict,
   setApprove,
-  setRejectConflicts
+  setRejectConflicts,
 } from '@helper/sys/vbs/bookingReq';
 
 import { logger } from '@helper/sys/misc/logger';
@@ -42,7 +42,7 @@ import { logger } from '@helper/sys/misc/logger';
  */
 export const findAllBookingByVenueID = async (
   id: string,
-  session: Session
+  session: Session,
 ): Promise<Booking[]> => {
   try {
     const viewingDate: number = process.env.VIEW_BOOKING_CALENDAR_DAY
@@ -62,41 +62,41 @@ export const findAllBookingByVenueID = async (
       bookings = await prisma.venueBooking.findMany({
         orderBy: [
           {
-            date: 'desc'
+            date: 'desc',
           },
           {
-            timingSlot: 'asc'
-          }
+            timingSlot: 'asc',
+          },
         ],
         where: {
           venue: id,
           AND: [
             {
               date: {
-                lte: newEndTime
-              }
+                lte: newEndTime,
+              },
             },
             {
               date: {
-                gte: newStartTime
-              }
-            }
-          ]
-        }
+                gte: newStartTime,
+              },
+            },
+          ],
+        },
       });
     } else {
       bookings = await prisma.venueBooking.findMany({
         orderBy: [
           {
-            date: 'desc'
+            date: 'desc',
           },
           {
-            timingSlot: 'asc'
-          }
+            timingSlot: 'asc',
+          },
         ],
         where: {
-          venue: id
-        }
+          venue: id,
+        },
       });
     }
 
@@ -119,7 +119,7 @@ export const findAllBookingByVenueID = async (
 export const createVenueBooking = async (
   bookingRequest: BookingRequest,
   timeSlots: number[],
-  session: Session
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   let success = true;
@@ -133,22 +133,22 @@ export const createVenueBooking = async (
           timingSlot: timeSlots[i],
           cca: bookingRequest.cca,
           purpose: bookingRequest.purpose,
-          sessionEmail: session.user.email
-        }
+          sessionEmail: session.user.email,
+        },
       });
 
       if (!insertRequest) {
         await logger(
           'createVenueBooking',
           session.user.email,
-          'Approve Request - Venue Booking creation failed!'
+          'Approve Request - Venue Booking creation failed!',
         );
         console.error('Approve Request - Venue Booking creation failed!');
         success = false;
         result = {
           status: false,
           error: 'Error in creating venue booking',
-          msg: ''
+          msg: '',
         };
       }
     }
@@ -157,13 +157,13 @@ export const createVenueBooking = async (
       await logger(
         'createVenueBooking',
         session.user.email,
-        'Successfully created bookings'
+        'Successfully created bookings',
       );
 
       result = {
         status: true,
         error: '',
-        msg: 'Successfully created bookings'
+        msg: 'Successfully created bookings',
       };
     }
   } catch (error) {
@@ -171,7 +171,7 @@ export const createVenueBooking = async (
     result = {
       status: false,
       error: 'Error in creating venue booking',
-      msg: ''
+      msg: '',
     };
     await logger('createVenueBooking', session.user.email, error.message);
   }
@@ -189,7 +189,7 @@ export const createVenueBooking = async (
 export const deleteVenueBooking = async (
   bookingRequest: BookingRequest,
   timeSlots: number[],
-  session: Session
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   let success = true;
@@ -202,22 +202,22 @@ export const deleteVenueBooking = async (
           date: bookingRequest.date,
           timingSlot: timeSlots[i],
           cca: bookingRequest.cca,
-          purpose: bookingRequest.purpose
-        }
+          purpose: bookingRequest.purpose,
+        },
       });
 
       if (!deleteRequest) {
         await logger(
           'deleteVenueBooking',
           session.user.email,
-          'Cancel Request - Venue Booking deletion failed!'
+          'Cancel Request - Venue Booking deletion failed!',
         );
         console.error('Cancel Request - Venue Booking deletion failed!');
         success = false;
         result = {
           status: false,
           error: 'Error in deleting venue booking',
-          msg: ''
+          msg: '',
         };
       }
     }
@@ -226,12 +226,12 @@ export const deleteVenueBooking = async (
       await logger(
         'deleteVenueBooking',
         session.user.email,
-        'Successfully deleted bookings'
+        'Successfully deleted bookings',
       );
       result = {
         status: true,
         error: '',
-        msg: 'Successfully deleted bookings'
+        msg: 'Successfully deleted bookings',
       };
     }
   } catch (error) {
@@ -239,7 +239,7 @@ export const deleteVenueBooking = async (
     result = {
       status: false,
       error: 'Error in creating venue booking',
-      msg: ''
+      msg: '',
     };
     await logger('deleteVenueBooking', session.user.email, error.message);
   }
@@ -259,7 +259,7 @@ export const deleteVenueBooking = async (
  */
 export const createRecurringBooking = async (
   dataField: any[],
-  session: Session
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -293,7 +293,7 @@ export const createRecurringBooking = async (
         ) {
           const venueDetailsRes: Result = await findVenueByName(
             venueName,
-            session
+            session,
           );
           if (venueDetailsRes.status && venueDetailsRes.msg !== null) {
             const venueDetails: Venue = venueDetailsRes.msg;
@@ -324,13 +324,13 @@ export const createRecurringBooking = async (
                 const startTiming: string = start.toString().padStart(4, '0');
                 const timeSlotID: string | null = await findSlots(
                   startTiming,
-                  true
+                  true,
                 );
 
                 const endTiming: string = end.toString().padStart(4, '0');
                 const timeSlotIDEnd: string | null = await findSlots(
                   endTiming,
-                  false
+                  false,
                 );
 
                 if (
@@ -349,12 +349,12 @@ export const createRecurringBooking = async (
                         cca: ccaID.trim(),
                         timeSlots: timeSlotID.trim(),
                         purpose: purpose.trim(),
-                        sessionEmail: session.user.email
+                        sessionEmail: session.user.email,
                       };
 
                       const isThereConflict: boolean = await isConflict(
                         dataDB,
-                        session
+                        session,
                       );
                       if (!isThereConflict) {
                         const bookingRequest: BookingRequest | null =
@@ -366,14 +366,14 @@ export const createRecurringBooking = async (
                           if (bookingRequest.id !== undefined) {
                             const timeSlotsNum: number[] = convertSlotToArray(
                               bookingRequest.timeSlots,
-                              true
+                              true,
                             ) as number[];
 
                             const createBooking: Result =
                               await createVenueBooking(
                                 bookingRequest,
                                 timeSlotsNum,
-                                session
+                                session,
                               );
 
                             if (!createBooking.status) {
@@ -382,12 +382,12 @@ export const createRecurringBooking = async (
                             } else {
                               const approve: Result = await setApprove(
                                 bookingRequest,
-                                session
+                                session,
                               );
 
                               const cancel: Result = await setRejectConflicts(
                                 bookingRequest,
-                                session
+                                session,
                               );
 
                               if (!approve.status || !cancel.status) {
@@ -435,19 +435,19 @@ export const createRecurringBooking = async (
       await logger(
         'createRecurringBooking',
         session.user.email,
-        `Successfully created ${count} bookings out of total ${totalCount}`
+        `Successfully created ${count} bookings out of total ${totalCount}`,
       );
       result = {
         status: true,
         error: null,
-        msg: `Successfully created ${count} bookings out of total ${totalCount}`
+        msg: `Successfully created ${count} bookings out of total ${totalCount}`,
       };
     } else {
       await logger('createRecurringBooking', session.user.email, errorMsg);
       result = {
         status: false,
         error: errorMsg,
-        msg: null
+        msg: null,
       };
     }
   } catch (error) {
@@ -465,7 +465,7 @@ export const createRecurringBooking = async (
  * @returns A Result containing the status wrapped in a Promise
  */
 export const deleteAllVenueBooking = async (
-  session: Session
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -473,19 +473,19 @@ export const deleteAllVenueBooking = async (
     await logger(
       'deleteAllVenueBooking',
       session.user.email,
-      'Successfully deleted all booking!'
+      'Successfully deleted all booking!',
     );
     result = {
       status: true,
       error: '',
-      msg: 'Successfully deleted all booking!'
+      msg: 'Successfully deleted all booking!',
     };
   } catch (error) {
     console.error(error);
     result = {
       status: false,
       error: 'Error in deleting all venue booking',
-      msg: ''
+      msg: '',
     };
     await logger('deleteAllVenueBooking', session.user.email, error.message);
   }
@@ -501,36 +501,36 @@ export const deleteAllVenueBooking = async (
  */
 export const deleteAllVenueBookingByVenueID = async (
   id: string,
-  session: Session
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     await prisma.venueBooking.deleteMany({
       where: {
-        venue: id
-      }
+        venue: id,
+      },
     });
     await logger(
       'deleteAllVenueBookingByVenueID',
       session.user.email,
-      'Successfully deleted all booking!'
+      'Successfully deleted all booking!',
     );
     result = {
       status: true,
       error: '',
-      msg: 'Successfully deleted all booking!'
+      msg: 'Successfully deleted all booking!',
     };
   } catch (error) {
     console.error(error);
     result = {
       status: false,
       error: 'Error in deleting all venue booking',
-      msg: ''
+      msg: '',
     };
     await logger(
       'deleteAllVenueBookingByVenueID',
       session.user.email,
-      error.message
+      error.message,
     );
   }
 

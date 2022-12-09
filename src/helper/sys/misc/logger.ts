@@ -13,18 +13,18 @@ import { Log } from 'types/misc/logger';
 export const logger = async (
   location: string,
   username: string,
-  content: string
+  content: string,
 ): Promise<void> => {
   if (process.env.LOGGER !== undefined && process.env.LOGGER) {
     try {
       const data: Log = {
         location,
         username,
-        content
+        content,
       };
 
       await prisma.log.create({
-        data
+        data,
       });
     } catch (error) {
       console.error(error);
@@ -39,14 +39,14 @@ export const deleteAllLog = async (): Promise<Result> => {
     result = {
       status: true,
       error: null,
-      msg: 'Successfully deleted all logs'
+      msg: 'Successfully deleted all logs',
     };
   } catch (error) {
     console.error(error);
     result = {
       status: false,
       error: 'Failed to delete all logs',
-      msg: ''
+      msg: '',
     };
   }
   return result;

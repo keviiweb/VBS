@@ -12,8 +12,8 @@ import { checkerString } from '@root/src/constants/sys/helper';
 
 export const config = {
   api: {
-    bodyParser: false
-  }
+    bodyParser: false,
+  },
 };
 
 /**
@@ -32,7 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   if (
@@ -60,7 +60,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: true,
             error: '',
-            msg: delVenueRequest.msg
+            msg: delVenueRequest.msg,
           };
           res.status(200).send(result);
           res.end();
@@ -68,7 +68,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: delVenueRequest.error,
-            msg: ''
+            msg: '',
           };
           res.status(200).send(result);
           res.end();
@@ -77,7 +77,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: 'Missing information',
-          msg: ''
+          msg: '',
         };
         res.status(200).send(result);
         res.end();
@@ -87,7 +87,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Information of wrong type',
-        msg: ''
+        msg: '',
       };
       res.status(200).send(result);
       res.end();

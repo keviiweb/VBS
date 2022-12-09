@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   if (session !== null && session !== undefined) {
@@ -35,7 +35,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const announcementDB: Result = await fetchAllAnnouncements(
       limit,
       skip,
-      session
+      session,
     );
     const parsedAnnouncement: Announcement[] = [];
 
@@ -49,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             const data: Announcement = {
               id: announce.id,
               image: announce.image,
-              description: announce.description
+              description: announce.description,
             };
 
             parsedAnnouncement.push(data);
@@ -60,7 +60,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: true,
         error: null,
-        msg: parsedAnnouncement
+        msg: parsedAnnouncement,
       };
       res.status(200).send(result);
       res.end();
@@ -68,7 +68,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: announcementDB.error,
-        msg: []
+        msg: [],
       };
       res.status(200).send(result);
       res.end();

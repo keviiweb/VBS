@@ -13,8 +13,8 @@ import hasPermission from '@constants/sys/permission';
 
 export const config = {
   api: {
-    bodyParser: false
-  }
+    bodyParser: false,
+  },
 };
 
 /**
@@ -33,7 +33,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   if (
@@ -93,18 +93,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           isChildVenue,
           parentVenue,
           openingHours,
-          image: venuePath
+          image: venuePath,
         };
 
         const createVenueRequest: Result = await createVenue(
           venueData,
-          session
+          session,
         );
         if (createVenueRequest.status) {
           result = {
             status: true,
             error: '',
-            msg: createVenueRequest.msg
+            msg: createVenueRequest.msg,
           };
           res.status(200).send(result);
           res.end();
@@ -112,7 +112,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: createVenueRequest.error,
-            msg: ''
+            msg: '',
           };
           res.status(200).send(result);
           res.end();
@@ -121,7 +121,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: 'Please include an image!',
-          msg: ''
+          msg: '',
         };
         res.status(200).send(result);
         res.end();
@@ -131,7 +131,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: `Failed to create ${data.fields.name}`,
-        msg: ''
+        msg: '',
       };
       res.status(200).send(result);
       res.end();

@@ -27,7 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   const { email } = req.body;
@@ -47,7 +47,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (emailRes !== undefined) {
       const fetchRes: Result = await fetchAllCCARecordByUserEmail(
         emailRes,
-        session
+        session,
       );
       if (fetchRes.status) {
         const userRecords: CCARecord[] = fetchRes.msg as CCARecord[];
@@ -64,7 +64,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   ccaID: record.ccaID,
                   leader: record.leader,
                   ccaName: ccaDetails.name,
-                  image: ccaDetails.image
+                  image: ccaDetails.image,
                 };
 
                 parsedCCARecord.push(data);
@@ -76,7 +76,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: true,
           error: null,
-          msg: parsedCCARecord
+          msg: parsedCCARecord,
         };
         res.status(200).send(result);
         res.end();
@@ -84,7 +84,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: 'No records found',
-          msg: []
+          msg: [],
         };
         res.status(200).send(result);
         res.end();
@@ -93,7 +93,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Missing information',
-        msg: []
+        msg: [],
       };
       res.status(200).send(result);
       res.end();
@@ -102,7 +102,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: []
+      msg: [],
     };
     res.status(200).send(result);
     res.end();

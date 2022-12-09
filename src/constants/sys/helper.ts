@@ -1,6 +1,6 @@
 import {
   timingSlotNumberToTimingMapping,
-  timeSlots
+  timeSlots,
 } from '@constants/sys/timeslot';
 
 import { TimeSlot } from 'types/vbs/timeslot';
@@ -75,7 +75,7 @@ export const checkerNumber = (data: number): boolean => {
  */
 export const isInside = (
   checkInThis: string,
-  checkIfInside: string
+  checkIfInside: string,
 ): boolean => {
   const wantArr = convertSlotToArray(checkInThis, true) as number[];
   const checkArr = convertSlotToArray(checkIfInside, true) as number[];
@@ -104,7 +104,7 @@ export const isInside = (
  * @returns A string array or string containing the timeslots
  */
 export const mapSlotToTiming = (
-  data: number | string | number[]
+  data: number | string | number[],
 ): string[] | string => {
   if (Array.isArray(data)) {
     const result: string[] = [];
@@ -172,7 +172,7 @@ export const prettifyTiming = (data: string[]): string => {
  */
 export const convertSlotToArray = (
   slots: string | TimeSlot[],
-  reverse: boolean = false
+  reverse: boolean = false,
 ): number[] | string | null => {
   if (reverse) {
     try {
@@ -234,7 +234,7 @@ export const convertSlotToArray = (
  */
 export const findSlots = async (
   slot: string,
-  isStart: boolean
+  isStart: boolean,
 ): Promise<string | null> => {
   const num = Number(slot);
   if (isNaN(num)) {
@@ -282,7 +282,7 @@ export const findSlotsByID = async (slot: number): Promise<string | null> => {
  * @returns The start time and end time in a Promise
  */
 export const splitHours = async (
-  opening: string
+  opening: string,
 ): Promise<{ start: number | null; end: number | null; }> => {
   try {
     if (opening) {

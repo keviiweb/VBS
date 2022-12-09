@@ -15,7 +15,7 @@ import {
   SimpleGrid,
   Stack,
   Text,
-  useToast
+  useToast,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import LoadingModal from '@components/sys/misc/LoadingModal';
@@ -39,11 +39,11 @@ const MotionBox = motion(Box);
  * @param param0 Modal functions and callback function
  * @returns A confirmation modal
  */
-export default function SessionCreateConfirmationModal ({
+export default function SessionCreateConfirmationModal({
   isOpen,
   onClose,
   modalData,
-  dataHandler
+  dataHandler,
 }) {
   const toast = useToast();
 
@@ -118,7 +118,7 @@ export default function SessionCreateConfirmationModal ({
             text.push(
               <Box key={`box-e-${key}`}>
                 <Text>{membersA[key]}</Text>
-              </Box>
+              </Box>,
             );
           }
         }
@@ -141,11 +141,11 @@ export default function SessionCreateConfirmationModal ({
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          data: selectedData.current
-        })
+          data: selectedData.current,
+        }),
       });
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -154,7 +154,7 @@ export default function SessionCreateConfirmationModal ({
           description: content.msg,
           status: 'success',
           duration: 5000,
-          isClosable: true
+          isClosable: true,
         });
 
         handleModalCloseSuccess();
@@ -164,7 +164,7 @@ export default function SessionCreateConfirmationModal ({
           description: content.error,
           status: 'error',
           duration: 5000,
-          isClosable: true
+          isClosable: true,
         });
 
         setIsSubmit(false);
@@ -178,7 +178,7 @@ export default function SessionCreateConfirmationModal ({
   }, [handleModalCloseSuccess, toast]);
 
   useEffect(() => {
-    async function setupData (modalDataField: CCASession) {
+    async function setupData(modalDataField: CCASession) {
       setLoadingData(true);
       setSubmitButtonPressed(true);
 

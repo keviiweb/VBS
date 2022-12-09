@@ -149,7 +149,7 @@ export const prettifyDate = (date: Date): string => {
     const day = numberToWeekday[dateObj.day()];
     const month = monthNamesFull[dateObj.month()];
     const prettyDate = `${day}, ${dateObj.format(
-      'DD'
+      'DD',
     )} ${month} ${dateObj.year()}`;
     return prettyDate;
   }
@@ -166,7 +166,7 @@ export const prettifyDate = (date: Date): string => {
  */
 export const calculateDuration = async (
   start: number,
-  end: number
+  end: number,
 ): Promise<number> => {
   let duration: number = 0;
 

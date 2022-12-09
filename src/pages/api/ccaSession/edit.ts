@@ -9,7 +9,7 @@ import { isLeader } from '@helper/sys/cca/ccaRecord';
 import {
   editSession,
   isConflict,
-  lockSession
+  lockSession,
 } from '@helper/sys/cca/ccaSession';
 import { editAttendance } from '@helper/sys/cca/ccaAttendance';
 
@@ -19,7 +19,7 @@ import {
   compareDate,
   convertDateToUnix,
   fetchCurrentDate,
-  dateISO
+  dateISO,
 } from '@constants/sys/date';
 import hasPermission from '@constants/sys/permission';
 import { actions } from '@constants/sys/admin';
@@ -39,7 +39,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   const { data } = req.body;
@@ -48,7 +48,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (data !== null && data !== undefined) {
       const userPermission: boolean = hasPermission(
         session.user.admin,
-        actions.OVERRIDE_EDIT_SESSION
+        actions.OVERRIDE_EDIT_SESSION,
       );
 
       const parsedData: CCASession = data as CCASession;
@@ -58,7 +58,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       if (parsedData.date !== undefined) {
         const currentDate: number = convertDateToUnix(
-          dateISO(fetchCurrentDate())
+          dateISO(fetchCurrentDate()),
         );
         const sessionDate: number = parsedData.date;
         const threshold: number =
@@ -79,7 +79,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: false,
                 error: lockRes.error,
-                msg: ''
+                msg: '',
               };
               res.status(200).send(result);
               res.end();
@@ -91,7 +91,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: msg,
-              msg: ''
+              msg: '',
             };
             res.status(200).send(result);
             res.end();
@@ -123,18 +123,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   ldrNotes: parsedData.ldrNotes?.trim(),
                   expectedM: expectedM.trim(),
                   expectedMName: expectedMName.trim(),
-                  updated_at: new Date().toISOString()
+                  updated_at: new Date().toISOString(),
                 };
 
                 const findSessRes: boolean = await isConflict(
                   sessionData,
-                  session
+                  session,
                 );
                 if (findSessRes) {
                   result = {
                     status: false,
                     error: 'A session already exist within the timing',
-                    msg: ''
+                    msg: '',
                   };
                   res.status(200).send(result);
                   res.end();
@@ -142,7 +142,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   let success: boolean = true;
                   const editSessionRes: Result = await editSession(
                     sessionData,
-                    session
+                    session,
                   );
                   if (editSessionRes.status) {
                     if (parsedData && parsedData.realityM !== undefined) {
@@ -159,7 +159,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
                       if (canEdit) {
                         const parsedRealityData: CCAAttendance[] = JSON.parse(
-                          parsedData.realityM
+                          parsedData.realityM,
                         );
 
                         if (
@@ -170,7 +170,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                             const editRes: Result = await editAttendance(
                               parsedData.id,
                               removeDuplicate(parsedRealityData),
-                              session
+                              session,
                             );
                             if (!editRes.status) {
                               success = false;
@@ -178,7 +178,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                               result = {
                                 status: false,
                                 error: editRes.error,
-                                msg: ''
+                                msg: '',
                               };
                               res.status(200).send(result);
                               res.end();
@@ -192,7 +192,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                       result = {
                         status: true,
                         error: null,
-                        msg: editSessionRes.msg
+                        msg: editSessionRes.msg,
                       };
                       res.status(200).send(result);
                       res.end();
@@ -201,7 +201,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     result = {
                       status: false,
                       error: editSessionRes.error,
-                      msg: ''
+                      msg: '',
                     };
                     res.status(200).send(result);
                     res.end();
@@ -211,7 +211,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 result = {
                   status: false,
                   error: 'Not a CCA leader',
-                  msg: ''
+                  msg: '',
                 };
                 res.status(200).send(result);
                 res.end();
@@ -220,7 +220,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: false,
                 error: 'Session not editable',
-                msg: ''
+                msg: '',
               };
               res.status(200).send(result);
               res.end();
@@ -229,7 +229,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: 'Invalid CCA ID',
-              msg: ''
+              msg: '',
             };
             res.status(200).send(result);
             res.end();
@@ -239,7 +239,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: 'Incomplete information',
-          msg: ''
+          msg: '',
         };
         res.status(200).send(result);
         res.end();
@@ -248,7 +248,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Incomplete information',
-        msg: ''
+        msg: '',
       };
       res.status(200).send(result);
       res.end();
@@ -257,7 +257,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: ''
+      msg: '',
     };
     res.status(200).send(result);
     res.end();

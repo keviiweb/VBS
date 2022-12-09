@@ -9,7 +9,7 @@ import { findCCAbyID } from '@helper/sys/cca/cca';
 import { fetchSpecificCCAAttendanceByUserEmail } from '@helper/sys/cca/ccaAttendance';
 import {
   countAllCCASessionByCCAID,
-  fetchAllCCASessionByCCAID
+  fetchAllCCASessionByCCAID,
 } from '@helper/sys/cca/ccaSession';
 import { isLeader } from '@helper/sys/cca/ccaRecord';
 
@@ -17,7 +17,7 @@ import { splitHours } from '@constants/sys/helper';
 import {
   convertUnixToDate,
   dateISO,
-  calculateDuration
+  calculateDuration,
 } from '@constants/sys/date';
 import hasPermission from '@constants/sys/permission';
 import { actions } from '@constants/sys/admin';
@@ -37,7 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   const { id, email } = req.body;
@@ -57,12 +57,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const userPermission: boolean = hasPermission(
       session.user.admin,
-      actions.FETCH_ALL_CCA_ATTENDANCE
+      actions.FETCH_ALL_CCA_ATTENDANCE,
     );
 
     if (ccaID !== undefined && userEmail !== undefined) {
       const checkLdr: Result = await isLeader(ccaID, session);
-      if (userPermission || (checkLdr.status && checkLdr.msg)) {
+      if (userPermission || (checkLdr.status && (checkLdr.msg as boolean))) {
         const limitQuery = req.body.limit;
         const skipQuery = req.body.skip;
         const limit: number =
@@ -70,100 +70,105 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
         const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
-        if (ccaDetailsRes.status && ccaDetailsRes.msg) {
+        if (
+          ccaDetailsRes.status &&
+          ccaDetailsRes.msg !== undefined &&
+          ccaDetailsRes !== null
+        ) {
           const ccaDetails: CCA = ccaDetailsRes.msg;
           const ccaDB: Result = await fetchSpecificCCAAttendanceByUserEmail(
             ccaID,
             userEmail,
             100000,
             0,
-            session
+            session,
           );
           const sessionDB: Result = await fetchAllCCASessionByCCAID(
             ccaID,
             limit,
             skip,
-            session
+            session,
           );
           const totalCount: number = await countAllCCASessionByCCAID(
             ccaID,
-            session
+            session,
           );
 
           if (ccaDB.status && sessionDB.status) {
             const totalAttendance: CCAAttendance[] = ccaDB.msg;
             const totalSessions: CCASession[] = sessionDB.msg;
-            if (totalSessions && totalSessions.length > 0) {
+            if (totalSessions !== null && totalSessions.length > 0) {
               for (let key = 0; key < totalSessions.length; key += 1) {
-                if (totalSessions[key]) {
-                  const sess: CCASession = totalSessions[key];
-                  if (sess.id !== undefined) {
-                    const sessionID: string = sess.id;
+                const sess: CCASession = totalSessions[key];
+                if (sess.id !== undefined) {
+                  const sessionID: string = sess.id;
 
-                    const { date } = sess;
-                    const dateObj: Date | null = convertUnixToDate(date);
-                    let dateStr: string = '';
+                  const { date } = sess;
+                  const dateObj: Date | null = convertUnixToDate(date);
+                  let dateStr: string = '';
 
-                    if (dateObj !== null) {
-                      dateStr = dateISO(dateObj);
-                    }
+                  if (dateObj !== null) {
+                    dateStr = dateISO(dateObj);
+                  }
 
-                    const sessionAttendanceHourStr: string = sess.time;
-                    const { start, end } = await splitHours(
-                      sessionAttendanceHourStr
+                  const sessionAttendanceHourStr: string = sess.time;
+                  const { start, end } = await splitHours(
+                    sessionAttendanceHourStr,
+                  );
+                  if (start !== null && end !== null) {
+                    const sessionDuration: number = await calculateDuration(
+                      start,
+                      end,
                     );
-                    if (start !== null && end !== null) {
-                      const sessionDuration: number = await calculateDuration(
-                        start,
-                        end
+
+                    const optionalStr: string =
+                      sess.optional !== undefined && sess.optional
+                        ? 'Yes'
+                        : 'No';
+
+                    const filteredAttendance: CCAAttendance[] =
+                      totalAttendance.filter(
+                        (item) => item.sessionID === sessionID,
                       );
+                    if (filteredAttendance.length === 1) {
+                      const filteredA: CCAAttendance = filteredAttendance[0];
+                      const userDuration: number = filteredA.ccaAttendance;
 
-                      const optionalStr: string = sess.optional ? 'Yes' : 'No';
+                      const durationStr: string = `${userDuration} out of ${sessionDuration}`;
 
-                      const filteredAttendance: CCAAttendance[] =
-                        totalAttendance.filter(
-                          (item) => item.sessionID === sessionID
-                        );
-                      if (filteredAttendance.length === 1) {
-                        const filteredA: CCAAttendance = filteredAttendance[0];
-                        const userDuration: number = filteredA.ccaAttendance;
+                      const data: CCAAttendance = {
+                        id: filteredA.id,
+                        sessionName: sess.name,
+                        sessionEmail: userEmail,
+                        ccaName: ccaDetails.name,
+                        time: sess.time,
+                        date,
+                        dateStr,
+                        durationStr,
+                        ccaID: filteredA.ccaID,
+                        ccaAttendance: userDuration,
+                        optional: optionalStr,
+                      };
 
-                        const durationStr: string = `${userDuration} out of ${sessionDuration}`;
+                      parsedCCAAttendance.push(data);
+                    } else {
+                      const userDuration: number = 0;
+                      const durationStr: string = `${userDuration} out of ${sessionDuration}`;
 
-                        const data: CCAAttendance = {
-                          id: filteredA.id,
-                          sessionName: sess.name,
-                          sessionEmail: userEmail,
-                          ccaName: ccaDetails.name,
-                          time: sess.time,
-                          date,
-                          dateStr,
-                          durationStr,
-                          ccaID: filteredA.ccaID,
-                          ccaAttendance: userDuration,
-                          optional: optionalStr
-                        };
+                      const data: CCAAttendance = {
+                        date,
+                        sessionName: sess.name,
+                        sessionEmail: userEmail,
+                        ccaName: ccaDetails.name,
+                        time: sess.time,
+                        dateStr,
+                        durationStr,
+                        ccaID,
+                        ccaAttendance: userDuration,
+                        optional: optionalStr,
+                      };
 
-                        parsedCCAAttendance.push(data);
-                      } else {
-                        const userDuration: number = 0;
-                        const durationStr: string = `${userDuration} out of ${sessionDuration}`;
-
-                        const data: CCAAttendance = {
-                          date,
-                          sessionName: sess.name,
-                          sessionEmail: userEmail,
-                          ccaName: ccaDetails.name,
-                          time: sess.time,
-                          dateStr,
-                          durationStr,
-                          ccaID,
-                          ccaAttendance: userDuration,
-                          optional: optionalStr
-                        };
-
-                        parsedCCAAttendance.push(data);
-                      }
+                      parsedCCAAttendance.push(data);
                     }
                   }
                 }
@@ -173,7 +178,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: true,
               error: null,
-              msg: { count: totalCount, res: parsedCCAAttendance }
+              msg: { count: totalCount, res: parsedCCAAttendance },
             };
 
             res.status(200).send(result);
@@ -182,7 +187,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: ccaDB.error,
-              msg: { count: 0, res: [] }
+              msg: { count: 0, res: [] },
             };
             res.status(200).send(result);
             res.end();
@@ -191,7 +196,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: ccaDetailsRes.error,
-            msg: { count: 0, res: [] }
+            msg: { count: 0, res: [] },
           };
           res.status(200).send(result);
           res.end();
@@ -200,7 +205,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: 'Not CCA Leader',
-          msg: { count: 0, res: [] }
+          msg: { count: 0, res: [] },
         };
         res.status(200).send(result);
         res.end();
@@ -209,7 +214,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Incomplete information',
-        msg: { count: 0, res: [] }
+        msg: { count: 0, res: [] },
       };
       res.status(200).send(result);
       res.end();
@@ -218,7 +223,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: { count: 0, res: [] }
+      msg: { count: 0, res: [] },
     };
     res.status(200).send(result);
     res.end();

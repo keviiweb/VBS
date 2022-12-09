@@ -9,7 +9,7 @@ import { actions } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
 import {
   fetchSpecificCCARecord,
-  isLeader
+  isLeader,
 } from '@root/src/helper/sys/cca/ccaRecord';
 
 /**
@@ -28,7 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   const { ccaID, input } = req.body;
@@ -48,7 +48,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const userPermission: boolean = hasPermission(
       session.user.admin,
-      actions.FETCH_USER_CCA_RECORD
+      actions.FETCH_USER_CCA_RECORD,
     );
 
     if (ccaIDRes !== undefined && inputRes !== undefined) {
@@ -64,7 +64,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               const ccaRecordRes: Result = await fetchSpecificCCARecord(
                 ccaIDRes,
                 user.email,
-                session
+                session,
               );
               if (
                 ccaRecordRes.status &&
@@ -81,7 +81,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: true,
             error: null,
-            msg: userSearchMsg
+            msg: userSearchMsg,
           };
           res.status(200).send(result);
           res.end();
@@ -89,7 +89,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: userSearchRes.error,
-            msg: []
+            msg: [],
           };
           res.status(200).send(result);
           res.end();
@@ -98,7 +98,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: 'Not a CCA leader',
-          msg: []
+          msg: [],
         };
         res.status(200).send(result);
         res.end();
@@ -108,7 +108,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: []
+      msg: [],
     };
     res.status(200).send(result);
     res.end();

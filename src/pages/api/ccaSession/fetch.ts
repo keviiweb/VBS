@@ -9,7 +9,7 @@ import { currentSession } from '@helper/sys/sessionServer';
 import { findCCAbyID } from '@helper/sys/cca/cca';
 import {
   countAllCCASessionByCCAID,
-  fetchAllCCASessionByCCAID
+  fetchAllCCASessionByCCAID,
 } from '@helper/sys/cca/ccaSession';
 import { fetchAllCCAAttendanceBySession } from '@helper/sys/cca/ccaAttendance';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
@@ -17,7 +17,7 @@ import { fetchUserByEmail } from '@helper/sys/misc/user';
 import {
   convertUnixToDate,
   dateISO,
-  calculateDuration
+  calculateDuration,
 } from '@constants/sys/date';
 import { splitHours } from '@constants/sys/helper';
 
@@ -37,7 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   const { id } = req.body;
@@ -64,11 +64,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           ccaID,
           limit,
           skip,
-          session
+          session,
         );
         const totalCount: number = await countAllCCASessionByCCAID(
           ccaID,
-          session
+          session,
         );
         if (ccaDB.status) {
           const ccaData: CCASession[] = ccaDB.msg;
@@ -83,7 +83,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   if (start !== null && end !== null) {
                     const duration: number = await calculateDuration(
                       start,
-                      end
+                      end,
                     );
 
                     const dateObj: Date | null = convertUnixToDate(record.date);
@@ -109,7 +109,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                             const userEmail: string = attend.sessionEmail;
                             const userRes: Result = await fetchUserByEmail(
                               userEmail,
-                              session
+                              session,
                             );
                             if (userRes.status && userRes.msg) {
                               const user: User = userRes.msg;
@@ -137,7 +137,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                         ldrNotes: record.ldrNotes,
                         expectedM: record.expectedM,
                         expectedMName: record.expectedMName,
-                        realityM: JSON.stringify(attendance)
+                        realityM: JSON.stringify(attendance),
                       };
 
                       parsedCCASession.push(data);
@@ -151,7 +151,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: true,
             error: null,
-            msg: { count: totalCount, res: parsedCCASession }
+            msg: { count: totalCount, res: parsedCCASession },
           };
           res.status(200).send(result);
           res.end();
@@ -159,7 +159,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: ccaDB.error,
-            msg: { count: 0, res: [] }
+            msg: { count: 0, res: [] },
           };
           res.status(200).send(result);
           res.end();
@@ -168,7 +168,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: ccaDetailsRes.error,
-          msg: { count: 0, res: [] }
+          msg: { count: 0, res: [] },
         };
         res.status(200).send(result);
         res.end();
@@ -177,7 +177,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Incomplete information',
-        msg: { count: 0, res: [] }
+        msg: { count: 0, res: [] },
       };
       res.status(200).send(result);
       res.end();
@@ -186,7 +186,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: { count: 0, res: [] }
+      msg: { count: 0, res: [] },
     };
     res.status(200).send(result);
     res.end();

@@ -68,5 +68,5 @@ export const CCALIST = [
   'Ultimate Frisbee',
   'Volleyball F',
   'Volleyball M',
-  'Yearbook'
+  'Yearbook',
 ];

@@ -19,7 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   const cca: CCA[] = [];
@@ -35,13 +35,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: true,
         error: null,
-        msg: cca
+        msg: cca,
       };
     } else {
       result = {
         status: false,
         error: ccaList.error,
-        msg: []
+        msg: [],
       };
     }
 
@@ -51,7 +51,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: []
+      msg: [],
     };
     res.status(200).send(result);
     res.end();

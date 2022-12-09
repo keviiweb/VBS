@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useMemo
+  useMemo,
 } from 'react';
 import {
   Button,
@@ -15,7 +15,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Stack,
-  Text
+  Text,
 } from '@chakra-ui/react';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import { checkerString } from '@constants/sys/helper';
@@ -34,14 +34,14 @@ import SessionModal from '@components/sys/cca/SessionModal';
  * @param param0 Modal functions and data
  * @returns A modal
  */
-export default function LeaderStudentModalComponent ({
+export default function LeaderStudentModalComponent({
   isOpen,
   onClose,
   modalData,
-  userSession
+  userSession,
 }) {
   const [specificCCAData, setSpecificCCAData] = useState<CCASession | null>(
-    null
+    null,
   );
 
   const [loadingData, setLoadingData] = useState(true);
@@ -109,7 +109,7 @@ export default function LeaderStudentModalComponent ({
       );
       return button;
     },
-    [handleDetails]
+    [handleDetails],
   );
 
   const includeActionButton = useCallback(
@@ -134,7 +134,7 @@ export default function LeaderStudentModalComponent ({
         setData([]);
       }
     },
-    [generateActionButtonSession]
+    [generateActionButtonSession],
   );
 
   const fetchAttendance = useCallback(async (id: string) => {
@@ -145,11 +145,11 @@ export default function LeaderStudentModalComponent ({
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id
-          })
+            id,
+          }),
         });
         const content: Result = await rawResponse.json();
         if (content.status) {
@@ -171,13 +171,13 @@ export default function LeaderStudentModalComponent ({
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               id,
               limit: pageSizeDB.current,
-              skip: pageIndexDB.current
-            })
+              skip: pageIndexDB.current,
+            }),
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -189,7 +189,7 @@ export default function LeaderStudentModalComponent ({
         setSubmitButtonPressed(false);
       }
     },
-    [includeActionButton]
+    [includeActionButton],
   );
 
   const tableChange = useCallback(async () => {
@@ -212,13 +212,13 @@ export default function LeaderStudentModalComponent ({
         await tableChange();
       }
     },
-    [tableChange]
+    [tableChange],
   );
 
   useEffect(() => {
-    async function setupData (
+    async function setupData(
       modalDataField: CCASession,
-      userSessionField: Session | null
+      userSessionField: Session | null,
     ) {
       if (modalData) {
         setSession(userSessionField);
@@ -249,18 +249,18 @@ export default function LeaderStudentModalComponent ({
     () => [
       {
         Header: 'Date',
-        accessor: 'dateStr'
+        accessor: 'dateStr',
       },
       {
         Header: 'Duration',
-        accessor: 'time'
+        accessor: 'time',
       },
       {
         Header: 'Action',
-        accessor: 'action'
-      }
+        accessor: 'action',
+      },
     ],
-    []
+    [],
   );
 
   return (

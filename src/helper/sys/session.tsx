@@ -10,7 +10,7 @@ import { levels } from '@constants/sys/admin';
  * @returns A Next-Auth Session or null wrapped in a Promise
  */
 export const currentSession = async (
-  req: NextApiRequest | null = null
+  req: NextApiRequest | null = null,
 ): Promise<Session | null> => {
   if (
     process.env.NEXT_PUBLIC_SETDEV === 'true' &&
@@ -23,8 +23,8 @@ export const currentSession = async (
         username: 'Test user',
         email: 'testing@test.com',
         admin: levels.KEWEB,
-        acceptedTerm: true
-      }
+        acceptedTerm: true,
+      },
     };
 
     return session;

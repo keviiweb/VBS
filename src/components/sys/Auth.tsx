@@ -23,7 +23,7 @@ import hasPermission from '@constants/sys/permission';
  * @param param0 React Children and Admin boolean
  * @returns The layout to display to users
  */
-export default function Auth ({ children, admin }) {
+export default function Auth({ children, admin }) {
   const { data: session, status } = useSession();
   const loading: boolean = status === 'loading';
   const hasUser: boolean = !(session?.user == null);
@@ -32,49 +32,51 @@ export default function Auth ({ children, admin }) {
   const isAdmin: boolean = admin !== undefined;
 
   useEffect(() => {
-    async function fetchData () {
+    async function fetchData() {
       try {
         if (
           process.env.NEXT_PUBLIC_SETDEV === 'true' &&
-          (!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+          (process.env.NODE_ENV === undefined ||
+            process.env.NODE_ENV === null ||
+            process.env.NODE_ENV === 'development')
         ) {
           devSession.current = await currentSession();
           if (devSession.current !== null && devSession.current.user !== null) {
             if (!devSession.current.user.acceptedTerm) {
-              router.push('/sys/acceptTerms');
+              await router.push('/sys/acceptTerms');
             } else if (isAdmin) {
               const permission: boolean = hasPermission(
                 devSession.current.user.admin,
-                actions.VIEW_ADMIN_PAGE
+                actions.VIEW_ADMIN_PAGE,
               );
 
               if (permission !== null && !permission) {
-                router.push('/sys/unauthorized');
+                await router.push('/sys/unauthorized');
               }
             }
           }
         } else if (!loading && !hasUser) {
-          router.push('/sys/signin');
+          await router.push('/sys/signin');
         } else if (
           session !== null &&
           session.user !== null &&
           status === 'authenticated'
         ) {
           if (!session.user.acceptedTerm) {
-            router.push('/sys/acceptTerms');
+            await router.push('/sys/acceptTerms');
           } else if (isAdmin) {
             const permission: boolean = hasPermission(
               session.user.admin,
-              actions.VIEW_ADMIN_PAGE
+              actions.VIEW_ADMIN_PAGE,
             );
 
             if (permission !== null && !permission) {
-              router.push('/sys/unauthorized');
+              await router.push('/sys/unauthorized');
             }
           }
         }
       } catch (error) {
-        router.push('/sys/unauthorized');
+        await router.push('/sys/unauthorized');
       }
     }
 
@@ -83,7 +85,9 @@ export default function Auth ({ children, admin }) {
 
   if (
     process.env.NEXT_PUBLIC_SETDEV === 'true' &&
-    (!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+    (process.env.NODE_ENV === undefined ||
+      process.env.NODE_ENV === null ||
+      process.env.NODE_ENV === 'development')
   ) {
     return <Layout session={devSession.current}>{children}</Layout>;
   }

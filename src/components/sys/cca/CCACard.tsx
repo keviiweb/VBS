@@ -10,7 +10,7 @@ import { checkerString } from '@constants/sys/helper';
  * @param param0 CCA information as well as callback function
  * @returns A card displaying the CCA image and name
  */
-export default function CCACard ({ product, setModalData }) {
+export default function CCACard({ product, setModalData }) {
   const image: string = checkerString(product.image)
     ? product.image
     : '/sys/image/placeholder.png';
@@ -46,7 +46,7 @@ export default function CCACard ({ product, setModalData }) {
             fill
             sizes='100vw'
             style={{
-              objectFit: 'cover'
+              objectFit: 'cover',
             }}
           />
         </Box>

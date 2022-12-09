@@ -13,7 +13,7 @@ const MotionSimpleGrid = motion(SimpleGrid);
  *
  * @returns Community Page
  */
-export default function Community () {
+export default function Community() {
   const content = [
     {
       img: '/landing/community/hall-master_beach-clean-up.png',
@@ -27,7 +27,7 @@ export default function Community () {
         
         Residents can also find our warm and friendly staff who are in charge of day-to-day operations at the Hall Office. They take care of administrative matters and ensure that all facilities are well-maintained. They are the ones who keep our hall running in tip-top condition!`,
       buttonText: 'Find out who they are',
-      buttonLink: 'https://nus.edu.sg/osa/keviihall/about/hall-admin'
+      buttonLink: 'https://nus.edu.sg/osa/keviihall/about/hall-admin',
     },
     {
       img: '/landing/community/faceofke.png',
@@ -39,8 +39,8 @@ export default function Community () {
         
         KE has such a family-like and wholesome environment that it really feels like my second home. I have always told my friends that I am very lucky to have the opportunity to stay on campus, but even luckier to have mine spent with the KE community.`,
       buttonText: 'Find out #WHYKE',
-      buttonLink: 'https://www.instagram.com/kingedwardviihall'
-    }
+      buttonLink: 'https://www.instagram.com/kingedwardviihall',
+    },
   ];
 
   return (
@@ -98,7 +98,7 @@ export default function Community () {
               buttonText: string;
               buttonLink: string;
             },
-            sid
+            sid,
           ) => (
             <MotionBox key={sid} variants={cardVariant}>
               <Card
@@ -111,7 +111,7 @@ export default function Community () {
                 link={null}
               />
             </MotionBox>
-          )
+          ),
         )}
       </MotionSimpleGrid>
     </Landing>

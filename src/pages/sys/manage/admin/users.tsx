@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useCallback
+  useCallback,
 } from 'react';
 import {
   Button,
@@ -20,7 +20,7 @@ import {
   Stack,
   Select,
   useToast,
-  VisuallyHidden
+  VisuallyHidden,
 } from '@chakra-ui/react';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import { cardVariant, parentVariant } from '@root/motion';
@@ -56,7 +56,7 @@ const MotionBox = motion(Box);
  * @param props Permission level of user
  * @returns Manage User page
  */
-export default function ManageUsers (props: any) {
+export default function ManageUsers(props: any) {
   const [modalData, setModalData] = useState<User | null>(null);
   const toast = useToast();
 
@@ -118,7 +118,7 @@ export default function ManageUsers (props: any) {
     { label: 'Date', key: 'dateStr' },
     { label: 'Time', key: 'time' },
     { label: 'Email', key: 'sessionEmail' },
-    { label: 'Attendance', key: 'ccaAttendance' }
+    { label: 'Attendance', key: 'ccaAttendance' },
   ];
 
   const [CSVdata, setCSVdata] = useState<CCAAttendance[]>([]);
@@ -184,8 +184,8 @@ export default function ManageUsers (props: any) {
         const rawResponse = await fetch('/api/ccaAttendance/file', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         });
 
         const content: Result = await rawResponse.json();
@@ -200,7 +200,7 @@ export default function ManageUsers (props: any) {
       }
       setSubmitButtonPressed(false);
     },
-    []
+    [],
   );
 
   const handleSubmitFile = useCallback(
@@ -216,7 +216,7 @@ export default function ManageUsers (props: any) {
         try {
           const rawResponse = await fetch('/api/user/file', {
             method: 'POST',
-            body: dataField
+            body: dataField,
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -225,7 +225,7 @@ export default function ManageUsers (props: any) {
               description: content.msg,
               status: 'success',
               duration: 5000,
-              isClosable: true
+              isClosable: true,
             });
 
             await resetFile();
@@ -236,7 +236,7 @@ export default function ManageUsers (props: any) {
               description: content.error,
               status: 'error',
               duration: 5000,
-              isClosable: true
+              isClosable: true,
             });
           }
         } catch (error) {
@@ -249,7 +249,7 @@ export default function ManageUsers (props: any) {
 
       return false;
     },
-    [fetchData, resetFile, toast]
+    [fetchData, resetFile, toast],
   );
 
   const handleSubmitFileCCA = useCallback(
@@ -265,7 +265,7 @@ export default function ManageUsers (props: any) {
         try {
           const rawResponse = await fetch('/api/ccaRecord/file', {
             method: 'POST',
-            body: dataField
+            body: dataField,
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -274,7 +274,7 @@ export default function ManageUsers (props: any) {
               description: content.msg,
               status: 'success',
               duration: 5000,
-              isClosable: true
+              isClosable: true,
             });
 
             await resetFileCCA();
@@ -285,7 +285,7 @@ export default function ManageUsers (props: any) {
               description: content.error,
               status: 'error',
               duration: 5000,
-              isClosable: true
+              isClosable: true,
             });
           }
         } catch (error) {
@@ -298,7 +298,7 @@ export default function ManageUsers (props: any) {
 
       return false;
     },
-    [fetchData, resetFileCCA, toast]
+    [fetchData, resetFileCCA, toast],
   );
 
   const handleSubmit = useCallback(
@@ -312,13 +312,13 @@ export default function ManageUsers (props: any) {
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               name: nameDB.current,
               email: emailDB.current,
-              admin: adminDB.current
-            })
+              admin: adminDB.current,
+            }),
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -327,7 +327,7 @@ export default function ManageUsers (props: any) {
               description: content.msg,
               status: 'success',
               duration: 5000,
-              isClosable: true
+              isClosable: true,
             });
 
             await reset();
@@ -338,7 +338,7 @@ export default function ManageUsers (props: any) {
               description: content.error,
               status: 'error',
               duration: 5000,
-              isClosable: true
+              isClosable: true,
             });
           }
         } catch (error) {
@@ -349,7 +349,7 @@ export default function ManageUsers (props: any) {
 
       return false;
     },
-    [fetchData, reset, toast]
+    [fetchData, reset, toast],
   );
 
   const includeActionButton = useCallback(
@@ -370,7 +370,7 @@ export default function ManageUsers (props: any) {
             selectionEdit.push(
               <option key={dataField.id} value={dataField.id}>
                 {dataField.name}
-              </option>
+              </option>,
             );
 
             allUser.push(dataField);
@@ -390,7 +390,7 @@ export default function ManageUsers (props: any) {
         }
       }
     },
-    [generateActionButton]
+    [generateActionButton],
   );
 
   generateActionButton = useCallback(
@@ -407,7 +407,7 @@ export default function ManageUsers (props: any) {
 
       return button;
     },
-    [handleDetails]
+    [handleDetails],
   );
 
   const fetchDataTable = useCallback(async () => {
@@ -418,9 +418,9 @@ export default function ManageUsers (props: any) {
         {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
-        }
+            'Content-Type': 'application/json',
+          },
+        },
       );
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -480,7 +480,7 @@ export default function ManageUsers (props: any) {
       selectionDropdown.push(
         <option key={values[key]} value={values[key]}>
           {keys[key]}
-        </option>
+        </option>,
       );
     }
 
@@ -488,7 +488,7 @@ export default function ManageUsers (props: any) {
   }, []);
 
   useEffect(() => {
-    async function generate (propsField: any) {
+    async function generate(propsField: any) {
       setLevel(propsField.data);
 
       await fetchData();
@@ -502,26 +502,26 @@ export default function ManageUsers (props: any) {
     () => [
       {
         Header: 'Name',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Email',
-        accessor: 'email'
+        accessor: 'email',
       },
       {
         Header: 'Admin',
-        accessor: 'adminStr'
+        accessor: 'adminStr',
       },
       {
         Header: 'Accepted Terms',
-        accessor: 'acceptedTermStr'
+        accessor: 'acceptedTermStr',
       },
       {
         Header: 'Actions',
-        accessor: 'action'
-      }
+        accessor: 'action',
+      },
     ],
-    []
+    [],
   );
 
   const changeDataEdit = (dataField: User) => {
@@ -537,7 +537,7 @@ export default function ManageUsers (props: any) {
   const validateFieldsEdit = (
     idField: string,
     nameField: string,
-    emailField: string
+    emailField: string,
   ) => {
     // super basic validation here
     if (!checkerString(idField)) {
@@ -567,7 +567,7 @@ export default function ManageUsers (props: any) {
         validateFieldsEdit(
           userIDDBEdit.current,
           nameDBEdit.current,
-          emailDBEdit.current
+          emailDBEdit.current,
         )
       ) {
         setSubmitButtonPressed(true);
@@ -576,14 +576,14 @@ export default function ManageUsers (props: any) {
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               id: userIDDBEdit.current,
               name: nameDBEdit.current,
               email: emailDBEdit.current,
-              admin: adminDBEdit.current
-            })
+              admin: adminDBEdit.current,
+            }),
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -592,7 +592,7 @@ export default function ManageUsers (props: any) {
               description: content.msg,
               status: 'success',
               duration: 5000,
-              isClosable: true
+              isClosable: true,
             });
 
             await resetEdit();
@@ -603,7 +603,7 @@ export default function ManageUsers (props: any) {
               description: content.error,
               status: 'error',
               duration: 5000,
-              isClosable: true
+              isClosable: true,
             });
           }
         } catch (error) {
@@ -615,7 +615,7 @@ export default function ManageUsers (props: any) {
 
       return false;
     },
-    [fetchData, resetEdit, toast]
+    [fetchData, resetEdit, toast],
   );
 
   const onUserIDChangeEdit = async (event: { target: { value: string; }; }) => {
@@ -649,7 +649,7 @@ export default function ManageUsers (props: any) {
         await fetchDataTable();
       }
     },
-    [fetchDataTable]
+    [fetchDataTable],
   );
 
   return (
@@ -733,7 +733,7 @@ export default function ManageUsers (props: any) {
                       color='white'
                       disabled={submitButtonPressed}
                       _hover={{
-                        bg: 'blue.500'
+                        bg: 'blue.500',
                       }}
                     >
                       Generate
@@ -749,7 +749,7 @@ export default function ManageUsers (props: any) {
                   color='white'
                   disabled={submitButtonPressed}
                   _hover={{
-                    bg: 'red.500'
+                    bg: 'red.500',
                   }}
                 >
                   <CSVLink
@@ -820,7 +820,7 @@ export default function ManageUsers (props: any) {
                             color='brand.600'
                             pos='relative'
                             _hover={{
-                              color: 'brand.400'
+                              color: 'brand.400',
                             }}
                           >
                             <span>Upload a file</span>
@@ -855,7 +855,7 @@ export default function ManageUsers (props: any) {
                       color='white'
                       disabled={submitButtonPressed}
                       _hover={{
-                        bg: 'blue.500'
+                        bg: 'blue.500',
                       }}
                     >
                       Create
@@ -921,7 +921,7 @@ export default function ManageUsers (props: any) {
                             color='brand.600'
                             pos='relative'
                             _hover={{
-                              color: 'brand.400'
+                              color: 'brand.400',
                             }}
                           >
                             <span>Upload a file</span>
@@ -956,7 +956,7 @@ export default function ManageUsers (props: any) {
                       color='white'
                       disabled={submitButtonPressed}
                       _hover={{
-                        bg: 'blue.500'
+                        bg: 'blue.500',
                       }}
                     >
                       Populate
@@ -1040,7 +1040,7 @@ export default function ManageUsers (props: any) {
                       color='white'
                       disabled={submitButtonPressed}
                       _hover={{
-                        bg: 'blue.500'
+                        bg: 'blue.500',
                       }}
                     >
                       Create
@@ -1137,7 +1137,7 @@ export default function ManageUsers (props: any) {
                       color='white'
                       disabled={submitButtonPressed}
                       _hover={{
-                        bg: 'blue.500'
+                        bg: 'blue.500',
                       }}
                     >
                       Update
@@ -1156,7 +1156,7 @@ export default function ManageUsers (props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59'
+    'public, s-maxage=10, stale-while-revalidate=59',
   );
 
   let data: number = levels.USER;
@@ -1171,7 +1171,7 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
 
   return {
     props: {
-      data
-    }
+      data,
+    },
   };
 };

@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useCallback
+  useCallback,
 } from 'react';
 import {
   Box,
@@ -21,7 +21,7 @@ import {
   SimpleGrid,
   Stack,
   StackDivider,
-  Text
+  Text,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
@@ -45,7 +45,7 @@ const MotionBox = motion(Box);
  * @param param0 Modal functions such as isOpen, onClose
  * @returns A Modal displaying Venue information
  */
-export default function VenueModal ({ isOpen, onClose, modalData }) {
+export default function VenueModal({ isOpen, onClose, modalData }) {
   const [loadingData, setLoadingData] = useState(true);
 
   const [id, setID] = useState('');
@@ -100,11 +100,11 @@ export default function VenueModal ({ isOpen, onClose, modalData }) {
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          venue: parentVenueID
-        })
+          venue: parentVenueID,
+        }),
       });
       const content: Result = await rawResponse.json();
       if (content.status && content.msg.length > 0) {
@@ -117,7 +117,7 @@ export default function VenueModal ({ isOpen, onClose, modalData }) {
   };
 
   useEffect(() => {
-    async function setupData (modalDataField: Venue) {
+    async function setupData(modalDataField: Venue) {
       if (modalDataField.id && checkerString(modalDataField.id)) {
         setID(modalDataField.id);
       } else {
@@ -197,30 +197,30 @@ export default function VenueModal ({ isOpen, onClose, modalData }) {
     () => [
       {
         Header: 'Name',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Description',
-        accessor: 'description'
+        accessor: 'description',
       },
       {
         Header: 'Opening Hours',
-        accessor: 'openingHours'
+        accessor: 'openingHours',
       },
       {
         Header: 'Capacity',
-        accessor: 'capacity'
+        accessor: 'capacity',
       },
       {
         Header: 'Instant Book',
-        accessor: 'instantBook'
+        accessor: 'instantBook',
       },
       {
         Header: 'Available for Booking',
-        accessor: 'isAvailable'
-      }
+        accessor: 'isAvailable',
+      },
     ],
-    []
+    [],
   );
 
   return (
@@ -387,7 +387,7 @@ export default function VenueModal ({ isOpen, onClose, modalData }) {
                         childVenues.length % pageSizeDB.current === 0
                           ? Math.floor(childVenues.length / pageSizeDB.current)
                           : Math.floor(
-                              childVenues.length / pageSizeDB.current
+                              childVenues.length / pageSizeDB.current,
                             ) + 1
                       }
                       dataHandler={onTableChange}

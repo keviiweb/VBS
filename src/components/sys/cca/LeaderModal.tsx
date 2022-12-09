@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useMemo
+  useMemo,
 } from 'react';
 import {
   Box,
@@ -23,14 +23,14 @@ import {
   Select,
   Text,
   usePopoverContext,
-  useBreakpointValue
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import {
   BellIcon,
   DeleteIcon,
   EditIcon,
-  InfoOutlineIcon
+  InfoOutlineIcon,
 } from '@chakra-ui/icons';
 import { parentVariant } from '@root/motion';
 
@@ -64,7 +64,7 @@ const MotionBox = motion(Box);
 
 const choice = {
   MEMBER: 1,
-  SESSION: 2
+  SESSION: 2,
 };
 
 const PopoverTriggerNew: React.FC<
@@ -85,25 +85,25 @@ const PopoverTriggerNew: React.FC<
  * @param param0 Modal function and data
  * @returns
  */
-export default function LeaderModalComponent ({
+export default function LeaderModalComponent({
   isOpen,
   onClose,
   calendarThreshold,
   modalData,
-  userSession
+  userSession,
 }) {
   const [specificMemberData, setSpecificMemberData] =
     useState<CCARecord | null>(null);
   const [specificCCAData, setSpecificCCAData] = useState<CCASession | null>(
-    null
+    null,
   );
 
   const [specificSession, setSpecificSessionData] = useState<CCASession | null>(
-    null
+    null,
   );
 
   const [sessionCreate, setSessionCreateData] = useState<CCASession | null>(
-    null
+    null,
   );
 
   const [specificSessionDelete, setSpecificSessionDeleteData] =
@@ -144,7 +144,7 @@ export default function LeaderModalComponent ({
     { label: 'Date', key: 'dateStr' },
     { label: 'Time', key: 'time' },
     { label: 'Email', key: 'sessionEmail' },
-    { label: 'Attendance', key: 'ccaAttendance' }
+    { label: 'Attendance', key: 'ccaAttendance' },
   ];
 
   const [CSVdata, setCSVdata] = useState<CCAAttendance[]>([]);
@@ -159,7 +159,7 @@ export default function LeaderModalComponent ({
     { label: 'Optional', key: 'optionalStr' },
     { label: 'Remarks', key: 'remarks' },
     { label: 'Leader Notes', key: 'ldrNotes' },
-    { label: 'Expected Members', key: 'expectedMName' }
+    { label: 'Expected Members', key: 'expectedMName' },
   ];
 
   const [CSVdataSession, setCSVdataSession] = useState<CCASession[]>([]);
@@ -168,7 +168,7 @@ export default function LeaderModalComponent ({
 
   const variantButtons = useBreakpointValue({
     base: 'column' as StackDirection,
-    lg: 'row' as StackDirection
+    lg: 'row' as StackDirection,
   });
 
   const currentDate = async (): Promise<string> => {
@@ -237,7 +237,7 @@ export default function LeaderModalComponent ({
   const handleMemberCreate = useCallback(async () => {
     if (checkerString(ccaRecordIDDB.current)) {
       const sess: CCARecord = {
-        ccaID: ccaRecordIDDB.current
+        ccaID: ccaRecordIDDB.current,
       };
       setMemberCreateData(sess);
     }
@@ -252,7 +252,7 @@ export default function LeaderModalComponent ({
         name: '',
         date: dateN,
         dateStr: curr,
-        time: ''
+        time: '',
       };
       setSessionCreateData(sess);
     }
@@ -267,11 +267,11 @@ export default function LeaderModalComponent ({
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            ccaID: ccaRecordIDDB.current
-          })
+            ccaID: ccaRecordIDDB.current,
+          }),
         });
 
         const content: Result = await rawResponse.json();
@@ -303,7 +303,7 @@ export default function LeaderModalComponent ({
       );
       return button;
     },
-    [submitButtonPressed, handleDetails]
+    [submitButtonPressed, handleDetails],
   );
 
   const generateActionButtonSession = useCallback(
@@ -311,7 +311,7 @@ export default function LeaderModalComponent ({
       if (
         (session !== null &&
           hasPermission(session.user.admin, actions.OVERRIDE_EDIT_SESSION)) ||
-        content.editable
+        (content.editable !== undefined && content.editable)
       ) {
         const button: JSX.Element = (
           <Popover>
@@ -398,14 +398,14 @@ export default function LeaderModalComponent ({
       session,
       handleDetailsSession,
       handleEditSession,
-      handleDeleteSession
-    ]
+      handleDeleteSession,
+    ],
   );
 
   const includeActionButton = useCallback(
     async (
       content: { count: number; res: CCARecord[] | CCASession[]; },
-      action: number
+      action: number,
     ) => {
       if (content.res.length > 0 && content.count > 0) {
         for (let key = 0; key < content.res.length; key += 1) {
@@ -448,11 +448,11 @@ export default function LeaderModalComponent ({
             setDataSession(dataS);
             if (content.count % pageSizeSessionDB.current === 0) {
               setPageCountSession(
-                Math.floor(content.count / pageSizeSessionDB.current)
+                Math.floor(content.count / pageSizeSessionDB.current),
               );
             } else {
               setPageCountSession(
-                Math.floor(content.count / pageSizeSessionDB.current) + 1
+                Math.floor(content.count / pageSizeSessionDB.current) + 1,
               );
             }
             break;
@@ -475,7 +475,7 @@ export default function LeaderModalComponent ({
         }
       }
     },
-    [generateActionButtonRecord, generateActionButtonSession]
+    [generateActionButtonRecord, generateActionButtonSession],
   );
 
   const fetchSession = useCallback(
@@ -486,13 +486,13 @@ export default function LeaderModalComponent ({
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               id,
               limit: pageSizeSessionDB.current,
-              skip: pageIndexSessionDB.current
-            })
+              skip: pageIndexSessionDB.current,
+            }),
           });
           const content: Result = await rawResponse.json();
 
@@ -507,7 +507,7 @@ export default function LeaderModalComponent ({
       }
       return false;
     },
-    [includeActionButton]
+    [includeActionButton],
   );
 
   const fetchSessionOverall = useCallback(async (id: string) => {
@@ -517,11 +517,11 @@ export default function LeaderModalComponent ({
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id
-          })
+            id,
+          }),
         });
         const content: Result = await rawResponse.json();
 
@@ -549,13 +549,13 @@ export default function LeaderModalComponent ({
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               id,
               limit: pageSizeDB.current,
-              skip: pageIndexDB.current
-            })
+              skip: pageIndexDB.current,
+            }),
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -567,7 +567,7 @@ export default function LeaderModalComponent ({
         }
       }
     },
-    [includeActionButton]
+    [includeActionButton],
   );
 
   const tableChange = useCallback(
@@ -589,7 +589,7 @@ export default function LeaderModalComponent ({
       setSubmitButtonPressed(false);
       setLoadingData(false);
     },
-    [fetchMembers, fetchSession]
+    [fetchMembers, fetchSession],
   );
 
   const successEditSession = useCallback(async () => {
@@ -615,11 +615,11 @@ export default function LeaderModalComponent ({
               method: 'POST',
               headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                id
-              })
+                id,
+              }),
             });
             const content: Result = await rawResponse.json();
             if (content.status) {
@@ -632,7 +632,7 @@ export default function LeaderModalComponent ({
         }
       }
     },
-    [successEditSession]
+    [successEditSession],
   );
 
   const onSelectionChange = async (event: any) => {
@@ -653,13 +653,13 @@ export default function LeaderModalComponent ({
     selection.push(
       <option key='member' value={choice.MEMBER}>
         MEMBER VIEW
-      </option>
+      </option>,
     );
 
     selection.push(
       <option key='session' value={choice.SESSION}>
         SESSION VIEW
-      </option>
+      </option>,
     );
 
     setSelectedDropDown(selection);
@@ -678,7 +678,7 @@ export default function LeaderModalComponent ({
         await tableChange(selectionChoiceDB.current);
       }
     },
-    [tableChange]
+    [tableChange],
   );
 
   const onTableChangeSession = useCallback(
@@ -693,7 +693,7 @@ export default function LeaderModalComponent ({
         await tableChange(selectionChoiceDB.current);
       }
     },
-    [tableChange]
+    [tableChange],
   );
 
   const handleDownload = useCallback(async () => {
@@ -706,7 +706,7 @@ export default function LeaderModalComponent ({
   }, [handleFetchAttendance, fetchSessionOverall]);
 
   useEffect(() => {
-    async function setupData (userSessionField: Session | null) {
+    async function setupData(userSessionField: Session | null) {
       if (modalData) {
         const ccaNameField: string =
           modalData && modalData.ccaName ? modalData.ccaName : '';
@@ -732,48 +732,48 @@ export default function LeaderModalComponent ({
     () => [
       {
         Header: 'Date',
-        accessor: 'dateStr'
+        accessor: 'dateStr',
       },
       {
         Header: 'Time',
-        accessor: 'time'
+        accessor: 'time',
       },
       {
         Header: 'Duration (Hours)',
-        accessor: 'duration'
+        accessor: 'duration',
       },
       {
         Header: 'Optional',
-        accessor: 'optionalStr'
+        accessor: 'optionalStr',
       },
       {
         Header: 'Editable',
-        accessor: 'editableStr'
+        accessor: 'editableStr',
       },
       {
         Header: 'Actions',
-        accessor: 'action'
-      }
+        accessor: 'action',
+      },
     ],
-    []
+    [],
   );
 
   const columnsMember = useMemo(
     () => [
       {
         Header: 'Member',
-        accessor: 'sessionName'
+        accessor: 'sessionName',
       },
       {
         Header: 'Attendance Rate',
-        accessor: 'rate'
+        accessor: 'rate',
       },
       {
         Header: 'Actions',
-        accessor: 'action'
-      }
+        accessor: 'action',
+      },
     ],
-    []
+    [],
   );
 
   return (
@@ -864,7 +864,7 @@ export default function LeaderModalComponent ({
               base: 'full',
               sm: 'full',
               md: '200px',
-              lg: '400px'
+              lg: '400px',
             }}
             pos='relative'
             gap={{ base: 2, sm: 4 }}

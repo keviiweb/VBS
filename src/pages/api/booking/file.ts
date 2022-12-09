@@ -13,8 +13,8 @@ import { createRecurringBooking } from '@helper/sys/vbs/booking';
 
 export const config = {
   api: {
-    bodyParser: false
-  }
+    bodyParser: false,
+  },
 };
 
 /**
@@ -34,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   if (
@@ -69,7 +69,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: true,
                 error: null,
-                msg: user.msg
+                msg: user.msg,
               };
               res.status(200).send(result);
               res.end();
@@ -77,7 +77,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: false,
                 error: user.error,
-                msg: ''
+                msg: '',
               };
               res.status(200).send(result);
               res.end();
@@ -87,7 +87,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: 'Missing file',
-          msg: ''
+          msg: '',
         };
         res.status(200).send(result);
         res.end();
@@ -97,7 +97,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Failed to create users',
-        msg: ''
+        msg: '',
       };
       res.status(200).send(result);
       res.end();

@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useRef,
   useCallback,
-  useMemo
+  useMemo,
 } from 'react';
 import {
   Box,
@@ -22,7 +22,7 @@ import {
   SimpleGrid,
   Stack,
   Text,
-  useToast
+  useToast,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import LoadingModal from '@components/sys/misc/LoadingModal';
@@ -49,11 +49,11 @@ const MotionBox = motion(Box);
  * @param param0 Modal functions
  * @returns A modal
  */
-export default function MemberEditModal ({
+export default function MemberEditModal({
   isOpen,
   onClose,
   modalData,
-  dataHandler
+  dataHandler,
 }) {
   const SEARCH_THRESHOLD = 4;
   const SEARCH_INTERVAL = 3000;
@@ -95,12 +95,12 @@ export default function MemberEditModal ({
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             ccaID: ccaIDDB.current,
-            email
-          })
+            email,
+          }),
         });
         const content: Result = await rawResponse.json();
         if (content.status) {
@@ -109,7 +109,7 @@ export default function MemberEditModal ({
             description: content.msg,
             status: 'success',
             duration: 5000,
-            isClosable: true
+            isClosable: true,
           });
         } else {
           toast({
@@ -117,7 +117,7 @@ export default function MemberEditModal ({
             description: content.error,
             status: 'error',
             duration: 20000,
-            isClosable: true
+            isClosable: true,
           });
         }
       } catch (error) {
@@ -137,12 +137,12 @@ export default function MemberEditModal ({
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             ccaID: ccaIDDB.current,
-            email
-          })
+            email,
+          }),
         });
         const content: Result = await rawResponse.json();
         if (content.status) {
@@ -151,7 +151,7 @@ export default function MemberEditModal ({
             description: content.msg,
             status: 'success',
             duration: 5000,
-            isClosable: true
+            isClosable: true,
           });
         } else {
           toast({
@@ -159,7 +159,7 @@ export default function MemberEditModal ({
             description: content.error,
             status: 'error',
             duration: 20000,
-            isClosable: true
+            isClosable: true,
           });
         }
       } catch (error) {
@@ -205,7 +205,7 @@ export default function MemberEditModal ({
         }
       }
     },
-    [submitButtonPressed]
+    [submitButtonPressed],
   );
 
   const includeActionButton = useCallback(
@@ -224,7 +224,7 @@ export default function MemberEditModal ({
         }
       }
     },
-    [generateActionButton]
+    [generateActionButton],
   );
 
   const handleSearch = useCallback(async (input: string) => {
@@ -236,12 +236,12 @@ export default function MemberEditModal ({
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               ccaID: ccaIDDB.current,
-              input
-            })
+              input,
+            }),
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -257,7 +257,7 @@ export default function MemberEditModal ({
   }, []);
 
   useEffect(() => {
-    async function setupData (modalDataField: CCARecord) {
+    async function setupData(modalDataField: CCARecord) {
       const ccaidField: string =
         modalDataField && modalDataField.ccaID ? modalDataField.ccaID : '';
       ccaIDDB.current = ccaidField;
@@ -272,14 +272,14 @@ export default function MemberEditModal ({
     () => [
       {
         Header: 'Name',
-        accessor: 'name'
+        accessor: 'name',
       },
       {
         Header: 'Actions',
-        accessor: 'action'
-      }
+        accessor: 'action',
+      },
     ],
-    []
+    [],
   );
 
   return (

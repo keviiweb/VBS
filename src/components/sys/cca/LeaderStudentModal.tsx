@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useMemo
+  useMemo,
 } from 'react';
 import {
   Box,
@@ -15,7 +15,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Stack,
-  Text
+  Text,
 } from '@chakra-ui/react';
 import { checkerString } from '@constants/sys/helper';
 import TableWidget from '@components/sys/misc/TableWidget';
@@ -32,10 +32,10 @@ import { CSVLink } from 'react-csv';
  * @param param0 Modal functions and data
  * @returns A modal
  */
-export default function LeaderStudentModalComponent ({
+export default function LeaderStudentModalComponent({
   isOpen,
   onClose,
-  modalData
+  modalData,
 }) {
   const [loadingData, setLoadingData] = useState(true);
 
@@ -61,7 +61,7 @@ export default function LeaderStudentModalComponent ({
     { label: 'Date', key: 'dateStr' },
     { label: 'Time', key: 'time' },
     { label: 'Email', key: 'sessionEmail' },
-    { label: 'Attendance', key: 'durationStr' }
+    { label: 'Attendance', key: 'durationStr' },
   ];
 
   const [CSVdata, setCSVdata] = useState<CCAAttendance[]>([]);
@@ -106,7 +106,7 @@ export default function LeaderStudentModalComponent ({
         }
       }
     },
-    []
+    [],
   );
 
   const fetchMemberSessionOverall = useCallback(
@@ -118,12 +118,12 @@ export default function LeaderStudentModalComponent ({
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               id: ccaID,
-              email: userEmail
-            })
+              email: userEmail,
+            }),
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -139,7 +139,7 @@ export default function LeaderStudentModalComponent ({
         setSubmitButtonPressed(false);
       }
     },
-    []
+    [],
   );
 
   const fetchMemberSession = useCallback(
@@ -151,14 +151,14 @@ export default function LeaderStudentModalComponent ({
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               id: ccaID,
               email: userEmail,
               limit: pageSizeDB.current,
-              skip: pageIndexDB.current
-            })
+              skip: pageIndexDB.current,
+            }),
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -170,7 +170,7 @@ export default function LeaderStudentModalComponent ({
         setSubmitButtonPressed(false);
       }
     },
-    [includeActionButton]
+    [includeActionButton],
   );
 
   const tableChange = useCallback(async () => {
@@ -193,7 +193,7 @@ export default function LeaderStudentModalComponent ({
         await tableChange();
       }
     },
-    [tableChange]
+    [tableChange],
   );
 
   const handleDownload = useCallback(async () => {
@@ -203,7 +203,7 @@ export default function LeaderStudentModalComponent ({
     ) {
       await fetchMemberSessionOverall(
         ccaRecordIDDB.current,
-        sessionEmailDB.current
+        sessionEmailDB.current,
       );
 
       setDownloadCSV(true);
@@ -211,7 +211,7 @@ export default function LeaderStudentModalComponent ({
   }, [fetchMemberSessionOverall]);
 
   useEffect(() => {
-    async function setupData () {
+    async function setupData() {
       if (modalData) {
         const sessionUserNameField: string =
           modalData && modalData.sessionName ? modalData.sessionName : '';
@@ -236,18 +236,18 @@ export default function LeaderStudentModalComponent ({
     () => [
       {
         Header: 'Date',
-        accessor: 'dateStr'
+        accessor: 'dateStr',
       },
       {
         Header: 'Hours Received',
-        accessor: 'durationStr'
+        accessor: 'durationStr',
       },
       {
         Header: 'Optional Session',
-        accessor: 'optional'
-      }
+        accessor: 'optional',
+      },
     ],
-    []
+    [],
   );
 
   return (

@@ -14,7 +14,7 @@ import { logger } from '@helper/sys/misc/logger';
  * @param param0 URL for callback link and the email address of the user
  * @returns A HTML email with the correct parameters set
  */
-function html ({ newURL, email }) {
+function html({ newURL, email }) {
   const escapedEmail = `${email.replace(/\./g, '&#8203;.')}`;
 
   return `
@@ -412,7 +412,7 @@ function html ({ newURL, email }) {
  * @param param0 URL of the callback link and the hostname of the application
  * @returns A string
  */
-function text ({ newURL, host }) {
+function text({ newURL, host }) {
   return `Sign in to ${host}\n${newURL}\n\n`;
 }
 
@@ -428,14 +428,14 @@ export const options = {
         port: Number(process.env.EMAIL_SERVER_PORT),
         auth: {
           user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD
-        }
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
       },
       from: process.env.EMAIL_FROM,
-      async sendVerificationRequest ({
+      async sendVerificationRequest({
         identifier: email,
         url,
-        provider: { server, from }
+        provider: { server, from },
       }) {
         const filterString = `${process.env.NEXTAUTH_URL}/api/auth/callback/`;
         const urlSplit = url.replace(filterString, '');
@@ -449,28 +449,28 @@ export const options = {
           from,
           subject: 'KEVII VBS: Sign in',
           text: text({ newURL, host }),
-          html: html({ newURL, email })
+          html: html({ newURL, email }),
         });
-      }
-    })
+      },
+    }),
   ],
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     jwt: true,
-    maxAge: 1 * 24 * 60 * 60 // 1 day
+    maxAge: 1 * 24 * 60 * 60, // 1 day
   },
   jwt: {
     secret: process.env.NEXTAUTH_JWT_SIGNING_PRIVATE_KEY,
-    encryption: true
+    encryption: true,
   },
   pages: {
     signIn: '/sys/signin',
     verifyRequest: '/sys/verify-request',
-    error: '/sys/error'
+    error: '/sys/error',
   },
   callbacks: {
-    async signIn ({ user, email }) {
+    async signIn({ user, email }) {
       let isAllowedToSignIn = true;
       try {
         if (
@@ -482,8 +482,8 @@ export const options = {
 
           const doesUserExist = await prisma.users.findUnique({
             where: {
-              email
-            }
+              email,
+            },
           });
 
           if (doesUserExist !== null) {
@@ -501,13 +501,13 @@ export const options = {
 
       return '/sys/unauthorized';
     },
-    async session ({ session, user }) {
+    async session({ session, user }) {
       try {
         if (!session.user.username) {
           const userFromDB: User = await prisma.users.findUnique({
             where: {
-              email: user.email
-            }
+              email: user.email,
+            },
           });
 
           if (userFromDB != null) {
@@ -531,6 +531,6 @@ export const options = {
       }
 
       return session;
-    }
-  }
+    },
+  },
 };

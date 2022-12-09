@@ -6,7 +6,7 @@ import { currentSession } from '@helper/sys/sessionServer';
 import { findCCAbyID } from '@helper/sys/cca/cca';
 import {
   countTotalAttendanceHours,
-  fetchSpecificCCAAttendanceByUserEmail
+  fetchSpecificCCAAttendanceByUserEmail,
 } from '@helper/sys/cca/ccaAttendance';
 import { countTotalSessionHoursByCCAID } from '@helper/sys/cca/ccaSession';
 
@@ -25,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   const { id } = req.body;
@@ -42,18 +42,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (ccaID !== undefined && userEmail !== undefined) {
       const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
-      if (ccaDetailsRes.status && ccaDetailsRes.msg) {
+      if (
+        ccaDetailsRes.status &&
+        ccaDetailsRes.msg !== null &&
+        ccaDetailsRes.msg !== undefined
+      ) {
         const ccaDB: Result = await fetchSpecificCCAAttendanceByUserEmail(
           ccaID,
           userEmail,
           100000,
           0,
-          session
+          session,
         );
 
         if (ccaDB.status) {
           const userAttendanceHours = await countTotalAttendanceHours(
-            ccaDB.msg as CCAAttendance[]
+            ccaDB.msg as CCAAttendance[],
           );
 
           const ccaAttendanceHours: number =
@@ -68,7 +72,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: true,
             error: null,
-            msg: totalCCAAttendance
+            msg: totalCCAAttendance,
           };
 
           res.status(200).send(result);
@@ -77,7 +81,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: ccaDB.error,
-            msg: ''
+            msg: '',
           };
           res.status(200).send(result);
           res.end();
@@ -86,7 +90,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: ccaDetailsRes.error,
-          msg: ''
+          msg: '',
         };
         res.status(200).send(result);
         res.end();
@@ -95,7 +99,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Incomplete information',
-        msg: []
+        msg: [],
       };
       res.status(200).send(result);
       res.end();

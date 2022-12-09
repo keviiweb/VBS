@@ -8,7 +8,7 @@ import {
   isApproved,
   isCancelled,
   isRejected,
-  setReject
+  setReject,
 } from '@helper/sys/vbs/bookingReq';
 import { deleteVenueBooking } from '@helper/sys/vbs/booking';
 
@@ -34,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   const { id, reason } = req.body;
@@ -48,21 +48,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const reasonField: string = (reason as string).trim();
       const bookingRequest: BookingRequest | null = await findBookingByID(
         bookingID,
-        session
+        session,
       );
 
       if (bookingRequest !== null) {
         const isRequestApproved: boolean = await isApproved(
           bookingRequest,
-          session
+          session,
         );
         const isRequestCancelled: boolean = await isCancelled(
           bookingRequest,
-          session
+          session,
         );
         const isRequestRejected: boolean = await isRejected(
           bookingRequest,
-          session
+          session,
         );
 
         const minDay: number =
@@ -75,20 +75,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           if (compareDate(currentDate, minDay)) {
             const timeSlots: number[] = convertSlotToArray(
               bookingRequest.timeSlots,
-              true
+              true,
             ) as number[];
 
             const deleteBooking: Result = await deleteVenueBooking(
               bookingRequest,
               timeSlots,
-              session
+              session,
             );
 
             if (!deleteBooking.status) {
               result = {
                 status: false,
                 error: deleteBooking.error,
-                msg: ''
+                msg: '',
               };
               res.status(200).send(result);
               res.end();
@@ -96,13 +96,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               const reject: Result = await setReject(
                 bookingRequest,
                 reasonField,
-                session
+                session,
               );
               if (reject.status) {
                 result = {
                   status: true,
                   error: null,
-                  msg: reject.msg
+                  msg: reject.msg,
                 };
                 res.status(200).send(result);
                 res.end();
@@ -110,7 +110,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 result = {
                   status: false,
                   error: reject.error,
-                  msg: ''
+                  msg: '',
                 };
                 res.status(200).send(result);
                 res.end();
@@ -121,7 +121,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: msg,
-              msg: ''
+              msg: '',
             };
             res.status(200).send(result);
             res.end();
@@ -130,7 +130,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: 'Request already cancelled!',
-            msg: ''
+            msg: '',
           };
           res.status(200).send(result);
           res.end();
@@ -138,7 +138,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: 'Request already rejected!',
-            msg: ''
+            msg: '',
           };
           res.status(200).send(result);
           res.end();
@@ -146,13 +146,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const reject: Result = await setReject(
             bookingRequest,
             reasonField,
-            session
+            session,
           );
           if (reject.status) {
             result = {
               status: true,
               error: null,
-              msg: reject.msg
+              msg: reject.msg,
             };
             res.status(200).send(result);
             res.end();
@@ -160,7 +160,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: reject.error,
-              msg: ''
+              msg: '',
             };
             res.status(200).send(result);
             res.end();
@@ -170,7 +170,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: msg,
-            msg: ''
+            msg: '',
           };
           res.status(200).send(result);
           res.end();

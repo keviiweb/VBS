@@ -7,7 +7,7 @@ import { CCAAttendance } from 'types/cca/ccaAttendance';
  * @returns Same array with duplicates removed
  */
 export const removeDuplicate = (
-  dataField: CCAAttendance[]
+  dataField: CCAAttendance[],
 ): CCAAttendance[] => {
   const removedDuplicateData: CCAAttendance[] = dataField.filter(
     (arr, index, self) =>
@@ -15,8 +15,8 @@ export const removeDuplicate = (
       self.findIndex(
         (t) =>
           t.sessionEmail === arr.sessionEmail ||
-          t.sessionName === arr.sessionName
-      )
+          t.sessionName === arr.sessionName,
+      ),
   );
 
   return removedDuplicateData;

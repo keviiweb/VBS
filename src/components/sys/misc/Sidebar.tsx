@@ -11,7 +11,7 @@ import {
   FiMapPin,
   FiUser,
   FiAlertCircle,
-  FiGlobe
+  FiGlobe,
 } from 'react-icons/fi';
 
 import NavLink from '@components/sys/misc/NavLink';
@@ -27,38 +27,38 @@ const fullMenu = [
   {
     label: 'APPROVE BOOKINGS',
     icon: FiCalendar,
-    href: '/sys/manage/admin/bookings'
+    href: '/sys/manage/admin/bookings',
   },
   {
     label: 'MANAGE VENUES',
     icon: FiMapPin,
-    href: '/sys/manage/admin/venues'
+    href: '/sys/manage/admin/venues',
   },
   {
     label: 'MANAGE BOOKINGS',
     icon: FiCalendar,
-    href: '/sys/manage/bookings'
+    href: '/sys/manage/bookings',
   },
   {
     label: 'MANAGE USERS',
     icon: FiUser,
-    href: '/sys/manage/admin/users'
+    href: '/sys/manage/admin/users',
   },
   {
     label: 'MANAGE ANNOUNCEMENTS',
     icon: FiAlertCircle,
-    href: '/sys/manage/announcement'
+    href: '/sys/manage/announcement',
   },
   {
     label: 'MANAGE KEIPS',
     icon: FiStar,
-    href: '/sys/manage/admin/keips'
+    href: '/sys/manage/admin/keips',
   },
   {
     label: 'MISC',
     icon: FiGlobe,
-    href: '/sys/manage/admin/misc'
-  }
+    href: '/sys/manage/admin/misc',
+  },
 ];
 
 const adminMenu = [
@@ -69,23 +69,23 @@ const adminMenu = [
   {
     label: 'APPROVE BOOKINGS',
     icon: FiCalendar,
-    href: '/sys/manage/admin/bookings'
+    href: '/sys/manage/admin/bookings',
   },
   {
     label: 'MANAGE VENUES',
     icon: FiMapPin,
-    href: '/sys/manage/admin/venues'
+    href: '/sys/manage/admin/venues',
   },
   {
     label: 'MANAGE BOOKINGS',
     icon: FiCalendar,
-    href: '/sys/manage/bookings'
+    href: '/sys/manage/bookings',
   },
   {
     label: 'MANAGE USERS',
     icon: FiUser,
-    href: '/sys/manage/admin/users'
-  }
+    href: '/sys/manage/admin/users',
+  },
 ];
 
 const userMenu = [
@@ -96,8 +96,8 @@ const userMenu = [
   {
     label: 'MANAGE BOOKINGS',
     icon: FiCalendar,
-    href: '/sys/manage/bookings'
-  }
+    href: '/sys/manage/bookings',
+  },
 ];
 
 /**
@@ -106,12 +106,12 @@ const userMenu = [
  * @param param0 React Children and session
  * @returns Sidebar
  */
-export default function Sidebar ({ session, onClose, ...rest }) {
+export default function Sidebar({ session, onClose, ...rest }) {
   const router = useRouter();
   const [menu, setMenu] = useState(userMenu);
 
   useEffect(() => {
-    function setData (sessionField: Session) {
+    function setData(sessionField: Session) {
       if (
         hasPermission(sessionField.user.admin, actions.VIEW_FULL_ADMIN_PAGE)
       ) {

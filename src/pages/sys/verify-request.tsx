@@ -6,7 +6,7 @@ import { Box, Flex, Heading, Stack, Text } from '@chakra-ui/react';
  *
  * @returns Verify Request Page
  */
-export default function VerifyRequest () {
+export default function VerifyRequest() {
   return (
     <Flex minH='100vh' align='center' justify='center' bg='gray.50'>
       <Stack mx='auto' maxW='xl' py={12} px={6}>

@@ -13,7 +13,7 @@ const MotionBox = motion(Box);
  *
  * @returns KEWEB Page
  */
-export default function KEWeb () {
+export default function KEWeb() {
   return (
     <Landing>
       <MotionBox

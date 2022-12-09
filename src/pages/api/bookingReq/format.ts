@@ -11,7 +11,7 @@ import {
   prettifyTiming,
   checkerArray,
   PERSONAL,
-  checkerString
+  checkerString,
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
 import { actions } from '@constants/sys/admin';
@@ -42,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   if (
@@ -56,110 +56,100 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (checkerArray(bookingsRes)) {
       if (bookingsRes.length > 0) {
         for (let booking = 0; booking < bookingsRes.length; booking += 1) {
-          if (bookingsRes[booking]) {
-            const book: BookingRequest = bookingsRes[booking];
-            const venueReq: Result = await findVenueByID(book.venue, session);
+          const book: BookingRequest = bookingsRes[booking];
+          const venueReq: Result = await findVenueByID(book.venue, session);
 
-            let date: Date | null = null;
-            let timeSlots: string[] = [];
+          let date: Date | null = null;
+          let timeSlots: string[] = [];
 
-            if (book.date !== undefined) {
-              date = convertUnixToDate(book.date);
-              const converted = convertSlotToArray(book.timeSlots, true);
-              if (converted !== null) {
-                timeSlots = mapSlotToTiming(converted) as string[];
-              }
+          if (book.date !== undefined) {
+            date = convertUnixToDate(book.date);
+            const converted = convertSlotToArray(book.timeSlots, true);
+            if (converted !== null) {
+              timeSlots = mapSlotToTiming(converted) as string[];
             }
+          }
 
-            if (venueReq.status) {
-              const venueReqMsg: Venue = venueReq.msg;
-              const venue = venueReqMsg.name;
+          if (venueReq.status) {
+            const venueReqMsg: Venue = venueReq.msg;
+            const venue = venueReqMsg.name;
 
-              let cca: string = '';
-              if (book.cca === PERSONAL) {
-                cca = PERSONAL;
-              } else {
-                const ccaReq: Result = await findCCAbyID(book.cca, session);
-                if (ccaReq.status) {
-                  const ccaReqMsg: CCA = ccaReq.msg;
-                  cca = ccaReqMsg.name;
-                } else {
-                  console.error(ccaReq.error);
-                }
-              }
-
-              let status: string = '';
-
-              if (!book.isApproved && !book.isCancelled && !book.isRejected) {
-                status = 'Pending';
-              } else if (
-                book.isApproved &&
-                !book.isCancelled &&
-                !book.isRejected
-              ) {
-                status = 'Approved';
-              } else if (
-                !book.isApproved &&
-                book.isCancelled &&
-                !book.isRejected
-              ) {
-                status = 'Cancelled';
-              } else if (
-                !book.isApproved &&
-                !book.isCancelled &&
-                book.isRejected
-              ) {
-                status = 'Rejected';
-              } else {
-                status = 'Unknown';
-              }
-
-              let prettified: string = '';
-              if (date !== null) {
-                prettified = prettifyDate(date);
-              }
-
-              const userRes: Result = await fetchUserByEmail(
-                book.email,
-                session
-              );
-              const user: User = userRes.msg;
-              let username: string = '';
-              if (user && checkerString(user.name)) {
-                username = user.name;
-              }
-
-              const conflictsRequest: Result = await getConflictingRequest(
-                book,
-                session
-              );
-
-              let conflicts: BookingRequest[] = [];
-              if (conflictsRequest.status) {
-                conflicts = conflictsRequest.msg;
-              }
-
-              const data: BookingRequest = {
-                id: book.id,
-                email: book.email,
-                venue,
-                dateStr: prettified,
-                timeSlots: prettifyTiming(timeSlots),
-                isApproved: book.isApproved,
-                isRejected: book.isRejected,
-                isCancelled: book.isCancelled,
-                purpose: book.purpose,
-                cca,
-                status,
-                conflictRequestObj: conflicts,
-                reason: book.reason,
-                userName: username
-              };
-
-              parsedBooking.push(data);
+            let cca: string = '';
+            if (book.cca === PERSONAL) {
+              cca = PERSONAL;
             } else {
-              console.error(venueReq.error);
+              const ccaReq: Result = await findCCAbyID(book.cca, session);
+              if (ccaReq.status) {
+                const ccaReqMsg: CCA = ccaReq.msg;
+                cca = ccaReqMsg.name;
+              } else {
+                console.error(ccaReq.error);
+              }
             }
+
+            let status: string = '';
+
+            const isApproved: boolean =
+              book.isApproved !== undefined && book.isApproved;
+            const isCancelled: boolean =
+              book.isCancelled !== undefined && book.isCancelled;
+            const isRejected: boolean =
+              book.isRejected !== undefined && book.isRejected;
+
+            if (!isApproved && !isCancelled && !isRejected) {
+              status = 'Pending';
+            } else if (isApproved && !isCancelled && !isRejected) {
+              status = 'Approved';
+            } else if (!isApproved && isCancelled && !isRejected) {
+              status = 'Cancelled';
+            } else if (!isApproved && !isCancelled && isRejected) {
+              status = 'Rejected';
+            } else {
+              status = 'Unknown';
+            }
+
+            let prettified: string = '';
+            if (date !== null) {
+              prettified = prettifyDate(date);
+            }
+
+            const userRes: Result = await fetchUserByEmail(book.email, session);
+            const user: User = userRes.msg;
+            let username: string = '';
+            if (user && checkerString(user.name)) {
+              username = user.name;
+            }
+
+            const conflictsRequest: Result = await getConflictingRequest(
+              book,
+              session,
+            );
+
+            let conflicts: BookingRequest[] = [];
+            if (conflictsRequest.status) {
+              conflicts = conflictsRequest.msg;
+            }
+
+            const data: BookingRequest = {
+              id: book.id,
+              email: book.email,
+              venue,
+              dateStr: prettified,
+              timeSlots: prettifyTiming(timeSlots),
+              isApproved: book.isApproved,
+              isRejected: book.isRejected,
+              isCancelled: book.isCancelled,
+              purpose: book.purpose,
+              cca,
+              status,
+              conflictRequestObj: conflicts,
+              reason: book.reason,
+              userName: username,
+            };
+
+            parsedBooking.push(data);
+          } else {
+            console.error(venueReq.error);
           }
         }
       }
@@ -167,7 +157,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: true,
         error: null,
-        msg: parsedBooking
+        msg: parsedBooking,
       };
       res.status(200).send(result);
       res.end();
@@ -175,7 +165,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Cannot get all bookings',
-        msg: []
+        msg: [],
       };
       res.status(200).send(result);
       res.end();

@@ -11,7 +11,7 @@ import Announcement from '@components/sys/misc/Announcement';
  *
  * @returns Home Page
  */
-export default function Home () {
+export default function Home() {
   return (
     <Auth admin={undefined}>
       <Box>

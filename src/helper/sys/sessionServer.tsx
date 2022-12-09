@@ -14,7 +14,7 @@ import { levels } from '@constants/sys/admin';
 export const currentSession = async (
   request: any = null,
   response: any = null,
-  context: any = null
+  context: any = null,
 ): Promise<Session | null> => {
   if (
     process.env.NEXT_PUBLIC_SETDEV === 'true' &&
@@ -27,8 +27,8 @@ export const currentSession = async (
         username: 'Test user',
         email: 'testing@test.com',
         admin: levels.KEWEB,
-        acceptedTerm: true
-      }
+        acceptedTerm: true,
+      },
     };
 
     return session;
@@ -38,13 +38,13 @@ export const currentSession = async (
       session = (await unstable_getServerSession(
         context.req,
         context.res,
-        options
+        options,
       )) as Session;
     } else if (request !== null && response !== null) {
       session = (await unstable_getServerSession(
         request,
         response,
-        options
+        options,
       )) as Session;
     }
     return session;

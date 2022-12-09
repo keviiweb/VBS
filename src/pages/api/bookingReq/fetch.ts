@@ -9,12 +9,12 @@ import {
   convertSlotToArray,
   prettifyTiming,
   checkerString,
-  PERSONAL
+  PERSONAL,
 } from '@constants/sys/helper';
 import {
   convertUnixToDate,
   compareDate,
-  prettifyDate
+  prettifyDate,
 } from '@constants/sys/date';
 import { actions } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
@@ -34,7 +34,7 @@ import {
   findApprovedBooking,
   findRejectedBooking,
   findPendingBooking,
-  findAllBooking
+  findAllBooking,
 } from '@helper/sys/vbs/bookingReq';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
 
@@ -63,7 +63,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   if (session !== undefined && session !== null) {
@@ -129,7 +129,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Unauthorized access',
-        msg: { count: 0, res: [] }
+        msg: { count: 0, res: [] },
       };
       res.status(200).send(result);
       res.end();
@@ -144,121 +144,112 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       if (count > 0 && bookings !== null && bookings.length > 0) {
         for (let booking = 0; booking < bookings.length; booking += 1) {
-          if (bookings[booking]) {
-            const book: BookingRequest = bookings[booking];
-            const venueReq: Result = await findVenueByID(book.venue, session);
-            const date = convertUnixToDate(book.date as number);
-            const slotArr: number[] = convertSlotToArray(
-              book.timeSlots,
-              true
-            ) as number[];
-            const timeSlots: string[] = mapSlotToTiming(slotArr) as string[];
+          const book: BookingRequest = bookings[booking];
+          const venueReq: Result = await findVenueByID(book.venue, session);
+          const date = convertUnixToDate(book.date as number);
+          const slotArr: number[] = convertSlotToArray(
+            book.timeSlots,
+            true,
+          ) as number[];
+          const timeSlots: string[] = mapSlotToTiming(slotArr) as string[];
 
-            if (venueReq.status) {
-              const venue = venueReq.msg.name;
+          if (venueReq.status) {
+            const venue = venueReq.msg.name;
 
-              let cca: string = '';
-              if (book.cca === PERSONAL) {
-                cca = PERSONAL;
+            let cca: string = '';
+            if (book.cca === PERSONAL) {
+              cca = PERSONAL;
+            } else {
+              const ccaReq: Result = await findCCAbyID(book.cca, session);
+              if (ccaReq.status) {
+                const ccaReqMsg: CCA = ccaReq.msg;
+                cca = ccaReqMsg.name;
               } else {
-                const ccaReq: Result = await findCCAbyID(book.cca, session);
-                if (ccaReq.status) {
-                  const ccaReqMsg: CCA = ccaReq.msg;
-                  cca = ccaReqMsg.name;
-                } else {
-                  console.error(ccaReq.error);
-                }
+                console.error(ccaReq.error);
               }
+            }
 
-              const conflictsRequest: Result = await getConflictingRequest(
-                book,
-                session
-              );
+            const conflictsRequest: Result = await getConflictingRequest(
+              book,
+              session,
+            );
 
-              let conflicts: BookingRequest[] = [];
-              if (conflictsRequest.status) {
-                conflicts = conflictsRequest.msg;
-              }
+            let conflicts: BookingRequest[] = [];
+            if (conflictsRequest.status) {
+              conflicts = conflictsRequest.msg;
+            }
 
-              let status: string = '';
-              const bookingDate: number = book.date as number;
-              const minDay: number = process.env.CANCEL_MIN_DAY
+            let status: string = '';
+            const bookingDate: number = book.date as number;
+            const minDay: number =
+              process.env.CANCEL_MIN_DAY !== undefined
                 ? Number(process.env.CANCEL_MIN_DAY)
                 : 3;
 
-              let success: boolean = true;
-              const editable: boolean = compareDate(
-                bookingDate,
-                minDayApproval
+            let success: boolean = true;
+            const editable: boolean = compareDate(bookingDate, minDayApproval);
+
+            const isApproved: boolean =
+              book.isApproved !== undefined && book.isApproved;
+            const isCancelled: boolean =
+              book.isCancelled !== undefined && book.isCancelled;
+            const isRejected: boolean =
+              book.isRejected !== undefined && book.isRejected;
+
+            if (!isApproved && !isCancelled && !isRejected) {
+              status = 'PENDING';
+              if (!compareDate(bookingDate, minDay)) {
+                if (query && query === 'USER') {
+                  status = 'EXPIRED';
+                } else {
+                  success = false;
+                }
+              }
+            } else if (isApproved && !isCancelled && !isRejected) {
+              status = 'APPROVED';
+            } else if (!isApproved && isCancelled && !isRejected) {
+              status = 'CANCELLED';
+            } else if (!isApproved && !isCancelled && isRejected) {
+              status = 'REJECTED';
+            } else {
+              status = 'UNKNOWN';
+            }
+
+            let prettified: string = '';
+            if (date !== null) {
+              prettified = prettifyDate(date);
+            }
+
+            if (success) {
+              const userRes: Result = await fetchUserByEmail(
+                book.email,
+                session,
               );
-
-              if (!book.isApproved && !book.isCancelled && !book.isRejected) {
-                status = 'PENDING';
-                if (!compareDate(bookingDate, minDay)) {
-                  if (query && query === 'USER') {
-                    status = 'EXPIRED';
-                  } else {
-                    success = false;
-                  }
-                }
-              } else if (
-                book.isApproved &&
-                !book.isCancelled &&
-                !book.isRejected
-              ) {
-                status = 'APPROVED';
-              } else if (
-                !book.isApproved &&
-                book.isCancelled &&
-                !book.isRejected
-              ) {
-                status = 'CANCELLED';
-              } else if (
-                !book.isApproved &&
-                !book.isCancelled &&
-                book.isRejected
-              ) {
-                status = 'REJECTED';
-              } else {
-                status = 'UNKNOWN';
+              const user: User = userRes.msg;
+              let username: string = '';
+              if (user && checkerString(user.name)) {
+                username = user.name;
               }
 
-              let prettified: string = '';
-              if (date !== null) {
-                prettified = prettifyDate(date);
-              }
+              const data: BookingRequest = {
+                id: book.id,
+                email: book.email,
+                venue,
+                dateStr: prettified,
+                timeSlots: prettifyTiming(timeSlots),
+                isApproved: book.isApproved,
+                isRejected: book.isRejected,
+                isCancelled: book.isCancelled,
+                purpose: book.purpose,
+                cca,
+                conflictRequestObj: conflicts,
+                status,
+                reason: book.reason,
+                userName: username,
+                editable,
+              };
 
-              if (success) {
-                const userRes: Result = await fetchUserByEmail(
-                  book.email,
-                  session
-                );
-                const user: User = userRes.msg;
-                let username: string = '';
-                if (user && checkerString(user.name)) {
-                  username = user.name;
-                }
-
-                const data: BookingRequest = {
-                  id: book.id,
-                  email: book.email,
-                  venue,
-                  dateStr: prettified,
-                  timeSlots: prettifyTiming(timeSlots),
-                  isApproved: book.isApproved,
-                  isRejected: book.isRejected,
-                  isCancelled: book.isCancelled,
-                  purpose: book.purpose,
-                  cca,
-                  conflictRequestObj: conflicts,
-                  status,
-                  reason: book.reason,
-                  userName: username,
-                  editable
-                };
-
-                parsedBooking.push(data);
-              }
+              parsedBooking.push(data);
             }
           }
         }
@@ -267,7 +258,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: true,
         error: null,
-        msg: { count, res: parsedBooking }
+        msg: { count, res: parsedBooking },
       };
 
       res.status(200).send(result);
@@ -276,7 +267,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Cannot get all bookings',
-        msg: { count: 0, res: [] }
+        msg: { count: 0, res: [] },
       };
       res.status(200).send(result);
       res.end();
@@ -285,7 +276,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: { count: 0, res: [] }
+      msg: { count: 0, res: [] },
     };
     res.status(200).send(result);
     res.end();

@@ -28,7 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   if (
@@ -53,7 +53,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             const user: User = userData[ven];
 
             const isAdmin: string | undefined = Object.keys(levels).find(
-              (key) => levels[key] === user.admin
+              (key) => levels[key] === user.admin,
             );
             const acceptedTermStr: string = user.acceptedTerm ? 'Yes' : 'No';
 
@@ -63,7 +63,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               email: user.email,
               admin: user.admin,
               adminStr: isAdmin,
-              acceptedTermStr
+              acceptedTermStr,
             };
 
             parsedUser.push(data);
@@ -74,7 +74,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: true,
         error: null,
-        msg: { count, res: parsedUser }
+        msg: { count, res: parsedUser },
       };
       res.status(200).send(result);
       res.end();
@@ -82,7 +82,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: userDB.error,
-        msg: { count: 0, res: [] }
+        msg: { count: 0, res: [] },
       };
       res.status(200).send(result);
       res.end();
@@ -91,7 +91,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: { count: 0, res: [] }
+      msg: { count: 0, res: [] },
     };
     res.status(200).send(result);
     res.end();

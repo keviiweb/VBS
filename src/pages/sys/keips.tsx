@@ -8,7 +8,7 @@ import {
   Heading,
   Input,
   Stack,
-  Text
+  Text,
 } from '@chakra-ui/react';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 import TableWidget from '@components/sys/misc/TableWidget';
@@ -31,7 +31,7 @@ import { KEIPS, KEIPSCCA, KEIPSBonus } from 'types/misc/keips';
  *
  * @returns KEIPS page
  */
-export default function KEIPSComponent () {
+export default function KEIPSComponent() {
   const [loadingData, setLoadingData] = useState(true);
   const [successData, setSuccessData] = useState(false);
 
@@ -77,7 +77,7 @@ export default function KEIPSComponent () {
           const parsedData: KEIPSBonus = {
             cca: dataArr[0],
             description: dataArr[1],
-            total: Number(dataArr[2])
+            total: Number(dataArr[2]),
           };
 
           totalData.push(parsedData);
@@ -104,7 +104,7 @@ export default function KEIPSComponent () {
             atte: Number(dataArr[2]),
             perf: Number(dataArr[3]),
             outs: Number(dataArr[4]),
-            total: Number(dataArr[5])
+            total: Number(dataArr[5]),
           };
 
           totalData.push(parsedData);
@@ -131,7 +131,7 @@ export default function KEIPSComponent () {
             atte: Number(dataArr[2]),
             perf: Number(dataArr[3]),
             outs: Number(dataArr[4]),
-            total: Number(dataArr[5])
+            total: Number(dataArr[5]),
           };
 
           totalData.push(parsedData);
@@ -177,7 +177,7 @@ export default function KEIPSComponent () {
         setSuccessData(true);
       }
     },
-    [populateTopCCA, populateAllCCA, populateBonusCCA]
+    [populateTopCCA, populateAllCCA, populateBonusCCA],
   );
 
   const handleSubmit = useCallback(
@@ -191,11 +191,11 @@ export default function KEIPSComponent () {
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              matnet: matnetDB.current
-            })
+              matnet: matnetDB.current,
+            }),
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -210,85 +210,85 @@ export default function KEIPSComponent () {
       }
       setError('Please enter a valid MATNET');
     },
-    [includeActionButton]
+    [includeActionButton],
   );
 
   const columns = useMemo(
     () => [
       {
         Header: 'OSA Points',
-        accessor: 'OSA'
+        accessor: 'OSA',
       },
       {
         Header: 'OSA Percentile',
-        accessor: 'osaPercentile'
+        accessor: 'osaPercentile',
       },
       {
         Header: 'Room Draw Points',
-        accessor: 'roomDraw'
+        accessor: 'roomDraw',
       },
       {
         Header: 'Contrasting',
-        accessor: 'contrastingStr'
+        accessor: 'contrastingStr',
       },
       {
         Header: 'Semester Stayed',
-        accessor: 'semesterStay'
+        accessor: 'semesterStay',
       },
       {
         Header: 'Fullfilled Criteria?',
-        accessor: 'fulfilledStr'
-      }
+        accessor: 'fulfilledStr',
+      },
     ],
-    []
+    [],
   );
 
   const columnsData = useMemo(
     () => [
       {
         Header: 'CCA',
-        accessor: 'cca'
+        accessor: 'cca',
       },
       {
         Header: 'Category',
-        accessor: 'cat'
+        accessor: 'cat',
       },
       {
         Header: 'Attendance',
-        accessor: 'atte'
+        accessor: 'atte',
       },
       {
         Header: 'Performance',
-        accessor: 'perf'
+        accessor: 'perf',
       },
       {
         Header: 'Outstanding',
-        accessor: 'outs'
+        accessor: 'outs',
       },
       {
         Header: 'Total',
-        accessor: 'total'
-      }
+        accessor: 'total',
+      },
     ],
-    []
+    [],
   );
 
   const columnsBonus = useMemo(
     () => [
       {
         Header: 'CCA',
-        accessor: 'cca'
+        accessor: 'cca',
       },
       {
         Header: 'Description',
-        accessor: 'description'
+        accessor: 'description',
       },
       {
         Header: 'Total',
-        accessor: 'total'
-      }
+        accessor: 'total',
+      },
     ],
-    []
+    [],
   );
 
   return (
@@ -345,7 +345,7 @@ export default function KEIPSComponent () {
                     bg='blue.400'
                     color='white'
                     _hover={{
-                      bg: 'blue.500'
+                      bg: 'blue.500',
                     }}
                   >
                     Submit

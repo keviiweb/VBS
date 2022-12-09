@@ -6,5 +6,5 @@ export const levels = {
   PENDING: 1,
   APPROVED: 2,
   REJECTED: 3,
-  ALL: 4
+  ALL: 4,
 };

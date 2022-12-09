@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
   Spinner,
-  useBreakpointValue
+  useBreakpointValue,
 } from '@chakra-ui/react';
 
 /**
@@ -20,7 +20,7 @@ import {
  * @param param0 Modal functions
  * @returns A loading modal
  */
-export default function LoadingModal ({ isOpen, onClose }) {
+export default function LoadingModal({ isOpen, onClose }) {
   const variant = useBreakpointValue({ base: 'xs', md: 'md' });
 
   return (

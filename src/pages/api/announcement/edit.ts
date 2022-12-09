@@ -12,8 +12,8 @@ import hasPermission from '@constants/sys/permission';
 
 export const config = {
   api: {
-    bodyParser: false
-  }
+    bodyParser: false,
+  },
 };
 
 /**
@@ -32,7 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   if (
@@ -59,18 +59,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const announceData: Announcement = {
         id,
         description,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
 
       const editAnnounceRequest: Result = await editAnnouncement(
         announceData,
-        session
+        session,
       );
       if (editAnnounceRequest.status) {
         result = {
           status: true,
           error: '',
-          msg: editAnnounceRequest.msg
+          msg: editAnnounceRequest.msg,
         };
         res.status(200).send(result);
         res.end();
@@ -78,7 +78,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: editAnnounceRequest.error,
-          msg: ''
+          msg: '',
         };
         res.status(200).send(result);
         res.end();
@@ -88,7 +88,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Information of wrong type',
-        msg: ''
+        msg: '',
       };
       res.status(200).send(result);
       res.end();

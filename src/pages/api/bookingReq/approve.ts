@@ -11,7 +11,7 @@ import {
   isCancelled,
   isRejected,
   setApprove,
-  setRejectConflicts
+  setRejectConflicts,
 } from '@helper/sys/vbs/bookingReq';
 import { currentSession } from '@helper/sys/sessionServer';
 import { createVenueBooking } from '@helper/sys/vbs/booking';
@@ -36,7 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   const { id } = req.body;
@@ -49,27 +49,27 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const bookingID: string = (id as string).trim();
       const bookingRequest: BookingRequest | null = await findBookingByID(
         bookingID,
-        session
+        session,
       );
       if (bookingRequest !== null && bookingRequest !== undefined) {
         const isRequestApproved: boolean = await isApproved(
           bookingRequest,
-          session
+          session,
         );
         const isRequestCancelled: boolean = await isCancelled(
           bookingRequest,
-          session
+          session,
         );
         const isRequestRejected: boolean = await isRejected(
           bookingRequest,
-          session
+          session,
         );
 
         if (isRequestApproved) {
           result = {
             status: false,
             error: 'Request already approved!',
-            msg: ''
+            msg: '',
           };
           res.status(200).send(result);
           res.end();
@@ -77,7 +77,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: 'Request already cancelled!',
-            msg: ''
+            msg: '',
           };
           res.status(200).send(result);
           res.end();
@@ -85,7 +85,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: 'Request already rejected!',
-            msg: ''
+            msg: '',
           };
           res.status(200).send(result);
           res.end();
@@ -98,32 +98,32 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           if (compareDate(currentDate, minDay)) {
             const isThereConflict: boolean = await isConflict(
               bookingRequest,
-              session
+              session,
             );
             const timeSlots: number[] = convertSlotToArray(
               bookingRequest.timeSlots,
-              true
+              true,
             ) as number[];
 
             if (!isThereConflict) {
               const approve: Result = await setApprove(bookingRequest, session);
               const cancel: Result = await setRejectConflicts(
                 bookingRequest,
-                session
+                session,
               );
 
               if (approve.status && cancel.status) {
                 const createBooking = await createVenueBooking(
                   bookingRequest,
                   timeSlots,
-                  session
+                  session,
                 );
 
                 if (!createBooking.status) {
                   result = {
                     status: false,
                     error: createBooking.error,
-                    msg: ''
+                    msg: '',
                   };
                   res.status(200).send(result);
                   res.end();
@@ -131,7 +131,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   result = {
                     status: true,
                     error: null,
-                    msg: createBooking.msg
+                    msg: createBooking.msg,
                   };
                   res.status(200).send(result);
                   res.end();
@@ -140,7 +140,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 result = {
                   status: false,
                   error: 'Either failed to approve slot or cancel conflicting',
-                  msg: ''
+                  msg: '',
                 };
                 res.status(200).send(result);
                 res.end();
@@ -149,7 +149,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: false,
                 error: 'Conflicts found in booking',
-                msg: ''
+                msg: '',
               };
               res.status(200).send(result);
               res.end();
@@ -159,7 +159,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: msg,
-              msg: ''
+              msg: '',
             };
             res.status(200).send(result);
             res.end();

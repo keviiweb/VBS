@@ -17,13 +17,13 @@ import { logger } from '@helper/sys/misc/logger';
 export const fetchAllAnnouncements = async (
   limit: number = 100000,
   skip: number = 0,
-  session: Session
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const announce: Announcement[] = await prisma.announcement.findMany({
       skip: skip * limit,
-      take: limit
+      take: limit,
     });
 
     if (announce) {
@@ -32,7 +32,7 @@ export const fetchAllAnnouncements = async (
       result = {
         status: false,
         error: 'Failed to fetch announcements',
-        msg: []
+        msg: [],
       };
     }
   } catch (error) {
@@ -52,12 +52,12 @@ export const fetchAllAnnouncements = async (
  */
 export const createAnnouncement = async (
   data: Announcement,
-  session: Session
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const announce: Announcement = await prisma.announcement.create({
-      data
+      data,
     });
 
     if (announce) {
@@ -65,24 +65,24 @@ export const createAnnouncement = async (
         await logger(
           'createAnnouncement',
           session.user.email,
-          'Successfully created announcement'
+          'Successfully created announcement',
         );
       }
       result = {
         status: true,
         error: '',
-        msg: 'Successfully created announcement'
+        msg: 'Successfully created announcement',
       };
     } else {
       await logger(
         'createAnnouncement',
         session.user.email,
-        'Failed to create announcement'
+        'Failed to create announcement',
       );
       result = {
         status: false,
         error: 'Failed to create announcement',
-        msg: ''
+        msg: '',
       };
     }
   } catch (error) {
@@ -102,15 +102,15 @@ export const createAnnouncement = async (
  */
 export const editAnnouncement = async (
   data: Announcement,
-  session: Session
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const announce = await prisma.announcement.update({
       where: {
-        id: data.id
+        id: data.id,
       },
-      data
+      data,
     });
 
     if (announce) {
@@ -118,26 +118,26 @@ export const editAnnouncement = async (
         await logger(
           `editAnnouncement - ${data.id}`,
           session.user.email,
-          'Successfully updated announcement'
+          'Successfully updated announcement',
         );
       }
       result = {
         status: true,
         error: '',
-        msg: 'Successfully updated announcement'
+        msg: 'Successfully updated announcement',
       };
     } else {
       if (data.id !== undefined && checkerString(data.id)) {
         await logger(
           `editAnnouncement - ${data.id}`,
           session.user.email,
-          'Failed to update announcement'
+          'Failed to update announcement',
         );
       }
       result = {
         status: false,
         error: 'Failed to update announcement',
-        msg: ''
+        msg: '',
       };
     }
   } catch (error) {
@@ -147,7 +147,7 @@ export const editAnnouncement = async (
       await logger(
         `editAnnouncement - ${data.id}`,
         session.user.email,
-        error.message
+        error.message,
       );
     }
   }
@@ -163,14 +163,14 @@ export const editAnnouncement = async (
  */
 export const deleteAnnouncement = async (
   id: string,
-  session: Session
+  session: Session,
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const announce = await prisma.announcement.delete({
       where: {
-        id
-      }
+        id,
+      },
     });
 
     if (announce) {
@@ -178,26 +178,26 @@ export const deleteAnnouncement = async (
         await logger(
           `deleteAnnouncement - ${id}`,
           session.user.email,
-          'Successfully deleted announcement'
+          'Successfully deleted announcement',
         );
       }
       result = {
         status: true,
         error: '',
-        msg: 'Successfully deleted announcement'
+        msg: 'Successfully deleted announcement',
       };
     } else {
       if (id !== undefined && checkerString(id)) {
         await logger(
           `deleteAnnouncement - ${id}`,
           session.user.email,
-          'Failed to delete announcement'
+          'Failed to delete announcement',
         );
       }
       result = {
         status: false,
         error: 'Failed to delete announcement',
-        msg: ''
+        msg: '',
       };
     }
   } catch (error) {
@@ -207,7 +207,7 @@ export const deleteAnnouncement = async (
       await logger(
         `deleteAnnouncement - ${id}`,
         session.user.email,
-        error.message
+        error.message,
       );
     }
   }

@@ -13,8 +13,8 @@ import { createCCARecordFile } from '@helper/sys/cca/ccaRecord';
 
 export const config = {
   api: {
-    bodyParser: false
-  }
+    bodyParser: false,
+  },
 };
 
 /**
@@ -34,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   if (
@@ -66,13 +66,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           .on('end', async () => {
             const recordRes: Result = await createCCARecordFile(
               results,
-              session
+              session,
             );
             if (recordRes.status) {
               result = {
                 status: true,
                 error: null,
-                msg: recordRes.msg
+                msg: recordRes.msg,
               };
               res.status(200).send(result);
               res.end();
@@ -80,7 +80,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: false,
                 error: recordRes.error,
-                msg: ''
+                msg: '',
               };
               res.status(200).send(result);
               res.end();
@@ -90,7 +90,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: 'Missing file',
-          msg: ''
+          msg: '',
         };
         res.status(200).send(result);
         res.end();
@@ -100,7 +100,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Failed to populate CCA Records',
-        msg: ''
+        msg: '',
       };
       res.status(200).send(result);
       res.end();

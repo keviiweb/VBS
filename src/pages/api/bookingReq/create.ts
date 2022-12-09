@@ -10,7 +10,7 @@ import {
   prettifyTiming,
   checkerString,
   checkerArray,
-  PERSONAL
+  PERSONAL,
 } from '@constants/sys/helper';
 import { convertDateToUnix } from '@constants/sys/date';
 
@@ -25,7 +25,7 @@ import {
   isCancelled,
   isRejected,
   setApprove,
-  setRejectConflicts
+  setRejectConflicts,
 } from '@helper/sys/vbs/bookingReq';
 import { isInstantBook, isVisible } from '@helper/sys/vbs/venue';
 import { sendProgressMail } from '@helper/sys/vbs/email/progress';
@@ -46,7 +46,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   const { venue, venueName, date, timeSlots, type, purpose } = req.body;
@@ -71,7 +71,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const convertedDate: number = convertDateToUnix(dateField);
         const slots: string = convertSlotToArray(
           timeSlotsField,
-          false
+          false,
         ) as string;
 
         let bookingID: string = '';
@@ -112,21 +112,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             timeSlots: slots,
             cca: typeField,
             purpose: purposeField,
-            sessionEmail: session.user.email
+            sessionEmail: session.user.email,
           };
 
           const isThereConflict: boolean = await isConflict(dataDB, session);
           const visible: boolean = await isVisible(venue, session);
           const isThereExistingBookingRequest = await isThereExisting(
             dataDB,
-            session
+            session,
           );
 
           if (isThereConflict) {
             result = {
               status: false,
               error: 'Selected slots have already been booked',
-              msg: ''
+              msg: '',
             };
             res.status(200).send(result);
             res.end();
@@ -134,7 +134,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: 'Venue is not available for booking',
-              msg: ''
+              msg: '',
             };
             res.status(200).send(result);
             res.end();
@@ -142,7 +142,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: 'There is already a booking in progress',
-              msg: ''
+              msg: '',
             };
             res.status(200).send(result);
             res.end();
@@ -158,7 +158,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: false,
                 error: 'Booking request not created',
-                msg: ''
+                msg: '',
               };
               res.status(200).send(result);
               res.end();
@@ -169,22 +169,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               if (isInstantBooked) {
                 const isRequestApproved: boolean = await isApproved(
                   bookingRequest,
-                  session
+                  session,
                 );
                 const isRequestCancelled: boolean = await isCancelled(
                   bookingRequest,
-                  session
+                  session,
                 );
                 const isRequestRejected: boolean = await isRejected(
                   bookingRequest,
-                  session
+                  session,
                 );
 
                 if (isRequestApproved) {
                   result = {
                     status: false,
                     error: 'Request already approved!',
-                    msg: ''
+                    msg: '',
                   };
                   res.status(200).send(result);
                   res.end();
@@ -192,7 +192,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   result = {
                     status: false,
                     error: 'Request already cancelled!',
-                    msg: ''
+                    msg: '',
                   };
                   res.status(200).send(result);
                   res.end();
@@ -200,45 +200,45 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   result = {
                     status: false,
                     error: 'Request already rejected!',
-                    msg: ''
+                    msg: '',
                   };
                   res.status(200).send(result);
                   res.end();
                 } else {
                   const timeSlotsNum: number[] = convertSlotToArray(
                     bookingRequest.timeSlots,
-                    true
+                    true,
                   ) as number[];
 
                   const createBooking: Result = await createVenueBooking(
                     bookingRequest,
                     timeSlotsNum,
-                    session
+                    session,
                   );
 
                   if (!createBooking.status) {
                     result = {
                       status: false,
                       error: createBooking.error,
-                      msg: ''
+                      msg: '',
                     };
                     res.status(200).send(result);
                     res.end();
                   } else {
                     const approve: Result = await setApprove(
                       bookingRequest,
-                      session
+                      session,
                     );
                     const cancel: Result = await setRejectConflicts(
                       bookingRequest,
-                      session
+                      session,
                     );
 
                     if (approve.status && cancel.status) {
                       result = {
                         status: true,
                         error: null,
-                        msg: approve.msg
+                        msg: approve.msg,
                       };
                       res.status(200).send(result);
                       res.end();
@@ -246,7 +246,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                       result = {
                         status: false,
                         error: `${approve.error} ${cancel.error}`,
-                        msg: ''
+                        msg: '',
                       };
                       res.status(200).send(result);
                       res.end();
@@ -257,7 +257,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 result = {
                   status: true,
                   error: null,
-                  msg: 'Booking request created'
+                  msg: 'Booking request created',
                 };
 
                 res.status(200).send(result);
@@ -267,7 +267,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: false,
                 error: 'Booking request not created',
-                msg: ''
+                msg: '',
               };
 
               res.status(200).send(result);
@@ -277,10 +277,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             if (isBookingCreated && !isInstantBooked) {
               const slotArray: number[] = convertSlotToArray(
                 slots,
-                true
+                true,
               ) as number[];
               const slotArrayStr: string[] = mapSlotToTiming(
-                slotArray
+                slotArray,
               ) as string[];
 
               const data: BookingRequest = {
@@ -291,7 +291,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 timeSlots: prettifyTiming(slotArrayStr),
                 cca,
                 purpose: purposeField,
-                sessionEmail: session.user.email
+                sessionEmail: session.user.email,
               };
 
               try {
@@ -305,7 +305,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: `You are not a leader for ${cca}`,
-            msg: ''
+            msg: '',
           };
           res.status(200).send(result);
           res.end();

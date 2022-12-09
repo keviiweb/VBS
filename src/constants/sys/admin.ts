@@ -7,7 +7,7 @@ export const levels = {
   USER: 0,
   APPROVER: 1,
   JCRC: 2,
-  KEWEB: 3
+  KEWEB: 3,
 };
 
 /**
@@ -44,5 +44,5 @@ export const actions = {
   EDIT_USER: 'EDIT_USER',
   FETCH_USER_DATA: 'FETCH_USER_DATA',
   POPULATE_USER: 'POPULATE_USER',
-  DELETE_LOGS: 'DELETE_LOGS'
+  DELETE_LOGS: 'DELETE_LOGS',
 };

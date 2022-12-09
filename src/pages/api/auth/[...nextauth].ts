@@ -9,7 +9,7 @@ import { options } from '@constants/sys/nextAuthOptions';
  * @param res NextJS API Response
  * @returns NextAuth object
  */
-export default async function auth (req: NextApiRequest, res: NextApiResponse) {
+export default async function auth(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'HEAD') {
     return res.status(200);
   }

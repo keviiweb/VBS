@@ -11,7 +11,7 @@ import UserProfile from '@components/sys/misc/UserProfile';
  * @param param0 Header information
  * @returns A Header
  */
-export default function Header ({ onOpen, ...rest }) {
+export default function Header({ onOpen, ...rest }) {
   return (
     <Flex
       ml={{ base: 0, md: 60 }}

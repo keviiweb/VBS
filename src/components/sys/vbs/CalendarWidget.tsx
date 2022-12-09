@@ -16,10 +16,10 @@ import { addDays, fetchCurrentDate, locale } from '@constants/sys/date';
  * @param param0 Callback function for selected date, and minimum and maximum date range
  * @returns
  */
-export default function CalendarWidget ({
+export default function CalendarWidget({
   selectedDate,
   calendarMin,
-  calendarMax
+  calendarMax,
 }) {
   const [currentDate, setDate] = useState(fetchCurrentDate());
   const [minDate, setMinDate] = useState(fetchCurrentDate());
@@ -29,7 +29,7 @@ export default function CalendarWidget ({
   const max = useRef(0);
 
   useEffect(() => {
-    async function setDates (minField: number, maxField: number) {
+    async function setDates(minField: number, maxField: number) {
       min.current = minField;
       max.current = maxField;
 

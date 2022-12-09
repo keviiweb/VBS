@@ -8,7 +8,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  VStack
+  VStack,
 } from '@chakra-ui/react';
 import { BsPerson } from 'react-icons/bs';
 import { MdOutlineEmail } from 'react-icons/md';
@@ -24,13 +24,13 @@ import { checkerString } from '@constants/sys/helper';
  *
  * @returns Profile Page
  */
-export default function Profile () {
+export default function Profile() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function fetchData () {
+    async function fetchData() {
       const session = await currentSession();
       const usernameField: string =
         session != null && session.user.username ? session.user.username : '';
@@ -60,7 +60,7 @@ export default function Profile () {
                 <Heading
                   fontSize={{
                     base: '4xl',
-                    md: '5xl'
+                    md: '5xl',
                   }}
                 >
                   Profile

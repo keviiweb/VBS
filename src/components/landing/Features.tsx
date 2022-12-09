@@ -16,11 +16,11 @@ const MotionBox = motion(Box);
  * @param param0 API Key for Google Maps
  * @returns Features component for landing page
  */
-export default function Feature ({ API_KEY }) {
+export default function Feature({ API_KEY }) {
   const location = {
     address: '1A Kent Ridge Rd, Singapore 119224',
     lat: 1.2925423384337875,
-    lng: 103.78102165309795
+    lng: 103.78102165309795,
   };
 
   return (
@@ -86,7 +86,7 @@ export default function Feature ({ API_KEY }) {
                   color='white'
                   bg='gray.600'
                   _hover={{
-                    bg: 'teal.700'
+                    bg: 'teal.700',
                   }}
                   href='https://nus.edu.sg/osa/student-services/hostel-admission/undergraduate/application-dates'
                 >

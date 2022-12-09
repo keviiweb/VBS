@@ -13,8 +13,8 @@ import { createKEIPSFile } from '@helper/sys/misc/keips';
 
 export const config = {
   api: {
-    bodyParser: false
-  }
+    bodyParser: false,
+  },
 };
 
 /**
@@ -42,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   if (
@@ -77,7 +77,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: true,
                 error: null,
-                msg: keipsRes.msg
+                msg: keipsRes.msg,
               };
               res.status(200).send(result);
               res.end();
@@ -85,7 +85,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: false,
                 error: keipsRes.error,
-                msg: ''
+                msg: '',
               };
               res.status(200).send(result);
               res.end();
@@ -95,7 +95,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: 'Missing file',
-          msg: ''
+          msg: '',
         };
         res.status(200).send(result);
         res.end();
@@ -105,7 +105,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Failed to create KEIPS',
-        msg: ''
+        msg: '',
       };
       res.status(200).send(result);
       res.end();

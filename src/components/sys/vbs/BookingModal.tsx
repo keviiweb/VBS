@@ -15,7 +15,7 @@ import {
   SimpleGrid,
   Stack,
   StackDivider,
-  Text
+  Text,
 } from '@chakra-ui/react';
 
 import TableWidget from '@components/sys/misc/TableWidget';
@@ -38,12 +38,12 @@ import { InfoOutlineIcon } from '@chakra-ui/icons';
  * @param param0 Modal functions such as isOpen, onClose as well as data from handler
  * @returns A modal containing Booking information
  */
-export default function BookingModal ({
+export default function BookingModal({
   isAdmin,
   isBookingRequest,
   isOpen,
   onClose,
-  modalData
+  modalData,
 }) {
   const [loadingData, setLoadingData] = useState(true);
   const [id, setID] = useState('');
@@ -89,7 +89,7 @@ export default function BookingModal ({
     (content: BookingRequest) => {
       generateData(content);
     },
-    [generateData]
+    [generateData],
   );
 
   const handleModalCloseButton = useCallback(() => {
@@ -113,7 +113,7 @@ export default function BookingModal ({
 
       return button;
     },
-    [handleDetails]
+    [handleDetails],
   );
 
   const includeActionButton = useCallback(
@@ -128,7 +128,7 @@ export default function BookingModal ({
 
       setConflict(content);
     },
-    [generateActionButton]
+    [generateActionButton],
   );
 
   const processConflicts = useCallback(
@@ -139,11 +139,11 @@ export default function BookingModal ({
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            bookings: conflicts
-          })
+            bookings: conflicts,
+          }),
         });
         const content: Result = await rawResponse.json();
         if (content.status) {
@@ -154,7 +154,7 @@ export default function BookingModal ({
       }
       setSubmitButtonPressed(false);
     },
-    [includeActionButton]
+    [includeActionButton],
   );
 
   generateData = useCallback(
@@ -221,11 +221,11 @@ export default function BookingModal ({
       ) {
         if (modalDataField.conflictRequestObj.length % pageSize === 0) {
           setPageCount(
-            Math.floor(modalDataField.conflictRequestObj.length / pageSize)
+            Math.floor(modalDataField.conflictRequestObj.length / pageSize),
           );
         } else {
           setPageCount(
-            Math.floor(modalDataField.conflictRequestObj.length / pageSize) + 1
+            Math.floor(modalDataField.conflictRequestObj.length / pageSize) + 1,
           );
         }
 
@@ -247,11 +247,11 @@ export default function BookingModal ({
 
       setLoadingData(false);
     },
-    [isBookingRequest, processConflicts, isAdmin]
+    [isBookingRequest, processConflicts, isAdmin],
   );
 
   useEffect(() => {
-    async function setupData (modalDataField: BookingRequest) {
+    async function setupData(modalDataField: BookingRequest) {
       await generateData(modalDataField);
     }
 
@@ -264,34 +264,34 @@ export default function BookingModal ({
     () => [
       {
         Header: 'Venue',
-        accessor: 'venue'
+        accessor: 'venue',
       },
       {
         Header: 'Date',
-        accessor: 'dateStr'
+        accessor: 'dateStr',
       },
       {
         Header: 'Timeslot(s)',
-        accessor: 'timeSlots'
+        accessor: 'timeSlots',
       },
       {
         Header: 'CCA',
-        accessor: 'cca'
+        accessor: 'cca',
       },
       {
         Header: 'Purpose',
-        accessor: 'purpose'
+        accessor: 'purpose',
       },
       {
         Header: 'Status',
-        accessor: 'status'
+        accessor: 'status',
       },
       {
         Header: 'Action',
-        accessor: 'action'
-      }
+        accessor: 'action',
+      },
     ],
-    []
+    [],
   );
 
   return (

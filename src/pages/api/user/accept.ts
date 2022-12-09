@@ -20,13 +20,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   if (session !== undefined && session !== null) {
     const doesUserExistRes: Result = await fetchUserByEmail(
       session.user.email,
-      session
+      session,
     );
     if (doesUserExistRes.status) {
       const user: User = doesUserExistRes.msg;

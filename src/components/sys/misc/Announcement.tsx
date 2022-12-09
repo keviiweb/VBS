@@ -16,7 +16,7 @@ const MotionSimpleGrid = motion(SimpleGrid);
  *
  * @returns A component containing the list of announcements
  */
-export default function AnnouncementComponent () {
+export default function AnnouncementComponent() {
   const [slides, setSlides] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -25,14 +25,14 @@ export default function AnnouncementComponent () {
   }, []);
 
   useEffect(() => {
-    async function fetchData () {
+    async function fetchData() {
       setLoading(true);
       try {
         const rawResponse = await fetch('/api/announcement/fetch', {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         });
 
         const content: Result = await rawResponse.json();
@@ -108,7 +108,7 @@ export default function AnnouncementComponent () {
               product={{
                 img: '/sys/image/vbs.png',
                 title: 'Book a Venue',
-                link: '/sys/vbs'
+                link: '/sys/vbs',
               }}
             />
           </MotionBox>
@@ -118,7 +118,7 @@ export default function AnnouncementComponent () {
               product={{
                 img: '/sys/image/cca.png',
                 title: 'CCA Attendance',
-                link: '/sys/cca'
+                link: '/sys/cca',
               }}
             />
           </MotionBox>
@@ -128,7 +128,7 @@ export default function AnnouncementComponent () {
               product={{
                 img: '/sys/image/keips.png',
                 title: 'Check your KEIPS',
-                link: '/sys/keips'
+                link: '/sys/keips',
               }}
             />
           </MotionBox>

@@ -11,7 +11,7 @@ import { convertUnixToDate, dateISO } from '@constants/sys/date';
 
 import {
   fetchAllCCAAttendance,
-  fetchAllCCAAttendanceByCCA
+  fetchAllCCAAttendanceByCCA,
 } from '@helper/sys/cca/ccaAttendance';
 import { findCCASessionByID } from '@helper/sys/cca/ccaSession';
 import { findCCAbyID } from '@helper/sys/cca/cca';
@@ -32,7 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: ''
+    msg: '',
   };
 
   const { ccaID } = req.body;
@@ -54,46 +54,44 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const allAttendance: CCAAttendance[] = allAttendanceRes.msg;
       if (allAttendance.length > 0) {
         for (let key = 0; key < allAttendance.length; key += 1) {
-          if (allAttendance[key]) {
-            const attendance: CCAAttendance = allAttendance[key];
+          const attendance: CCAAttendance = allAttendance[key];
 
-            if (attendance.sessionID !== undefined) {
-              const sessionDetailsRes: Result = await findCCASessionByID(
-                attendance.sessionID,
-                session
+          if (attendance.sessionID !== undefined) {
+            const sessionDetailsRes: Result = await findCCASessionByID(
+              attendance.sessionID,
+              session,
+            );
+            if (sessionDetailsRes.status) {
+              const sessionDetails: CCASession = sessionDetailsRes.msg;
+              const { date } = sessionDetails;
+              const dateObj: Date | null = convertUnixToDate(date);
+              let dateStr: string = '';
+
+              if (dateObj !== null) {
+                dateStr = dateISO(dateObj);
+              }
+
+              const { time } = sessionDetails;
+              const sessionName: string = sessionDetails.name;
+              const ccaDetailsRes: Result = await findCCAbyID(
+                sessionDetails.ccaID,
+                session,
               );
-              if (sessionDetailsRes.status) {
-                const sessionDetails: CCASession = sessionDetailsRes.msg;
-                const { date } = sessionDetails;
-                const dateObj: Date | null = convertUnixToDate(date);
-                let dateStr: string = '';
+              if (ccaDetailsRes.status) {
+                const ccaDetails: CCA = ccaDetailsRes.msg;
+                const ccaName: string = ccaDetails.name;
 
-                if (dateObj !== null) {
-                  dateStr = dateISO(dateObj);
-                }
+                const data: CCAAttendance = {
+                  sessionName,
+                  ccaName,
+                  dateStr,
+                  time,
+                  sessionEmail: attendance.sessionEmail,
+                  ccaAttendance: attendance.ccaAttendance,
+                  ccaID: attendance.ccaID,
+                };
 
-                const { time } = sessionDetails;
-                const sessionName: string = sessionDetails.name;
-                const ccaDetailsRes: Result = await findCCAbyID(
-                  sessionDetails.ccaID,
-                  session
-                );
-                if (ccaDetailsRes.status) {
-                  const ccaDetails: CCA = ccaDetailsRes.msg;
-                  const ccaName: string = ccaDetails.name;
-
-                  const data: CCAAttendance = {
-                    sessionName,
-                    ccaName,
-                    dateStr,
-                    time,
-                    sessionEmail: attendance.sessionEmail,
-                    ccaAttendance: attendance.ccaAttendance,
-                    ccaID: attendance.ccaID
-                  };
-
-                  parsedData.push(data);
-                }
+                parsedData.push(data);
               }
             }
           }

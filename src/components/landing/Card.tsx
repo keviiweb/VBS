@@ -12,20 +12,20 @@ import NextLink from 'next/link';
  * @param param0 Information about the particular item
  * @returns A card
  */
-export default function Card ({
+export default function Card({
   title,
   description,
   img,
   buttonText,
   buttonLink,
-  link
+  link,
 }) {
   const hoverStyles = useMemo(
     () => ({
       boxShadow: '1px 1px #888888',
-      transform: 'translate3d(0px, 4px, 2px)'
+      transform: 'translate3d(0px, 4px, 2px)',
     }),
-    []
+    [],
   );
 
   const SubCardWButton = useCallback(
@@ -73,7 +73,7 @@ export default function Card ({
         </Box>
       </Box>
     ),
-    [img, title, description, buttonLink, buttonText, hoverStyles]
+    [img, title, description, buttonLink, buttonText, hoverStyles],
   );
 
   const SubCard = useCallback(
@@ -122,7 +122,7 @@ export default function Card ({
         </Box>
       </NextLink>
     ),
-    [link, img, title, description, hoverStyles]
+    [link, img, title, description, hoverStyles],
   );
 
   return (

@@ -10,7 +10,7 @@ import { checkerString } from '@constants/sys/helper';
  * @param param0 Venue information as well as callback function
  * @returns A card displaying the venue image and name
  */
-export default function VenueCard ({ product, setModalData }) {
+export default function VenueCard({ product, setModalData }) {
   const image: string = checkerString(product.image)
     ? product.image
     : '/sys/image/placeholder.png';
@@ -42,7 +42,7 @@ export default function VenueCard ({ product, setModalData }) {
             fill
             sizes='100vw'
             style={{
-              objectFit: 'cover'
+              objectFit: 'cover',
             }}
           />
         </Box>

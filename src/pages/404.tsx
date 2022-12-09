@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
  *
  * @returns Error 404 Page
  */
-export default function Error404 () {
+export default function Error404() {
   const router = useRouter();
 
   useEffect(() => {
