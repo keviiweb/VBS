@@ -17,7 +17,7 @@ import {
   usePopoverContext
 } from '@chakra-ui/react';
 import { AiOutlineMenu } from 'react-icons/ai';
-import Image from 'next/image';
+import Image from "next/image";
 import NextLink from 'next/link';
 
 import { PopoverTriggerProps } from 'types/popover';
@@ -181,7 +181,10 @@ export default function Header () {
               width='50'
               height='80'
               alt='KEVII Logo'
-            />
+              style={{
+                maxWidth: "100%",
+                height: "auto"
+              }} />
           </Flex>
         </NextLink>
         <HStack display='flex' alignItems='center' spacing={1}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import Image from "next/image";
 import { Box, Flex } from '@chakra-ui/react';
 
 import { checkerString } from '@constants/sys/helper';
@@ -42,10 +42,12 @@ export default function CCACard ({ product, setModalData }) {
           <Image
             src={image}
             priority
-            objectFit='cover'
             alt='picture of a cca'
-            layout='fill'
-          />
+            fill
+            sizes="100vw"
+            style={{
+              objectFit: "cover"
+            }} />
         </Box>
 
         <Box p='6'>

@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import Image from "next/image";
 import { Box, Flex } from '@chakra-ui/react';
 
 import { checkerString } from '@constants/sys/helper';
@@ -38,10 +38,12 @@ export default function VenueCard ({ product, setModalData }) {
         >
           <Image
             src={image}
-            objectFit='cover'
             alt='picture of a venue'
-            layout='fill'
-          />
+            fill
+            sizes="100vw"
+            style={{
+              objectFit: "cover"
+            }} />
         </Box>
 
         <Box p='6'>
