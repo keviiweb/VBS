@@ -16,7 +16,7 @@ const channel_id = process.env.TELEGRAM_BOT_CHANNEL_ID;
  */
 export const sendMessageToChannel = async (
   message: string,
-  session: Session,
+  session: Session
 ): Promise<void> => {
   if (
     process.env.SEND_TELEGRAM &&
@@ -54,7 +54,7 @@ export const sendMessageToChannel = async (
  */
 export const approvalBookingRequestMessageBuilder = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<string> => {
   let returnMessage: string = '';
   if (bookingRequest.dateStr !== undefined) {
@@ -77,7 +77,7 @@ export const approvalBookingRequestMessageBuilder = async (
       await logger(
         'approvalBookingRequestMessageBuilder',
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -95,7 +95,7 @@ export const approvalBookingRequestMessageBuilder = async (
  */
 export const rejectBookingRequestMessageBuilder = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<string> => {
   let returnMessage: string = '';
   try {
@@ -123,7 +123,7 @@ export const rejectBookingRequestMessageBuilder = async (
     await logger(
       'rejectBookingRequestMessageBuilder',
       session.user.email,
-      error.message,
+      error.message
     );
   }
 

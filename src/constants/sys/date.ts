@@ -87,7 +87,7 @@ export const convertUnixToDate = (date: number): Date | null => {
  * @returns Boolean whether date exceeds compared date
  */
 export const compareDate = (comparedDate: number, number: number): boolean => {
-  let compared: Date | null = convertUnixToDate(comparedDate);
+  const compared: Date | null = convertUnixToDate(comparedDate);
 
   if (compared !== null) {
     let date: Date = fetchCurrentDate();
@@ -132,7 +132,7 @@ export const dateISO = (date: Date): string => {
     return moment.tz(date, locale).startOf('day').format(timeFormat);
   }
 
-  return `Unknown Date`;
+  return 'Unknown Date';
 };
 
 /**
@@ -149,12 +149,12 @@ export const prettifyDate = (date: Date): string => {
     const day = numberToWeekday[dateObj.day()];
     const month = monthNamesFull[dateObj.month()];
     const prettyDate = `${day}, ${dateObj.format(
-      'DD',
+      'DD'
     )} ${month} ${dateObj.year()}`;
     return prettyDate;
   }
 
-  return `Unknown Date`;
+  return 'Unknown Date';
 };
 
 /**
@@ -166,7 +166,7 @@ export const prettifyDate = (date: Date): string => {
  */
 export const calculateDuration = async (
   start: number,
-  end: number,
+  end: number
 ): Promise<number> => {
   let duration: number = 0;
 

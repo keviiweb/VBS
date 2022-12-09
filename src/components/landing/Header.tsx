@@ -14,7 +14,7 @@ import {
   PopoverContent,
   SimpleGrid,
   Icon,
-  usePopoverContext,
+  usePopoverContext
 } from '@chakra-ui/react';
 import { AiOutlineMenu } from 'react-icons/ai';
 import Image from 'next/image';
@@ -36,7 +36,7 @@ const PopoverTriggerNew: React.FC<
  *
  * @returns A Header
  */
-export default function Header() {
+export default function Header () {
   const bg = 'white';
   const mobileNav = useDisclosure();
 
@@ -97,26 +97,26 @@ export default function Header() {
         title: 'Sports',
         icon: null,
         description: 'Learn a new sport!',
-        link: '/sports',
+        link: '/sports'
       },
       {
         title: 'Cultural',
         icon: null,
         description: 'Showcase your inner talents!',
-        link: '/cultural',
+        link: '/cultural'
       },
       {
         title: 'Production',
         icon: null,
         description: 'Be part of a large family!',
-        link: '/production',
+        link: '/production'
       },
       {
         title: 'Committee',
         icon: null,
         description: 'Take charge and be your own leader!',
-        link: '/committee',
-      },
+        link: '/committee'
+      }
     ];
 
     return (
@@ -143,14 +143,14 @@ export default function Header() {
         title: 'VBS',
         icon: null,
         description: 'Venue Booking System for KEVII',
-        link: '/sys',
+        link: '/sys'
       },
       {
         title: 'KEIPS',
         icon: null,
         description: 'Check your KEIPS',
-        link: '/sys/keips',
-      },
+        link: '/sys/keips'
+      }
     ];
 
     return (
@@ -178,8 +178,8 @@ export default function Header() {
           <Flex mt={3} mb={3} ml={{ base: 5, md: 8, lg: 12, xl: 20 }}>
             <Image
               src='/sys/image/keviilogo.png'
-              width='50px'
-              height='80px'
+              width='50'
+              height='80'
               alt='KEVII Logo'
             />
           </Flex>
@@ -198,10 +198,10 @@ export default function Header() {
                   bg='brand.500'
                   _hover={{ bg: 'brand.500' }}
                   _active={{
-                    transform: 'scale(0.92)',
+                    transform: 'scale(0.92)'
                   }}
                   _focus={{
-                    boxShadow: '0 0',
+                    boxShadow: '0 0'
                   }}
                 >
                   CCA
@@ -218,10 +218,10 @@ export default function Header() {
                 bg='brand.500'
                 _hover={{ bg: 'brand.500' }}
                 _active={{
-                  transform: 'scale(0.92)',
+                  transform: 'scale(0.92)'
                 }}
                 _focus={{
-                  boxShadow: '0 0',
+                  boxShadow: '0 0'
                 }}
               >
                 Events
@@ -234,10 +234,10 @@ export default function Header() {
                 bg='brand.500'
                 _hover={{ bg: 'brand.500' }}
                 _active={{
-                  transform: 'scale(0.92)',
+                  transform: 'scale(0.92)'
                 }}
                 _focus={{
-                  boxShadow: '0 0',
+                  boxShadow: '0 0'
                 }}
               >
                 Community
@@ -250,10 +250,10 @@ export default function Header() {
                 bg='brand.500'
                 _hover={{ bg: 'brand.500' }}
                 _active={{
-                  transform: 'scale(0.92)',
+                  transform: 'scale(0.92)'
                 }}
                 _focus={{
-                  boxShadow: '0 0',
+                  boxShadow: '0 0'
                 }}
               >
                 Contact
@@ -267,10 +267,10 @@ export default function Header() {
                   bg='brand.500'
                   _hover={{ bg: 'brand.500' }}
                   _active={{
-                    transform: 'scale(0.92)',
+                    transform: 'scale(0.92)'
                   }}
                   _focus={{
-                    boxShadow: '0 0',
+                    boxShadow: '0 0'
                   }}
                 >
                   Current Residents
@@ -321,10 +321,10 @@ export default function Header() {
                     bg='brand.500'
                     _hover={{ bg: 'brand.500' }}
                     _active={{
-                      transform: 'scale(0.92)',
+                      transform: 'scale(0.92)'
                     }}
                     _focus={{
-                      boxShadow: '0 0',
+                      boxShadow: '0 0'
                     }}
                   >
                     CCA
@@ -345,10 +345,10 @@ export default function Header() {
                   bg='brand.500'
                   _hover={{ bg: 'brand.500' }}
                   _active={{
-                    transform: 'scale(0.92)',
+                    transform: 'scale(0.92)'
                   }}
                   _focus={{
-                    boxShadow: '0 0',
+                    boxShadow: '0 0'
                   }}
                 >
                   Events
@@ -361,10 +361,10 @@ export default function Header() {
                   bg='brand.500'
                   _hover={{ bg: 'brand.500' }}
                   _active={{
-                    transform: 'scale(0.92)',
+                    transform: 'scale(0.92)'
                   }}
                   _focus={{
-                    boxShadow: '0 0',
+                    boxShadow: '0 0'
                   }}
                 >
                   Community
@@ -377,10 +377,10 @@ export default function Header() {
                   bg='brand.500'
                   _hover={{ bg: 'brand.500' }}
                   _active={{
-                    transform: 'scale(0.92)',
+                    transform: 'scale(0.92)'
                   }}
                   _focus={{
-                    boxShadow: '0 0',
+                    boxShadow: '0 0'
                   }}
                 >
                   Contact
@@ -394,10 +394,10 @@ export default function Header() {
                     bg='brand.500'
                     _hover={{ bg: 'brand.500' }}
                     _active={{
-                      transform: 'scale(0.92)',
+                      transform: 'scale(0.92)'
                     }}
                     _focus={{
-                      boxShadow: '0 0',
+                      boxShadow: '0 0'
                     }}
                   >
                     Current Residents

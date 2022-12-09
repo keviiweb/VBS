@@ -23,7 +23,7 @@ import {
   Text,
   Textarea,
   useToast,
-  useBreakpointValue,
+  useBreakpointValue
 } from '@chakra-ui/react';
 import { CheckCircleIcon } from '@chakra-ui/icons';
 import CalendarWidget from '@components/sys/vbs/CalendarWidget';
@@ -49,7 +49,7 @@ const MotionBox = motion(Box);
 
 const levels = {
   SELECT_VENUE: 0,
-  CONFIRM: 1,
+  CONFIRM: 1
 };
 
 /**
@@ -59,12 +59,12 @@ const levels = {
  * 2. Booked timeslots are blanked out, while available timeslots are clickable
  * 3. The user can then choose the selected timeslots and click next to be redirected to the ConfirmationModal
  */
-export default function VenueBookingModal({
+export default function VenueBookingModal ({
   isOpen,
   onClose,
   modalData,
   calendarMin,
-  calendarMax,
+  calendarMax
 }) {
   const toast = useToast();
 
@@ -205,7 +205,7 @@ export default function VenueBookingModal({
   const validateFields = (
     venueField: string,
     dateField: string,
-    timeSlotsField: TimeSlot[],
+    timeSlotsField: TimeSlot[]
   ) => {
     // simple validation for now
     if (!checkerString(venueField)) {
@@ -233,7 +233,7 @@ export default function VenueBookingModal({
     dateField: string,
     timeSlotsField: TimeSlot[],
     typeField: string,
-    purposeField: string,
+    purposeField: string
   ) => {
     // super basic validation here
     if (!checkerString(dateField) || !isValidDate(new Date(dateField))) {
@@ -298,7 +298,7 @@ export default function VenueBookingModal({
     dateField: string,
     timeSlotsField: TimeSlot[],
     typeField: string,
-    purposeField: string,
+    purposeField: string
   ) => {
     setSubmittingConfirm(true);
     try {
@@ -306,7 +306,7 @@ export default function VenueBookingModal({
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           venue: venueIDField,
@@ -314,8 +314,8 @@ export default function VenueBookingModal({
           date: dateField,
           timeSlots: timeSlotsField,
           type: typeField,
-          purpose: purposeField,
-        }),
+          purpose: purposeField
+        })
       });
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -338,7 +338,7 @@ export default function VenueBookingModal({
           description: content.error,
           status: 'error',
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         });
         setSuccessBookingConfirm(false);
         setSubmittingConfirm(false);
@@ -365,7 +365,7 @@ export default function VenueBookingModal({
         dateParsedConfirm.current,
         timeSlotsDBConfirm.current,
         typeDBConfirm.current,
-        purposeDBConfirm.current,
+        purposeDBConfirm.current
       )
     ) {
       await submitBookingRequest(
@@ -374,7 +374,7 @@ export default function VenueBookingModal({
         dateParsedConfirm.current,
         timeSlotsDBConfirm.current,
         typeDBConfirm.current,
-        purposeDBConfirm.current,
+        purposeDBConfirm.current
       );
     }
   };
@@ -385,7 +385,7 @@ export default function VenueBookingModal({
     }
 
     if (rawChildVenue) {
-      const rawChild: Venue[] = rawChildVenue as Venue[];
+      const rawChild: Venue[] = rawChildVenue;
       for (let key = 0; key < rawChild.length; key += 1) {
         const ven: Venue = rawChild[key];
         if (ven.id === venue) {
@@ -400,7 +400,7 @@ export default function VenueBookingModal({
   const buildText = async (
     venueNameField: string,
     dateParsedField: string,
-    timeSlotsField: TimeSlot[],
+    timeSlotsField: TimeSlot[]
   ) => {
     setVenueConfirm(venueNameField);
     setDateConfirm(dateParsedField);
@@ -419,7 +419,7 @@ export default function VenueBookingModal({
   const fetchPendingCount = async (
     venueField: string,
     dateParsedField: string,
-    timeSlotsField: TimeSlot[],
+    timeSlotsField: TimeSlot[]
   ) => {
     setSubmitButtonPressed(true);
     try {
@@ -427,13 +427,13 @@ export default function VenueBookingModal({
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           venue: venueField,
           date: dateParsedField,
-          timeSlots: timeSlotsField,
-        }),
+          timeSlots: timeSlotsField
+        })
       });
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -446,7 +446,7 @@ export default function VenueBookingModal({
             description: `There are currently ${bookRequest.length} pending request(s) with one or more same timeslots`,
             status: 'warning',
             duration: 5000,
-            isClosable: true,
+            isClosable: true
           });
         }
       }
@@ -462,7 +462,7 @@ export default function VenueBookingModal({
         validateFields(
           selectedVenue.current,
           dateParsed.current,
-          selectedTimeSlots.current,
+          selectedTimeSlots.current
         )
       ) {
         venueNameDBConfirm.current = displayVenue(selectedVenue.current);
@@ -473,13 +473,13 @@ export default function VenueBookingModal({
         await buildText(
           venueNameDBConfirm.current,
           dateParsedConfirm.current,
-          timeSlotsDBConfirm.current,
+          timeSlotsDBConfirm.current
         );
 
         await fetchPendingCount(
           venueDBConfirm.current,
           dateParsedConfirm.current,
-          timeSlotsDBConfirm.current,
+          timeSlotsDBConfirm.current
         );
 
         if (next) {
@@ -502,7 +502,7 @@ export default function VenueBookingModal({
         selection.push(
           <option key={modalData.id} value={modalData.id}>
             Whole Venue
-          </option>,
+          </option>
         );
 
         rawVenue.current.push(modalData);
@@ -513,7 +513,7 @@ export default function VenueBookingModal({
         selection.push(
           <option key={ven.id} value={ven.id}>
             {ven.name}
-          </option>,
+          </option>
         );
 
         rawVenue.current.push(ven);
@@ -521,7 +521,7 @@ export default function VenueBookingModal({
 
       setChildVenueDrop(selection);
     },
-    [modalData],
+    [modalData]
   );
 
   const buildCCAList = async () => {
@@ -531,8 +531,8 @@ export default function VenueBookingModal({
       const rawResponse = await fetch('/api/cca', {
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -547,12 +547,12 @@ export default function VenueBookingModal({
               if (ccaContent[key]) {
                 CCALISTConfirm.current.push({
                   id: ccaContent[key].id,
-                  name: ccaContent[key].name,
+                  name: ccaContent[key].name
                 });
                 selection.push(
                   <option key={ccaContent[key].id} value={ccaContent[key].id}>
                     {ccaContent[key].name}
-                  </option>,
+                  </option>
                 );
               }
             }
@@ -568,7 +568,7 @@ export default function VenueBookingModal({
   };
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchData () {
       if (!isChildVenue) {
         setSubmitButtonPressed(true);
         try {
@@ -576,9 +576,9 @@ export default function VenueBookingModal({
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ venue: selectedVenue.current }),
+            body: JSON.stringify({ venue: selectedVenue.current })
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -656,14 +656,14 @@ export default function VenueBookingModal({
     if (idField) {
       const slots: TimeSlot[] = selectedTimeSlots.current;
       if (rawSlots.current) {
-        const rawS: TimeSlot[] = rawSlots.current as TimeSlot[];
+        const rawS: TimeSlot[] = rawSlots.current;
         const slot: TimeSlot = rawS[idField];
         if (!slot.booked) {
           if (slots[idField]) {
             slots[idField] = {
               id: undefined,
               slot: undefined,
-              booked: undefined,
+              booked: undefined
             };
           } else {
             slots[idField] = slot;
@@ -692,7 +692,7 @@ export default function VenueBookingModal({
                     newKey={newID}
                     id={key}
                     slot={content[key].slot}
-                  />,
+                  />
                 );
               } else {
                 buttons.push(
@@ -703,7 +703,7 @@ export default function VenueBookingModal({
                     newKey={newID}
                     id={key}
                     slot={content[key].slot}
-                  />,
+                  />
                 );
               }
             }
@@ -743,12 +743,12 @@ export default function VenueBookingModal({
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             venue: selectedVenue.current,
-            date: dateYYMMDD,
-          }),
+            date: dateYYMMDD
+          })
         });
         const content: Result = await rawResponse.json();
         if (content.status) {
@@ -763,7 +763,7 @@ export default function VenueBookingModal({
   };
 
   // Child venue generation
-  const onChildVenueChange = (event: { target: { value: string } }) => {
+  const onChildVenueChange = (event: { target: { value: string, }, }) => {
     setError('');
 
     try {
@@ -816,7 +816,7 @@ export default function VenueBookingModal({
   };
 
   const onCCASelectionChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
+    event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     try {
       if (event.target.value) {
@@ -1144,7 +1144,7 @@ export default function VenueBookingModal({
               >
                 Previous
               </Button>
-          )}
+            )}
 
           {progressLevel !== levels.CONFIRM &&
             !successConfirm &&
@@ -1162,7 +1162,7 @@ export default function VenueBookingModal({
               >
                 Next
               </Button>
-          )}
+            )}
 
           {progressLevel === levels.CONFIRM &&
             !successConfirm &&
@@ -1179,7 +1179,7 @@ export default function VenueBookingModal({
               >
                 Submit
               </Button>
-          )}
+            )}
         </ModalFooter>
       </ModalContent>
     </Modal>

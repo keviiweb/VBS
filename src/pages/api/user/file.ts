@@ -13,8 +13,8 @@ import { createUserFile } from '@helper/sys/misc/user';
 
 export const config = {
   api: {
-    bodyParser: false,
-  },
+    bodyParser: false
+  }
 };
 
 /**
@@ -34,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   if (
@@ -42,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     session !== null &&
     hasPermission(session.user.admin, actions.POPULATE_USER)
   ) {
-    const dataField: { fields: formidable.Fields; files: formidable.Files } =
+    const dataField: { fields: formidable.Fields, files: formidable.Files, } =
       await new Promise((resolve, reject) => {
         const form = new IncomingForm();
         form.parse(req, (err, fields, files) => {
@@ -70,7 +70,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: true,
                 error: null,
-                msg: user.msg,
+                msg: user.msg
               };
               res.status(200).send(result);
               res.end();
@@ -78,7 +78,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: false,
                 error: user.error,
-                msg: '',
+                msg: ''
               };
               res.status(200).send(result);
               res.end();
@@ -88,7 +88,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: 'Missing file',
-          msg: '',
+          msg: ''
         };
         res.status(200).send(result);
         res.end();
@@ -98,7 +98,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Failed to create users',
-        msg: '',
+        msg: ''
       };
       res.status(200).send(result);
       res.end();

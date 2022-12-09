@@ -13,7 +13,7 @@ import {
   ModalCloseButton,
   Stack,
   StackDivider,
-  Text,
+  Text
 } from '@chakra-ui/react';
 import { checkerString } from '@constants/sys/helper';
 
@@ -25,11 +25,11 @@ import { checkerString } from '@constants/sys/helper';
  * @param param0 Modal functions such as isOpen, onClose as well as callback function dataHandler
  * @returns A modal with an input box for reason
  */
-export default function BookingRejectModal({
+export default function BookingRejectModal ({
   isOpen,
   onClose,
   modalData,
-  dataHandler,
+  dataHandler
 }) {
   const [isSubmit, setIsSubmit] = useState(false);
 
@@ -64,8 +64,8 @@ export default function BookingRejectModal({
   };
 
   const handleSubmit = async (e: {
-    cancelable: any;
-    preventDefault: () => void;
+    cancelable: any,
+    preventDefault: () => void,
   }) => {
     if (e.cancelable) {
       e.preventDefault();
@@ -87,7 +87,7 @@ export default function BookingRejectModal({
   };
 
   useEffect(() => {
-    async function setupData() {
+    async function setupData () {
       setVenue(modalData.venue);
       setDate(modalData.dateStr);
       setTimeSlots(modalData.timeSlots);

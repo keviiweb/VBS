@@ -1,6 +1,6 @@
 import {
   timingSlotNumberToTimingMapping,
-  timeSlots,
+  timeSlots
 } from '@constants/sys/timeslot';
 
 import { TimeSlot } from 'types/vbs/timeslot';
@@ -75,7 +75,7 @@ export const checkerNumber = (data: number): boolean => {
  */
 export const isInside = (
   checkInThis: string,
-  checkIfInside: string,
+  checkIfInside: string
 ): boolean => {
   const wantArr = convertSlotToArray(checkInThis, true) as number[];
   const checkArr = convertSlotToArray(checkIfInside, true) as number[];
@@ -104,16 +104,16 @@ export const isInside = (
  * @returns A string array or string containing the timeslots
  */
 export const mapSlotToTiming = (
-  data: number | string | number[],
+  data: number | string | number[]
 ): string[] | string => {
   if (Array.isArray(data)) {
     const result: string[] = [];
 
     if (checkerArray(data)) {
-      for (let key in data) {
+      for (const key in data) {
         if (data[key]) {
           if (!isNaN(data[key])) {
-            let map = timingSlotNumberToTimingMapping[Number(data[key])];
+            const map = timingSlotNumberToTimingMapping[Number(data[key])];
             result.push(map);
           }
         }
@@ -124,7 +124,7 @@ export const mapSlotToTiming = (
   } else {
     if (checkerNumber(Number(data))) {
       if (timingSlotNumberToTimingMapping[Number(data)]) {
-        let map: string = timingSlotNumberToTimingMapping[Number(data)];
+        const map: string = timingSlotNumberToTimingMapping[Number(data)];
         return map;
       }
     }
@@ -147,7 +147,7 @@ export const prettifyTiming = (data: string[]): string => {
   let str = '';
   let count = 0;
 
-  for (let key in data) {
+  for (const key in data) {
     count += 1;
     if (count != data.length) {
       str += data[key] + ', ';
@@ -172,14 +172,14 @@ export const prettifyTiming = (data: string[]): string => {
  */
 export const convertSlotToArray = (
   slots: string | TimeSlot[],
-  reverse: boolean = false,
+  reverse: boolean = false
 ): number[] | string | null => {
   if (reverse) {
     try {
       const strSlot = slots as string;
       const stringArr: string[] = strSlot.split(',');
       const result: number[] = [];
-      for (let key in stringArr) {
+      for (const key in stringArr) {
         if (stringArr[key]) {
           const res = Number(stringArr[key]);
           if (isNaN(res)) {
@@ -198,7 +198,7 @@ export const convertSlotToArray = (
     try {
       const result: number[] = [];
       const slotArr = slots as TimeSlot[];
-      for (let key in slotArr) {
+      for (const key in slotArr) {
         if (slotArr[key]) {
           const id = slotArr[key].id;
           if (id === null || id === undefined) {
@@ -234,13 +234,13 @@ export const convertSlotToArray = (
  */
 export const findSlots = async (
   slot: string,
-  isStart: boolean,
+  isStart: boolean
 ): Promise<string | null> => {
   const num = Number(slot);
   if (isNaN(num)) {
     return null;
   } else {
-    for (let i in timingSlotNumberToTimingMapping) {
+    for (const i in timingSlotNumberToTimingMapping) {
       if (timingSlotNumberToTimingMapping[i].includes(slot)) {
         const split = timingSlotNumberToTimingMapping[i].split('-');
         const split0 = Number(split[0].trim());
@@ -282,8 +282,8 @@ export const findSlotsByID = async (slot: number): Promise<string | null> => {
  * @returns The start time and end time in a Promise
  */
 export const splitHours = async (
-  opening: string,
-): Promise<{ start: number | null; end: number | null }> => {
+  opening: string
+): Promise<{ start: number | null, end: number | null, }> => {
   try {
     if (opening) {
       if (!opening.includes('-')) {

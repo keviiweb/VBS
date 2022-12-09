@@ -12,7 +12,7 @@ import { Box, Drawer, DrawerContent, useDisclosure } from '@chakra-ui/react';
  * @param param0 React Children
  * @returns Layout for system
  */
-export default function Layout({ session, children }) {
+export default function Layout ({ session, children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH='100vh' bg='gray.100'>
@@ -35,7 +35,7 @@ export default function Layout({ session, children }) {
         </DrawerContent>
       </Drawer>
 
-      {/*= Header =*/}
+      {/* = Header = */}
       <Header onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p='4'>
         {children}

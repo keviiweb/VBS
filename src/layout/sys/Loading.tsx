@@ -6,7 +6,7 @@ import { Box, Flex, Heading, Stack, Spinner, Text } from '@chakra-ui/react';
  *
  * @returns A loading spinner component
  */
-export default function Loading() {
+export default function Loading () {
   return (
     <Flex minH='100vh' align='center' justify='center' bg='gray.50'>
       <Stack spacing={8} mx='auto' maxW='lg' py={12} px={6}>

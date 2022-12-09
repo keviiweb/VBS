@@ -8,7 +8,7 @@ const numberToWeekday = {
   4: 'Thursday',
   5: 'Friday',
   6: 'Saturday',
-  0: 'Sunday',
+  0: 'Sunday'
 };
 
 export { numberToWeekday };

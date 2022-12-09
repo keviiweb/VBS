@@ -15,7 +15,7 @@ const MotionSimpleGrid = motion(SimpleGrid);
  *
  * @returns Production Page
  */
-export default function Production() {
+export default function Production () {
   // Format for adding new CCAs
   /*
   const content = [
@@ -67,7 +67,7 @@ export default function Production() {
         animate='animate'
       >
         {content.map(
-          (slide: { title: string; description: string; img: string }, sid) => (
+          (slide: { title: string, description: string, img: string, }, sid) => (
             <MotionBox key={sid} variants={cardVariant}>
               <Card
                 key={sid}
@@ -79,7 +79,7 @@ export default function Production() {
                 link={null}
               />
             </MotionBox>
-          ),
+          )
         )}
       </MotionSimpleGrid>
     </Landing>

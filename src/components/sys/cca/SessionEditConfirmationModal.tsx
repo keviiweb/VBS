@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useRef,
   useCallback,
-  useMemo,
+  useMemo
 } from 'react';
 import {
   Box,
@@ -21,7 +21,7 @@ import {
   SimpleGrid,
   Stack,
   Text,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import LoadingModal from '@components/sys/misc/LoadingModal';
@@ -47,11 +47,11 @@ const MotionBox = motion(Box);
  * @param param0 Modal functions and callback function
  * @returns A confirmation modal
  */
-export default function SessionEditConfirmationModal({
+export default function SessionEditConfirmationModal ({
   isOpen,
   onClose,
   modalData,
-  dataHandler,
+  dataHandler
 }) {
   const toast = useToast();
 
@@ -138,7 +138,7 @@ export default function SessionEditConfirmationModal({
             text.push(
               <Box key={`box-e-${key}`}>
                 <Text>{membersA[key]}</Text>
-              </Box>,
+              </Box>
             );
           }
         }
@@ -180,11 +180,11 @@ export default function SessionEditConfirmationModal({
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          data: selectedData.current,
-        }),
+          data: selectedData.current
+        })
       });
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -193,7 +193,7 @@ export default function SessionEditConfirmationModal({
           description: content.msg,
           status: 'success',
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         });
 
         handleModalCloseSuccess();
@@ -203,7 +203,7 @@ export default function SessionEditConfirmationModal({
           description: content.error,
           status: 'error',
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         });
 
         setIsSubmit(false);
@@ -217,7 +217,7 @@ export default function SessionEditConfirmationModal({
   }, [handleModalCloseSuccess, toast]);
 
   useEffect(() => {
-    async function setupData(modalDataField: CCASession) {
+    async function setupData (modalDataField: CCASession) {
       setLoadingData(true);
       setSubmitButtonPressed(true);
 
@@ -291,14 +291,14 @@ export default function SessionEditConfirmationModal({
     () => [
       {
         Header: 'Name',
-        accessor: 'sessionName',
+        accessor: 'sessionName'
       },
       {
         Header: 'Hours',
-        accessor: 'ccaAttendance',
-      },
+        accessor: 'ccaAttendance'
+      }
     ],
-    [],
+    []
   );
 
   return (

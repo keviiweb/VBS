@@ -8,7 +8,7 @@ import { checkerString } from '@constants/sys/helper';
  * @param param0 BookingRequest
  * @returns HTML Template with all fields populated
  */
-function html({ data }) {
+function html ({ data }) {
   const id: string = data.id ? data.id : '';
   const email: string = data.email ? data.email : '';
   const venue: string = data.venue ? data.venue : '';
@@ -391,7 +391,7 @@ function html({ data }) {
  *
  * @returns A String
  */
-function text() {
+function text () {
   return `We received your booking request\n\n`;
 }
 
@@ -405,7 +405,7 @@ function text() {
  */
 export const sendProgressMail = async (
   target: string,
-  data: BookingRequest,
+  data: BookingRequest
 ) => {
   if (
     process.env.SEND_EMAIL &&
@@ -417,11 +417,11 @@ export const sendProgressMail = async (
         port: Number(process.env.EMAIL_SERVER_PORT),
         auth: {
           user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
+          pass: process.env.EMAIL_SERVER_PASSWORD
+        }
       };
 
-      let transporter = nodemailer.createTransport(config);
+      const transporter = nodemailer.createTransport(config);
 
       transporter.sendMail(
         {
@@ -429,13 +429,13 @@ export const sendProgressMail = async (
           to: target,
           subject: 'KEVII VBS: We have received your request',
           text: text(),
-          html: html({ data }),
+          html: html({ data })
         },
         function (err) {
           if (err) {
             console.error('Error ' + err);
           }
-        },
+        }
       );
     } catch (error) {
       console.error(error);
@@ -455,11 +455,11 @@ export const sendProgressMail = async (
         port: Number(process.env.EMAIL_SERVER_PORT),
         auth: {
           user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
+          pass: process.env.EMAIL_SERVER_PASSWORD
+        }
       };
 
-      let transporter = nodemailer.createTransport(config);
+      const transporter = nodemailer.createTransport(config);
 
       transporter.sendMail(
         {
@@ -467,13 +467,13 @@ export const sendProgressMail = async (
           to: process.env.SECRETARY_EMAIL,
           subject: 'KEVII VBS: New Booking Request',
           text: text(),
-          html: html({ data }),
+          html: html({ data })
         },
         function (err) {
           if (err) {
             console.error('Error ' + err);
           }
-        },
+        }
       );
     } catch (error) {
       console.error(error);

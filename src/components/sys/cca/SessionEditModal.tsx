@@ -23,7 +23,7 @@ import {
   Stack,
   Text,
   Textarea,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import LoadingModal from '@components/sys/misc/LoadingModal';
@@ -46,7 +46,7 @@ import {
   calculateDuration,
   dateISO,
   fetchCurrentDate,
-  locale,
+  locale
 } from '@constants/sys/date';
 import { removeDuplicate } from '@constants/sys/ccaAttendance';
 import hasPermission from '@constants/sys/permission';
@@ -61,14 +61,14 @@ const levels = {
   TIME: 0,
   EXPECTATION: 1,
   REALITY: 2,
-  REMARKS: 3,
+  REMARKS: 3
 };
 
 const progressBarLevel = {
   TIME: 25,
   EXPECTATION: 50,
   REALITY: 75,
-  REMARKS: 100,
+  REMARKS: 100
 };
 
 /**
@@ -84,18 +84,18 @@ const progressBarLevel = {
  * @param param0 Modal functions
  * @returns A modal
  */
-export default function SessionEditModal({
+export default function SessionEditModal ({
   isOpen,
   onClose,
   modalData,
   dataHandler,
-  userSession,
+  userSession
 }) {
   const toast = useToast();
 
   const selectedData = useRef<CCASession | null>(null);
   const [confirmationData, setConfirmationData] = useState<CCASession | null>(
-    null,
+    null
   );
 
   const [progressLevel, setProgressLevel] = useState(levels.TIME);
@@ -238,7 +238,7 @@ export default function SessionEditModal({
     const members: CCAAttendance[] = JSON.parse(membersF) as CCAAttendance[];
     if (
       members.length > 0 &&
-      selectedData.current &&
+      (selectedData.current != null) &&
       selectedData.current.duration !== undefined
     ) {
       for (let key = 0; key < members.length; key += 1) {
@@ -259,7 +259,7 @@ export default function SessionEditModal({
     nameField: string,
     dateField: string,
     startTimeField: string,
-    endTimeField: string,
+    endTimeField: string
   ) => {
     if (!checkerString(idField)) {
       setError('Please select an event!');
@@ -333,7 +333,7 @@ export default function SessionEditModal({
       !checkRealityMembers(selectedDataField.realityM)
     ) {
       setError(
-        'One or more members have an attendance exceeding the total duration',
+        'One or more members have an attendance exceeding the total duration'
       );
       return false;
     }
@@ -413,7 +413,7 @@ export default function SessionEditModal({
             nameDB.current,
             dateStrDB.current,
             startTimeDB.current,
-            endTimeDB.current,
+            endTimeDB.current
           )
         ) {
           const data: CCASession = selectedData.current;
@@ -426,7 +426,7 @@ export default function SessionEditModal({
 
           data.duration = await calculateDuration(
             Number(startTimeDB.current),
-            Number(endTimeDB.current),
+            Number(endTimeDB.current)
           );
 
           selectedData.current = data;
@@ -459,7 +459,7 @@ export default function SessionEditModal({
 
         if (realityMemberHours.current.length > 0) {
           realityMemberHours.current = removeDuplicate(
-            realityMemberHours.current,
+            realityMemberHours.current
           );
           displayRealityMembers(realityMemberHours.current);
         }
@@ -489,7 +489,7 @@ export default function SessionEditModal({
     }
   };
 
-  const onStartTimeChange = async (event: { target: { value: string } }) => {
+  const onStartTimeChange = async (event: { target: { value: string, }, }) => {
     try {
       if (event.target.value) {
         const { value } = event.target;
@@ -501,7 +501,7 @@ export default function SessionEditModal({
     }
   };
 
-  const onEndTimeChange = async (event: { target: { value: string } }) => {
+  const onEndTimeChange = async (event: { target: { value: string, }, }) => {
     try {
       if (event.target.value) {
         const { value } = event.target;
@@ -520,7 +520,7 @@ export default function SessionEditModal({
       description: optionalText,
       status: 'info',
       duration: 2000,
-      isClosable: true,
+      isClosable: true
     });
   };
 
@@ -531,7 +531,7 @@ export default function SessionEditModal({
       description: expectedText,
       status: 'info',
       duration: 2000,
-      isClosable: true,
+      isClosable: true
     });
   };
 
@@ -542,7 +542,7 @@ export default function SessionEditModal({
       description: realityText,
       status: 'info',
       duration: 2000,
-      isClosable: true,
+      isClosable: true
     });
   };
 
@@ -559,13 +559,13 @@ export default function SessionEditModal({
         start.push(
           <option key={`start${key}`} value={dataField}>
             {dataField}
-          </option>,
+          </option>
         );
 
         end.push(
           <option key={`end${key}`} value={dataField}>
             {dataField}
-          </option>,
+          </option>
         );
       }
     }
@@ -686,28 +686,28 @@ export default function SessionEditModal({
             ccaID: ccaIDDB.current,
             ccaAttendance: hour,
             sessionEmail: email,
-            sessionName: nameField,
+            sessionName: nameField
           };
 
           realityHours.push(attendance);
         }
 
         realityMemberHours.current = removeDuplicate(
-          realityMemberHours.current,
+          realityMemberHours.current
         );
       } else if (
         selectedData.current !== null &&
         selectedData.current.duration !== undefined
       ) {
         setError(
-          `Duration of member must not be negative or exceed ${selectedData.current.duration}`,
+          `Duration of member must not be negative or exceed ${selectedData.current.duration}`
         );
         setDisableButton(true);
       }
 
       displayRealityMembers(realityMemberHours.current);
     },
-    [],
+    []
   );
 
   const generateExpectedMemberList = useCallback(async () => {
@@ -737,7 +737,7 @@ export default function SessionEditModal({
   }, []);
 
   const buildMemberList = useCallback(
-    async (content: { count: number; res: CCARecord[] }) => {
+    async (content: { count: number, res: CCARecord[], }) => {
       if (content.res.length > 0 && content.count > 0) {
         const buttons: JSX.Element[] = [];
         const realityButtons: JSX.Element[] = [];
@@ -759,7 +759,7 @@ export default function SessionEditModal({
                   newKey={sessionEmail}
                   id={sessionEmail}
                   name={sessionName}
-                />,
+                />
               );
 
               realityButtons.push(
@@ -770,7 +770,7 @@ export default function SessionEditModal({
                   newKey={sessionEmail}
                   id={sessionEmail}
                   name={sessionName}
-                />,
+                />
               );
             }
           }
@@ -782,7 +782,7 @@ export default function SessionEditModal({
         await generateExpectedMemberList();
       }
     },
-    [onExpectedMemberChange, onHoursChange, generateExpectedMemberList],
+    [onExpectedMemberChange, onHoursChange, generateExpectedMemberList]
   );
 
   const generateMemberList = useCallback(async () => {
@@ -793,11 +793,11 @@ export default function SessionEditModal({
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            id: ccaIDDB.current,
-          }),
+            id: ccaIDDB.current
+          })
         });
         const content: Result = await rawResponse.json();
         if (content.status) {
@@ -811,9 +811,9 @@ export default function SessionEditModal({
   }, [buildMemberList]);
 
   useEffect(() => {
-    async function setupData(
+    async function setupData (
       modalDataField: CCASession,
-      userSessionField: Session | null,
+      userSessionField: Session | null
     ) {
       setLoadingData(true);
       setSubmitButtonPressed(true);
@@ -964,7 +964,7 @@ export default function SessionEditModal({
             (session !== null &&
               hasPermission(
                 session.user.admin,
-                actions.OVERRIDE_EDIT_SESSION,
+                actions.OVERRIDE_EDIT_SESSION
               ))) && (
             <Box>
               {checkerString(ccaName) && (
@@ -998,139 +998,145 @@ export default function SessionEditModal({
                 animate='animate'
               >
                 <MotionBox variants={cardVariant} key='motion-box-time2'>
-                  {modalData && !loadingData && progressLevel === levels.TIME && (
-                    <Flex
-                      w='full'
-                      h='full'
-                      alignItems='center'
-                      justifyContent='center'
-                      mt={30}
-                    >
-                      <Stack spacing={10}>
-                        <Stack
-                          w={{ base: 'full', md: '500px', lg: '500px' }}
-                          direction='row'
-                        >
-                          <FormControl id='name'>
-                            <FormLabel>
-                              <Text
-                                w={40}
-                                textTransform='uppercase'
-                                lineHeight='5'
-                                fontWeight='bold'
-                                letterSpacing='tight'
-                                mr={5}
-                              >
-                                Name
-                              </Text>
-                            </FormLabel>
-                            <Input
-                              type='text'
-                              placeholder='Name'
-                              value={name}
-                              size='lg'
-                              onChange={(event) => {
-                                setName(event.currentTarget.value);
-                                nameDB.current = event.currentTarget.value;
-                              }}
-                            />
-                          </FormControl>
-
-                          <FormControl id='date'>
-                            <FormLabel>
-                              <Text
-                                w={40}
-                                textTransform='uppercase'
-                                lineHeight='5'
-                                fontWeight='bold'
-                                letterSpacing='tight'
-                                mr={5}
-                              >
-                                Date
-                              </Text>
-                            </FormLabel>
-                            <Input
-                              disabled
-                              type='date'
-                              placeholder='Date'
-                              value={dateStr}
-                              size='lg'
-                              onChange={(event) => {
-                                setDateStr(event.currentTarget.value);
-                                dateStrDB.current = event.currentTarget.value;
-                              }}
-                            />
-                          </FormControl>
-                        </Stack>
-                        {startTimeDropdown && (
-                          <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
-                            <FormLabel>
-                              <Text
-                                w={40}
-                                textTransform='uppercase'
-                                lineHeight='5'
-                                fontWeight='bold'
-                                letterSpacing='tight'
-                                mr={5}
-                              >
-                                Start Time
-                              </Text>
-                            </FormLabel>
-                            <Select
-                              value={startTime}
-                              onChange={onStartTimeChange}
-                              size='md'
-                            >
-                              {endTimeDropdown}
-                            </Select>
-                          </Stack>
-                        )}
-
-                        {endTimeDropdown && (
-                          <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
-                            <FormLabel>
-                              <Text
-                                w={40}
-                                textTransform='uppercase'
-                                lineHeight='5'
-                                fontWeight='bold'
-                                letterSpacing='tight'
-                                mr={5}
-                              >
-                                End Time
-                              </Text>
-                            </FormLabel>
-                            <Select
-                              value={endTime}
-                              onChange={onEndTimeChange}
-                              size='md'
-                            >
-                              {endTimeDropdown}
-                            </Select>
-                          </Stack>
-                        )}
-
-                        <Stack spacing={5} direction='row'>
-                          <Checkbox
-                            isChecked={optional}
-                            onChange={(event) => {
-                              if (event.cancelable) {
-                                event.preventDefault();
-                              }
-                              setOptional(event.target.checked);
-                              optionalDB.current = event.target.checked;
-                              optionalStrDB.current = event.target.checked
-                                ? 'Yes'
-                                : 'No';
-                            }}
+                  {modalData &&
+                    !loadingData &&
+                    progressLevel === levels.TIME && (
+                      <Flex
+                        w='full'
+                        h='full'
+                        alignItems='center'
+                        justifyContent='center'
+                        mt={30}
+                      >
+                        <Stack spacing={10}>
+                          <Stack
+                            w={{ base: 'full', md: '500px', lg: '500px' }}
+                            direction='row'
                           >
-                            Optional Session
-                          </Checkbox>
-                          <InfoIcon onMouseEnter={handleOptionalHover} />
+                            <FormControl id='name'>
+                              <FormLabel>
+                                <Text
+                                  w={40}
+                                  textTransform='uppercase'
+                                  lineHeight='5'
+                                  fontWeight='bold'
+                                  letterSpacing='tight'
+                                  mr={5}
+                                >
+                                  Name
+                                </Text>
+                              </FormLabel>
+                              <Input
+                                type='text'
+                                placeholder='Name'
+                                value={name}
+                                size='lg'
+                                onChange={(event) => {
+                                  setName(event.currentTarget.value);
+                                  nameDB.current = event.currentTarget.value;
+                                }}
+                              />
+                            </FormControl>
+
+                            <FormControl id='date'>
+                              <FormLabel>
+                                <Text
+                                  w={40}
+                                  textTransform='uppercase'
+                                  lineHeight='5'
+                                  fontWeight='bold'
+                                  letterSpacing='tight'
+                                  mr={5}
+                                >
+                                  Date
+                                </Text>
+                              </FormLabel>
+                              <Input
+                                disabled
+                                type='date'
+                                placeholder='Date'
+                                value={dateStr}
+                                size='lg'
+                                onChange={(event) => {
+                                  setDateStr(event.currentTarget.value);
+                                  dateStrDB.current = event.currentTarget.value;
+                                }}
+                              />
+                            </FormControl>
+                          </Stack>
+                          {startTimeDropdown && (
+                            <Stack
+                              w={{ base: 'full', md: '500px', lg: '500px' }}
+                            >
+                              <FormLabel>
+                                <Text
+                                  w={40}
+                                  textTransform='uppercase'
+                                  lineHeight='5'
+                                  fontWeight='bold'
+                                  letterSpacing='tight'
+                                  mr={5}
+                                >
+                                  Start Time
+                                </Text>
+                              </FormLabel>
+                              <Select
+                                value={startTime}
+                                onChange={onStartTimeChange}
+                                size='md'
+                              >
+                                {endTimeDropdown}
+                              </Select>
+                            </Stack>
+                          )}
+
+                          {endTimeDropdown && (
+                            <Stack
+                              w={{ base: 'full', md: '500px', lg: '500px' }}
+                            >
+                              <FormLabel>
+                                <Text
+                                  w={40}
+                                  textTransform='uppercase'
+                                  lineHeight='5'
+                                  fontWeight='bold'
+                                  letterSpacing='tight'
+                                  mr={5}
+                                >
+                                  End Time
+                                </Text>
+                              </FormLabel>
+                              <Select
+                                value={endTime}
+                                onChange={onEndTimeChange}
+                                size='md'
+                              >
+                                {endTimeDropdown}
+                              </Select>
+                            </Stack>
+                          )}
+
+                          <Stack spacing={5} direction='row'>
+                            <Checkbox
+                              isChecked={optional}
+                              onChange={(event) => {
+                                if (event.cancelable) {
+                                  event.preventDefault();
+                                }
+                                setOptional(event.target.checked);
+                                optionalDB.current = event.target.checked;
+                                optionalStrDB.current = event.target.checked
+                                  ? 'Yes'
+                                  : 'No';
+                              }}
+                            >
+                              Optional Session
+                            </Checkbox>
+                            <InfoIcon onMouseEnter={handleOptionalHover} />
+                          </Stack>
                         </Stack>
-                      </Stack>
-                    </Flex>
-                  )}
+                      </Flex>
+                    )}
 
                   {modalData &&
                     !loadingData &&
@@ -1202,7 +1208,7 @@ export default function SessionEditModal({
                           )}
                         </Stack>
                       </Flex>
-                  )}
+                    )}
 
                   {modalData &&
                     !loadingData &&
@@ -1273,7 +1279,7 @@ export default function SessionEditModal({
                           )}
                         </Stack>
                       </Flex>
-                  )}
+                    )}
 
                   {modalData &&
                     !loadingData &&
@@ -1294,7 +1300,7 @@ export default function SessionEditModal({
                           <Text color='red.500'>Click next to proceed.</Text>
                         </Stack>
                       </Flex>
-                  )}
+                    )}
 
                   {modalData &&
                     !loadingData &&
@@ -1368,7 +1374,7 @@ export default function SessionEditModal({
                           </Stack>
                         </Stack>
                       </Flex>
-                  )}
+                    )}
 
                   {checkerString(errorMsg) && (
                     <Stack align='center'>
@@ -1384,19 +1390,19 @@ export default function SessionEditModal({
             session !== null &&
             !hasPermission(
               session.user.admin,
-              actions.OVERRIDE_EDIT_SESSION,
+              actions.OVERRIDE_EDIT_SESSION
             ) && (
               <Box>
                 <Text>Sorry, this session is not editable.</Text>
               </Box>
-          )}
+            )}
         </ModalBody>
         <ModalFooter>
           {(editable ||
             (session !== null &&
               hasPermission(
                 session.user.admin,
-                actions.OVERRIDE_EDIT_SESSION,
+                actions.OVERRIDE_EDIT_SESSION
               ))) && (
             <Box>
               {progressLevel !== levels.TIME && (

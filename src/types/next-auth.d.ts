@@ -7,10 +7,10 @@ declare module 'next-auth' {
   interface Session {
     expires: string;
     user: {
-      email: string;
-      username: string;
-      admin: number;
-      acceptedTerm: boolean;
+      email: string,
+      username: string,
+      admin: number,
+      acceptedTerm: boolean,
     };
   }
 }

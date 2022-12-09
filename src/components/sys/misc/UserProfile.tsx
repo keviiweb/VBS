@@ -8,7 +8,7 @@ import {
   MenuButton,
   MenuDivider,
   MenuItem,
-  MenuList,
+  MenuList
 } from '@chakra-ui/react';
 import { FiChevronDown } from 'react-icons/fi';
 import { signOut } from 'next-auth/react';
@@ -21,12 +21,12 @@ import { GetServerSideProps } from 'next';
  * @param props Contains data such as the current host URL
  * @returns A component displaying the dropdown menu
  */
-export default function UserProfile(props: any) {
+export default function UserProfile (props: any) {
   const [url, setURL] = useState('https://kevii.azurewebsites.net'); // default
   const router = useRouter();
 
   useEffect(() => {
-    async function fetchData(propsField: any) {
+    async function fetchData (propsField: any) {
       try {
         if (propsField.data) {
           setURL(propsField.data);
@@ -60,14 +60,14 @@ export default function UserProfile(props: any) {
           <MenuList fontSize='lg' bg='white' borderColor='gray.200'>
             <MenuItem
               key='profile-menu'
-              onClick={() => router.push('/sys/profile')}
+              onClick={async () => await router.push('/sys/profile')}
             >
               Profile
             </MenuItem>
             <MenuDivider />
             <MenuItem
               key='signout-menu'
-              onClick={() => signOut({ callbackUrl: `${url}/sys/signin` })}
+              onClick={async () => await signOut({ callbackUrl: `${url}/sys/signin` })}
             >
               Sign out
             </MenuItem>
@@ -81,7 +81,7 @@ export default function UserProfile(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=240, stale-while-revalidate=480',
+    'public, s-maxage=240, stale-while-revalidate=480'
   );
 
   const data: string | null =
@@ -89,7 +89,7 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
 
   return {
     props: {
-      data: data,
-    },
+      data
+    }
   };
 };

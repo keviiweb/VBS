@@ -10,7 +10,7 @@ const MotionBox = motion(Box);
  *
  * @returns Video Component
  */
-export default function Video() {
+export default function Video () {
   return (
     <MotionBox
       id='video'

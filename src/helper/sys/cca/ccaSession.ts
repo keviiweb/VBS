@@ -20,22 +20,22 @@ export const fetchAllCCASessionByCCAID = async (
   id: string,
   limit: number = 100000,
   skip: number = 0,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCASession[] = await prisma.cCASessions.findMany({
       where: {
-        ccaID: id,
+        ccaID: id
       },
       orderBy: [
         {
-          date: 'desc',
-        },
+          date: 'desc'
+        }
       ],
       skip: skip * limit,
-      take: limit,
+      take: limit
     });
 
     result = { status: true, error: null, msg: query };
@@ -45,7 +45,7 @@ export const fetchAllCCASessionByCCAID = async (
     await logger(
       'fetchAllCCASessionByCCAID',
       session.user.email,
-      error.message,
+      error.message
     );
   }
 
@@ -60,15 +60,15 @@ export const fetchAllCCASessionByCCAID = async (
  */
 export const countAllCCASessionByCCAID = async (
   id: string,
-  session: Session,
+  session: Session
 ): Promise<number> => {
   let count = 0;
 
   try {
     count = await prisma.cCASessions.count({
       where: {
-        ccaID: id,
-      },
+        ccaID: id
+      }
     });
   } catch (error) {
     console.error(error);
@@ -76,7 +76,7 @@ export const countAllCCASessionByCCAID = async (
       await logger(
         `countAllCCASessionByCCAID - ${id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -92,15 +92,15 @@ export const countAllCCASessionByCCAID = async (
  */
 export const findCCASessionByID = async (
   id: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCASession = await prisma.cCASessions.findUnique({
       where: {
-        id: id,
-      },
+        id
+      }
     });
 
     if (query) {
@@ -115,7 +115,7 @@ export const findCCASessionByID = async (
       await logger(
         `findCCASessionByID - ${id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -131,14 +131,14 @@ export const findCCASessionByID = async (
  */
 export const countTotalSessionHoursByCCAID = async (
   ccaID: string,
-  session: Session,
+  session: Session
 ): Promise<number> => {
   let count = 0;
   try {
     const query: CCASession[] = await prisma.cCASessions.findMany({
       where: {
-        ccaID: ccaID,
-      },
+        ccaID
+      }
     });
 
     if (query !== undefined && query !== null && query.length > 0) {
@@ -151,7 +151,7 @@ export const countTotalSessionHoursByCCAID = async (
             if (start !== null && end !== null) {
               const sessionDuration: number = await calculateDuration(
                 start,
-                end,
+                end
               );
               count += sessionDuration;
             }
@@ -164,7 +164,7 @@ export const countTotalSessionHoursByCCAID = async (
     await logger(
       'countTotalSessionHoursByCCAID',
       session.user.email,
-      error.message,
+      error.message
     );
   }
 
@@ -179,16 +179,16 @@ export const countTotalSessionHoursByCCAID = async (
  */
 export const editSession = async (
   data: CCASession,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const sess: CCASession = await prisma.cCASessions.update({
       where: {
-        id: data.id,
+        id: data.id
       },
-      data: data,
+      data
     });
 
     if (sess) {
@@ -196,20 +196,20 @@ export const editSession = async (
         await logger(
           `editSession - ${data.id}`,
           session.user.email,
-          `Successfully updated session`,
+          'Successfully updated session'
         );
       }
       result = {
         status: true,
         error: '',
-        msg: `Successfully updated session`,
+        msg: 'Successfully updated session'
       };
     } else {
       if (data.id !== undefined && checkerString(data.id)) {
         await logger(
           `editSession - ${data.id}`,
           session.user.email,
-          'Failed to update session',
+          'Failed to update session'
         );
       }
       result = { status: false, error: 'Failed to update session', msg: '' };
@@ -221,7 +221,7 @@ export const editSession = async (
       await logger(
         `editSession - ${data.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -237,26 +237,26 @@ export const editSession = async (
  */
 export const lockSession = async (
   data: CCASession,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const sess: CCASession = await prisma.cCASessions.update({
       where: {
-        id: data.id,
+        id: data.id
       },
       data: {
         editable: false,
-        updated_at: new Date().toISOString(),
-      },
+        updated_at: new Date().toISOString()
+      }
     });
 
     if (sess) {
       result = {
         status: true,
         error: '',
-        msg: `Successfully lock session`,
+        msg: 'Successfully lock session'
       };
     } else {
       result = { status: false, error: 'Failed to lock session', msg: '' };
@@ -268,7 +268,7 @@ export const lockSession = async (
       await logger(
         `lockSession - ${data.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -284,15 +284,15 @@ export const lockSession = async (
  */
 export const deleteSessionByID = async (
   id: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const sess: CCASession = await prisma.cCASessions.delete({
       where: {
-        id: id,
-      },
+        id
+      }
     });
 
     if (sess) {
@@ -300,20 +300,20 @@ export const deleteSessionByID = async (
         await logger(
           `deleteSessionByID - ${id}`,
           session.user.email,
-          `Successfully deleted session`,
+          'Successfully deleted session'
         );
       }
       result = {
         status: true,
         error: '',
-        msg: `Successfully deleted session`,
+        msg: 'Successfully deleted session'
       };
     } else {
       if (id !== undefined && checkerString(id)) {
         await logger(
           `deleteSessionByID - ${id}`,
           session.user.email,
-          'Failed to delete session',
+          'Failed to delete session'
         );
       }
       result = { status: false, error: 'Failed to delete session', msg: '' };
@@ -325,7 +325,7 @@ export const deleteSessionByID = async (
       await logger(
         `deleteSessionByID - ${id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -341,31 +341,31 @@ export const deleteSessionByID = async (
  */
 export const createSession = async (
   data: CCASession,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const sess: CCASession = await prisma.cCASessions.create({
-      data: data,
+      data
     });
 
     if (sess) {
       await logger(
         'createSession',
         session.user.email,
-        `Successfully created session`,
+        'Successfully created session'
       );
       result = {
         status: true,
         error: '',
-        msg: `Successfully created session`,
+        msg: 'Successfully created session'
       };
     } else {
       await logger(
         'createSession',
         session.user.email,
-        'Failed to create session',
+        'Failed to create session'
       );
       result = { status: false, error: 'Failed to create session', msg: '' };
     }
@@ -389,7 +389,7 @@ export const createSession = async (
  */
 export const isConflict = async (
   data: CCASession,
-  session: Session,
+  session: Session
 ): Promise<boolean> => {
   try {
     const anyConflicting: CCASession[] = await prisma.cCASessions.findMany({
@@ -397,16 +397,16 @@ export const isConflict = async (
         ccaID: data.ccaID,
         date: data.date,
         id: {
-          not: data.id,
-        },
-      },
+          not: data.id
+        }
+      }
     });
 
     if (anyConflicting.length > 0) {
       const conflict: boolean = await checkConflict(
         data,
         anyConflicting,
-        session,
+        session
       );
       return conflict;
     } else {
@@ -433,9 +433,9 @@ export const isConflict = async (
 export const checkConflict = async (
   createRequest: CCASession,
   existingRequest: CCASession[],
-  session: Session,
+  session: Session
 ): Promise<boolean> => {
-  let result = false;
+  const result = false;
 
   try {
     const { start, end } = await splitHours(createRequest.time);
@@ -455,11 +455,11 @@ export const checkConflict = async (
             if (start !== null && end !== null) {
               const eStartH: string | null = await findSlots(
                 start.toString(),
-                true,
+                true
               );
               const eEndH: string | null = await findSlots(
                 end.toString(),
-                false,
+                false
               );
 
               if (startH !== null && endH !== null) {

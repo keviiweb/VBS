@@ -9,18 +9,18 @@ import { animateScroll } from 'react-scroll';
  *
  * @returns A floating button
  */
-export default function ButtonScrollTop() {
+export default function ButtonScrollTop () {
   const [show, setShow] = useState(false);
-  const showStyle: { [key: string]: React.CSSProperties } = show
+  const showStyle: { [key: string]: React.CSSProperties, } = show
     ? {
       show: {
         opacity: 1,
-        pointerEvents: 'auto',
-      },
+        pointerEvents: 'auto'
+      }
     }
     : {};
 
-  function onScrollTop() {
+  function onScrollTop () {
     animateScroll.scrollToTop();
   }
 

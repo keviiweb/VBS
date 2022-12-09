@@ -21,13 +21,13 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
-  useBreakpointValue,
+  useBreakpointValue
 } from '@chakra-ui/react';
 import {
   ArrowRightIcon,
   ArrowLeftIcon,
   ChevronRightIcon,
-  ChevronLeftIcon,
+  ChevronLeftIcon
 } from '@chakra-ui/icons';
 
 /**
@@ -36,13 +36,13 @@ import {
  * @param param0 Column and data
  * @returns A rendered table
  */
-export default function TableWidget({
+export default function TableWidget ({
   id,
   columns,
   data,
   controlledPageCount,
   dataHandler,
-  showPage = true,
+  showPage = true
 }) {
   const {
     prepareRow,
@@ -55,15 +55,15 @@ export default function TableWidget({
     nextPage,
     previousPage,
     setPageSize,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize }
   } = useTable(
     {
       columns,
       data,
       manualPagination: true,
-      pageCount: controlledPageCount,
+      pageCount: controlledPageCount
     },
-    usePagination,
+    usePagination
   );
 
   const variantDesktop = useBreakpointValue({ base: 'none', md: 'flex' });
@@ -72,7 +72,7 @@ export default function TableWidget({
   const buttonClicked = useRef(false);
 
   useEffect(() => {
-    async function sendData() {
+    async function sendData () {
       if (dataHandler && buttonClicked.current) {
         buttonClicked.current = false;
         await dataHandler({ pageIndex, pageSize });
@@ -91,15 +91,15 @@ export default function TableWidget({
           size='md'
           colorScheme='facebook'
           style={{
-            maxHeight: '600px',
+            maxHeight: '600px'
           }}
         >
           <Thead>
             <Tr>
               {columns.map(
-                (item: { Header: string; accessor: string }, idx: number) => (
+                (item: { Header: string, accessor: string, }, idx: number) => (
                   <Th key={`th-${id}-${idx}`}>{item.Header}</Th>
-                ),
+                )
               )}
             </Tr>
           </Thead>

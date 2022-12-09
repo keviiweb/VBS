@@ -15,14 +15,14 @@ const MotionSimpleGrid = motion(SimpleGrid);
  *
  * @returns Committee Page
  */
-export default function Committee() {
+export default function Committee () {
   const content = [
     {
       img: '/landing/cca/landing_keweb.png',
       title: 'KE Web',
       description: 'We work hard to give you the website you deserve.',
-      link: '/landing/keweb',
-    },
+      link: '/landing/keweb'
+    }
   ];
 
   return (
@@ -64,12 +64,12 @@ export default function Committee() {
         {content.map(
           (
             slide: {
-              img: string;
-              title: string;
-              description: string;
-              link: string;
+              img: string,
+              title: string,
+              description: string,
+              link: string,
             },
-            sid,
+            sid
           ) => (
             <MotionBox key={sid} variants={cardVariant}>
               <Card
@@ -82,7 +82,7 @@ export default function Committee() {
                 buttonText={null}
               />
             </MotionBox>
-          ),
+          )
         )}
       </MotionSimpleGrid>
     </Landing>

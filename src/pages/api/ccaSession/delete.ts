@@ -5,7 +5,7 @@ import { CCASession } from 'types/cca/ccaSession';
 import { currentSession } from '@helper/sys/sessionServer';
 import {
   deleteSessionByID,
-  findCCASessionByID,
+  findCCASessionByID
 } from '@helper/sys/cca/ccaSession';
 import { isLeader } from '@helper/sys/cca/ccaRecord';
 import { deleteAttendanceBySessionID } from '@helper/sys/cca/ccaAttendance';
@@ -29,7 +29,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   const { id } = req.body;
@@ -39,14 +39,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (sessionID !== undefined) {
       const userPermission: boolean = hasPermission(
         session.user.admin,
-        actions.OVERRIDE_DELETE_SESSION,
+        actions.OVERRIDE_DELETE_SESSION
       );
 
       const sessionRes: Result = await findCCASessionByID(sessionID, session);
       if (sessionRes.status && sessionRes.msg) {
         const ccaSession: CCASession = sessionRes.msg;
         const editable: boolean = ccaSession.editable
-          ? ccaSession.editable === true
+          ? ccaSession.editable
           : false;
 
         if (userPermission || editable) {
@@ -57,13 +57,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             if (deleteAttendanceRes.status) {
               const deleteSessionRes: Result = await deleteSessionByID(
                 id,
-                session,
+                session
               );
               if (deleteSessionRes.status) {
                 result = {
                   status: true,
                   error: null,
-                  msg: deleteSessionRes.msg,
+                  msg: deleteSessionRes.msg
                 };
                 res.status(200).send(result);
                 res.end();
@@ -71,7 +71,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 result = {
                   status: false,
                   error: deleteSessionRes.error,
-                  msg: '',
+                  msg: ''
                 };
                 res.status(200).send(result);
                 res.end();
@@ -80,7 +80,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: false,
                 error: deleteAttendanceRes.error,
-                msg: '',
+                msg: ''
               };
               res.status(200).send(result);
               res.end();
@@ -89,7 +89,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: 'Not a CCA leader',
-              msg: '',
+              msg: ''
             };
             res.status(200).send(result);
             res.end();
@@ -98,7 +98,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: 'Session not editable',
-            msg: '',
+            msg: ''
           };
           res.status(200).send(result);
           res.end();
@@ -107,7 +107,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: sessionRes.error,
-          msg: '',
+          msg: ''
         };
         res.status(200).send(result);
         res.end();
@@ -116,7 +116,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Incomplete information',
-        msg: '',
+        msg: ''
       };
       res.status(200).send(result);
       res.end();
@@ -125,7 +125,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: '',
+      msg: ''
     };
     res.status(200).send(result);
     res.end();

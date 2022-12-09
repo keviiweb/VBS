@@ -16,14 +16,14 @@ import { logger } from '@helper/sys/misc/logger';
  */
 export const fetchUserByEmail = async (
   email: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const userFromDB: User = await prisma.users.findUnique({
       where: {
-        email: email.toLowerCase().trim(),
-      },
+        email: email.toLowerCase().trim()
+      }
     });
 
     if (userFromDB) {
@@ -38,7 +38,7 @@ export const fetchUserByEmail = async (
       await logger(
         `fetchUserByEmail - ${email}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -54,10 +54,10 @@ export const fetchUserByEmail = async (
  */
 export const acceptTermsForUser = async (
   data: User,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
-  let URL: string =
+  const URL: string =
     process.env.NEXTAUTH_URL !== undefined &&
     process.env.VBS_DOMAIN !== undefined
       ? process.env.NEXTAUTH_URL + process.env.VBS_DOMAIN
@@ -66,11 +66,11 @@ export const acceptTermsForUser = async (
   try {
     const user: User = await prisma.users.update({
       where: {
-        id: data.id,
+        id: data.id
       },
       data: {
-        acceptedTerm: true,
-      },
+        acceptedTerm: true
+      }
     });
 
     if (user) {
@@ -78,26 +78,26 @@ export const acceptTermsForUser = async (
         await logger(
           `acceptTermsForUser - ${data.id}`,
           session.user.email,
-          `Successfully accepted terms for ${user.name}. Please head to ${URL} to access the system if it does not automatically redirect you.`,
+          `Successfully accepted terms for ${user.name}. Please head to ${URL} to access the system if it does not automatically redirect you.`
         );
       }
       result = {
         status: true,
         error: '',
-        msg: `Successfully accepted terms for ${user.name}`,
+        msg: `Successfully accepted terms for ${user.name}`
       };
     } else {
       if (data.id !== undefined && checkerString(data.id)) {
         await logger(
           `acceptTermsForUser - ${data.id}`,
           session.user.email,
-          'Failed to accepted terms for user',
+          'Failed to accepted terms for user'
         );
       }
       result = {
         status: false,
         error: 'Failed to accepted terms for user',
-        msg: '',
+        msg: ''
       };
     }
   } catch (error) {
@@ -105,13 +105,13 @@ export const acceptTermsForUser = async (
     result = {
       status: false,
       error: 'Failed to accepted terms for user',
-      msg: '',
+      msg: ''
     };
     if (data.id !== undefined && checkerString(data.id)) {
       await logger(
         `acceptTermsForUser - ${data.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -127,19 +127,19 @@ export const acceptTermsForUser = async (
  */
 export const createUser = async (
   data: User,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const user: User = await prisma.users.create({
-      data: data,
+      data
     });
 
     if (user) {
       await logger(
         'createUser',
         session.user.email,
-        'Successfully created user',
+        'Successfully created user'
       );
       result = { status: true, error: null, msg: 'Successfully created user' };
     } else {
@@ -147,7 +147,7 @@ export const createUser = async (
         await logger(
           `createUser - ${data.email}`,
           session.user.email,
-          'Failed to create user',
+          'Failed to create user'
         );
       }
       result = { status: false, error: 'Failed to create user', msg: '' };
@@ -159,7 +159,7 @@ export const createUser = async (
       await logger(
         `createUser - ${data.email}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -179,7 +179,7 @@ export const createUser = async (
  */
 export const createUserFile = async (
   dataField: any[],
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -201,22 +201,22 @@ export const createUserFile = async (
           const userData: User = {
             name: name.trim(),
             email: email.trim().toLowerCase(),
-            admin: admin,
+            admin
           };
 
           await prisma.users.upsert({
             where: {
-              email: userData.email,
+              email: userData.email
             },
             update: {
               name: userData.name,
-              admin: userData.admin,
+              admin: userData.admin
             },
             create: {
               email: userData.email,
               name: userData.name,
-              admin: userData.admin,
-            },
+              admin: userData.admin
+            }
           });
 
           count += 1;
@@ -227,12 +227,12 @@ export const createUserFile = async (
     await logger(
       'createUserFile',
       session.user.email,
-      `Successfully created ${count} User records out of total ${totalCount}`,
+      `Successfully created ${count} User records out of total ${totalCount}`
     );
     result = {
       status: true,
       error: null,
-      msg: `Successfully created ${count} User records out of total ${totalCount}`,
+      msg: `Successfully created ${count} User records out of total ${totalCount}`
     };
   } catch (error) {
     console.error(error);
@@ -269,13 +269,13 @@ export const countUser = async (session: Session): Promise<number> => {
 export const fetchAllUser = async (
   limit: number = 100000,
   skip: number = 0,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const users: User[] = await prisma.users.findMany({
       skip: skip * limit,
-      take: limit,
+      take: limit
     });
 
     if (users) {
@@ -300,15 +300,15 @@ export const fetchAllUser = async (
  */
 export const editUser = async (
   data: User,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const user: User = await prisma.users.update({
       where: {
-        id: data.id,
+        id: data.id
       },
-      data: data,
+      data
     });
 
     if (user) {
@@ -316,20 +316,20 @@ export const editUser = async (
         await logger(
           `editUser - ${data.id}`,
           session.user.email,
-          `Successfully updated ${user.name}`,
+          `Successfully updated ${user.name}`
         );
       }
       result = {
         status: true,
         error: '',
-        msg: `Successfully updated ${user.name}`,
+        msg: `Successfully updated ${user.name}`
       };
     } else {
       if (data.id !== undefined && checkerString(data.id)) {
         await logger(
           `editUser - ${data.id}`,
           session.user.email,
-          'Failed to update user',
+          'Failed to update user'
         );
       }
       result = { status: false, error: 'Failed to update user', msg: '' };

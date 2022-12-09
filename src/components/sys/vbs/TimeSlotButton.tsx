@@ -8,12 +8,12 @@ import { checkerString } from '@constants/sys/helper';
  * @param param0 List of functions available
  * @returns Renders a clickable button that represents a particular timeslot
  */
-export default function TimeSlotButton({
+export default function TimeSlotButton ({
   disable,
   handleClick,
   newKey,
   id,
-  slot,
+  slot
 }) {
   const [selected, setSelected] = useState(false);
 
@@ -36,7 +36,7 @@ export default function TimeSlotButton({
       size='sm'
       margin='8px'
       key={newKey}
-      onClick={() => click()}
+      onClick={async () => await click()}
     >
       {slot}
     </Button>

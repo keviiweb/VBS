@@ -6,7 +6,7 @@ import {
   Heading,
   Stack,
   Text,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
 import { Result } from 'types/api';
 import LoadingModal from '@components/sys/misc/LoadingModal';
@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
  *
  * @returns Accept Terms Page
  */
-export default function AcceptTerms() {
+export default function AcceptTerms () {
   const toast = useToast();
 
   const router = useRouter();
@@ -45,8 +45,8 @@ export default function AcceptTerms() {
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -54,7 +54,7 @@ export default function AcceptTerms() {
           title: 'Success',
           description: content.msg,
           status: 'success',
-          isClosable: true,
+          isClosable: true
         });
         setAcceptedTerms(true);
       } else {
@@ -63,7 +63,7 @@ export default function AcceptTerms() {
           description: content.error,
           status: 'error',
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         });
 
         setIsSubmit(false);

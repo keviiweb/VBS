@@ -7,7 +7,7 @@ import React from 'react';
  *
  * @returns Social Media Platforms
  */
-export default function Social() {
+export default function Social () {
   return (
     <Flex
       bg='#F9FAFB'

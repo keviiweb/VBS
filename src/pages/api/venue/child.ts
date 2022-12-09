@@ -22,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
   const { venue } = req.body;
   if (session !== undefined && session !== null) {
@@ -42,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               if (venueField.isChildVenue) {
                 const venueReq: Result = await findVenueByID(
                   venueField.parentVenue,
-                  session,
+                  session
                 );
                 if (venueReq && venueReq.status) {
                   const venueReqMsg: Venue = venueReq.msg;
@@ -63,11 +63,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 name: venueField.name,
                 openingHours: venueField.openingHours,
                 parentVenue: venueField.parentVenue,
-                parentVenueName: parentVenueName,
+                parentVenueName,
                 visible: venueField.visible,
-                isAvailable: isAvailable,
+                isAvailable,
                 childVenue: cv,
-                instantBook: instantBook,
+                instantBook
               };
 
               parsedVenue.push(data);
@@ -78,13 +78,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: true,
           error: null,
-          msg: parsedVenue,
+          msg: parsedVenue
         };
       } else {
         result = {
           status: false,
           error: venueDB.error,
-          msg: '',
+          msg: ''
         };
       }
 
@@ -94,7 +94,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'No parent ID provided',
-        msg: [],
+        msg: []
       };
       res.status(200).send(result);
       res.end();
@@ -103,7 +103,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: [],
+      msg: []
     };
     res.status(200).send(result);
     res.end();

@@ -10,7 +10,7 @@ mappings.set(actions.VIEW_FULL_ADMIN_PAGE, [levels.JCRC, levels.KEWEB]);
 mappings.set(actions.VIEW_ADMIN_PAGE, [
   levels.APPROVER,
   levels.JCRC,
-  levels.KEWEB,
+  levels.KEWEB
 ]);
 
 // VBS - Booking and Booking Request
@@ -18,21 +18,21 @@ mappings.set(actions.FETCH_BOOKING, [
   levels.USER,
   levels.APPROVER,
   levels.JCRC,
-  levels.KEWEB,
+  levels.KEWEB
 ]);
 mappings.set(actions.FETCH_BOOKING_REQUEST, [
   levels.APPROVER,
   levels.JCRC,
-  levels.KEWEB,
+  levels.KEWEB
 ]);
 mappings.set(actions.MANAGE_BOOKING_REQUEST, [
   levels.APPROVER,
   levels.JCRC,
-  levels.KEWEB,
+  levels.KEWEB
 ]);
 mappings.set(actions.CREATE_RECURRING_BOOKING_REQUEST, [
   levels.JCRC,
-  levels.KEWEB,
+  levels.KEWEB
 ]);
 
 // Venue data for VBS

@@ -9,7 +9,7 @@ import {
   isInside,
   mapSlotToTiming,
   PERSONAL,
-  prettifyTiming,
+  prettifyTiming
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
 
@@ -22,7 +22,7 @@ import { sendNotifyMail } from '@helper/sys/vbs/email/notify';
 import {
   approvalBookingRequestMessageBuilder,
   rejectBookingRequestMessageBuilder,
-  sendMessageToChannel,
+  sendMessageToChannel
 } from '@helper/sys/vbs/telegram';
 
 import { logger } from '@helper/sys/misc/logger';
@@ -42,8 +42,8 @@ export const countBookingByUser = async (session: Session): Promise<number> => {
   try {
     count = await prisma.venueBookingRequest.count({
       where: {
-        sessionEmail: session.user.email,
-      },
+        sessionEmail: session.user.email
+      }
     });
   } catch (error) {
     console.error(error);
@@ -76,7 +76,7 @@ export const countAllBooking = async (session: Session): Promise<number> => {
  * @returns The total number of booking requests approved wrapped in a Promise
  */
 export const countApprovedBooking = async (
-  session: Session,
+  session: Session
 ): Promise<number> => {
   let count = 0;
   try {
@@ -84,8 +84,8 @@ export const countApprovedBooking = async (
       where: {
         isApproved: true,
         isCancelled: false,
-        isRejected: false,
-      },
+        isRejected: false
+      }
     });
   } catch (error) {
     console.error(error);
@@ -101,7 +101,7 @@ export const countApprovedBooking = async (
  * @returns The total number of booking requests pending wrapped in a Promise
  */
 export const countPendingBooking = async (
-  session: Session,
+  session: Session
 ): Promise<number> => {
   let count = 0;
   try {
@@ -109,8 +109,8 @@ export const countPendingBooking = async (
       where: {
         isApproved: false,
         isCancelled: false,
-        isRejected: false,
-      },
+        isRejected: false
+      }
     });
   } catch (error) {
     console.error(error);
@@ -126,7 +126,7 @@ export const countPendingBooking = async (
  * @returns The total number of booking requests rejected wrapped in a Promise
  */
 export const countRejectedBooking = async (
-  session: Session,
+  session: Session
 ): Promise<number> => {
   let count = 0;
   try {
@@ -134,8 +134,8 @@ export const countRejectedBooking = async (
       where: {
         isApproved: false,
         isCancelled: false,
-        isRejected: true,
-      },
+        isRejected: true
+      }
     });
   } catch (error) {
     console.error(error);
@@ -156,21 +156,21 @@ export const countRejectedBooking = async (
 export const findBookingByUser = async (
   session: Session,
   limit: number = 100000,
-  skip: number = 0,
+  skip: number = 0
 ): Promise<BookingRequest[]> => {
   try {
     const bookings: BookingRequest[] =
       await prisma.venueBookingRequest.findMany({
         orderBy: [
           {
-            created_at: 'desc',
-          },
+            created_at: 'desc'
+          }
         ],
         where: {
-          sessionEmail: session.user.email,
+          sessionEmail: session.user.email
         },
         skip: skip * limit,
-        take: limit,
+        take: limit
       });
 
     return bookings;
@@ -191,23 +191,23 @@ export const findBookingByUser = async (
 export const findApprovedBooking = async (
   limit: number = 100000,
   skip: number = 0,
-  session: Session,
+  session: Session
 ): Promise<BookingRequest[]> => {
   try {
     const bookings: BookingRequest[] =
       await prisma.venueBookingRequest.findMany({
         orderBy: [
           {
-            created_at: 'desc',
-          },
+            created_at: 'desc'
+          }
         ],
         where: {
           isApproved: true,
           isCancelled: false,
-          isRejected: false,
+          isRejected: false
         },
         skip: skip * limit,
-        take: limit,
+        take: limit
       });
 
     return bookings;
@@ -228,23 +228,23 @@ export const findApprovedBooking = async (
 export const findRejectedBooking = async (
   limit: number = 100000,
   skip: number = 0,
-  session: Session,
+  session: Session
 ): Promise<BookingRequest[]> => {
   try {
     const bookings: BookingRequest[] =
       await prisma.venueBookingRequest.findMany({
         orderBy: [
           {
-            created_at: 'desc',
-          },
+            created_at: 'desc'
+          }
         ],
         where: {
           isApproved: false,
           isCancelled: false,
-          isRejected: true,
+          isRejected: true
         },
         skip: skip * limit,
-        take: limit,
+        take: limit
       });
 
     return bookings;
@@ -265,23 +265,23 @@ export const findRejectedBooking = async (
 export const findPendingBooking = async (
   limit: number = 100000,
   skip: number = 0,
-  session: Session,
+  session: Session
 ): Promise<BookingRequest[]> => {
   try {
     const bookings: BookingRequest[] =
       await prisma.venueBookingRequest.findMany({
         orderBy: [
           {
-            created_at: 'desc',
-          },
+            created_at: 'desc'
+          }
         ],
         where: {
           isApproved: false,
           isCancelled: false,
-          isRejected: false,
+          isRejected: false
         },
         skip: skip * limit,
-        take: limit,
+        take: limit
       });
 
     return bookings;
@@ -302,18 +302,18 @@ export const findPendingBooking = async (
 export const findAllBooking = async (
   limit: number = 100000,
   skip: number = 0,
-  session: Session,
+  session: Session
 ): Promise<BookingRequest[]> => {
   try {
     const bookings: BookingRequest[] =
       await prisma.venueBookingRequest.findMany({
         orderBy: [
           {
-            created_at: 'desc',
-          },
+            created_at: 'desc'
+          }
         ],
         skip: skip * limit,
-        take: limit,
+        take: limit
       });
 
     return bookings;
@@ -333,7 +333,7 @@ export const findPendingBookingWDetails = async (
   venueField: string,
   dateField: number,
   timeSlotsField: string,
-  session: Session,
+  session: Session
 ): Promise<BookingRequest[]> => {
   try {
     const parsedBookings: BookingRequest[] = [];
@@ -345,8 +345,8 @@ export const findPendingBookingWDetails = async (
           isCancelled: false,
           isRejected: false,
           venue: venueField,
-          date: dateField,
-        },
+          date: dateField
+        }
       });
 
     if (bookings.length > 0) {
@@ -366,7 +366,7 @@ export const findPendingBookingWDetails = async (
     await logger(
       'findPendingBookingWDetails',
       session.user.email,
-      error.message,
+      error.message
     );
     return [];
   }
@@ -380,14 +380,14 @@ export const findPendingBookingWDetails = async (
  */
 export const findBookingByID = async (
   id: string,
-  session: Session,
+  session: Session
 ): Promise<BookingRequest | null> => {
   try {
     const bookingRequest: BookingRequest =
       await prisma.venueBookingRequest.findFirst({
         where: {
-          id: id,
-        },
+          id
+        }
       });
 
     return bookingRequest;
@@ -397,7 +397,7 @@ export const findBookingByID = async (
       await logger(
         `findBookingByID - ${id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
     return null;
@@ -412,7 +412,7 @@ export const findBookingByID = async (
  */
 export const isApproved = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<boolean> => {
   try {
     if (bookingRequest.isApproved !== undefined) {
@@ -426,7 +426,7 @@ export const isApproved = async (
       await logger(
         `isApproved - ${bookingRequest.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
     return true;
@@ -441,7 +441,7 @@ export const isApproved = async (
  */
 export const isCancelled = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<boolean> => {
   try {
     if (bookingRequest.isCancelled !== undefined) {
@@ -455,7 +455,7 @@ export const isCancelled = async (
       await logger(
         `isCancelled - ${bookingRequest.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
     return true;
@@ -470,7 +470,7 @@ export const isCancelled = async (
  */
 export const isRejected = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<boolean> => {
   try {
     if (bookingRequest.isRejected !== undefined) {
@@ -484,7 +484,7 @@ export const isRejected = async (
       await logger(
         `isRejected - ${bookingRequest.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
     return true;
@@ -500,7 +500,7 @@ export const isRejected = async (
  */
 export const isOwner = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<boolean> => {
   try {
     if (
@@ -517,7 +517,7 @@ export const isOwner = async (
       await logger(
         `isOwner - ${bookingRequest.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
     return false;
@@ -535,21 +535,21 @@ export const isOwner = async (
  */
 export const isConflict = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<boolean> => {
   try {
     const timeSlots: number[] = convertSlotToArray(
       bookingRequest.timeSlots,
-      true,
+      true
     ) as number[];
-    for (let i in timeSlots) {
+    for (const i in timeSlots) {
       const anyConflicting: BookingRequest =
         await prisma.venueBooking.findFirst({
           where: {
             date: bookingRequest.date,
             timingSlot: timeSlots[i],
-            venue: bookingRequest.venue,
-          },
+            venue: bookingRequest.venue
+          }
         });
 
       if (anyConflicting) {
@@ -564,10 +564,10 @@ export const isConflict = async (
       await logger(
         `isConflict - ${bookingRequest.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     } else {
-      await logger(`isConflict`, session.user.email, error.message);
+      await logger('isConflict', session.user.email, error.message);
     }
     return true;
   }
@@ -586,7 +586,7 @@ export const isConflict = async (
  */
 export const isThereExisting = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<boolean> => {
   try {
     let anyExisting: BookingRequest[] | null = null;
@@ -599,8 +599,8 @@ export const isThereExisting = async (
           cca: bookingRequest.cca,
           isApproved: false,
           isRejected: false,
-          isCancelled: false,
-        },
+          isCancelled: false
+        }
       });
     } else {
       anyExisting = await prisma.venueBookingRequest.findMany({
@@ -610,8 +610,8 @@ export const isThereExisting = async (
           isApproved: false,
           isRejected: false,
           isCancelled: false,
-          sessionEmail: session.user.email,
-        },
+          sessionEmail: session.user.email
+        }
       });
     }
 
@@ -648,32 +648,32 @@ export const isThereExisting = async (
  */
 export const setApprove = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     if (bookingRequest) {
       const update: BookingRequest = await prisma.venueBookingRequest.update({
         where: {
-          id: bookingRequest.id,
+          id: bookingRequest.id
         },
         data: {
           isApproved: true,
           isRejected: false,
           isCancelled: false,
-          updated_at: new Date().toISOString(),
-        },
+          updated_at: new Date().toISOString()
+        }
       });
 
       if (update) {
         const slotArrayMsg: number[] = convertSlotToArray(
           bookingRequest.timeSlots,
-          true,
+          true
         ) as number[];
         const slotArray: string[] = mapSlotToTiming(slotArrayMsg) as string[];
         const venueReq: Result = await findVenueByID(
           bookingRequest.venue,
-          session,
+          session
         );
         let date: Date | null = null;
         if (bookingRequest.date !== undefined) {
@@ -692,7 +692,7 @@ export const setApprove = async (
           } else {
             const ccaReq: Result = await findCCAbyID(
               bookingRequest.cca,
-              session,
+              session
             );
             cca = ccaReq.msg.name;
           }
@@ -703,9 +703,9 @@ export const setApprove = async (
             venue: venueReq.msg.name,
             dateStr: prettifiedDate,
             timeSlots: prettifyTiming(slotArray),
-            cca: cca,
+            cca,
             purpose: bookingRequest.purpose,
-            sessionEmail: session.user.email,
+            sessionEmail: session.user.email
           };
 
           try {
@@ -717,7 +717,7 @@ export const setApprove = async (
           try {
             const teleMSG: string = await approvalBookingRequestMessageBuilder(
               data,
-              session,
+              session
             );
             await sendMessageToChannel(teleMSG, session);
           } catch (error) {
@@ -732,13 +732,13 @@ export const setApprove = async (
           await logger(
             `setApprove - ${bookingRequest.id}`,
             session.user.email,
-            'Successfully updated request on approval',
+            'Successfully updated request on approval'
           );
         }
         result = {
           status: true,
           error: null,
-          msg: 'Successfully updated request on approval',
+          msg: 'Successfully updated request on approval'
         };
       } else {
         if (
@@ -748,7 +748,7 @@ export const setApprove = async (
           await logger(
             `setApprove - ${bookingRequest.id}`,
             session.user.email,
-            'Error in updating',
+            'Error in updating'
           );
         }
         result = { status: false, error: 'Error in updating', msg: '' };
@@ -762,7 +762,7 @@ export const setApprove = async (
       await logger(
         `setApprove - ${bookingRequest.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -785,36 +785,36 @@ export const setApprove = async (
 export const setReject = async (
   bookingRequest: BookingRequest,
   reason: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     if (bookingRequest && checkerString(reason)) {
       const update: BookingRequest = await prisma.venueBookingRequest.update({
         where: {
-          id: bookingRequest.id,
+          id: bookingRequest.id
         },
         data: {
           isApproved: false,
           isRejected: true,
           isCancelled: false,
-          reason: reason,
-          updated_at: new Date().toISOString(),
-        },
+          reason,
+          updated_at: new Date().toISOString()
+        }
       });
 
       if (update) {
         let slotArray: string | number[] | string[] = convertSlotToArray(
           bookingRequest.timeSlots,
-          true,
+          true
         ) as number[];
         slotArray = mapSlotToTiming(slotArray);
         const venueReq: Result = await findVenueByID(
           bookingRequest.venue,
-          session,
+          session
         );
-        let date: Date | null = convertUnixToDate(
-          bookingRequest.date as number,
+        const date: Date | null = convertUnixToDate(
+          bookingRequest.date as number
         );
 
         let prettifiedDate: string = '';
@@ -829,7 +829,7 @@ export const setReject = async (
           } else {
             const ccaReq: Result = await findCCAbyID(
               bookingRequest.cca,
-              session,
+              session
             );
             cca = ccaReq.msg.name;
           }
@@ -840,9 +840,9 @@ export const setReject = async (
             venue: venueReq.msg.name,
             dateStr: prettifiedDate,
             timeSlots: prettifyTiming(slotArray as string[]),
-            cca: cca,
+            cca,
             purpose: bookingRequest.purpose,
-            reason: reason,
+            reason
           };
 
           try {
@@ -854,7 +854,7 @@ export const setReject = async (
           try {
             const teleMSG: string = await rejectBookingRequestMessageBuilder(
               data,
-              session,
+              session
             );
             await sendMessageToChannel(teleMSG, session);
           } catch (error) {
@@ -869,13 +869,13 @@ export const setReject = async (
           await logger(
             `setReject - ${bookingRequest.id}`,
             session.user.email,
-            'Successfully updated request on reject',
+            'Successfully updated request on reject'
           );
         }
         result = {
           status: true,
           error: null,
-          msg: 'Successfully updated request on reject',
+          msg: 'Successfully updated request on reject'
         };
       } else {
         if (
@@ -885,7 +885,7 @@ export const setReject = async (
           await logger(
             `setReject - ${bookingRequest.id}`,
             session.user.email,
-            'Error in updating',
+            'Error in updating'
           );
         }
         result = { status: false, error: 'Error in updating', msg: '' };
@@ -895,7 +895,7 @@ export const setReject = async (
         await logger(
           `setReject - ${bookingRequest.id}`,
           session.user.email,
-          'No reason found',
+          'No reason found'
         );
       }
       result = { status: false, error: 'No reason found', msg: '' };
@@ -908,7 +908,7 @@ export const setReject = async (
       await logger(
         `setReject - ${bookingRequest.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -929,35 +929,35 @@ export const setReject = async (
  */
 export const setCancel = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     if (bookingRequest) {
       const update: BookingRequest = await prisma.venueBookingRequest.update({
         where: {
-          id: bookingRequest.id,
+          id: bookingRequest.id
         },
         data: {
           isApproved: false,
           isRejected: false,
           isCancelled: true,
-          updated_at: new Date().toISOString(),
-        },
+          updated_at: new Date().toISOString()
+        }
       });
 
       if (update) {
         let slotArray: string | number[] | string[] = convertSlotToArray(
           bookingRequest.timeSlots,
-          true,
+          true
         ) as number[];
         slotArray = mapSlotToTiming(slotArray);
         const venueReq: Result = await findVenueByID(
           bookingRequest.venue,
-          session,
+          session
         );
-        let date: Date | null = convertUnixToDate(
-          bookingRequest.date as number,
+        const date: Date | null = convertUnixToDate(
+          bookingRequest.date as number
         );
 
         let prettifiedDate: string = '';
@@ -980,9 +980,9 @@ export const setCancel = async (
             venue: venueReq.msg.name,
             dateStr: prettifiedDate,
             timeSlots: prettifyTiming(slotArray as string[]),
-            cca: cca,
+            cca,
             purpose: bookingRequest.purpose,
-            sessionEmail: session.user.email,
+            sessionEmail: session.user.email
           };
           try {
             await sendCancelMail(bookingRequest.email, data);
@@ -998,13 +998,13 @@ export const setCancel = async (
           await logger(
             `setCancel - ${bookingRequest.id}`,
             session.user.email,
-            'Successfully updated request on cancel',
+            'Successfully updated request on cancel'
           );
         }
         result = {
           status: true,
           error: null,
-          msg: 'Successfully updated request on cancel',
+          msg: 'Successfully updated request on cancel'
         };
       } else {
         if (
@@ -1014,7 +1014,7 @@ export const setCancel = async (
           await logger(
             `setCancel - ${bookingRequest.id}`,
             session.user.email,
-            'Error in updating',
+            'Error in updating'
           );
         }
         result = { status: false, error: 'Error in updating', msg: '' };
@@ -1028,7 +1028,7 @@ export const setCancel = async (
       await logger(
         `setCancel - ${bookingRequest.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -1044,10 +1044,10 @@ export const setCancel = async (
  */
 export const getConflictingRequest = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
-  let success = true;
+  const success = true;
 
   try {
     if (bookingRequest) {
@@ -1058,9 +1058,9 @@ export const getConflictingRequest = async (
             date: bookingRequest.date,
             venue: bookingRequest.venue,
             id: {
-              not: bookingRequest.id,
-            },
-          },
+              not: bookingRequest.id
+            }
+          }
         });
 
       if (sameDayVenue) {
@@ -1080,13 +1080,13 @@ export const getConflictingRequest = async (
         result = {
           status: true,
           error: null,
-          msg: conflicting,
+          msg: conflicting
         };
       } else {
         result = {
           status: false,
           error: 'Failed to get conflicting timeslots',
-          msg: '',
+          msg: ''
         };
       }
     } else {
@@ -1098,7 +1098,7 @@ export const getConflictingRequest = async (
       await logger(
         `getConflictingRequest - ${bookingRequest.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -1114,7 +1114,7 @@ export const getConflictingRequest = async (
  */
 export const setRejectConflicts = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   let success = true;
@@ -1127,16 +1127,16 @@ export const setRejectConflicts = async (
             date: bookingRequest.date,
             venue: bookingRequest.venue,
             id: {
-              not: bookingRequest.id,
+              not: bookingRequest.id
             },
             isApproved: false,
             isCancelled: false,
-            isRejected: false,
-          },
+            isRejected: false
+          }
         });
 
       if (sameDayVenue) {
-        let conflicting: string[] = [];
+        const conflicting: string[] = [];
         const reason: string =
           'Conflicting timeslot with another booking request';
 
@@ -1149,7 +1149,7 @@ export const setRejectConflicts = async (
                 const reject: Result = await setReject(
                   request,
                   reason,
-                  session,
+                  session
                 );
                 if (!reject.status) {
                   console.error(reject.error);
@@ -1171,13 +1171,13 @@ export const setRejectConflicts = async (
           await logger(
             `setRejectConflicts - ${bookingRequest.id}`,
             session.user.email,
-            'Successfully rejected conflicting timeslots',
+            'Successfully rejected conflicting timeslots'
           );
         }
         result = {
           status: true,
           error: null,
-          msg: 'Successfully rejected conflicting timeslots',
+          msg: 'Successfully rejected conflicting timeslots'
         };
       } else {
         if (
@@ -1187,13 +1187,13 @@ export const setRejectConflicts = async (
           await logger(
             `setRejectConflicts - ${bookingRequest.id}`,
             session.user.email,
-            'Failed to reject conflicting timeslots',
+            'Failed to reject conflicting timeslots'
           );
         }
         result = {
           status: false,
           error: 'Failed to reject conflicting timeslots',
-          msg: '',
+          msg: ''
         };
       }
     } else {
@@ -1205,7 +1205,7 @@ export const setRejectConflicts = async (
       await logger(
         `setRejectConflicts - ${bookingRequest.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -1223,7 +1223,7 @@ export const setRejectConflicts = async (
 export const updateConflictingIDs = async (
   bookingRequest: BookingRequest,
   conflict: string[],
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -1231,12 +1231,12 @@ export const updateConflictingIDs = async (
     if (bookingRequest) {
       const update: BookingRequest = await prisma.venueBookingRequest.update({
         where: {
-          id: bookingRequest.id,
+          id: bookingRequest.id
         },
         data: {
           conflictRequest: conflict.toString(),
-          updated_at: new Date().toISOString(),
-        },
+          updated_at: new Date().toISOString()
+        }
       });
 
       if (update) {
@@ -1247,13 +1247,13 @@ export const updateConflictingIDs = async (
           await logger(
             `updateConflictingIDs - ${bookingRequest.id}`,
             session.user.email,
-            'Successfully updated request on reject',
+            'Successfully updated request on reject'
           );
         }
         result = {
           status: true,
           error: null,
-          msg: 'Successfully updated request on reject',
+          msg: 'Successfully updated request on reject'
         };
       } else {
         if (
@@ -1263,7 +1263,7 @@ export const updateConflictingIDs = async (
           await logger(
             `updateConflictingIDs - ${bookingRequest.id}`,
             session.user.email,
-            'Error in updating',
+            'Error in updating'
           );
         }
         result = { status: false, error: 'Error in updating', msg: '' };
@@ -1277,7 +1277,7 @@ export const updateConflictingIDs = async (
       await logger(
         `updateConflictingIDs - ${bookingRequest.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -1293,12 +1293,12 @@ export const updateConflictingIDs = async (
  */
 export const createVenueBookingRequest = async (
   data: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<BookingRequest | null> => {
   try {
     const bookedTimeSlots: BookingRequest =
       await prisma.venueBookingRequest.create({
-        data: data,
+        data
       });
 
     if (bookedTimeSlots) {
@@ -1309,7 +1309,7 @@ export const createVenueBookingRequest = async (
         await logger(
           'createVenueBookingRequest',
           session.user.email,
-          `Successfully created venue booking request`,
+          'Successfully created venue booking request'
         );
       }
     }
@@ -1319,7 +1319,7 @@ export const createVenueBookingRequest = async (
     await logger(
       'createVenueBookingRequest',
       session.user.email,
-      error.message,
+      error.message
     );
     return null;
   }
@@ -1333,7 +1333,7 @@ export const createVenueBookingRequest = async (
  */
 export const notifyConflicts = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   let success: boolean = true;
@@ -1348,13 +1348,13 @@ export const notifyConflicts = async (
               const conflictID: string = conflicts[key];
               const sameDayVenue: BookingRequest | null = await findBookingByID(
                 conflictID,
-                session,
+                session
               );
 
               if (sameDayVenue !== null) {
                 const email: Result = await notifyConflictsEmail(
                   sameDayVenue,
-                  session,
+                  session
                 );
                 if (!email.status) {
                   console.error(email.error);
@@ -1376,13 +1376,13 @@ export const notifyConflicts = async (
           await logger(
             `notifyConflicts - ${bookingRequest.id}`,
             session.user.email,
-            'Successfully notified conflicting bookings',
+            'Successfully notified conflicting bookings'
           );
         }
         result = {
           status: true,
           error: null,
-          msg: 'Successfully notified conflicting bookings',
+          msg: 'Successfully notified conflicting bookings'
         };
       } else {
         if (
@@ -1392,13 +1392,13 @@ export const notifyConflicts = async (
           await logger(
             `notifyConflicts - ${bookingRequest.id}`,
             session.user.email,
-            'Failed to notify conflicting bookings',
+            'Failed to notify conflicting bookings'
           );
         }
         result = {
           status: false,
           error: 'Failed to notify conflicting bookings',
-          msg: '',
+          msg: ''
         };
       }
     } else {
@@ -1410,7 +1410,7 @@ export const notifyConflicts = async (
       await logger(
         `notifyConflicts - ${bookingRequest.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -1426,7 +1426,7 @@ export const notifyConflicts = async (
  */
 export const notifyConflictsEmail = async (
   bookingRequest: BookingRequest,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -1434,14 +1434,14 @@ export const notifyConflictsEmail = async (
     if (bookingRequest) {
       const slotArr: number[] = convertSlotToArray(
         bookingRequest.timeSlots,
-        true,
+        true
       ) as number[];
       const slotArray: string[] = mapSlotToTiming(slotArr) as string[];
       const venueReq: Result = await findVenueByID(
         bookingRequest.venue,
-        session,
+        session
       );
-      let date: Date | null = convertUnixToDate(bookingRequest.date as number);
+      const date: Date | null = convertUnixToDate(bookingRequest.date as number);
 
       let prettifiedDate: string = '';
       if (date !== null) {
@@ -1469,8 +1469,8 @@ export const notifyConflictsEmail = async (
           venue: venueReq.msg.name,
           dateStr: prettifiedDate,
           timeSlots: prettifyTiming(slotArray),
-          cca: cca,
-          purpose: bookingRequest.purpose,
+          cca,
+          purpose: bookingRequest.purpose
         };
 
         try {
@@ -1483,7 +1483,7 @@ export const notifyConflictsEmail = async (
             await logger(
               `notifyConflictsEmail - ${bookingRequest.id}`,
               session.user.email,
-              'Successfully notified!',
+              'Successfully notified!'
             );
           }
         } catch (error) {
@@ -1495,7 +1495,7 @@ export const notifyConflictsEmail = async (
             await logger(
               `notifyConflictsEmail - ${bookingRequest.id}`,
               session.user.email,
-              error.message,
+              error.message
             );
           }
           result = { status: false, error: 'Failed to notify users', msg: '' };
@@ -1510,7 +1510,7 @@ export const notifyConflictsEmail = async (
       await logger(
         `notifyConflictsEmail - ${bookingRequest.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -1525,7 +1525,7 @@ export const notifyConflictsEmail = async (
  * @returns A Result containing the status wrapped in a Promise
  */
 export const deleteAllVenueBookingRequest = async (
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -1533,24 +1533,24 @@ export const deleteAllVenueBookingRequest = async (
     await logger(
       'deleteAllVenueBookingRequest',
       session.user.email,
-      'Successfully deleted all booking requests!',
+      'Successfully deleted all booking requests!'
     );
     result = {
       status: true,
       error: null,
-      msg: 'Successfully deleted all booking requests!',
+      msg: 'Successfully deleted all booking requests!'
     };
   } catch (error) {
     console.error(error);
     await logger(
       'deleteAllVenueBookingRequest',
       session.user.email,
-      error.message,
+      error.message
     );
     result = {
       status: false,
       error: 'Error in deleting all booking requests!',
-      msg: '',
+      msg: ''
     };
   }
   return result;
@@ -1565,24 +1565,24 @@ export const deleteAllVenueBookingRequest = async (
  */
 export const deleteAllByVenueID = async (
   id: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     await prisma.venueBookingRequest.deleteMany({
       where: {
-        venue: id,
-      },
+        venue: id
+      }
     });
     await logger(
       'deleteAllByVenueID',
       session.user.email,
-      'Successfully deleted all booking requests!',
+      'Successfully deleted all booking requests!'
     );
     result = {
       status: true,
       error: null,
-      msg: 'Successfully deleted all booking requests!',
+      msg: 'Successfully deleted all booking requests!'
     };
   } catch (error) {
     console.error(error);
@@ -1590,7 +1590,7 @@ export const deleteAllByVenueID = async (
     result = {
       status: false,
       error: 'Error in deleting all booking requests!',
-      msg: '',
+      msg: ''
     };
   }
   return result;

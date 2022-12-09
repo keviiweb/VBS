@@ -10,7 +10,7 @@ const MotionBox = motion(Box);
  *
  * @returns A carousel
  */
-export default function Carousel() {
+export default function Carousel () {
   const styles: 'absolute' | 'relative' | 'fixed' = 'absolute';
   const arrowStyles = {
     cursor: 'pointer',
@@ -27,31 +27,31 @@ export default function Carousel() {
     userSelect: 'none' as 'none',
     _hover: {
       opacity: 0.8,
-      bg: 'black',
-    },
+      bg: 'black'
+    }
   };
 
   const slides = [
     {
       img: '/landing/carousel/dining-hall.png',
-      description: 'Dining Hall',
+      description: 'Dining Hall'
     },
     {
       img: '/landing/carousel/gym-2.png',
-      description: 'Gym',
+      description: 'Gym'
     },
     {
       img: '/landing/carousel/learning-and-media-room.png',
-      description: 'Learning and Media Room',
+      description: 'Learning and Media Room'
     },
     {
       img: '/landing/carousel/single-room.png',
-      description: 'Single Room',
+      description: 'Single Room'
     },
     {
       img: '/landing/carousel/tennis-court.png',
-      description: 'Tennis Court',
-    },
+      description: 'Tennis Court'
+    }
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -70,7 +70,7 @@ export default function Carousel() {
 
   const carouselStyle = {
     transition: 'all .5s',
-    ml: `-${currentSlide * 100}%`,
+    ml: `-${currentSlide * 100}%`
   };
 
   return (

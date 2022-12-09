@@ -6,7 +6,7 @@ import {
   SimpleGrid,
   Stack,
   Text,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
 import { parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
@@ -33,7 +33,7 @@ const MotionBox = motion(Box);
  * @param props Permission level of user
  * @returns Manage Venues page
  */
-export default function ManageVenues(props: any) {
+export default function ManageVenues (props: any) {
   const toast = useToast();
 
   const [level, setLevel] = useState(levels.USER);
@@ -47,8 +47,8 @@ export default function ManageVenues(props: any) {
       const rawResponse = await fetch('/api/log/delete', {
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
       const content: Result = await rawResponse.json();
       console.log(content);
@@ -58,7 +58,7 @@ export default function ManageVenues(props: any) {
           description: content.msg,
           status: 'success',
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         });
       } else {
         toast({
@@ -66,7 +66,7 @@ export default function ManageVenues(props: any) {
           description: content.error,
           status: 'error',
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         });
       }
     } catch (error) {
@@ -83,8 +83,8 @@ export default function ManageVenues(props: any) {
       const rawResponse = await fetch('/api/booking/delete', {
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
       const content: Result = await rawResponse.json();
       console.log(content);
@@ -94,7 +94,7 @@ export default function ManageVenues(props: any) {
           description: content.msg,
           status: 'success',
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         });
       } else {
         toast({
@@ -102,7 +102,7 @@ export default function ManageVenues(props: any) {
           description: content.error,
           status: 'error',
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         });
       }
     } catch (error) {
@@ -119,8 +119,8 @@ export default function ManageVenues(props: any) {
       const rawResponse = await fetch('/api/bookingReq/delete', {
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
       const content: Result = await rawResponse.json();
       console.log(content);
@@ -130,7 +130,7 @@ export default function ManageVenues(props: any) {
           description: content.msg,
           status: 'success',
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         });
       } else {
         toast({
@@ -138,7 +138,7 @@ export default function ManageVenues(props: any) {
           description: content.error,
           status: 'error',
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         });
       }
     } catch (error) {
@@ -149,7 +149,7 @@ export default function ManageVenues(props: any) {
   }, [toast]);
 
   useEffect(() => {
-    async function generate(propsField: any) {
+    async function generate (propsField: any) {
       setLevel(propsField.data);
     }
 
@@ -192,7 +192,7 @@ export default function ManageVenues(props: any) {
                   bg='blue.400'
                   color='white'
                   _hover={{
-                    bg: 'blue.500',
+                    bg: 'blue.500'
                   }}
                   onClick={handleDeleteAllLogs}
                 >
@@ -226,7 +226,7 @@ export default function ManageVenues(props: any) {
                   bg='blue.400'
                   color='white'
                   _hover={{
-                    bg: 'blue.500',
+                    bg: 'blue.500'
                   }}
                   onClick={handleDeleteAllBooking}
                 >
@@ -260,7 +260,7 @@ export default function ManageVenues(props: any) {
                   bg='blue.400'
                   color='white'
                   _hover={{
-                    bg: 'blue.500',
+                    bg: 'blue.500'
                   }}
                   onClick={handleDeleteAllBookingRequest}
                 >
@@ -278,7 +278,7 @@ export default function ManageVenues(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59',
+    'public, s-maxage=10, stale-while-revalidate=59'
   );
 
   let data: number = levels.USER;
@@ -293,7 +293,7 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
 
   return {
     props: {
-      data: data,
-    },
+      data
+    }
   };
 };

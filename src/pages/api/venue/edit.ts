@@ -12,8 +12,8 @@ import hasPermission from '@constants/sys/permission';
 
 export const config = {
   api: {
-    bodyParser: false,
-  },
+    bodyParser: false
+  }
 };
 
 /**
@@ -32,7 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   if (
@@ -40,7 +40,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     session !== null &&
     hasPermission(session.user.admin, actions.EDIT_VENUE)
   ) {
-    const data: { fields: formidable.Fields; files: formidable.Files } =
+    const data: { fields: formidable.Fields, files: formidable.Files, } =
       await new Promise((resolve, reject) => {
         const form = new IncomingForm();
         form.parse(req, (err, fields, files) => {
@@ -66,16 +66,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const openingHours: string = (data.fields.openingHours as string).trim();
 
       const venueData: Venue = {
-        id: id,
-        capacity: capacity,
-        name: name,
-        description: description,
-        isInstantBook: isInstantBook,
-        visible: visible,
-        isChildVenue: isChildVenue,
-        parentVenue: parentVenue,
-        openingHours: openingHours,
-        updated_at: new Date().toISOString(),
+        id,
+        capacity,
+        name,
+        description,
+        isInstantBook,
+        visible,
+        isChildVenue,
+        parentVenue,
+        openingHours,
+        updated_at: new Date().toISOString()
       };
 
       const editVenueRequest: Result = await editVenue(venueData, session);
@@ -83,7 +83,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: true,
           error: '',
-          msg: editVenueRequest.status,
+          msg: editVenueRequest.status
         };
         res.status(200).send(result);
         res.end();
@@ -91,7 +91,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: editVenueRequest.error,
-          msg: '',
+          msg: ''
         };
         res.status(200).send(result);
         res.end();
@@ -101,7 +101,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Information of wrong type',
-        msg: '',
+        msg: ''
       };
       res.status(200).send(result);
       res.end();

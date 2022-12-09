@@ -11,7 +11,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Stack,
-  Text,
+  Text
 } from '@chakra-ui/react';
 
 /**
@@ -22,11 +22,11 @@ import {
  * @param param0 Modal functions and callback function
  * @returns A modal
  */
-export default function SessionDeleteConfirmationModal({
+export default function SessionDeleteConfirmationModal ({
   isOpen,
   onClose,
   modalData,
-  dataHandler,
+  dataHandler
 }) {
   const handleModalCloseButton = () => {
     setTimeout(() => {

@@ -1,4 +1,4 @@
-export type BookingRequest = {
+export interface BookingRequest {
   id?: string;
   email: string;
   userName?: string;
@@ -19,4 +19,4 @@ export type BookingRequest = {
   editable?: boolean;
   action?: any;
   updated_at?: string;
-};
+}

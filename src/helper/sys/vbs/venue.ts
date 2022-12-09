@@ -35,12 +35,12 @@ export const countVenue = async (session: Session): Promise<number> => {
  */
 export const fetchChildVenue = async (
   venue: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const childVenues: Venue[] = await prisma.venue.findMany({
-      where: { parentVenue: venue, isChildVenue: true },
+      where: { parentVenue: venue, isChildVenue: true }
     });
 
     if (childVenues) {
@@ -49,7 +49,7 @@ export const fetchChildVenue = async (
       result = {
         status: false,
         error: 'Failed to fetch child venues',
-        msg: [],
+        msg: []
       };
     }
   } catch (error) {
@@ -60,7 +60,7 @@ export const fetchChildVenue = async (
       await logger(
         `fetchChildVenue - ${venue}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -78,13 +78,13 @@ export const fetchChildVenue = async (
 export const fetchAllVenue = async (
   limit: number = 100000,
   skip: number = 0,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const locations: Venue[] = await prisma.venue.findMany({
       skip: skip * limit,
-      take: limit,
+      take: limit
     });
 
     if (locations) {
@@ -110,7 +110,7 @@ export const fetchVenue = async (session: Session): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const locations: Venue[] = await prisma.venue.findMany({
-      where: { visible: true, isChildVenue: false },
+      where: { visible: true, isChildVenue: false }
     });
 
     if (locations) {
@@ -135,12 +135,12 @@ export const fetchVenue = async (session: Session): Promise<Result> => {
  */
 export const findVenueByID = async (
   id: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const locations: Venue = await prisma.venue.findFirst({
-      where: { id: id },
+      where: { id }
     });
 
     if (locations) {
@@ -168,12 +168,12 @@ export const findVenueByID = async (
  */
 export const findVenueByName = async (
   name: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const locations: Venue = await prisma.venue.findUnique({
-      where: { name: name },
+      where: { name }
     });
 
     if (locations) {
@@ -189,7 +189,7 @@ export const findVenueByName = async (
       await logger(
         `findVenueByName - ${name}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -205,11 +205,11 @@ export const findVenueByName = async (
  */
 export const fetchOpeningHours = async (
   id: string,
-  session: Session,
-): Promise<{ start: number | null; end: number | null }> => {
+  session: Session
+): Promise<{ start: number | null, end: number | null, }> => {
   try {
     const locations: Venue = await prisma.venue.findFirst({
-      where: { id: id },
+      where: { id }
     });
 
     if (locations) {
@@ -233,7 +233,7 @@ export const fetchOpeningHours = async (
       await logger(
         `fetchOpeningHours - ${id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
     return { start: null, end: null };
@@ -257,8 +257,8 @@ export const fetchOpeningHours = async (
 export const splitHoursISO = async (
   date: Date,
   timeSlot: string,
-  session: Session,
-): Promise<{ start: string | null; end: string | null }> => {
+  session: Session
+): Promise<{ start: string | null, end: string | null, }> => {
   try {
     if (!isValidDate(date)) {
       return { start: null, end: null };
@@ -292,7 +292,7 @@ export const splitHoursISO = async (
             endHour.slice(2) +
             ':00';
 
-          return { start: start, end: end };
+          return { start, end };
         } else {
           return { start: null, end: null };
         }
@@ -319,8 +319,8 @@ export const splitHoursISO = async (
  */
 export const splitOpeningHours = async (
   opening: string,
-  session: Session,
-): Promise<{ start: number | null; end: number | null }> => {
+  session: Session
+): Promise<{ start: number | null, end: number | null, }> => {
   try {
     if (opening) {
       const hours: string[] = opening.split('-');
@@ -350,11 +350,11 @@ export const splitOpeningHours = async (
  */
 export const isInstantBook = async (
   id: string,
-  session: Session,
+  session: Session
 ): Promise<boolean> => {
   try {
     const locations: Venue = await prisma.venue.findFirst({
-      where: { id: id },
+      where: { id }
     });
 
     if (locations) {
@@ -379,11 +379,11 @@ export const isInstantBook = async (
  */
 export const isVisible = async (
   id: string,
-  session: Session,
+  session: Session
 ): Promise<boolean> => {
   try {
     const locations: Venue = await prisma.venue.findFirst({
-      where: { id: id },
+      where: { id }
     });
 
     if (locations) {
@@ -408,31 +408,31 @@ export const isVisible = async (
  */
 export const createVenue = async (
   data: Venue,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const venue: Venue = await prisma.venue.create({
-      data: data,
+      data
     });
 
     if (venue) {
       await logger(
         'createVenue',
         session.user.email,
-        `Successfully created ${venue.name}`,
+        `Successfully created ${venue.name}`
       );
       result = {
         status: true,
         error: '',
-        msg: `Successfully created ${venue.name}`,
+        msg: `Successfully created ${venue.name}`
       };
     } else {
       if (checkerString(data.name)) {
         await logger(
           'createVenue',
           session.user.email,
-          `Failed to create venue ${data.name}`,
+          `Failed to create venue ${data.name}`
         );
       }
       result = { status: false, error: 'Failed to create venue', msg: '' };
@@ -443,7 +443,7 @@ export const createVenue = async (
       await logger(
         `createVenue - ${data.name}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
     result = { status: false, error: 'Failed to create venue', msg: '' };
@@ -460,34 +460,34 @@ export const createVenue = async (
  */
 export const editVenue = async (
   data: Venue,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const venue: Venue = await prisma.venue.update({
       where: {
-        id: data.id,
+        id: data.id
       },
-      data: data,
+      data
     });
 
     if (venue) {
       await logger(
         'editVenue',
         session.user.email,
-        `Successfully updated ${venue.name}`,
+        `Successfully updated ${venue.name}`
       );
       result = {
         status: true,
         error: '',
-        msg: `Successfully updated ${venue.name}`,
+        msg: `Successfully updated ${venue.name}`
       };
     } else {
       if (checkerString(data.name)) {
         await logger(
           'editVenue',
           session.user.email,
-          `Failed to update ${data.name}`,
+          `Failed to update ${data.name}`
         );
       }
       result = { status: false, error: 'Failed to update venue', msg: '' };
@@ -513,7 +513,7 @@ export const editVenue = async (
  */
 export const deleteVenue = async (
   id: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
@@ -521,7 +521,7 @@ export const deleteVenue = async (
     if (deleteBookingReq.status) {
       const deleteBookingRes: Result = await deleteAllVenueBookingByVenueID(
         id,
-        session,
+        session
       );
       if (deleteBookingRes.status) {
         const deleteVenueRes: Result = await deleteVenueByID(id, session);
@@ -529,7 +529,7 @@ export const deleteVenue = async (
           result = {
             status: true,
             error: '',
-            msg: deleteVenueRes.msg,
+            msg: deleteVenueRes.msg
           };
         } else {
           result = { status: false, error: deleteVenueRes.error, msg: '' };
@@ -557,28 +557,28 @@ export const deleteVenue = async (
  */
 export const deleteVenueByID = async (
   id: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const venue: Venue = await prisma.venue.delete({
       where: {
-        id: id,
-      },
+        id
+      }
     });
 
     if (venue) {
       result = {
         status: true,
         error: '',
-        msg: `Successfully updated venue`,
+        msg: 'Successfully updated venue'
       };
     } else {
       if (checkerString(id)) {
         await logger(
           'deleteVenueByID',
           session.user.email,
-          `Failed to delete venue`,
+          'Failed to delete venue'
         );
       }
       result = { status: false, error: 'Failed to delete venue', msg: '' };

@@ -11,7 +11,7 @@ import { convertUnixToDate, dateISO } from '@constants/sys/date';
 
 import {
   fetchAllCCAAttendance,
-  fetchAllCCAAttendanceByCCA,
+  fetchAllCCAAttendanceByCCA
 } from '@helper/sys/cca/ccaAttendance';
 import { findCCASessionByID } from '@helper/sys/cca/ccaSession';
 import { findCCAbyID } from '@helper/sys/cca/cca';
@@ -32,7 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   const { ccaID } = req.body;
@@ -60,7 +60,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             if (attendance.sessionID !== undefined) {
               const sessionDetailsRes: Result = await findCCASessionByID(
                 attendance.sessionID,
-                session,
+                session
               );
               if (sessionDetailsRes.status) {
                 const sessionDetails: CCASession = sessionDetailsRes.msg;
@@ -76,20 +76,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 const sessionName: string = sessionDetails.name;
                 const ccaDetailsRes: Result = await findCCAbyID(
                   sessionDetails.ccaID,
-                  session,
+                  session
                 );
                 if (ccaDetailsRes.status) {
                   const ccaDetails: CCA = ccaDetailsRes.msg;
                   const ccaName: string = ccaDetails.name;
 
                   const data: CCAAttendance = {
-                    sessionName: sessionName,
-                    ccaName: ccaName,
-                    dateStr: dateStr,
-                    time: time,
+                    sessionName,
+                    ccaName,
+                    dateStr,
+                    time,
                     sessionEmail: attendance.sessionEmail,
                     ccaAttendance: attendance.ccaAttendance,
-                    ccaID: attendance.ccaID,
+                    ccaID: attendance.ccaID
                   };
 
                   parsedData.push(data);

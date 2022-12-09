@@ -9,7 +9,7 @@ import {
   findSlotsByID,
   checkerString,
   PERSONAL,
-  splitHours,
+  splitHours
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
 import { actions } from '@constants/sys/admin';
@@ -19,7 +19,7 @@ import { currentSession } from '@helper/sys/sessionServer';
 import {
   findVenueByID,
   splitOpeningHours,
-  splitHoursISO,
+  splitHoursISO
 } from '@helper/sys/vbs/venue';
 import { findCCAbyID } from '@helper/sys/cca/cca';
 import { findAllBookingByVenueID } from '@helper/sys/vbs/booking';
@@ -82,8 +82,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   const parsed: Booking = parsedBooking[pB];
 
                   let bookedTimeSlotsISO: {
-                    start: string | null;
-                    end: string | null;
+                    start: string | null,
+                    end: string | null,
                   } = { start: null, end: null };
 
                   if (
@@ -94,21 +94,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   ) {
                     let bookTimeSlots: string = '';
                     let timeSplit: {
-                      start: number | null;
-                      end: number | null;
+                      start: number | null,
+                      end: number | null,
                     } = { start: null, end: null };
 
                     if (book.timingSlot !== undefined) {
                       bookTimeSlots = mapSlotToTiming(
-                        book.timingSlot,
+                        book.timingSlot
                       ) as string;
                       timeSplit = await splitHours(bookTimeSlots);
                     }
 
                     let parsedtimeSlots: string = '';
                     let parsedtimeSlotsSplit: {
-                      start: number | null;
-                      end: number | null;
+                      start: number | null,
+                      end: number | null,
                     } = { start: null, end: null };
 
                     if (parsed.timeSlots !== undefined) {
@@ -134,7 +134,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                           bookedTimeSlotsISO = await splitHoursISO(
                             date,
                             parsed.timeSlots,
-                            session,
+                            session
                           );
                         }
 
@@ -155,7 +155,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                           bookedTimeSlotsISO = await splitHoursISO(
                             date,
                             parsed.timeSlots,
-                            session,
+                            session
                           );
                         }
 
@@ -174,7 +174,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               if (!duplicate) {
                 const venueReq: Result = await findVenueByID(
                   book.venue,
-                  session,
+                  session
                 );
                 if (venueReq.status) {
                   const venueReqMsg: Venue = venueReq.msg;
@@ -182,7 +182,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
                   const openingHours = await splitOpeningHours(
                     venueReqMsg.openingHours,
-                    session,
+                    session
                   );
 
                   let startHour: string | null = '';
@@ -203,27 +203,27 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                       .toString()
                       .slice(0, 2)}:${startHour.slice(2)}:00`;
                     endH = `${endHour.toString().slice(0, 2)}:${endHour.slice(
-                      2,
+                      2
                     )}:00`;
                   }
 
                   let bookedTimeSlots: string = '';
                   if (book.timingSlot !== undefined) {
                     bookedTimeSlots = mapSlotToTiming(
-                      book.timingSlot,
+                      book.timingSlot
                     ) as string;
                   }
 
                   let bookedTimeSlotsISO: {
-                    start: string | null;
-                    end: string | null;
+                    start: string | null,
+                    end: string | null,
                   } = { start: null, end: null };
 
                   if (date !== null) {
                     bookedTimeSlotsISO = await splitHoursISO(
                       date,
                       bookedTimeSlots,
-                      session,
+                      session
                     );
                   }
 
@@ -238,7 +238,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
                   const userRes: Result = await fetchUserByEmail(
                     book.email,
-                    session,
+                    session
                   );
                   const user: User = userRes.msg;
                   let username: string = '';
@@ -249,18 +249,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   const data: Booking = {
                     id: book.id,
                     email: book.email,
-                    venue: venue,
+                    venue,
                     date: book.date,
                     dateStr: prettifiedDate,
                     timeSlots: bookedTimeSlots,
                     purpose: book.purpose,
-                    cca: cca,
+                    cca,
                     startHour: startH,
                     endHour: endH,
                     title: book.purpose,
                     start: s,
                     end: e,
-                    userName: username,
+                    userName: username
                   };
 
                   parsedBooking.push(data);
@@ -272,7 +272,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: true,
             error: null,
-            msg: parsedBooking,
+            msg: parsedBooking
           };
           res.status(200).send(result);
           res.end();
@@ -280,7 +280,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: 'Cannot get all bookings',
-            msg: [],
+            msg: []
           };
           res.status(200).send(result);
           res.end();

@@ -1,4 +1,4 @@
-export type CCASession = {
+export interface CCASession {
   id?: string;
   ccaID: string;
   ccaName?: string;
@@ -18,4 +18,4 @@ export type CCASession = {
   ldrNotes?: string;
   action?: any;
   updated_at?: string;
-};
+}

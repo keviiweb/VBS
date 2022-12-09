@@ -12,7 +12,7 @@ import {
   isRejected,
   isOwner,
   setCancel,
-  notifyConflicts,
+  notifyConflicts
 } from '@helper/sys/vbs/bookingReq';
 import { currentSession } from '@helper/sys/sessionServer';
 import { deleteVenueBooking } from '@helper/sys/vbs/booking';
@@ -32,7 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   const { id } = req.body;
@@ -41,28 +41,28 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const bookingID: string = (id as string).trim();
       const bookingRequest: BookingRequest | null = await findBookingByID(
         bookingID,
-        session,
+        session
       );
 
       if (bookingRequest !== null && bookingRequest !== undefined) {
         const isRequestCancelled: boolean = await isCancelled(
           bookingRequest,
-          session,
+          session
         );
         const isRequestRejected: boolean = await isRejected(
           bookingRequest,
-          session,
+          session
         );
         const isRequestByOwner: boolean = await isOwner(
           bookingRequest,
-          session,
+          session
         );
 
         if (isRequestCancelled) {
           result = {
             status: false,
             error: 'Request already cancelled!',
-            msg: '',
+            msg: ''
           };
           res.status(200).send(result);
           res.end();
@@ -70,7 +70,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: 'Request already rejected!',
-            msg: '',
+            msg: ''
           };
           res.status(200).send(result);
           res.end();
@@ -78,7 +78,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: 'Only the creator can cancel this request!',
-            msg: '',
+            msg: ''
           };
           res.status(200).send(result);
           res.end();
@@ -92,52 +92,52 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           if (compareDate(currentDate, minDay)) {
             const isRequestApproved: boolean = await isApproved(
               bookingRequest,
-              session,
+              session
             );
 
             if (isRequestApproved) {
               const timeSlots: number[] = convertSlotToArray(
                 bookingRequest.timeSlots,
-                true,
+                true
               ) as number[];
 
               const deleteBooking = await deleteVenueBooking(
                 bookingRequest,
                 timeSlots,
-                session,
+                session
               );
 
               if (!deleteBooking.status) {
                 result = {
                   status: false,
                   error: deleteBooking.error,
-                  msg: '',
+                  msg: ''
                 };
                 res.status(200).send(result);
                 res.end();
               } else {
                 const notifyOtherRejected: Result = await notifyConflicts(
                   bookingRequest,
-                  session,
+                  session
                 );
                 if (!notifyOtherRejected.status) {
                   result = {
                     status: false,
                     error: notifyOtherRejected.error,
-                    msg: '',
+                    msg: ''
                   };
                   res.status(200).send(result);
                   res.end();
                 } else {
                   const reject: Result = await setCancel(
                     bookingRequest,
-                    session,
+                    session
                   );
                   if (reject.status) {
                     result = {
                       status: true,
                       error: null,
-                      msg: reject.msg,
+                      msg: reject.msg
                     };
                     res.status(200).send(result);
                     res.end();
@@ -145,7 +145,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     result = {
                       status: false,
                       error: reject.error,
-                      msg: '',
+                      msg: ''
                     };
                     res.status(200).send(result);
                     res.end();
@@ -158,7 +158,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 result = {
                   status: true,
                   error: null,
-                  msg: reject.msg,
+                  msg: reject.msg
                 };
                 res.status(200).send(result);
                 res.end();
@@ -166,7 +166,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 result = {
                   status: false,
                   error: reject.error,
-                  msg: '',
+                  msg: ''
                 };
                 res.status(200).send(result);
                 res.end();
@@ -177,7 +177,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: msg,
-              msg: '',
+              msg: ''
             };
             res.status(200).send(result);
             res.end();

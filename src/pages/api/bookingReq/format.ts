@@ -11,7 +11,7 @@ import {
   prettifyTiming,
   checkerArray,
   PERSONAL,
-  checkerString,
+  checkerString
 } from '@constants/sys/helper';
 import { convertUnixToDate, prettifyDate } from '@constants/sys/date';
 import { actions } from '@constants/sys/admin';
@@ -42,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   if (
@@ -121,7 +121,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
               const userRes: Result = await fetchUserByEmail(
                 book.email,
-                session,
+                session
               );
               const user: User = userRes.msg;
               let username: string = '';
@@ -131,7 +131,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
               const conflictsRequest: Result = await getConflictingRequest(
                 book,
-                session,
+                session
               );
 
               let conflicts: BookingRequest[] = [];
@@ -142,18 +142,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               const data: BookingRequest = {
                 id: book.id,
                 email: book.email,
-                venue: venue,
+                venue,
                 dateStr: prettified,
                 timeSlots: prettifyTiming(timeSlots),
                 isApproved: book.isApproved,
                 isRejected: book.isRejected,
                 isCancelled: book.isCancelled,
                 purpose: book.purpose,
-                cca: cca,
-                status: status,
+                cca,
+                status,
                 conflictRequestObj: conflicts,
                 reason: book.reason,
-                userName: username,
+                userName: username
               };
 
               parsedBooking.push(data);
@@ -167,7 +167,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: true,
         error: null,
-        msg: parsedBooking,
+        msg: parsedBooking
       };
       res.status(200).send(result);
       res.end();
@@ -175,7 +175,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Cannot get all bookings',
-        msg: [],
+        msg: []
       };
       res.status(200).send(result);
       res.end();

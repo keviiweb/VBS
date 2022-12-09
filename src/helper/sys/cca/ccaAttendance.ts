@@ -13,7 +13,7 @@ import { logger } from '@helper/sys/misc/logger';
  * @returns A Result containing the list of attendance wrapped in a Promise
  */
 export const fetchAllCCAAttendance = async (
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -48,18 +48,18 @@ export const fetchSpecificCCAAttendanceByUserEmail = async (
   email: string,
   limit: number = 100000,
   skip: number = 0,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCAAttendance[] = await prisma.cCAAttendance.findMany({
       where: {
-        ccaID: ccaID,
-        sessionEmail: email,
+        ccaID,
+        sessionEmail: email
       },
       skip: skip * limit,
-      take: limit,
+      take: limit
     });
 
     if (query) {
@@ -72,7 +72,7 @@ export const fetchSpecificCCAAttendanceByUserEmail = async (
     await logger(
       'fetchSpecificCCAAttendanceByUserEmail',
       session.user.email,
-      error.message,
+      error.message
     );
     result = { status: false, error: 'Failed to fetch attendance', msg: [] };
   }
@@ -88,15 +88,15 @@ export const fetchSpecificCCAAttendanceByUserEmail = async (
  */
 export const fetchAllCCAAttendanceBySession = async (
   sessionID: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCAAttendance[] = await prisma.cCAAttendance.findMany({
       where: {
-        sessionID: sessionID,
-      },
+        sessionID
+      }
     });
 
     if (query) {
@@ -109,7 +109,7 @@ export const fetchAllCCAAttendanceBySession = async (
     await logger(
       'fetchAllCCAAttendanceBySession',
       session.user.email,
-      error.message,
+      error.message
     );
     result = { status: false, error: 'Failed to fetch attendance', msg: [] };
   }
@@ -125,15 +125,15 @@ export const fetchAllCCAAttendanceBySession = async (
  */
 export const fetchAllCCAAttendanceByCCA = async (
   ccaID: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCAAttendance[] = await prisma.cCAAttendance.findMany({
       where: {
-        ccaID: ccaID,
-      },
+        ccaID
+      }
     });
 
     if (query) {
@@ -146,7 +146,7 @@ export const fetchAllCCAAttendanceByCCA = async (
     await logger(
       'fetchAllCCAAttendanceByCCA',
       session.user.email,
-      error.message,
+      error.message
     );
     result = { status: false, error: 'Failed to fetch attendance', msg: [] };
   }
@@ -161,7 +161,7 @@ export const fetchAllCCAAttendanceByCCA = async (
  * @returns Total number of hours wrapped in a Promise
  */
 export const countTotalAttendanceHours = async (
-  attendance: CCAAttendance[],
+  attendance: CCAAttendance[]
 ): Promise<number> => {
   if (
     attendance !== null &&
@@ -198,36 +198,36 @@ export const countTotalAttendanceHours = async (
 export const deleteAttendance = async (
   sessionID: string,
   attend: CCAAttendance,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCAAttendance = await prisma.cCAAttendance.deleteMany({
       where: {
-        sessionID: sessionID,
+        sessionID,
         ccaID: attend.ccaID,
         sessionEmail: attend.sessionEmail,
-        id: attend.id,
-      },
+        id: attend.id
+      }
     });
 
     if (query) {
       await logger(
         'deleteAttendance',
         session.user.email,
-        'Successfully deleted attendance',
+        'Successfully deleted attendance'
       );
       result = {
         status: true,
         error: null,
-        msg: 'Successfully deleted attendance',
+        msg: 'Successfully deleted attendance'
       };
     } else {
       await logger(
         'deleteAttendance',
         session.user.email,
-        'Failed to delete attendance',
+        'Failed to delete attendance'
       );
       result = { status: false, error: 'Failed to delete attendance', msg: '' };
     }
@@ -248,29 +248,29 @@ export const deleteAttendance = async (
  */
 export const deleteAttendanceBySessionID = async (
   sessionID: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCAAttendance = await prisma.cCAAttendance.deleteMany({
       where: {
-        sessionID: sessionID,
-      },
+        sessionID
+      }
     });
 
     if (query) {
       await logger(
         'deleteAttendanceBySessionID',
         session.user.email,
-        'Successfully deleted attendance',
+        'Successfully deleted attendance'
       );
       result = { status: true, error: null, msg: query };
     } else {
       await logger(
         'deleteAttendanceBySessionID',
         session.user.email,
-        'Failed to delete attendance',
+        'Failed to delete attendance'
       );
       result = { status: false, error: 'Failed to delete attendance', msg: '' };
     }
@@ -279,7 +279,7 @@ export const deleteAttendanceBySessionID = async (
     await logger(
       'deleteAttendanceBySessionID',
       session.user.email,
-      error.message,
+      error.message
     );
     result = { status: false, error: error.toString(), msg: '' };
   }
@@ -295,36 +295,36 @@ export const deleteAttendanceBySessionID = async (
  */
 export const createAttendance = async (
   attend: CCAAttendance,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCAAttendance = await prisma.cCAAttendance.create({
-      data: attend,
+      data: attend
     });
 
     if (query) {
       await logger(
         'createAttendance',
         session.user.email,
-        `Successfully created attendance for ${attend.sessionEmail}`,
+        `Successfully created attendance for ${attend.sessionEmail}`
       );
       result = {
         status: true,
         error: null,
-        msg: `Successfully created attendance for ${attend.sessionEmail}`,
+        msg: `Successfully created attendance for ${attend.sessionEmail}`
       };
     } else {
       await logger(
         'createAttendance',
         session.user.email,
-        `Failed to create attendance for ${attend.sessionEmail}`,
+        `Failed to create attendance for ${attend.sessionEmail}`
       );
       result = {
         status: false,
         error: `Failed to create attendance for ${attend.sessionEmail}`,
-        msg: '',
+        msg: ''
       };
     }
   } catch (error) {
@@ -333,7 +333,7 @@ export const createAttendance = async (
     result = {
       status: false,
       error: `Failed to create attendance for ${attend.sessionEmail}`,
-      msg: '',
+      msg: ''
     };
   }
 
@@ -354,7 +354,7 @@ export const createAttendance = async (
 export const editAttendance = async (
   ccaSessionID: string,
   attendance: CCAAttendance[],
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -368,7 +368,7 @@ export const editAttendance = async (
             const deleteRes: Result = await deleteAttendance(
               ccaSessionID,
               attend,
-              session,
+              session
             );
             if (!deleteRes.status) {
               result = { status: false, error: deleteRes.error, msg: '' };
@@ -381,7 +381,7 @@ export const editAttendance = async (
               ccaID: attend.ccaID,
               ccaAttendance: attend.ccaAttendance,
               sessionID: ccaSessionID,
-              sessionEmail: attend.sessionEmail,
+              sessionEmail: attend.sessionEmail
             };
 
             const createRes: Result = await createAttendance(data, session);
@@ -389,12 +389,12 @@ export const editAttendance = async (
               await logger(
                 'editAttendance',
                 session.user.email,
-                'Successfully edited attendance',
+                'Successfully edited attendance'
               );
               result = {
                 status: true,
                 error: null,
-                msg: createRes.msg,
+                msg: createRes.msg
               };
             } else {
               result = { status: false, error: createRes.error, msg: '' };
@@ -404,12 +404,12 @@ export const editAttendance = async (
             await logger(
               'editAttendance',
               session.user.email,
-              'Successfully edited attendance',
+              'Successfully edited attendance'
             );
             result = {
               status: true,
               error: null,
-              msg: 'Successfully edited attendance',
+              msg: 'Successfully edited attendance'
             };
           }
         }

@@ -26,7 +26,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   const { id, name, email, admin } = req.body;
@@ -47,7 +47,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         name: nameField,
         email: emailField,
         admin: adminField,
-        updated_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
 
       const userRes: Result = await editUser(user, session);

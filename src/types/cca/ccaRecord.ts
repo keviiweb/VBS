@@ -1,4 +1,4 @@
-export type CCARecord = {
+export interface CCARecord {
   id?: string;
   ccaID: string;
   ccaName?: string;
@@ -11,4 +11,4 @@ export type CCARecord = {
   rate?: string;
   action?: any;
   updated_at?: string;
-};
+}

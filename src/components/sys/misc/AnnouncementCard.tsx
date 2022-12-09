@@ -11,7 +11,7 @@ import { checkerString } from '@constants/sys/helper';
  * @param param0 Product
  * @returns A card
  */
-export default function AnnouncementCard({ product }) {
+export default function AnnouncementCard ({ product }) {
   const { image, description } = product;
 
   return (

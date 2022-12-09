@@ -8,7 +8,7 @@ import {
   Heading,
   Input,
   Stack,
-  Text,
+  Text
 } from '@chakra-ui/react';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 import TableWidget from '@components/sys/misc/TableWidget';
@@ -31,7 +31,7 @@ import { KEIPS, KEIPSCCA, KEIPSBonus } from 'types/misc/keips';
  *
  * @returns KEIPS page
  */
-export default function KEIPSComponent() {
+export default function KEIPSComponent () {
   const [loadingData, setLoadingData] = useState(true);
   const [successData, setSuccessData] = useState(false);
 
@@ -77,7 +77,7 @@ export default function KEIPSComponent() {
           const parsedData: KEIPSBonus = {
             cca: dataArr[0],
             description: dataArr[1],
-            total: Number(dataArr[2]),
+            total: Number(dataArr[2])
           };
 
           totalData.push(parsedData);
@@ -104,7 +104,7 @@ export default function KEIPSComponent() {
             atte: Number(dataArr[2]),
             perf: Number(dataArr[3]),
             outs: Number(dataArr[4]),
-            total: Number(dataArr[5]),
+            total: Number(dataArr[5])
           };
 
           totalData.push(parsedData);
@@ -131,7 +131,7 @@ export default function KEIPSComponent() {
             atte: Number(dataArr[2]),
             perf: Number(dataArr[3]),
             outs: Number(dataArr[4]),
-            total: Number(dataArr[5]),
+            total: Number(dataArr[5])
           };
 
           totalData.push(parsedData);
@@ -177,11 +177,11 @@ export default function KEIPSComponent() {
         setSuccessData(true);
       }
     },
-    [populateTopCCA, populateAllCCA, populateBonusCCA],
+    [populateTopCCA, populateAllCCA, populateBonusCCA]
   );
 
   const handleSubmit = useCallback(
-    async (event: { preventDefault: () => void }) => {
+    async (event: { preventDefault: () => void, }) => {
       event.preventDefault();
       if (checkerString(matnetDB.current) && validateField(matnetDB.current)) {
         setError('');
@@ -191,11 +191,11 @@ export default function KEIPSComponent() {
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              matnet: matnetDB.current,
-            }),
+              matnet: matnetDB.current
+            })
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -210,85 +210,85 @@ export default function KEIPSComponent() {
       }
       setError('Please enter a valid MATNET');
     },
-    [includeActionButton],
+    [includeActionButton]
   );
 
   const columns = useMemo(
     () => [
       {
         Header: 'OSA Points',
-        accessor: 'OSA',
+        accessor: 'OSA'
       },
       {
         Header: 'OSA Percentile',
-        accessor: 'osaPercentile',
+        accessor: 'osaPercentile'
       },
       {
         Header: 'Room Draw Points',
-        accessor: 'roomDraw',
+        accessor: 'roomDraw'
       },
       {
         Header: 'Contrasting',
-        accessor: 'contrastingStr',
+        accessor: 'contrastingStr'
       },
       {
         Header: 'Semester Stayed',
-        accessor: 'semesterStay',
+        accessor: 'semesterStay'
       },
       {
         Header: 'Fullfilled Criteria?',
-        accessor: 'fulfilledStr',
-      },
+        accessor: 'fulfilledStr'
+      }
     ],
-    [],
+    []
   );
 
   const columnsData = useMemo(
     () => [
       {
         Header: 'CCA',
-        accessor: 'cca',
+        accessor: 'cca'
       },
       {
         Header: 'Category',
-        accessor: 'cat',
+        accessor: 'cat'
       },
       {
         Header: 'Attendance',
-        accessor: 'atte',
+        accessor: 'atte'
       },
       {
         Header: 'Performance',
-        accessor: 'perf',
+        accessor: 'perf'
       },
       {
         Header: 'Outstanding',
-        accessor: 'outs',
+        accessor: 'outs'
       },
       {
         Header: 'Total',
-        accessor: 'total',
-      },
+        accessor: 'total'
+      }
     ],
-    [],
+    []
   );
 
   const columnsBonus = useMemo(
     () => [
       {
         Header: 'CCA',
-        accessor: 'cca',
+        accessor: 'cca'
       },
       {
         Header: 'Description',
-        accessor: 'description',
+        accessor: 'description'
       },
       {
         Header: 'Total',
-        accessor: 'total',
-      },
+        accessor: 'total'
+      }
     ],
-    [],
+    []
   );
 
   return (
@@ -345,7 +345,7 @@ export default function KEIPSComponent() {
                     bg='blue.400'
                     color='white'
                     _hover={{
-                      bg: 'blue.500',
+                      bg: 'blue.500'
                     }}
                   >
                     Submit
@@ -364,74 +364,78 @@ export default function KEIPSComponent() {
           </Box>
         )}
 
-        {!loadingData && successData && data && data !== [] && data.length > 0 && (
-          <Box>
-            <Stack spacing={30}>
-              <Box overflow='auto'>
-                <Stack align='center' justify='center' spacing={10}>
-                  {checkerString(matnet) && <Text>MATNET: {matnet}</Text>}
-
-                  <TableWidget
-                    id='overall-keips'
-                    columns={columns}
-                    data={data}
-                    controlledPageCount={pageCount}
-                    dataHandler={null}
-                    showPage={false}
-                  />
-                </Stack>
-              </Box>
-
-              {showTop && topCCA.length > 0 && (
+        {!loadingData &&
+          successData &&
+          data &&
+          data !== [] &&
+          data.length > 0 && (
+            <Box>
+              <Stack spacing={30}>
                 <Box overflow='auto'>
-                  <Stack align='center' justify='center'>
-                    <Text>Top CCAs</Text>
+                  <Stack align='center' justify='center' spacing={10}>
+                    {checkerString(matnet) && <Text>MATNET: {matnet}</Text>}
+
                     <TableWidget
-                      id='topcca-keips'
-                      columns={columnsData}
-                      data={topCCA}
+                      id='overall-keips'
+                      columns={columns}
+                      data={data}
                       controlledPageCount={pageCount}
                       dataHandler={null}
                       showPage={false}
                     />
                   </Stack>
                 </Box>
-              )}
 
-              {showAll && allCCA.length > 0 && (
-                <Box overflow='auto'>
-                  <Stack align='center' justify='center'>
-                    <Text>All CCAs</Text>
-                    <TableWidget
-                      id='all-keips'
-                      columns={columnsData}
-                      data={allCCA}
-                      controlledPageCount={pageCount}
-                      dataHandler={null}
-                      showPage={false}
-                    />
-                  </Stack>
-                </Box>
-              )}
+                {showTop && topCCA.length > 0 && (
+                  <Box overflow='auto'>
+                    <Stack align='center' justify='center'>
+                      <Text>Top CCAs</Text>
+                      <TableWidget
+                        id='topcca-keips'
+                        columns={columnsData}
+                        data={topCCA}
+                        controlledPageCount={pageCount}
+                        dataHandler={null}
+                        showPage={false}
+                      />
+                    </Stack>
+                  </Box>
+                )}
 
-              {showBonus && bonusCCA.length > 0 && (
-                <Box overflow='auto'>
-                  <Stack align='center' justify='center'>
-                    <Text>Bonus</Text>
-                    <TableWidget
-                      id='bonus-keips'
-                      columns={columnsBonus}
-                      data={bonusCCA}
-                      controlledPageCount={pageCount}
-                      dataHandler={null}
-                      showPage={false}
-                    />
-                  </Stack>
-                </Box>
-              )}
-            </Stack>
-          </Box>
-        )}
+                {showAll && allCCA.length > 0 && (
+                  <Box overflow='auto'>
+                    <Stack align='center' justify='center'>
+                      <Text>All CCAs</Text>
+                      <TableWidget
+                        id='all-keips'
+                        columns={columnsData}
+                        data={allCCA}
+                        controlledPageCount={pageCount}
+                        dataHandler={null}
+                        showPage={false}
+                      />
+                    </Stack>
+                  </Box>
+                )}
+
+                {showBonus && bonusCCA.length > 0 && (
+                  <Box overflow='auto'>
+                    <Stack align='center' justify='center'>
+                      <Text>Bonus</Text>
+                      <TableWidget
+                        id='bonus-keips'
+                        columns={columnsBonus}
+                        data={bonusCCA}
+                        controlledPageCount={pageCount}
+                        dataHandler={null}
+                        showPage={false}
+                      />
+                    </Stack>
+                  </Box>
+                )}
+              </Stack>
+            </Box>
+          )}
       </Stack>
     </Flex>
   );

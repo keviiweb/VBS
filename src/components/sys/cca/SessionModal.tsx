@@ -15,7 +15,7 @@ import {
   SimpleGrid,
   Stack,
   StackDivider,
-  Text,
+  Text
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
@@ -44,17 +44,17 @@ const MotionBox = motion(Box);
  * @param param0 Modal functions and callback function
  * @returns A modal
  */
-export default function SessionModal({
+export default function SessionModal ({
   isOpen,
   onClose,
   leader,
   modalData,
   dataHandler,
-  userSession,
+  userSession
 }) {
   const [loadingData, setLoadingData] = useState(true);
   const [specificSession, setSpecificSessionData] = useState<CCASession | null>(
-    null,
+    null
   );
 
   const [specificSessionDelete, setSpecificSessionDeleteData] =
@@ -144,11 +144,11 @@ export default function SessionModal({
               method: 'POST',
               headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                id: id,
-              }),
+                id
+              })
             });
             const content: Result = await rawResponse.json();
             if (content.status) {
@@ -161,7 +161,7 @@ export default function SessionModal({
         }
       }
     },
-    [handleModalCloseButton],
+    [handleModalCloseButton]
   );
 
   const displayExpectedMembers = async (members: string) => {
@@ -173,7 +173,7 @@ export default function SessionModal({
           text.push(
             <Box key={`box-e-${key}`}>
               <Text>{membersA[key]}</Text>
-            </Box>,
+            </Box>
           );
         }
       }
@@ -206,9 +206,9 @@ export default function SessionModal({
   };
 
   useEffect(() => {
-    async function setupData(
+    async function setupData (
       modalDataField: CCASession,
-      userSessionField: Session | null,
+      userSessionField: Session | null
     ) {
       setLoadingData(true);
       setSession(userSessionField);
@@ -273,14 +273,14 @@ export default function SessionModal({
     () => [
       {
         Header: 'Name',
-        accessor: 'sessionName',
+        accessor: 'sessionName'
       },
       {
         Header: 'Hours',
-        accessor: 'ccaAttendance',
-      },
+        accessor: 'ccaAttendance'
+      }
     ],
-    [],
+    []
   );
 
   return (
@@ -497,7 +497,7 @@ export default function SessionModal({
                         {((session !== null &&
                           hasPermission(
                             session.user.admin,
-                            actions.OVERRIDE_DELETE_SESSION,
+                            actions.OVERRIDE_DELETE_SESSION
                           )) ||
                           (editable && leader)) && (
                           <Button
@@ -516,7 +516,7 @@ export default function SessionModal({
                         {((session !== null &&
                           hasPermission(
                             session.user.admin,
-                            actions.OVERRIDE_EDIT_SESSION,
+                            actions.OVERRIDE_EDIT_SESSION
                           )) ||
                           (editable && leader)) && (
                           <Button

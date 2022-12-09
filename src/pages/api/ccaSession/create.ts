@@ -25,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   const { data } = req.body;
@@ -36,7 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const userPermission: boolean = hasPermission(
         session.user.admin,
-        actions.OVERRIDE_CREATE_SESSION,
+        actions.OVERRIDE_CREATE_SESSION
       );
 
       const findCCA: Result = await findCCAbyID(parsedData.ccaID, session);
@@ -62,8 +62,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             editable: true,
             remarks: parsedData.remarks?.trim(),
             ldrNotes: parsedData.ldrNotes?.trim(),
-            expectedM: expectedM,
-            expectedMName: expectedMName,
+            expectedM,
+            expectedMName
           };
 
           const findSessRes: boolean = await isConflict(sessionData, session);
@@ -71,20 +71,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: 'A session already exist within the timing',
-              msg: '',
+              msg: ''
             };
             res.status(200).send(result);
             res.end();
           } else {
             const createSessionRes: Result = await createSession(
               sessionData,
-              session,
+              session
             );
             if (createSessionRes.status) {
               result = {
                 status: true,
                 error: '',
-                msg: createSessionRes.msg,
+                msg: createSessionRes.msg
               };
               res.status(200).send(result);
               res.end();
@@ -92,7 +92,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               result = {
                 status: false,
                 error: createSessionRes.error,
-                msg: '',
+                msg: ''
               };
               res.status(200).send(result);
               res.end();
@@ -102,7 +102,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: 'Not a CCA leader',
-            msg: '',
+            msg: ''
           };
           res.status(200).send(result);
           res.end();
@@ -111,7 +111,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: 'Invalid CCA ID',
-          msg: '',
+          msg: ''
         };
         res.status(200).send(result);
         res.end();
@@ -120,7 +120,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Incomplete information',
-        msg: '',
+        msg: ''
       };
       res.status(200).send(result);
       res.end();
@@ -129,7 +129,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: '',
+      msg: ''
     };
     res.status(200).send(result);
     res.end();

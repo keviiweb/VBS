@@ -16,7 +16,7 @@ import {
   Select,
   Text,
   useToast,
-  useBreakpointValue,
+  useBreakpointValue
 } from '@chakra-ui/react';
 
 import Auth from '@components/sys/Auth';
@@ -36,7 +36,7 @@ import {
   addDays,
   dateISO,
   fetchCurrentDate,
-  locale,
+  locale
 } from '@constants/sys/date';
 import hasPermission from '@constants/sys/permission';
 
@@ -57,8 +57,8 @@ interface CalendarData {
   start: string | undefined;
   end: string | undefined;
   extendedProps: {
-    description: string;
-    booking: Booking;
+    description: string,
+    booking: Booking,
   };
 }
 
@@ -70,7 +70,7 @@ interface CalendarData {
  * @param props List of venues
  * @returns VBS Page
  */
-export default function VBS(props: any) {
+export default function VBS (props: any) {
   const toast = useToast();
 
   const [modalData, setModalData] = useState(null);
@@ -94,7 +94,7 @@ export default function VBS(props: any) {
   const [startTime, setStartTime] = useState('08:00:00');
   const [endTime, setEndTime] = useState('23:00:00');
   const [modalBookingData, setModalBookingData] = useState<Booking | null>(
-    null,
+    null
   );
   const viewingDate = useRef(90);
   const [startDateCalendar, setCalendarStartDate] = useState('');
@@ -119,7 +119,7 @@ export default function VBS(props: any) {
         selection.push(
           <option key={dataField.id} value={dataField.id}>
             {dataField.name}
-          </option>,
+          </option>
         );
 
         venueData.current.push(dataField);
@@ -153,9 +153,9 @@ export default function VBS(props: any) {
           start: dataField.start,
           end: dataField.end,
           extendedProps: {
-            description: description,
-            booking: dataField,
-          },
+            description,
+            booking: dataField
+          }
         };
 
         event.push(e);
@@ -189,11 +189,11 @@ export default function VBS(props: any) {
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              id: id,
-            }),
+              id
+            })
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -205,10 +205,10 @@ export default function VBS(props: any) {
         setSubmitButtonPressed(false);
       }
     },
-    [populateCalendar],
+    [populateCalendar]
   );
 
-  const onVenueIDChange = async (event: { target: { value: string } }) => {
+  const onVenueIDChange = async (event: { target: { value: string, }, }) => {
     if (event.target.value) {
       const { value } = event.target;
 
@@ -229,11 +229,11 @@ export default function VBS(props: any) {
   const handleEventClick = (info: {
     event: {
       extendedProps: {
-        booking: Booking;
-        description: string;
-      };
-      title: string;
-    };
+        booking: Booking,
+        description: string,
+      },
+      title: string,
+    },
   }) => {
     if (info.event.extendedProps.description) {
       const bookings: Booking = info.event.extendedProps.booking;
@@ -242,7 +242,7 @@ export default function VBS(props: any) {
   };
 
   const handleMouseEnter = (info: {
-    event: { extendedProps: { description: string }; title: string };
+    event: { extendedProps: { description: string, }, title: string, },
   }) => {
     if (info.event.extendedProps.description) {
       toast({
@@ -250,7 +250,7 @@ export default function VBS(props: any) {
         description: info.event.extendedProps.description,
         status: 'info',
         duration: 5000,
-        isClosable: true,
+        isClosable: true
       });
     }
   };
@@ -265,12 +265,12 @@ export default function VBS(props: any) {
     const newStart: Date = addDays(
       currentDate,
       locale,
-      -Number(viewingDate.current),
+      -Number(viewingDate.current)
     );
     const newEnd: Date = addDays(
       currentDate,
       locale,
-      Number(viewingDate.current),
+      Number(viewingDate.current)
     );
 
     setCalendarStartDate(dateISO(newStart));
@@ -278,7 +278,7 @@ export default function VBS(props: any) {
   }, []);
 
   useEffect(() => {
-    async function fetchData(propsField: any) {
+    async function fetchData (propsField: any) {
       setIsLoading(true);
 
       setLevel(propsField.level);
@@ -308,7 +308,7 @@ export default function VBS(props: any) {
                   cardRes.push(
                     <MotionBox id={item.name} key={item.id}>
                       <VenueCard product={item} setModalData={setModalData} />
-                    </MotionBox>,
+                    </MotionBox>
                   );
                 }
               });
@@ -325,14 +325,14 @@ export default function VBS(props: any) {
     fetchData(props);
   }, [props, generateVenueDropdown, changeCalendarDates]);
 
-  const handleSearch = (event: { target: { value: string } }) => {
+  const handleSearch = (event: { target: { value: string, }, }) => {
     if (event.target.value !== null && event.target.value !== undefined) {
       const searchInput: string = event.target.value;
       setSearch(searchInput);
 
       if (checkerString(searchInput)) {
         const filteredDataField = cards.filter((value) =>
-          value.props.id.toLowerCase().includes(searchInput.toLowerCase()),
+          value.props.id.toLowerCase().includes(searchInput.toLowerCase())
         );
 
         setFilteredData(filteredDataField);
@@ -421,7 +421,7 @@ export default function VBS(props: any) {
                               </Text>
                               {item.purpose}
                             </ListItem>
-                        )}
+                          )}
                         {item.dateStr !== undefined &&
                           checkerString(item.dateStr) && (
                             <ListItem key={`booking-${item.id}-dateStr-${idx}`}>
@@ -430,7 +430,7 @@ export default function VBS(props: any) {
                               </Text>
                               {item.dateStr}
                             </ListItem>
-                        )}
+                          )}
                         {item.timeSlots !== undefined &&
                           checkerString(item.timeSlots) && (
                             <ListItem
@@ -441,7 +441,7 @@ export default function VBS(props: any) {
                               </Text>
                               {item.timeSlots}
                             </ListItem>
-                        )}
+                          )}
                       </List>
                     ))}
                   </Stack>
@@ -452,7 +452,7 @@ export default function VBS(props: any) {
             {hasPermission(level, actions.MANAGE_BOOKING_REQUEST) && (
               <BookingModal
                 isBookingRequest={false}
-                isOpen={!!modalBookingData}
+                isOpen={!(modalBookingData == null)}
                 onClose={() => setModalBookingData(null)}
                 modalData={modalBookingData}
                 isAdmin
@@ -462,7 +462,7 @@ export default function VBS(props: any) {
             {!hasPermission(level, actions.MANAGE_BOOKING_REQUEST) && (
               <BookingModal
                 isBookingRequest={false}
-                isOpen={!!modalBookingData}
+                isOpen={!(modalBookingData == null)}
                 onClose={() => setModalBookingData(null)}
                 modalData={modalBookingData}
                 isAdmin={false}
@@ -496,7 +496,7 @@ export default function VBS(props: any) {
               initial='initial'
               animate='animate'
             >
-              {filteredData && filteredData.length ? filteredData : cards}
+              {filteredData && (filteredData.length > 0) ? filteredData : cards}
             </MotionSimpleGrid>
 
             <VenueBookingModal
@@ -516,7 +516,7 @@ export default function VBS(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=240, stale-while-revalidate=480',
+    'public, s-maxage=240, stale-while-revalidate=480'
   );
 
   let data: Result | null = null;
@@ -539,8 +539,8 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
       minDate: process.env.CALENDAR_MIN_DAY,
       maxDate: process.env.CALENDAR_MAX_DAY,
       viewingDate: process.env.VIEW_BOOKING_CALENDAR_DAY,
-      data: data,
-      level: level,
-    },
+      data,
+      level
+    }
   };
 };

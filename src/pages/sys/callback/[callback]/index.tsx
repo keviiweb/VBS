@@ -10,7 +10,7 @@ import { CheckCircleIcon } from '@chakra-ui/icons';
  *
  * @returns A simple redirection component
  */
-export default function EmailCallBack() {
+export default function EmailCallBack () {
   const router = useRouter();
   const { query } = router;
   const link = useRef('');

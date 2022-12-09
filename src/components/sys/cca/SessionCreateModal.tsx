@@ -23,7 +23,7 @@ import {
   Stack,
   Text,
   Textarea,
-  useToast,
+  useToast
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import LoadingModal from '@components/sys/misc/LoadingModal';
@@ -45,7 +45,7 @@ import {
   fetchCurrentDate,
   addDays,
   locale,
-  dateISO,
+  dateISO
 } from '@root/src/constants/sys/date';
 
 const MotionSimpleGrid = motion(SimpleGrid);
@@ -54,13 +54,13 @@ const MotionBox = motion(Box);
 const levels = {
   TIME: 0,
   EXPECTATION: 1,
-  REMARKS: 2,
+  REMARKS: 2
 };
 
 const progressBarLevel = {
   TIME: 33,
   EXPECTATION: 66,
-  REMARKS: 100,
+  REMARKS: 100
 };
 
 /**
@@ -75,18 +75,18 @@ const progressBarLevel = {
  * @param param0 Modal functions
  * @returns A modal
  */
-export default function SessionCreateModal({
+export default function SessionCreateModal ({
   isOpen,
   onClose,
   modalData,
   threshold,
-  dataHandler,
+  dataHandler
 }) {
   const toast = useToast();
 
   const selectedData = useRef<CCASession | null>(null);
   const [confirmationData, setConfirmationData] = useState<CCASession | null>(
-    null,
+    null
   );
 
   const [progressLevel, setProgressLevel] = useState(levels.TIME);
@@ -200,7 +200,7 @@ export default function SessionCreateModal({
     nameField: string,
     dateField: string,
     startTimeField: string,
-    endTimeField: string,
+    endTimeField: string
   ) => {
     if (!checkerString(nameField)) {
       setError('Please set a name!');
@@ -284,7 +284,7 @@ export default function SessionCreateModal({
             nameDB.current,
             dateStrDB.current,
             startTimeDB.current,
-            endTimeDB.current,
+            endTimeDB.current
           )
         ) {
           const data: CCASession = selectedData.current;
@@ -297,7 +297,7 @@ export default function SessionCreateModal({
 
           data.duration = await calculateDuration(
             Number(startTimeDB.current),
-            Number(endTimeDB.current),
+            Number(endTimeDB.current)
           );
 
           selectedData.current = data;
@@ -338,7 +338,7 @@ export default function SessionCreateModal({
     }
   };
 
-  const onStartTimeChange = async (event: { target: { value: string } }) => {
+  const onStartTimeChange = async (event: { target: { value: string, }, }) => {
     try {
       if (event.target.value) {
         const { value } = event.target;
@@ -350,7 +350,7 @@ export default function SessionCreateModal({
     }
   };
 
-  const onEndTimeChange = async (event: { target: { value: string } }) => {
+  const onEndTimeChange = async (event: { target: { value: string, }, }) => {
     try {
       if (event.target.value) {
         const { value } = event.target;
@@ -369,7 +369,7 @@ export default function SessionCreateModal({
       description: optionalText,
       status: 'info',
       duration: 2000,
-      isClosable: true,
+      isClosable: true
     });
   };
 
@@ -380,7 +380,7 @@ export default function SessionCreateModal({
       description: expectedText,
       status: 'info',
       duration: 2000,
-      isClosable: true,
+      isClosable: true
     });
   };
 
@@ -397,13 +397,13 @@ export default function SessionCreateModal({
         start.push(
           <option key={`start${key}`} value={dataField}>
             {dataField}
-          </option>,
+          </option>
         );
 
         end.push(
           <option key={`end${key}`} value={dataField}>
             {dataField}
-          </option>,
+          </option>
         );
       }
     }
@@ -546,7 +546,7 @@ export default function SessionCreateModal({
   }, []);
 
   const buildMemberList = useCallback(
-    async (content: { count: number; res: CCARecord[] }) => {
+    async (content: { count: number, res: CCARecord[], }) => {
       if (content.res.length > 0 && content.count > 0) {
         const buttons: JSX.Element[] = [];
 
@@ -567,7 +567,7 @@ export default function SessionCreateModal({
                   newKey={sessionEmail}
                   id={sessionEmail}
                   name={sessionName}
-                />,
+                />
               );
             }
           }
@@ -578,7 +578,7 @@ export default function SessionCreateModal({
         await generateExpectedMemberList();
       }
     },
-    [onExpectedMemberChange, generateExpectedMemberList],
+    [onExpectedMemberChange, generateExpectedMemberList]
   );
 
   const generateMemberList = useCallback(async () => {
@@ -589,11 +589,11 @@ export default function SessionCreateModal({
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            id: ccaIDDB.current,
-          }),
+            id: ccaIDDB.current
+          })
         });
         const content: Result = await rawResponse.json();
         if (content.status) {
@@ -619,7 +619,7 @@ export default function SessionCreateModal({
   }, [threshold]);
 
   useEffect(() => {
-    async function setupData(modalDataField: CCASession) {
+    async function setupData (modalDataField: CCASession) {
       setLoadingData(true);
 
       const ccaidField: string =
@@ -904,78 +904,80 @@ export default function SessionCreateModal({
                       )}
                     </Stack>
                   </Flex>
-              )}
+                )}
 
-              {modalData && !loadingData && progressLevel === levels.REMARKS && (
-                <Flex
-                  w='full'
-                  h='full'
-                  alignItems='center'
-                  justifyContent='center'
-                  mt={30}
-                >
-                  <Stack spacing={10}>
-                    <Stack
-                      w={{ base: 'full', md: '500px', lg: '500px' }}
-                      direction='column'
-                    >
-                      <FormControl id='remarks'>
-                        <FormLabel>
-                          <Stack direction='row'>
-                            <Text
-                              w={40}
-                              textTransform='uppercase'
-                              lineHeight='5'
-                              fontWeight='bold'
-                              letterSpacing='tight'
-                              mr={5}
-                            >
-                              General Remarks
-                            </Text>
-                          </Stack>
-                        </FormLabel>
-                        <Textarea
-                          height={150}
-                          placeholder='Remarks (200 characters)'
-                          size='lg'
-                          value={remarks}
-                          onChange={(event) => {
-                            setRemarks(event.currentTarget.value);
-                            remarksDB.current = event.currentTarget.value;
-                          }}
-                        />
-                      </FormControl>
+              {modalData &&
+                !loadingData &&
+                progressLevel === levels.REMARKS && (
+                  <Flex
+                    w='full'
+                    h='full'
+                    alignItems='center'
+                    justifyContent='center'
+                    mt={30}
+                  >
+                    <Stack spacing={10}>
+                      <Stack
+                        w={{ base: 'full', md: '500px', lg: '500px' }}
+                        direction='column'
+                      >
+                        <FormControl id='remarks'>
+                          <FormLabel>
+                            <Stack direction='row'>
+                              <Text
+                                w={40}
+                                textTransform='uppercase'
+                                lineHeight='5'
+                                fontWeight='bold'
+                                letterSpacing='tight'
+                                mr={5}
+                              >
+                                General Remarks
+                              </Text>
+                            </Stack>
+                          </FormLabel>
+                          <Textarea
+                            height={150}
+                            placeholder='Remarks (200 characters)'
+                            size='lg'
+                            value={remarks}
+                            onChange={(event) => {
+                              setRemarks(event.currentTarget.value);
+                              remarksDB.current = event.currentTarget.value;
+                            }}
+                          />
+                        </FormControl>
 
-                      <FormControl id='leader-notes'>
-                        <FormLabel>
-                          <Stack direction='row'>
-                            <Text
-                              w={40}
-                              textTransform='uppercase'
-                              lineHeight='5'
-                              fontWeight='bold'
-                              letterSpacing='tight'
-                              mr={5}
-                            >
-                              Leaders&apos; Notes
-                            </Text>
-                          </Stack>
-                        </FormLabel>
-                        <Textarea
-                          height={150}
-                          placeholder='Notes (200 characters)'
-                          size='lg'
-                          value={ldrNotes}
-                          onChange={(event) => {
-                            setLdrNotes(event.currentTarget.value);
-                            ldrNotesDB.current = event.currentTarget.value;
-                          }}
-                        />
-                      </FormControl>
+                        <FormControl id='leader-notes'>
+                          <FormLabel>
+                            <Stack direction='row'>
+                              <Text
+                                w={40}
+                                textTransform='uppercase'
+                                lineHeight='5'
+                                fontWeight='bold'
+                                letterSpacing='tight'
+                                mr={5}
+                              >
+                                Leaders&apos; Notes
+                              </Text>
+                            </Stack>
+                          </FormLabel>
+                          <Textarea
+                            height={150}
+                            placeholder='Notes (200 characters)'
+                            size='lg'
+                            value={ldrNotes}
+                            onChange={(event) => {
+                              setLdrNotes(event.currentTarget.value);
+                              ldrNotesDB.current = event.currentTarget.value;
+                            }}
+                          />
+                        </FormControl>
+                      </Stack>
                     </Stack>
-                  </Stack>
-                </Flex>
-              )}
+                  </Flex>
+                )}
 
               {checkerString(errorMsg) && (
                 <Stack align='center'>

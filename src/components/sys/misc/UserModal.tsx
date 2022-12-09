@@ -15,7 +15,7 @@ import {
   SimpleGrid,
   Stack,
   StackDivider,
-  Text,
+  Text
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
@@ -36,7 +36,7 @@ const MotionBox = motion(Box);
  * @param param0 Modal functions and User Object
  * @returns A modal
  */
-export default function UserModal({ isOpen, onClose, modalData }) {
+export default function UserModal ({ isOpen, onClose, modalData }) {
   const [id, setID] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -75,13 +75,13 @@ export default function UserModal({ isOpen, onClose, modalData }) {
             text.push(
               <Box key={`box-e-${key}`}>
                 <Text>{content[key].ccaName} (Leader)</Text>
-              </Box>,
+              </Box>
             );
           } else {
             text.push(
               <Box key={`box-e-${key}`}>
                 <Text>{content[key].ccaName} (Member)</Text>
-              </Box>,
+              </Box>
             );
           }
         }
@@ -102,11 +102,11 @@ export default function UserModal({ isOpen, onClose, modalData }) {
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              email: emailField,
-            }),
+              email: emailField
+            })
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -118,11 +118,11 @@ export default function UserModal({ isOpen, onClose, modalData }) {
         setSubmitButtonPressed(false);
       }
     },
-    [buildMemberList],
+    [buildMemberList]
   );
 
   useEffect(() => {
-    async function setupData(modalDataField: User) {
+    async function setupData (modalDataField: User) {
       if (modalDataField.id && checkerString(modalDataField.id)) {
         setID(modalDataField.id);
       } else {

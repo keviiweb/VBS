@@ -6,7 +6,7 @@ import { currentSession } from '@helper/sys/sessionServer';
 import {
   findVenueByID,
   fetchAllVenue,
-  countVenue,
+  countVenue
 } from '@helper/sys/vbs/venue';
 
 /**
@@ -27,7 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   if (session !== null && session !== undefined) {
@@ -69,11 +69,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               name: venue.name,
               openingHours: venue.openingHours,
               parentVenue: venue.parentVenue,
-              parentVenueName: parentVenueName,
+              parentVenueName,
               visible: venue.visible,
-              isAvailable: isAvailable,
-              childVenue: childVenue,
-              instantBook: instantBook,
+              isAvailable,
+              childVenue,
+              instantBook
             };
 
             parsedVenue.push(data);
@@ -84,7 +84,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: true,
         error: null,
-        msg: { count: count, res: parsedVenue },
+        msg: { count, res: parsedVenue }
       };
       res.status(200).send(result);
       res.end();
@@ -92,7 +92,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: venueDB.error,
-        msg: { count: 0, res: [] },
+        msg: { count: 0, res: [] }
       };
       res.status(200).send(result);
       res.end();
@@ -101,7 +101,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: { count: 0, res: [] },
+      msg: { count: 0, res: [] }
     };
     res.status(200).send(result);
     res.end();

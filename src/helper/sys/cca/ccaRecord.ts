@@ -20,16 +20,16 @@ import { logger } from '@helper/sys/misc/logger';
  */
 export const fetchAllCCARecordByUserEmail = async (
   email: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCARecord[] = await prisma.cCARecord.findMany({
       where: {
-        sessionEmail: email,
+        sessionEmail: email
       },
-      distinct: ['ccaID'],
+      distinct: ['ccaID']
     });
 
     if (query) {
@@ -43,7 +43,7 @@ export const fetchAllCCARecordByUserEmail = async (
     await logger(
       'fetchAllCCARecordByUserEmail',
       session.user.email,
-      error.message,
+      error.message
     );
   }
 
@@ -57,16 +57,16 @@ export const fetchAllCCARecordByUserEmail = async (
  * @returns A Result containing the status wrapped in a Promise
  */
 export const fetchAllCCARecordByUser = async (
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCARecord[] = await prisma.cCARecord.findMany({
       where: {
-        sessionEmail: session.user.email,
+        sessionEmail: session.user.email
       },
-      distinct: ['ccaID'],
+      distinct: ['ccaID']
     });
 
     if (query) {
@@ -90,15 +90,15 @@ export const fetchAllCCARecordByUser = async (
  * @returns A Result containing the status wrapped in a Promise
  */
 export const fetchAllCCARecordByUserWDetails = async (
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     let query: Result;
-    let permission: boolean = hasPermission(
+    const permission: boolean = hasPermission(
       session.user.admin,
-      actions.FETCH_ALL_CCA,
+      actions.FETCH_ALL_CCA
     );
 
     if (permission) {
@@ -120,7 +120,7 @@ export const fetchAllCCARecordByUserWDetails = async (
                 ccaID: ccaDetails.id,
                 leader: true,
                 ccaName: ccaDetails.name,
-                image: ccaDetails.image,
+                image: ccaDetails.image
               };
 
               parsedCCARecord.push(data);
@@ -143,7 +143,7 @@ export const fetchAllCCARecordByUserWDetails = async (
                   ccaID: record.ccaID,
                   leader: record.leader,
                   ccaName: ccaDetails.name,
-                  image: ccaDetails.image,
+                  image: ccaDetails.image
                 };
 
                 parsedCCARecord.push(data);
@@ -163,7 +163,7 @@ export const fetchAllCCARecordByUserWDetails = async (
     await logger(
       'fetchAllCCARecordByUserWDetails',
       session.user.email,
-      error.message,
+      error.message
     );
   }
 
@@ -182,18 +182,18 @@ export const fetchAllCCARecordByID = async (
   id: string,
   limit: number = 100000,
   skip: number = 0,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCARecord[] = await prisma.cCARecord.findMany({
       where: {
-        ccaID: id,
+        ccaID: id
       },
       skip: skip * limit,
       take: limit,
-      distinct: ['sessionEmail'],
+      distinct: ['sessionEmail']
     });
 
     if (query) {
@@ -218,15 +218,15 @@ export const fetchAllCCARecordByID = async (
  */
 export const countAllCCARecordByID = async (
   id: string,
-  session: Session,
+  session: Session
 ): Promise<number> => {
   let count: number = 0;
 
   try {
     count = await prisma.cCARecord.count({
       where: {
-        ccaID: id,
-      },
+        ccaID: id
+      }
     });
   } catch (error) {
     console.error(error);
@@ -245,17 +245,17 @@ export const countAllCCARecordByID = async (
  */
 export const isLeader = async (
   ccaID: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const ldr: CCARecord = await prisma.cCARecord.findFirst({
       where: {
-        ccaID: ccaID,
+        ccaID,
         sessionEmail: session.user.email,
-        leader: true,
-      },
+        leader: true
+      }
     });
 
     if (ldr) {
@@ -282,16 +282,16 @@ export const isLeader = async (
 export const fetchSpecificCCARecord = async (
   ccaID: string,
   email: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCARecord = await prisma.cCARecord.findFirst({
       where: {
-        ccaID: ccaID,
-        sessionEmail: email,
-      },
+        ccaID,
+        sessionEmail: email
+      }
     });
 
     if (query) {
@@ -300,7 +300,7 @@ export const fetchSpecificCCARecord = async (
       result = {
         status: false,
         error: 'Failed to fetch CCA records',
-        msg: null,
+        msg: null
       };
     }
   } catch (error) {
@@ -320,15 +320,15 @@ export const fetchSpecificCCARecord = async (
  */
 export const editCCARecord = async (
   data: CCARecord,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const query: CCARecord = await prisma.cCARecord.update({
       where: {
-        id: data.id,
+        id: data.id
       },
-      data: data,
+      data
     });
 
     if (query) {
@@ -336,20 +336,20 @@ export const editCCARecord = async (
         await logger(
           `editCCARecord - ${data.id}`,
           session.user.email,
-          `Successfully updated record`,
+          'Successfully updated record'
         );
       }
       result = {
         status: true,
         error: '',
-        msg: `Successfully updated record`,
+        msg: 'Successfully updated record'
       };
     } else {
       if (data.id !== undefined && checkerString(data.id)) {
         await logger(
           `editCCARecord - ${data.id}`,
           session.user.email,
-          'Failed to update record',
+          'Failed to update record'
         );
       }
       result = { status: false, error: 'Failed to update record', msg: '' };
@@ -361,7 +361,7 @@ export const editCCARecord = async (
       await logger(
         `editCCARecord - ${data.id}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }
@@ -377,12 +377,12 @@ export const editCCARecord = async (
  */
 export const createCCARecord = async (
   data: CCARecord,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const query: CCARecord = await prisma.cCARecord.create({
-      data: data,
+      data
     });
 
     if (query) {
@@ -390,20 +390,20 @@ export const createCCARecord = async (
         await logger(
           `createCCARecord - ${query.id}`,
           session.user.email,
-          `Successfully created record`,
+          'Successfully created record'
         );
       }
 
       result = {
         status: true,
         error: '',
-        msg: `Successfully created record`,
+        msg: 'Successfully created record'
       };
     } else {
       await logger(
         'createCCARecord',
         session.user.email,
-        'Failed to create record',
+        'Failed to create record'
       );
       result = { status: false, error: 'Failed to create record', msg: '' };
     }
@@ -430,7 +430,7 @@ export const createCCARecord = async (
  */
 export const createCCARecordFile = async (
   dataField: any[],
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   let success: boolean = true;
@@ -446,7 +446,7 @@ export const createCCARecordFile = async (
         const ccaName: string = data.ccaName !== undefined ? data.ccaName : '';
         const email: string = data.email !== undefined ? data.email : '';
         const leader: boolean =
-          data.leader !== undefined && data.leader === 'yes' ? true : false;
+          !!(data.leader !== undefined && data.leader === 'yes');
 
         const userRes: Result = await fetchUserByEmail(email.trim(), session);
         if (userRes.status) {
@@ -458,7 +458,7 @@ export const createCCARecordFile = async (
                 const existingRecordsRes: Result = await fetchSpecificCCARecord(
                   ccaDetails.id.trim(),
                   email.trim(),
-                  session,
+                  session
                 );
                 if (existingRecordsRes.status && existingRecordsRes.msg) {
                   const existingRecords: CCARecord = existingRecordsRes.msg;
@@ -466,20 +466,20 @@ export const createCCARecordFile = async (
                     id: existingRecords.id,
                     sessionEmail: email.trim(),
                     ccaID: ccaDetails.id.trim(),
-                    leader: leader,
-                    updated_at: new Date().toISOString(),
+                    leader,
+                    updated_at: new Date().toISOString()
                   };
 
                   const updateRes: Result = await editCCARecord(
                     userData,
-                    session,
+                    session
                   );
                   if (!updateRes.status) {
                     success = false;
                     result = {
                       status: false,
                       error: updateRes.error,
-                      msg: '',
+                      msg: ''
                     };
                     break;
                   } else {
@@ -489,19 +489,19 @@ export const createCCARecordFile = async (
                   const userData: CCARecord = {
                     sessionEmail: email.trim(),
                     ccaID: ccaDetails.id.trim(),
-                    leader: leader,
+                    leader
                   };
 
                   const createRes: Result = await createCCARecord(
                     userData,
-                    session,
+                    session
                   );
                   if (!createRes.status) {
                     success = false;
                     result = {
                       status: false,
                       error: createRes.error,
-                      msg: '',
+                      msg: ''
                     };
                     break;
                   } else {
@@ -513,13 +513,13 @@ export const createCCARecordFile = async (
               await logger(
                 'createCCARecordFile',
                 session.user.email,
-                `Failed to find CCA ${ccaName.trim()}`,
+                `Failed to find CCA ${ccaName.trim()}`
               );
               success = false;
               result = {
                 status: false,
                 error: `Failed to find CCA ${ccaName.trim()}`,
-                msg: '',
+                msg: ''
               };
               break;
             }
@@ -528,13 +528,13 @@ export const createCCARecordFile = async (
           await logger(
             'createCCARecordFile',
             session.user.email,
-            `Failed to find user ${email.trim()}`,
+            `Failed to find user ${email.trim()}`
           );
           success = false;
           result = {
             status: false,
             error: `Failed to find user ${email.trim()}`,
-            msg: '',
+            msg: ''
           };
           break;
         }
@@ -545,12 +545,12 @@ export const createCCARecordFile = async (
       await logger(
         'createCCARecordFile',
         session.user.email,
-        `Successfully populated ${count} CCA Records out of total ${totalCount}`,
+        `Successfully populated ${count} CCA Records out of total ${totalCount}`
       );
       result = {
         status: true,
         error: null,
-        msg: `Successfully populated ${count} CCA Records out of total ${totalCount}`,
+        msg: `Successfully populated ${count} CCA Records out of total ${totalCount}`
       };
     }
   } catch (error) {
@@ -558,7 +558,7 @@ export const createCCARecordFile = async (
     result = {
       status: false,
       error: 'Failed to populate CCA Records',
-      msg: '',
+      msg: ''
     };
     await logger('createCCARecordFile', session.user.email, error.message);
   }

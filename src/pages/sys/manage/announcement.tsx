@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useCallback,
+  useCallback
 } from 'react';
 import {
   Button,
@@ -20,7 +20,7 @@ import {
   Stack,
   Select,
   useToast,
-  VisuallyHidden,
+  VisuallyHidden
 } from '@chakra-ui/react';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import { cardVariant, parentVariant } from '@root/motion';
@@ -44,7 +44,7 @@ const MotionBox = motion(Box);
  *
  * @returns Manage Announcement Page
  */
-export default function ManageAnnouncement() {
+export default function ManageAnnouncement () {
   const toast = useToast();
   const router = useRouter();
 
@@ -94,7 +94,7 @@ export default function ManageAnnouncement() {
       try {
         const rawResponse = await fetch('/api/announcement/delete', {
           method: 'POST',
-          body: dataField,
+          body: dataField
         });
         const content: Result = await rawResponse.json();
         if (content.status) {
@@ -104,7 +104,7 @@ export default function ManageAnnouncement() {
             description: content.msg,
             status: 'success',
             duration: 5000,
-            isClosable: true,
+            isClosable: true
           });
 
           await fetchData();
@@ -114,7 +114,7 @@ export default function ManageAnnouncement() {
             description: content.error,
             status: 'error',
             duration: 5000,
-            isClosable: true,
+            isClosable: true
           });
         }
       } catch (error) {
@@ -143,7 +143,7 @@ export default function ManageAnnouncement() {
   };
 
   const handleSubmit = useCallback(
-    async (event: { preventDefault: () => void }) => {
+    async (event: { preventDefault: () => void, }) => {
       setError('');
       event.preventDefault();
       if (validateFields(descriptionDB.current)) {
@@ -156,7 +156,7 @@ export default function ManageAnnouncement() {
           try {
             const rawResponse = await fetch('/api/announcement/create', {
               method: 'POST',
-              body: dataField,
+              body: dataField
             });
             const content: Result = await rawResponse.json();
             if (content.status) {
@@ -166,7 +166,7 @@ export default function ManageAnnouncement() {
                 description: content.msg,
                 status: 'success',
                 duration: 5000,
-                isClosable: true,
+                isClosable: true
               });
 
               await fetchData();
@@ -176,7 +176,7 @@ export default function ManageAnnouncement() {
                 description: content.error,
                 status: 'error',
                 duration: 5000,
-                isClosable: true,
+                isClosable: true
               });
             }
           } catch (error) {
@@ -186,10 +186,10 @@ export default function ManageAnnouncement() {
         }
       }
     },
-    [fetchData, reset, toast],
+    [fetchData, reset, toast]
   );
 
-  const onFileChange = async (event: { target: { files: any[] | any } }) => {
+  const onFileChange = async (event: { target: { files: any[] | any, }, }) => {
     try {
       const file = event.target.files[0];
       if (file !== undefined && file !== null && file.name !== undefined) {
@@ -217,7 +217,7 @@ export default function ManageAnnouncement() {
             selectionEdit.push(
               <option key={dataField.id} value={dataField.id}>
                 {dataField.description}
-              </option>,
+              </option>
             );
 
             allAnnouncement.push(dataField);
@@ -237,7 +237,7 @@ export default function ManageAnnouncement() {
         }
       }
     },
-    [generateActionButton],
+    [generateActionButton]
   );
 
   generateActionButton = useCallback(
@@ -263,7 +263,7 @@ export default function ManageAnnouncement() {
 
       return button;
     },
-    [router],
+    [router]
   );
 
   const fetchDataTable = useCallback(async () => {
@@ -274,9 +274,9 @@ export default function ManageAnnouncement() {
         {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       );
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -296,7 +296,7 @@ export default function ManageAnnouncement() {
   }, [fetchDataTable]);
 
   useEffect(() => {
-    async function generate() {
+    async function generate () {
       await fetchData();
     }
 
@@ -307,14 +307,14 @@ export default function ManageAnnouncement() {
     () => [
       {
         Header: 'Description',
-        accessor: 'description',
+        accessor: 'description'
       },
       {
         Header: 'Actions',
-        accessor: 'action',
-      },
+        accessor: 'action'
+      }
     ],
-    [],
+    []
   );
 
   const changeDataEdit = (dataField: Announcement) => {
@@ -323,7 +323,7 @@ export default function ManageAnnouncement() {
   };
 
   const onAnnounceIDChangeEdit = async (event: {
-    target: { value: string };
+    target: { value: string, },
   }) => {
     if (event.target.value) {
       const { value } = event.target;
@@ -358,7 +358,7 @@ export default function ManageAnnouncement() {
   };
 
   const handleSubmitEdit = useCallback(
-    async (event: { preventDefault: () => void }) => {
+    async (event: { preventDefault: () => void, }) => {
       setErrorEdit('');
       event.preventDefault();
 
@@ -373,7 +373,7 @@ export default function ManageAnnouncement() {
         try {
           const rawResponse = await fetch('/api/announcement/edit', {
             method: 'POST',
-            body: dataField,
+            body: dataField
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -383,7 +383,7 @@ export default function ManageAnnouncement() {
               description: content.msg,
               status: 'success',
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
 
             await fetchData();
@@ -393,7 +393,7 @@ export default function ManageAnnouncement() {
               description: content.error,
               status: 'error',
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
           }
         } catch (error) {
@@ -402,7 +402,7 @@ export default function ManageAnnouncement() {
         setSubmitButtonPressed(false);
       }
     },
-    [fetchData, resetEdit, toast],
+    [fetchData, resetEdit, toast]
   );
 
   resetEdit = useCallback(async () => {
@@ -422,7 +422,7 @@ export default function ManageAnnouncement() {
         await fetchDataTable();
       }
     },
-    [fetchDataTable],
+    [fetchDataTable]
   );
 
   return (
@@ -549,7 +549,7 @@ export default function ManageAnnouncement() {
                           color='brand.600'
                           pos='relative'
                           _hover={{
-                            color: 'brand.400',
+                            color: 'brand.400'
                           }}
                         >
                           <span>Upload a file</span>
@@ -583,7 +583,7 @@ export default function ManageAnnouncement() {
                     color='white'
                     disabled={submitButtonPressed}
                     _hover={{
-                      bg: 'blue.500',
+                      bg: 'blue.500'
                     }}
                   >
                     Create
@@ -648,7 +648,7 @@ export default function ManageAnnouncement() {
                     color='white'
                     disabled={submitButtonPressed}
                     _hover={{
-                      bg: 'blue.500',
+                      bg: 'blue.500'
                     }}
                   >
                     Update
@@ -658,9 +658,9 @@ export default function ManageAnnouncement() {
                     color='white'
                     disabled={submitButtonPressed}
                     _hover={{
-                      bg: 'red.500',
+                      bg: 'red.500'
                     }}
-                    onClick={() => handleDelete()}
+                    onClick={async () => await handleDelete()}
                   >
                     Delete
                   </Button>

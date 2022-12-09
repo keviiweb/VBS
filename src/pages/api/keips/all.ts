@@ -36,7 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   if (
@@ -73,8 +73,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               roomDraw: keipsData.roomDraw,
               semesterStay: keipsData.semesterStay,
               fulfilled: keipsData.fulfilled,
-              contrastingStr: contrastingStr,
-              fulfilledStr: fulfilledStr,
+              contrastingStr,
+              fulfilledStr
             };
 
             parsedKEIPS.push(data);
@@ -85,7 +85,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: true,
         error: null,
-        msg: { count: count, res: parsedKEIPS },
+        msg: { count, res: parsedKEIPS }
       };
       res.status(200).send(result);
       res.end();
@@ -93,7 +93,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: keipsDB.error,
-        msg: { count: 0, res: [] },
+        msg: { count: 0, res: [] }
       };
       res.status(200).send(result);
       res.end();
@@ -102,7 +102,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: { count: 0, res: [] },
+      msg: { count: 0, res: [] }
     };
     res.status(200).send(result);
     res.end();

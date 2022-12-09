@@ -10,7 +10,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Stack,
-  Text,
+  Text
 } from '@chakra-ui/react';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 
@@ -25,7 +25,7 @@ import { checkerString } from '@constants/sys/helper';
  * @param param0 Modal functions and data
  * @returns A modal
  */
-export default function KEIPSModal({ isOpen, onClose, modalData }) {
+export default function KEIPSModal ({ isOpen, onClose, modalData }) {
   const [loadingData, setLoadingData] = useState(true);
   const [successData, setSuccessData] = useState(false);
   const [matnet, setMATNET] = useState('');
@@ -81,7 +81,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
           const parsedData: KEIPSBonus = {
             cca: dataArr[0],
             description: dataArr[1],
-            total: Number(dataArr[2]),
+            total: Number(dataArr[2])
           };
 
           totalData.push(parsedData);
@@ -110,7 +110,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
             atte: Number(dataArr[2]),
             perf: Number(dataArr[3]),
             outs: Number(dataArr[4]),
-            total: Number(dataArr[5]),
+            total: Number(dataArr[5])
           };
 
           totalData.push(parsedData);
@@ -139,7 +139,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
             atte: Number(dataArr[2]),
             perf: Number(dataArr[3]),
             outs: Number(dataArr[4]),
-            total: Number(dataArr[5]),
+            total: Number(dataArr[5])
           };
 
           totalData.push(parsedData);
@@ -187,11 +187,11 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
         setSuccessData(true);
       }
     },
-    [populateTopCCA, populateAllCCA, populateBonusCCA],
+    [populateTopCCA, populateAllCCA, populateBonusCCA]
   );
 
   useEffect(() => {
-    async function setupData(modalDataField: KEIPS) {
+    async function setupData (modalDataField: KEIPS) {
       setLoadingData(true);
       setSubmitButtonPressed(true);
 
@@ -210,78 +210,78 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
     () => [
       {
         Header: 'OSA Points',
-        accessor: 'OSA',
+        accessor: 'OSA'
       },
       {
         Header: 'OSA Percentile',
-        accessor: 'osaPercentile',
+        accessor: 'osaPercentile'
       },
       {
         Header: 'Room Draw Points',
-        accessor: 'roomDraw',
+        accessor: 'roomDraw'
       },
       {
         Header: 'Contrasting',
-        accessor: 'contrastingStr',
+        accessor: 'contrastingStr'
       },
       {
         Header: 'Semester Stayed',
-        accessor: 'semesterStay',
+        accessor: 'semesterStay'
       },
       {
         Header: 'Fullfilled Criteria?',
-        accessor: 'fulfilledStr',
-      },
+        accessor: 'fulfilledStr'
+      }
     ],
-    [],
+    []
   );
 
   const columnsData = useMemo(
     () => [
       {
         Header: 'CCA',
-        accessor: 'cca',
+        accessor: 'cca'
       },
       {
         Header: 'Category',
-        accessor: 'cat',
+        accessor: 'cat'
       },
       {
         Header: 'Attendance',
-        accessor: 'atte',
+        accessor: 'atte'
       },
       {
         Header: 'Performance',
-        accessor: 'perf',
+        accessor: 'perf'
       },
       {
         Header: 'Outstanding',
-        accessor: 'outs',
+        accessor: 'outs'
       },
       {
         Header: 'Total',
-        accessor: 'total',
-      },
+        accessor: 'total'
+      }
     ],
-    [],
+    []
   );
 
   const columnsBonus = useMemo(
     () => [
       {
         Header: 'CCA',
-        accessor: 'cca',
+        accessor: 'cca'
       },
       {
         Header: 'Description',
-        accessor: 'description',
+        accessor: 'description'
       },
       {
         Header: 'Total',
-        accessor: 'total',
-      },
+        accessor: 'total'
+      }
     ],
-    [],
+    []
   );
 
   return (

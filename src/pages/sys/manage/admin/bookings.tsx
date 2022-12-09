@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useRef,
   useMemo,
-  useCallback,
+  useCallback
 } from 'react';
 import {
   Button,
@@ -19,13 +19,13 @@ import {
   Stack,
   Select,
   useToast,
-  VisuallyHidden,
+  VisuallyHidden
 } from '@chakra-ui/react';
 import {
   CheckIcon,
   CloseIcon,
   InfoOutlineIcon,
-  InfoIcon,
+  InfoIcon
 } from '@chakra-ui/icons';
 
 import Auth from '@components/sys/Auth';
@@ -59,7 +59,7 @@ const MotionSimpleGrid = motion(SimpleGrid);
  * @param props Permission level of user
  * @returns Manage User page
  */
-export default function ManageBooking(props: any) {
+export default function ManageBooking (props: any) {
   const [modalData, setModalData] = useState<BookingRequest | null>(null);
 
   const toast = useToast();
@@ -67,7 +67,7 @@ export default function ManageBooking(props: any) {
   const [data, setData] = useState<BookingRequest[]>([]);
 
   const [rejectModalData, setRejectModalData] = useState<BookingRequest | null>(
-    null,
+    null
   );
 
   let handleTabChange: any;
@@ -101,7 +101,7 @@ export default function ManageBooking(props: any) {
         'Select between different dropdown menu items to retrieve the latest data',
       status: 'info',
       duration: 2000,
-      isClosable: true,
+      isClosable: true
     });
   };
 
@@ -114,11 +114,11 @@ export default function ManageBooking(props: any) {
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              id: id,
-            }),
+              id
+            })
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -127,7 +127,7 @@ export default function ManageBooking(props: any) {
               description: content.msg,
               status: 'success',
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
             await handleTabChange(bookingChoiceDB.current);
           } else {
@@ -136,7 +136,7 @@ export default function ManageBooking(props: any) {
               description: content.error,
               status: 'error',
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
           }
         } catch (error) {
@@ -145,7 +145,7 @@ export default function ManageBooking(props: any) {
         setSubmitButtonPressed(false);
       }
     },
-    [handleTabChange, toast],
+    [handleTabChange, toast]
   );
 
   const handleRejectWReason = useCallback(
@@ -158,12 +158,12 @@ export default function ManageBooking(props: any) {
             method: 'POST',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              id: id,
-              reason: reason,
-            }),
+              id,
+              reason
+            })
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -172,7 +172,7 @@ export default function ManageBooking(props: any) {
               description: content.msg,
               status: 'success',
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
             await handleTabChange(bookingChoiceDB.current);
           } else {
@@ -181,7 +181,7 @@ export default function ManageBooking(props: any) {
               description: content.error,
               status: 'error',
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
           }
         } catch (error) {
@@ -190,7 +190,7 @@ export default function ManageBooking(props: any) {
         setSubmitButtonPressed(false);
       }
     },
-    [handleTabChange, toast],
+    [handleTabChange, toast]
   );
 
   const dataFromBookingRejectVenueModal = useCallback(
@@ -201,7 +201,7 @@ export default function ManageBooking(props: any) {
       }
       return false;
     },
-    [handleRejectWReason],
+    [handleRejectWReason]
   );
 
   const handleReject = useCallback(async (content: BookingRequest) => {
@@ -234,7 +234,7 @@ export default function ManageBooking(props: any) {
                       size='sm'
                       leftIcon={<CheckIcon />}
                       disabled={submitButtonPressed}
-                      onClick={() => handleApprove(id)}
+                      onClick={async () => await handleApprove(id)}
                     >
                       Approve
                     </Button>
@@ -243,7 +243,7 @@ export default function ManageBooking(props: any) {
                       size='sm'
                       leftIcon={<CloseIcon />}
                       disabled={submitButtonPressed}
-                      onClick={() => handleReject(content)}
+                      onClick={async () => await handleReject(content)}
                     >
                       Reject
                     </Button>
@@ -285,7 +285,7 @@ export default function ManageBooking(props: any) {
                       size='sm'
                       leftIcon={<CloseIcon />}
                       disabled={submitButtonPressed}
-                      onClick={() => handleReject(content)}
+                      onClick={async () => await handleReject(content)}
                     >
                       Reject
                     </Button>
@@ -343,7 +343,7 @@ export default function ManageBooking(props: any) {
                     size='sm'
                     leftIcon={<CloseIcon />}
                     disabled={submitButtonPressed}
-                    onClick={() => handleReject(content)}
+                    onClick={async () => await handleReject(content)}
                   >
                     Reject
                   </Button>
@@ -404,7 +404,7 @@ export default function ManageBooking(props: any) {
                       size='sm'
                       leftIcon={<CheckIcon />}
                       disabled={submitButtonPressed}
-                      onClick={() => handleApprove(id)}
+                      onClick={async () => await handleApprove(id)}
                     >
                       Approve
                     </Button>
@@ -413,7 +413,7 @@ export default function ManageBooking(props: any) {
                       size='sm'
                       leftIcon={<CloseIcon />}
                       disabled={submitButtonPressed}
-                      onClick={() => handleReject(content)}
+                      onClick={async () => await handleReject(content)}
                     >
                       Reject
                     </Button>
@@ -466,13 +466,13 @@ export default function ManageBooking(props: any) {
           return null;
       }
     },
-    [handleApprove, handleDetails, handleReject, submitButtonPressed],
+    [handleApprove, handleDetails, handleReject, submitButtonPressed]
   );
 
   const includeActionButton = useCallback(
     async (
-      content: { count: number; res: BookingRequest[] },
-      action: number,
+      content: { count: number, res: BookingRequest[], },
+      action: number
     ) => {
       if (
         (content.count !== undefined || content.count !== null) &&
@@ -497,7 +497,7 @@ export default function ManageBooking(props: any) {
         }
       }
     },
-    [generateActionButton],
+    [generateActionButton]
   );
 
   const fetchAllData = useCallback(async () => {
@@ -507,9 +507,9 @@ export default function ManageBooking(props: any) {
         {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       );
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -527,9 +527,9 @@ export default function ManageBooking(props: any) {
         {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       );
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -547,9 +547,9 @@ export default function ManageBooking(props: any) {
         {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       );
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -567,9 +567,9 @@ export default function ManageBooking(props: any) {
         {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       );
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -603,7 +603,7 @@ export default function ManageBooking(props: any) {
 
       setSubmitButtonPressed(false);
     },
-    [fetchPendingData, fetchApprovedData, fetchRejectedData, fetchAllData],
+    [fetchPendingData, fetchApprovedData, fetchRejectedData, fetchAllData]
   );
 
   const onTableChange = useCallback(
@@ -618,11 +618,11 @@ export default function ManageBooking(props: any) {
         await tableChange(bookingChoiceDB.current);
       }
     },
-    [tableChange],
+    [tableChange]
   );
 
   const onBookingChoiceChange = useCallback(
-    async (event: { target: { value: string } }) => {
+    async (event: { target: { value: string, }, }) => {
       if (event.target.value) {
         const { value } = event.target;
         if (
@@ -641,7 +641,7 @@ export default function ManageBooking(props: any) {
         }
       }
     },
-    [handleTabChange],
+    [handleTabChange]
   );
 
   handleTabChange = useCallback(
@@ -668,45 +668,45 @@ export default function ManageBooking(props: any) {
 
       setLoadingData(false);
     },
-    [fetchPendingData, fetchApprovedData, fetchRejectedData, fetchAllData],
+    [fetchPendingData, fetchApprovedData, fetchRejectedData, fetchAllData]
   );
 
   const columns = useMemo(
     () => [
       {
         Header: 'Venue',
-        accessor: 'venue',
+        accessor: 'venue'
       },
       {
         Header: 'Date',
-        accessor: 'dateStr',
+        accessor: 'dateStr'
       },
       {
         Header: 'Timeslot(s)',
-        accessor: 'timeSlots',
+        accessor: 'timeSlots'
       },
       {
         Header: 'Name',
-        accessor: 'userName',
+        accessor: 'userName'
       },
       {
         Header: 'CCA',
-        accessor: 'cca',
+        accessor: 'cca'
       },
       {
         Header: 'Purpose',
-        accessor: 'purpose',
+        accessor: 'purpose'
       },
       {
         Header: 'Status',
-        accessor: 'status',
+        accessor: 'status'
       },
       {
         Header: 'Actions',
-        accessor: 'action',
-      },
+        accessor: 'action'
+      }
     ],
-    [],
+    []
   );
 
   const createBookingChoiceDropDownMenu = useCallback(() => {
@@ -718,7 +718,7 @@ export default function ManageBooking(props: any) {
         selection.push(
           <option key={levels[key]} value={levels[key]}>
             {key}
-          </option>,
+          </option>
         );
       }
     });
@@ -732,7 +732,7 @@ export default function ManageBooking(props: any) {
   }, []);
 
   const handleSubmitFile = useCallback(
-    async (event: { preventDefault: () => void }) => {
+    async (event: { preventDefault: () => void, }) => {
       setErrorFile('');
       event.preventDefault();
       if (selectedFileDB.current !== null) {
@@ -744,7 +744,7 @@ export default function ManageBooking(props: any) {
         try {
           const rawResponse = await fetch('/api/booking/file', {
             method: 'POST',
-            body: dataField,
+            body: dataField
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -753,7 +753,7 @@ export default function ManageBooking(props: any) {
               description: content.msg,
               status: 'success',
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
 
             await resetFile();
@@ -763,7 +763,7 @@ export default function ManageBooking(props: any) {
               description: content.error,
               status: 'error',
               duration: 20000,
-              isClosable: true,
+              isClosable: true
             });
           }
         } catch (error) {
@@ -776,10 +776,10 @@ export default function ManageBooking(props: any) {
 
       return false;
     },
-    [resetFile, toast],
+    [resetFile, toast]
   );
 
-  const onFileChange = async (event: { target: { files: any[] | any } }) => {
+  const onFileChange = async (event: { target: { files: any[] | any, }, }) => {
     setErrorFile('');
     try {
       const file = event.target.files[0];
@@ -795,7 +795,7 @@ export default function ManageBooking(props: any) {
   };
 
   useEffect(() => {
-    async function generate(propsField: any) {
+    async function generate (propsField: any) {
       setLevelUser(propsField.data);
     }
 
@@ -878,13 +878,13 @@ export default function ManageBooking(props: any) {
 
           <BookingModal
             isBookingRequest
-            isOpen={!!modalData}
+            isOpen={!(modalData == null)}
             onClose={() => setModalData(null)}
             modalData={modalData}
             isAdmin
           />
           <BookingRejectModal
-            isOpen={!!rejectModalData}
+            isOpen={!(rejectModalData == null)}
             onClose={() => setRejectModalData(null)}
             modalData={rejectModalData}
             dataHandler={dataFromBookingRejectVenueModal}
@@ -945,7 +945,7 @@ export default function ManageBooking(props: any) {
                             color='brand.600'
                             pos='relative'
                             _hover={{
-                              color: 'brand.400',
+                              color: 'brand.400'
                             }}
                           >
                             <span>Upload a file</span>
@@ -980,7 +980,7 @@ export default function ManageBooking(props: any) {
                       color='white'
                       disabled={submitButtonPressed}
                       _hover={{
-                        bg: 'blue.500',
+                        bg: 'blue.500'
                       }}
                     >
                       Create
@@ -999,7 +999,7 @@ export default function ManageBooking(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59',
+    'public, s-maxage=10, stale-while-revalidate=59'
   );
 
   let data: number = levelsUser.USER;
@@ -1014,7 +1014,7 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
 
   return {
     props: {
-      data: data,
-    },
+      data
+    }
   };
 };

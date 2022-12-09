@@ -25,7 +25,7 @@ import listPlugin from '@fullcalendar/list';
  * @param param0 Parameters for the calendar
  * @returns A calendar
  */
-export default function BookingCalendar({
+export default function BookingCalendar ({
   slotMin,
   slotMax,
   events,
@@ -33,7 +33,7 @@ export default function BookingCalendar({
   eventMouseEnter,
   eventMouseLeave,
   startDate,
-  endDate,
+  endDate
 }) {
   return (
     <FullCalendar
@@ -48,14 +48,14 @@ export default function BookingCalendar({
       headerToolbar={{
         left: 'prev,next today',
         center: 'title',
-        right: 'timeGridWeek,listWeek',
+        right: 'timeGridWeek,listWeek'
       }}
       eventMouseEnter={eventMouseEnter}
       eventMouseLeave={eventMouseLeave}
       eventClick={eventClick}
       validRange={{
         start: startDate,
-        end: endDate,
+        end: endDate
       }}
     />
   );

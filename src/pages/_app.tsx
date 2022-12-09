@@ -19,9 +19,9 @@ import '@fullcalendar/list/main.css';
  * @param param0 React components
  * @returns The entire app
  */
-export default function App({
+export default function App ({
   Component,
-  pageProps: { session, ...pageProps },
+  pageProps: { session, ...pageProps }
 }) {
   return (
     <ChakraProvider>

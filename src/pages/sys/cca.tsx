@@ -32,7 +32,7 @@ const MotionBox = motion(Box);
  * @param props List of CCAs
  * @returns CCA Page
  */
-export default function CCA(props: any) {
+export default function CCA (props: any) {
   const [leaderModalData, setLeaderModalData] = useState(null);
   const [memberModalData, setMemberModalData] = useState(null);
 
@@ -45,7 +45,7 @@ export default function CCA(props: any) {
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    async function generate(propsField: any) {
+    async function generate (propsField: any) {
       setSubmitButtonPressed(true);
 
       if (propsField.data) {
@@ -68,7 +68,7 @@ export default function CCA(props: any) {
                       product={itemField}
                       setModalData={setLeaderModalData}
                     />
-                  </MotionBox>,
+                  </MotionBox>
                 );
               } else {
                 memberRes.push(
@@ -80,7 +80,7 @@ export default function CCA(props: any) {
                       product={itemField}
                       setModalData={setMemberModalData}
                     />
-                  </MotionBox>,
+                  </MotionBox>
                 );
               }
             });
@@ -211,7 +211,7 @@ export default function CCA(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=120, stale-while-revalidate=240',
+    'public, s-maxage=120, stale-while-revalidate=240'
   );
 
   let data: Result | null = null;
@@ -230,9 +230,9 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
 
   return {
     props: {
-      data: data,
+      data,
       userSession: session,
-      threshold: process.env.SESSION_EDITABLE_DAY,
-    },
+      threshold: process.env.SESSION_EDITABLE_DAY
+    }
   };
 };

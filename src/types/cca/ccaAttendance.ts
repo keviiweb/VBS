@@ -1,4 +1,4 @@
-export type CCAAttendance = {
+export interface CCAAttendance {
   id?: string;
   date?: number;
   dateStr?: string;
@@ -13,4 +13,4 @@ export type CCAAttendance = {
   optional?: string;
   action?: any;
   updated_at?: string;
-};
+}

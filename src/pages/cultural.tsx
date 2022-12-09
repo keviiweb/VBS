@@ -15,7 +15,7 @@ const MotionSimpleGrid = motion(SimpleGrid);
  *
  * @returns Cultural Page
  */
-export default function Cultural() {
+export default function Cultural () {
   // Format for adding new CCAs
   /*
   const content = [
@@ -68,12 +68,12 @@ export default function Cultural() {
         {content.map(
           (
             slide: {
-              img: string;
-              title: string;
-              description: string;
-              link: string;
+              img: string,
+              title: string,
+              description: string,
+              link: string,
             },
-            sid,
+            sid
           ) => (
             <MotionBox key={sid} variants={cardVariant}>
               <Card
@@ -86,7 +86,7 @@ export default function Cultural() {
                 buttonText={null}
               />
             </MotionBox>
-          ),
+          )
         )}
       </MotionSimpleGrid>
     </Landing>

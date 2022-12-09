@@ -9,12 +9,12 @@ import {
   convertSlotToArray,
   prettifyTiming,
   checkerString,
-  PERSONAL,
+  PERSONAL
 } from '@constants/sys/helper';
 import {
   convertUnixToDate,
   compareDate,
-  prettifyDate,
+  prettifyDate
 } from '@constants/sys/date';
 import { actions } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
@@ -34,7 +34,7 @@ import {
   findApprovedBooking,
   findRejectedBooking,
   findPendingBooking,
-  findAllBooking,
+  findAllBooking
 } from '@helper/sys/vbs/bookingReq';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
 
@@ -63,7 +63,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   if (session !== undefined && session !== null) {
@@ -129,7 +129,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Unauthorized access',
-        msg: { count: 0, res: [] },
+        msg: { count: 0, res: [] }
       };
       res.status(200).send(result);
       res.end();
@@ -150,7 +150,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             const date = convertUnixToDate(book.date as number);
             const slotArr: number[] = convertSlotToArray(
               book.timeSlots,
-              true,
+              true
             ) as number[];
             const timeSlots: string[] = mapSlotToTiming(slotArr) as string[];
 
@@ -172,7 +172,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
               const conflictsRequest: Result = await getConflictingRequest(
                 book,
-                session,
+                session
               );
 
               let conflicts: BookingRequest[] = [];
@@ -189,7 +189,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               let success: boolean = true;
               const editable: boolean = compareDate(
                 bookingDate,
-                minDayApproval,
+                minDayApproval
               );
 
               if (!book.isApproved && !book.isCancelled && !book.isRejected) {
@@ -231,7 +231,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               if (success) {
                 const userRes: Result = await fetchUserByEmail(
                   book.email,
-                  session,
+                  session
                 );
                 const user: User = userRes.msg;
                 let username: string = '';
@@ -242,19 +242,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 const data: BookingRequest = {
                   id: book.id,
                   email: book.email,
-                  venue: venue,
+                  venue,
                   dateStr: prettified,
                   timeSlots: prettifyTiming(timeSlots),
                   isApproved: book.isApproved,
                   isRejected: book.isRejected,
                   isCancelled: book.isCancelled,
                   purpose: book.purpose,
-                  cca: cca,
+                  cca,
                   conflictRequestObj: conflicts,
-                  status: status,
+                  status,
                   reason: book.reason,
                   userName: username,
-                  editable: editable,
+                  editable
                 };
 
                 parsedBooking.push(data);
@@ -267,7 +267,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: true,
         error: null,
-        msg: { count: count, res: parsedBooking },
+        msg: { count, res: parsedBooking }
       };
 
       res.status(200).send(result);
@@ -276,7 +276,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Cannot get all bookings',
-        msg: { count: 0, res: [] },
+        msg: { count: 0, res: [] }
       };
       res.status(200).send(result);
       res.end();
@@ -285,7 +285,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: { count: 0, res: [] },
+      msg: { count: 0, res: [] }
     };
     res.status(200).send(result);
     res.end();

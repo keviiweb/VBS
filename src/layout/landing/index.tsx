@@ -9,7 +9,7 @@ import ButtonScrollTop from '@components/landing/ButtonScroll';
  * @param param0 React Children
  * @returns Layout page
  */
-export default function Layout({ children }) {
+export default function Layout ({ children }) {
   return (
     <>
       <Header />

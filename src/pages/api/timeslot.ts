@@ -30,7 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   if (session !== undefined && session !== null) {
@@ -52,7 +52,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const bookedTimeSlots: Result = await fetchBookedTimeSlots(
           venue,
           convertedDate,
-          session,
+          session
         );
 
         if (bookedTimeSlots.status) {
@@ -64,14 +64,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             if (
               Object.prototype.hasOwnProperty.call(
                 timingSlotNumberToTimingMapping,
-                key,
+                key
               )
             ) {
               if (Number(key) >= startHour && Number(key) <= endHour) {
                 slots[key] = {
                   id: Number(key),
                   slot: timingSlotNumberToTimingMapping[key],
-                  booked: false,
+                  booked: false
                 };
               }
             }
@@ -83,7 +83,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               slots[item.timingSlot] = {
                 id: Number(item.timingSlot),
                 slot: timingSlotNumberToTimingMapping[item.timingSlot],
-                booked: true,
+                booked: true
               };
             }
           });
@@ -96,14 +96,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             if (
               Object.prototype.hasOwnProperty.call(
                 timingSlotNumberToTimingMapping,
-                key,
+                key
               )
             ) {
               if (Number(key) >= startHour && Number(key) <= endHour) {
                 slots[key] = {
                   id: Number(key),
                   slot: timingSlotNumberToTimingMapping[key],
-                  booked: false,
+                  booked: false
                 };
               }
             }
@@ -113,7 +113,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: true,
           error: null,
-          msg: slots,
+          msg: slots
         };
       } else {
         for (
@@ -124,13 +124,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           if (
             Object.prototype.hasOwnProperty.call(
               timingSlotNumberToTimingMapping,
-              key,
+              key
             )
           ) {
             slots[key] = {
               id: Number(key),
               slot: timingSlotNumberToTimingMapping[key],
-              booked: false,
+              booked: false
             };
           }
         }
@@ -139,7 +139,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: true,
         error: null,
-        msg: slots,
+        msg: slots
       };
       res.status(200).send(result);
       res.end();
@@ -147,7 +147,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       result = {
         status: false,
         error: 'Missing information',
-        msg: [],
+        msg: []
       };
 
       res.status(200).send(result);
@@ -157,7 +157,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: [],
+      msg: []
     };
 
     res.status(200).send(result);

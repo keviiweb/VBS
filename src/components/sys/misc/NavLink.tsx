@@ -9,7 +9,7 @@ import { checkerString } from '@constants/sys/helper';
  * @param param0 Parameters
  * @returns A navigation link
  */
-export default function NavLink({ link, ...rest }) {
+export default function NavLink ({ link, ...rest }) {
   const { label, icon, href } = link;
 
   return (
@@ -25,7 +25,7 @@ export default function NavLink({ link, ...rest }) {
             cursor='pointer'
             _hover={{
               bg: 'cyan.400',
-              color: 'white',
+              color: 'white'
             }}
             {...rest}
           >
@@ -34,7 +34,7 @@ export default function NavLink({ link, ...rest }) {
                 mr='4'
                 fontSize='16'
                 _groupHover={{
-                  color: 'white',
+                  color: 'white'
                 }}
                 as={icon}
               />

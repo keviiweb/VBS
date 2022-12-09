@@ -23,16 +23,16 @@ import hasPermission from '@constants/sys/permission';
  * @param param0 React Children and Admin boolean
  * @returns The layout to display to users
  */
-export default function Auth({ children, admin }) {
+export default function Auth ({ children, admin }) {
   const { data: session, status } = useSession();
   const loading: boolean = status === 'loading';
-  const hasUser: boolean = !!session?.user;
+  const hasUser: boolean = !((session?.user) == null);
   const router = useRouter();
   const devSession = useRef<Session | null>(null);
   const isAdmin: boolean = admin !== undefined;
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchData () {
       try {
         if (
           process.env.NEXT_PUBLIC_SETDEV === 'true' &&
@@ -45,7 +45,7 @@ export default function Auth({ children, admin }) {
             } else if (isAdmin) {
               const permission: boolean = hasPermission(
                 devSession.current.user.admin,
-                actions.VIEW_ADMIN_PAGE,
+                actions.VIEW_ADMIN_PAGE
               );
 
               if (permission !== null && !permission) {
@@ -65,7 +65,7 @@ export default function Auth({ children, admin }) {
           } else if (isAdmin) {
             const permission: boolean = hasPermission(
               session.user.admin,
-              actions.VIEW_ADMIN_PAGE,
+              actions.VIEW_ADMIN_PAGE
             );
 
             if (permission !== null && !permission) {

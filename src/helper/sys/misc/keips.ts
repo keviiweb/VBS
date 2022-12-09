@@ -26,8 +26,8 @@ export const fetchKEIPSByMatNet = async (matnet: string): Promise<Result> => {
   try {
     const keipsFromDB: KEIPS = await prisma.kEIPS.findUnique({
       where: {
-        matnet: matnet,
-      },
+        matnet
+      }
     });
 
     if (keipsFromDB) {
@@ -57,7 +57,7 @@ export const fetchKEIPSByMatNet = async (matnet: string): Promise<Result> => {
  */
 export const createKEIPSFile = async (
   dataField: any[],
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
@@ -94,17 +94,17 @@ export const createKEIPSFile = async (
             topCCA: top.trim(),
             allCCA: all.trim(),
             bonusCCA: bonus.trim(),
-            contrasting: contrasting,
-            OSA: OSA,
-            osaPercentile: osaPercentile,
-            roomDraw: roomDraw,
+            contrasting,
+            OSA,
+            osaPercentile,
+            roomDraw,
             semesterStay: sem.trim(),
-            fulfilled: fulfil,
+            fulfilled: fulfil
           };
 
           await prisma.kEIPS.upsert({
             where: {
-              matnet: userData.matnet,
+              matnet: userData.matnet
             },
             update: {
               topCCA: userData.topCCA,
@@ -115,7 +115,7 @@ export const createKEIPSFile = async (
               osaPercentile: userData.osaPercentile,
               roomDraw: userData.roomDraw,
               semesterStay: userData.semesterStay,
-              fulfilled: userData.fulfilled,
+              fulfilled: userData.fulfilled
             },
             create: {
               matnet: userData.matnet,
@@ -127,8 +127,8 @@ export const createKEIPSFile = async (
               osaPercentile: userData.osaPercentile,
               roomDraw: userData.roomDraw,
               semesterStay: userData.semesterStay,
-              fulfilled: userData.fulfilled,
-            },
+              fulfilled: userData.fulfilled
+            }
           });
 
           count += 1;
@@ -139,12 +139,12 @@ export const createKEIPSFile = async (
     await logger(
       'createKEIPSFile',
       session.user.email,
-      `Successfully created ${count} KEIPS records`,
+      `Successfully created ${count} KEIPS records`
     );
     result = {
       status: true,
       error: null,
-      msg: `Successfully created ${count} KEIPS records`,
+      msg: `Successfully created ${count} KEIPS records`
     };
   } catch (error) {
     console.error(error);
@@ -181,13 +181,13 @@ export const countKEIPS = async (session: Session): Promise<number> => {
 export const fetchAllKEIPS = async (
   limit: number = 100000,
   skip: number = 0,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
   try {
     const query: KEIPS[] = await prisma.kEIPS.findMany({
       skip: skip * limit,
-      take: limit,
+      take: limit
     });
 
     if (query) {

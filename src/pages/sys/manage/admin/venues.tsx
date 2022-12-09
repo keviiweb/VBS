@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useCallback,
+  useCallback
 } from 'react';
 import {
   Button,
@@ -21,7 +21,7 @@ import {
   Stack,
   Select,
   useToast,
-  VisuallyHidden,
+  VisuallyHidden
 } from '@chakra-ui/react';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import { cardVariant, parentVariant } from '@root/motion';
@@ -55,7 +55,7 @@ const MotionBox = motion(Box);
  * @param props Permission level of user
  * @returns Manage Venues page
  */
-export default function ManageVenues(props: any) {
+export default function ManageVenues (props: any) {
   const [modalData, setModalData] = useState<Venue | null>(null);
   const toast = useToast();
 
@@ -79,7 +79,7 @@ export default function ManageVenues(props: any) {
   const visibleDB = useRef(true);
 
   const [parentVenueDropdown, setParentVenueDropdown] = useState<JSX.Element[]>(
-    [],
+    []
   );
   const parentVenue = useRef('');
 
@@ -192,7 +192,7 @@ export default function ManageVenues(props: any) {
     parentVenueField: string,
     startTimeField: string,
     endTimeField: string,
-    openingHoursField: string,
+    openingHoursField: string
   ) => {
     // super basic validation here
     if (!checkerString(nameField)) {
@@ -239,7 +239,7 @@ export default function ManageVenues(props: any) {
   };
 
   const handleSubmit = useCallback(
-    async (event: { preventDefault: () => void }) => {
+    async (event: { preventDefault: () => void, }) => {
       setError('');
       event.preventDefault();
       const openingHours: string = `${startTimeDB.current} - ${endTimeDB.current}`;
@@ -252,7 +252,7 @@ export default function ManageVenues(props: any) {
           parentVenue.current,
           startTimeDB.current,
           endTimeDB.current,
-          openingHours,
+          openingHours
         )
       ) {
         setSubmitButtonPressed(true);
@@ -271,7 +271,7 @@ export default function ManageVenues(props: any) {
           try {
             const rawResponse = await fetch('/api/venue/create', {
               method: 'POST',
-              body: dataField,
+              body: dataField
             });
             const content: Result = await rawResponse.json();
             if (content.status) {
@@ -281,7 +281,7 @@ export default function ManageVenues(props: any) {
                 description: content.msg,
                 status: 'success',
                 duration: 5000,
-                isClosable: true,
+                isClosable: true
               });
 
               await fetchData();
@@ -291,7 +291,7 @@ export default function ManageVenues(props: any) {
                 description: content.error,
                 status: 'error',
                 duration: 5000,
-                isClosable: true,
+                isClosable: true
               });
             }
           } catch (error) {
@@ -301,10 +301,10 @@ export default function ManageVenues(props: any) {
         setSubmitButtonPressed(false);
       }
     },
-    [fetchData, reset, toast],
+    [fetchData, reset, toast]
   );
 
-  const onFileChange = async (event: { target: { files: any[] | any } }) => {
+  const onFileChange = async (event: { target: { files: any[] | any, }, }) => {
     setError('');
     try {
       const file = event.target.files[0];
@@ -319,14 +319,14 @@ export default function ManageVenues(props: any) {
     }
   };
 
-  const onParentVenueChange = async (event: { target: { value: string } }) => {
+  const onParentVenueChange = async (event: { target: { value: string, }, }) => {
     if (event.target.value) {
       const { value } = event.target;
       parentVenue.current = value;
     }
   };
 
-  const onStartTimeChange = async (event: { target: { value: string } }) => {
+  const onStartTimeChange = async (event: { target: { value: string, }, }) => {
     if (event.target.value) {
       const { value } = event.target;
       startTimeDB.current = value;
@@ -334,7 +334,7 @@ export default function ManageVenues(props: any) {
     }
   };
 
-  const onEndTimeChange = async (event: { target: { value: string } }) => {
+  const onEndTimeChange = async (event: { target: { value: string, }, }) => {
     if (event.target.value) {
       const { value } = event.target;
       endTimeDB.current = value;
@@ -343,7 +343,7 @@ export default function ManageVenues(props: any) {
   };
 
   const includeActionButton = useCallback(
-    async (content: { count: number; res: Venue[] }) => {
+    async (content: { count: number, res: Venue[], }) => {
       if (
         (content.count !== undefined || content.count !== null) &&
         (content.res !== undefined || content.res !== null)
@@ -362,7 +362,7 @@ export default function ManageVenues(props: any) {
               selection.push(
                 <option key={dataField.id} value={dataField.id}>
                   {dataField.name}
-                </option>,
+                </option>
               );
 
               if (count === 0) {
@@ -376,7 +376,7 @@ export default function ManageVenues(props: any) {
             selectionEdit.push(
               <option key={dataField.id} value={dataField.id}>
                 {dataField.name}
-              </option>,
+              </option>
             );
 
             allVenues.push(dataField);
@@ -397,7 +397,7 @@ export default function ManageVenues(props: any) {
         }
       }
     },
-    [generateActionButton],
+    [generateActionButton]
   );
 
   generateActionButton = useCallback(
@@ -414,7 +414,7 @@ export default function ManageVenues(props: any) {
 
       return button;
     },
-    [handleDetails],
+    [handleDetails]
   );
 
   const fetchDataTable = useCallback(async () => {
@@ -426,9 +426,9 @@ export default function ManageVenues(props: any) {
         {
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        },
+            'Content-Type': 'application/json'
+          }
+        }
       );
       const content: Result = await rawResponse.json();
       if (content.status) {
@@ -462,13 +462,13 @@ export default function ManageVenues(props: any) {
         start.push(
           <option key={`start${key}`} value={dataField}>
             {dataField}
-          </option>,
+          </option>
         );
 
         end.push(
           <option key={`end${key}`} value={dataField}>
             {dataField}
-          </option>,
+          </option>
         );
       }
     }
@@ -478,7 +478,7 @@ export default function ManageVenues(props: any) {
   }, []);
 
   useEffect(() => {
-    async function generate(propsField: any) {
+    async function generate (propsField: any) {
       setLevel(propsField.data);
 
       await fetchData();
@@ -492,34 +492,34 @@ export default function ManageVenues(props: any) {
     () => [
       {
         Header: 'Name',
-        accessor: 'name',
+        accessor: 'name'
       },
       {
         Header: 'Description',
-        accessor: 'description',
+        accessor: 'description'
       },
       {
         Header: 'Opening Hours',
-        accessor: 'openingHours',
+        accessor: 'openingHours'
       },
       {
         Header: 'Capacity',
-        accessor: 'capacity',
+        accessor: 'capacity'
       },
       {
         Header: 'Child Venue',
-        accessor: 'childVenue',
+        accessor: 'childVenue'
       },
       {
         Header: 'Available for Booking',
-        accessor: 'isAvailable',
+        accessor: 'isAvailable'
       },
       {
         Header: 'Actions',
-        accessor: 'action',
-      },
+        accessor: 'action'
+      }
     ],
-    [],
+    []
   );
 
   const changeDataEdit = (dataField: Venue) => {
@@ -551,7 +551,7 @@ export default function ManageVenues(props: any) {
   };
 
   const onParentVenueChangeEdit = async (event: {
-    target: { value: string };
+    target: { value: string, },
   }) => {
     if (event.target.value) {
       const { value } = event.target;
@@ -560,7 +560,7 @@ export default function ManageVenues(props: any) {
   };
 
   const onStartTimeChangeEdit = async (event: {
-    target: { value: string };
+    target: { value: string, },
   }) => {
     if (event.target.value) {
       const { value } = event.target;
@@ -569,7 +569,7 @@ export default function ManageVenues(props: any) {
     }
   };
 
-  const onEndTimeChangeEdit = async (event: { target: { value: string } }) => {
+  const onEndTimeChangeEdit = async (event: { target: { value: string, }, }) => {
     if (event.target.value) {
       const { value } = event.target;
       endTimeDBEdit.current = value;
@@ -577,7 +577,7 @@ export default function ManageVenues(props: any) {
     }
   };
 
-  const onVenueIDChangeEdit = async (event: { target: { value: string } }) => {
+  const onVenueIDChangeEdit = async (event: { target: { value: string, }, }) => {
     if (event.target.value) {
       const { value } = event.target;
       venueIDDBEdit.current = value;
@@ -605,7 +605,7 @@ export default function ManageVenues(props: any) {
     parentVenueField: string,
     startTimeField: string,
     endTimeField: string,
-    openingHoursField: string,
+    openingHoursField: string
   ) => {
     if (!checkerString(idField)) {
       setErrorEdit('ID must not be empty!');
@@ -656,7 +656,7 @@ export default function ManageVenues(props: any) {
   };
 
   const handleSubmitEdit = useCallback(
-    async (event: { preventDefault: () => void }) => {
+    async (event: { preventDefault: () => void, }) => {
       setErrorEdit('');
       event.preventDefault();
 
@@ -671,7 +671,7 @@ export default function ManageVenues(props: any) {
           parentVenueEdit.current,
           startTimeDBEdit.current,
           endTimeDBEdit.current,
-          openingHours,
+          openingHours
         )
       ) {
         setSubmitButtonPressed(true);
@@ -683,19 +683,19 @@ export default function ManageVenues(props: any) {
           dataField.append('capacity', capacityDBEdit.current.toString());
           dataField.append(
             'isInstantBook',
-            instantBookDBEdit.current.toString(),
+            instantBookDBEdit.current.toString()
           );
           dataField.append('visible', visibleDBEdit.current.toString());
           dataField.append(
             'isChildVenue',
-            isChildVenueDBEdit.current.toString(),
+            isChildVenueDBEdit.current.toString()
           );
           dataField.append('parentVenue', parentVenueEdit.current);
           dataField.append('openingHours', openingHours);
 
           const rawResponse = await fetch('/api/venue/edit', {
             method: 'POST',
-            body: dataField,
+            body: dataField
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -705,7 +705,7 @@ export default function ManageVenues(props: any) {
               description: content.msg,
               status: 'success',
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
 
             await fetchData();
@@ -715,7 +715,7 @@ export default function ManageVenues(props: any) {
               description: content.error,
               status: 'error',
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
           }
         } catch (error) {
@@ -725,11 +725,11 @@ export default function ManageVenues(props: any) {
         setSubmitButtonPressed(false);
       }
     },
-    [fetchData, resetEdit, toast],
+    [fetchData, resetEdit, toast]
   );
 
   const handleSubmitDelete = useCallback(
-    async (event: { preventDefault: () => void }) => {
+    async (event: { preventDefault: () => void, }) => {
       event.preventDefault();
 
       if (checkerString(venueIDDBEdit.current)) {
@@ -740,7 +740,7 @@ export default function ManageVenues(props: any) {
 
           const rawResponse = await fetch('/api/venue/delete', {
             method: 'POST',
-            body: dataField,
+            body: dataField
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
@@ -750,7 +750,7 @@ export default function ManageVenues(props: any) {
               description: content.msg,
               status: 'success',
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
 
             await fetchData();
@@ -760,7 +760,7 @@ export default function ManageVenues(props: any) {
               description: content.error,
               status: 'error',
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
           }
         } catch (error) {
@@ -770,7 +770,7 @@ export default function ManageVenues(props: any) {
         setSubmitButtonPressed(false);
       }
     },
-    [fetchData, resetEdit, toast],
+    [fetchData, resetEdit, toast]
   );
 
   const onTableChange = useCallback(
@@ -785,7 +785,7 @@ export default function ManageVenues(props: any) {
         await fetchDataTable();
       }
     },
-    [fetchDataTable],
+    [fetchDataTable]
   );
 
   return (
@@ -1008,7 +1008,7 @@ export default function ManageVenues(props: any) {
                             color='brand.600'
                             pos='relative'
                             _hover={{
-                              color: 'brand.400',
+                              color: 'brand.400'
                             }}
                           >
                             <span>Upload a file</span>
@@ -1042,7 +1042,7 @@ export default function ManageVenues(props: any) {
                       color='white'
                       disabled={submitButtonPressed}
                       _hover={{
-                        bg: 'blue.500',
+                        bg: 'blue.500'
                       }}
                     >
                       Create
@@ -1118,7 +1118,7 @@ export default function ManageVenues(props: any) {
                     onChange={(event) => {
                       setCapacityEdit(Number(event.currentTarget.value));
                       capacityDBEdit.current = Number(
-                        event.currentTarget.value,
+                        event.currentTarget.value
                       );
                     }}
                   />
@@ -1199,7 +1199,7 @@ export default function ManageVenues(props: any) {
                     color='white'
                     disabled={submitButtonPressed}
                     _hover={{
-                      bg: 'blue.500',
+                      bg: 'blue.500'
                     }}
                     onClick={handleSubmitEdit}
                   >
@@ -1216,7 +1216,7 @@ export default function ManageVenues(props: any) {
                         color='white'
                         disabled={submitButtonPressed}
                         _hover={{
-                          bg: 'blue.500',
+                          bg: 'blue.500'
                         }}
                         onClick={handleSubmitDelete}
                       >
@@ -1237,7 +1237,7 @@ export default function ManageVenues(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59',
+    'public, s-maxage=10, stale-while-revalidate=59'
   );
 
   let data: number = levels.USER;
@@ -1252,7 +1252,7 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
 
   return {
     props: {
-      data: data,
-    },
+      data
+    }
   };
 };

@@ -1,4 +1,4 @@
-export type Venue = {
+export interface Venue {
   id?: string;
   name: string;
   image?: string;
@@ -15,4 +15,4 @@ export type Venue = {
   instantBook?: string;
   action?: any;
   updated_at?: string;
-};
+}

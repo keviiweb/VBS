@@ -10,14 +10,14 @@ import {
   fetchAllCCARecordByUser,
   fetchAllCCARecordByID,
   countAllCCARecordByID,
-  isLeader,
+  isLeader
 } from '@helper/sys/cca/ccaRecord';
 
 import { findCCAbyID } from '@helper/sys/cca/cca';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
 import {
   fetchSpecificCCAAttendanceByUserEmail,
-  countTotalAttendanceHours,
+  countTotalAttendanceHours
 } from '@helper/sys/cca/ccaAttendance';
 import { countTotalSessionHoursByCCAID } from '@helper/sys/cca/ccaSession';
 
@@ -41,7 +41,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   const { id } = req.body;
@@ -56,7 +56,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const userPermission: boolean = hasPermission(
       session.user.admin,
-      actions.FETCH_USER_CCA_RECORD,
+      actions.FETCH_USER_CCA_RECORD
     );
 
     if (ccaIDRes !== undefined) {
@@ -75,12 +75,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             ccaIDRes,
             limit,
             skip,
-            session,
+            session
           );
 
           const totalCount: number = await countAllCCARecordByID(
             ccaIDRes,
-            session,
+            session
           );
           if (ccaDB.status) {
             const ccaData: CCARecord[] = ccaDB.msg;
@@ -94,7 +94,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   if (record.sessionEmail !== undefined) {
                     const userResult: Result = await fetchUserByEmail(
                       record.sessionEmail,
-                      session,
+                      session
                     );
                     if (userResult.status && userResult.msg) {
                       const user: User = userResult.msg;
@@ -104,12 +104,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                           user.email,
                           100000,
                           0,
-                          session,
+                          session
                         );
                       if (userAttendance.status) {
                         const userAttendanceHours =
                           await countTotalAttendanceHours(
-                            userAttendance.msg as CCAAttendance[],
+                            userAttendance.msg as CCAAttendance[]
                           );
                         let rate: string = '100%';
                         if (ccaAttendanceHours !== 0) {
@@ -134,7 +134,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                           sessionID: user.id,
                           ccaName: ccaDetails.name,
                           image: ccaDetails.image,
-                          rate: rate,
+                          rate
                         };
 
                         parsedCCARecord.push(data);
@@ -148,7 +148,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: true,
               error: null,
-              msg: { count: totalCount, res: parsedCCARecord },
+              msg: { count: totalCount, res: parsedCCARecord }
             };
             res.status(200).send(result);
             res.end();
@@ -156,7 +156,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             result = {
               status: false,
               error: ccaDB.error,
-              msg: { count: 0, res: [] },
+              msg: { count: 0, res: [] }
             };
             res.status(200).send(result);
             res.end();
@@ -165,7 +165,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           result = {
             status: false,
             error: ccaDetailsRes.error,
-            msg: { count: 0, res: [] },
+            msg: { count: 0, res: [] }
           };
           res.status(200).send(result);
           res.end();
@@ -174,7 +174,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: 'Not a CCA leader',
-          msg: { count: 0, res: [] },
+          msg: { count: 0, res: [] }
         };
         res.status(200).send(result);
         res.end();
@@ -195,11 +195,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   session.user.email,
                   100000,
                   0,
-                  session,
+                  session
                 );
               if (userAttendance.status) {
                 const userAttendanceHours = await countTotalAttendanceHours(
-                  userAttendance.msg as CCAAttendance[],
+                  userAttendance.msg as CCAAttendance[]
                 );
                 let rate: string = '100%';
                 if (ccaAttendanceHours !== 0) {
@@ -220,8 +220,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   ccaID: record.ccaID,
                   leader: record.leader,
                   ccaName: record.ccaName,
-                  rate: rate,
-                  image: record.image,
+                  rate,
+                  image: record.image
                 };
 
                 parsedCCARecord.push(data);
@@ -233,7 +233,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: true,
           error: null,
-          msg: { count: parsedCCARecord.length, res: parsedCCARecord },
+          msg: { count: parsedCCARecord.length, res: parsedCCARecord }
         };
         res.status(200).send(result);
         res.end();
@@ -241,7 +241,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         result = {
           status: false,
           error: ccaDB.error,
-          msg: [],
+          msg: []
         };
         res.status(200).send(result);
         res.end();
@@ -251,7 +251,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     result = {
       status: false,
       error: 'Unauthenticated',
-      msg: { count: 0, res: [] },
+      msg: { count: 0, res: [] }
     };
     res.status(200).send(result);
     res.end();

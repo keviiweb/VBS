@@ -1,4 +1,4 @@
-export type Booking = {
+export interface Booking {
   id?: string;
   email: string;
   venue: string;
@@ -16,4 +16,4 @@ export type Booking = {
   sessionEmail?: string;
   userName?: string;
   updated_at?: string;
-};
+}

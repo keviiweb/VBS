@@ -17,13 +17,13 @@ import { logger } from '@helper/sys/misc/logger';
 export const fetchBookedTimeSlots = async (
   venue: string,
   convertedDate: number,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const bookedTimeSlots: Booking[] = await prisma.venueBooking.findMany({
-      where: { venue: venue, date: convertedDate },
+      where: { venue, date: convertedDate }
     });
 
     result = { status: true, error: null, msg: bookedTimeSlots };
@@ -35,7 +35,7 @@ export const fetchBookedTimeSlots = async (
       await logger(
         `fetchBookedTimeSlots - ${venue}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
   }

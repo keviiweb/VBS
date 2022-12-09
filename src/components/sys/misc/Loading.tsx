@@ -7,7 +7,7 @@ import { Stack, Spinner, Text } from '@chakra-ui/react';
  * @param param0 A simple message
  * @returns A simple component that is rendered when loading
  */
-export default function Loading({ message }) {
+export default function Loading ({ message }) {
   return (
     <Stack spacing={8} mx='auto' maxW='lg' py={12} px={6}>
       <Stack align='center'>

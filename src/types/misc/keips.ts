@@ -1,4 +1,4 @@
-export type KEIPS = {
+export interface KEIPS {
   id?: string;
   matnet: string;
   topCCA: string;
@@ -14,19 +14,19 @@ export type KEIPS = {
   fulfilledStr?: string;
   updated_at?: string;
   action?: any;
-};
+}
 
-export type KEIPSCCA = {
+export interface KEIPSCCA {
   cca: string;
   cat: string;
   atte: number;
   perf: number;
   outs: number;
   total: number;
-};
+}
 
-export type KEIPSBonus = {
+export interface KEIPSBonus {
   cca: string;
   description: string;
   total: number;
-};
+}

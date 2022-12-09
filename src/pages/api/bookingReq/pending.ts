@@ -6,7 +6,7 @@ import { TimeSlot } from 'types/vbs/timeslot';
 import {
   convertSlotToArray,
   checkerString,
-  checkerArray,
+  checkerArray
 } from '@constants/sys/helper';
 import { convertDateToUnix } from '@constants/sys/date';
 
@@ -28,7 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let result: Result = {
     status: false,
     error: null,
-    msg: '',
+    msg: ''
   };
 
   const { venue, date, timeSlots } = req.body;
@@ -47,7 +47,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const convertedDate: number = convertDateToUnix(dateField);
         const slots: string = convertSlotToArray(
           timeSlotsField,
-          false,
+          false
         ) as string;
 
         const findAllPendingBookingRes: BookingRequest[] =
@@ -55,7 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             venueField,
             convertedDate,
             slots,
-            session,
+            session
           );
 
         result = { status: true, error: null, msg: findAllPendingBookingRes };

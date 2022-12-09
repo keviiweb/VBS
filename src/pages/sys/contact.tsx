@@ -8,7 +8,7 @@ import Auth from '@components/sys/Auth';
  *
  * @returns Contact Page
  */
-export default function Contact() {
+export default function Contact () {
   return (
     <Auth admin={undefined}>
       <Flex bg='gray.100' align='center' justify='center' id='contact'>

@@ -15,15 +15,15 @@ import { logger } from '@helper/sys/misc/logger';
  */
 export const findCCAbyID = async (
   id: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCA = await prisma.cCA.findUnique({
       where: {
-        id: id,
-      },
+        id
+      }
     });
 
     if (query) {
@@ -52,15 +52,15 @@ export const findCCAbyID = async (
  */
 export const findCCAbyName = async (
   name: string,
-  session: Session,
+  session: Session
 ): Promise<Result> => {
   let result: Result = { status: false, error: null, msg: '' };
 
   try {
     const query: CCA = await prisma.cCA.findFirst({
       where: {
-        name: name,
-      },
+        name
+      }
     });
 
     if (query) {
@@ -74,7 +74,7 @@ export const findCCAbyName = async (
       await logger(
         `FindCCAByName - ${name}`,
         session.user.email,
-        error.message,
+        error.message
       );
     }
     result = { status: false, error: 'Failed to fetch CCA', msg: null };
@@ -94,8 +94,8 @@ export const findAllCCA = async (session: Session): Promise<Result> => {
   try {
     const ccaList: CCA[] = await prisma.cCA.findMany({
       orderBy: {
-        name: 'asc',
-      },
+        name: 'asc'
+      }
     });
 
     if (ccaList) {
