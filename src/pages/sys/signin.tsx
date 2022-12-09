@@ -39,7 +39,7 @@ export default function SignIn (props: any) {
     fetchData(props);
   }, [url, props]);
 
-  const handleSubmit = async (event: { preventDefault: () => void, }) => {
+  const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     if (checkerString(emailDB.current) && emailDB.current.includes('@')) {
       try {

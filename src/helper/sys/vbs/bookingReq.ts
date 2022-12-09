@@ -1441,7 +1441,9 @@ export const notifyConflictsEmail = async (
         bookingRequest.venue,
         session
       );
-      const date: Date | null = convertUnixToDate(bookingRequest.date as number);
+      const date: Date | null = convertUnixToDate(
+        bookingRequest.date as number
+      );
 
       let prettifiedDate: string = '';
       if (date !== null) {

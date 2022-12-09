@@ -216,7 +216,7 @@ export default function BookingModal ({
       if (
         isAdmin &&
         isBookingRequest &&
-        (modalDataField.conflictRequestObj != null) &&
+        modalDataField.conflictRequestObj != null &&
         modalDataField.conflictRequestObj.length > 0
       ) {
         if (modalDataField.conflictRequestObj.length % pageSize === 0) {
@@ -233,7 +233,7 @@ export default function BookingModal ({
       } else if (
         isAdmin &&
         isBookingRequest &&
-        (modalDataField.conflictRequestObj != null) &&
+        modalDataField.conflictRequestObj != null &&
         modalDataField.conflictRequestObj?.length === 0
       ) {
         setConflict([]);

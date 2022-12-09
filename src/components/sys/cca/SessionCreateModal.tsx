@@ -97,7 +97,6 @@ export default function SessionCreateModal ({
 
   const ccaIDDB = useRef('');
 
-  const [ccaName, setCCAName] = useState('');
   const [dateStr, setDateStr] = useState('');
   const dateStrDB = useRef('');
   const [name, setName] = useState('');
@@ -152,7 +151,6 @@ export default function SessionCreateModal ({
     setLoadingData(true);
     setError('');
 
-    setCCAName('');
     setDateStr('');
     setName('');
     setOptional(false);
@@ -338,7 +336,7 @@ export default function SessionCreateModal ({
     }
   };
 
-  const onStartTimeChange = async (event: { target: { value: string, }, }) => {
+  const onStartTimeChange = async (event: { target: { value: string; }; }) => {
     try {
       if (event.target.value) {
         const { value } = event.target;
@@ -350,7 +348,7 @@ export default function SessionCreateModal ({
     }
   };
 
-  const onEndTimeChange = async (event: { target: { value: string, }, }) => {
+  const onEndTimeChange = async (event: { target: { value: string; }; }) => {
     try {
       if (event.target.value) {
         const { value } = event.target;
@@ -546,7 +544,7 @@ export default function SessionCreateModal ({
   }, []);
 
   const buildMemberList = useCallback(
-    async (content: { count: number, res: CCARecord[], }) => {
+    async (content: { count: number; res: CCARecord[]; }) => {
       if (content.res.length > 0 && content.count > 0) {
         const buttons: JSX.Element[] = [];
 
@@ -673,25 +671,6 @@ export default function SessionCreateModal ({
             isOpen={!!submitButtonPressed}
             onClose={() => setSubmitButtonPressed(false)}
           />
-
-          {checkerString(ccaName) && (
-            <Stack spacing={5} w='full' align='center'>
-              <Box>
-                <Text
-                  mt={2}
-                  mb={6}
-                  textTransform='uppercase'
-                  fontSize={{ base: '2xl', sm: '2xl', lg: '3xl' }}
-                  lineHeight='5'
-                  fontWeight='bold'
-                  letterSpacing='tight'
-                  color='gray.900'
-                >
-                  {ccaName}
-                </Text>
-              </Box>
-            </Stack>
-          )}
 
           <Progress hasStripe value={progressBar} />
 

@@ -175,7 +175,7 @@ export default function ManageUsers (props: any) {
   };
 
   const handleSubmitCCADownload = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       setCSVdata([]);
       event.preventDefault();
       setSubmitButtonPressed(true);
@@ -204,7 +204,7 @@ export default function ManageUsers (props: any) {
   );
 
   const handleSubmitFile = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       setErrorFile('');
       event.preventDefault();
       if (selectedFileDB.current !== null) {
@@ -253,7 +253,7 @@ export default function ManageUsers (props: any) {
   );
 
   const handleSubmitFileCCA = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       setErrorFileCCA('');
       event.preventDefault();
       if (selectedFileCCADB.current !== null) {
@@ -302,7 +302,7 @@ export default function ManageUsers (props: any) {
   );
 
   const handleSubmit = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       setError('');
       event.preventDefault();
       if (validateFields(nameDB.current, emailDB.current)) {
@@ -353,7 +353,7 @@ export default function ManageUsers (props: any) {
   );
 
   const includeActionButton = useCallback(
-    async (content: { count: number, res: User[], }) => {
+    async (content: { count: number; res: User[]; }) => {
       if (
         (content.count !== undefined || content.count !== null) &&
         (content.res !== undefined || content.res !== null)
@@ -440,7 +440,7 @@ export default function ManageUsers (props: any) {
     setLoadingData(false);
   }, [fetchDataTable]);
 
-  const onFileChange = async (event: { target: { files: any[] | any, }, }) => {
+  const onFileChange = async (event: { target: { files: any[] | any; }; }) => {
     setErrorFile('');
     try {
       const file = event.target.files[0];
@@ -455,7 +455,7 @@ export default function ManageUsers (props: any) {
     }
   };
 
-  const onFileChangeCCA = async (event: { target: { files: any[] | any, }, }) => {
+  const onFileChangeCCA = async (event: { target: { files: any[] | any; }; }) => {
     setErrorFileCCA('');
     try {
       const file = event.target.files[0];
@@ -559,7 +559,7 @@ export default function ManageUsers (props: any) {
   };
 
   const handleSubmitEdit = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       setErrorEdit('');
       event.preventDefault();
 
@@ -618,7 +618,7 @@ export default function ManageUsers (props: any) {
     [fetchData, resetEdit, toast]
   );
 
-  const onUserIDChangeEdit = async (event: { target: { value: string, }, }) => {
+  const onUserIDChangeEdit = async (event: { target: { value: string; }; }) => {
     if (event.target.value) {
       const { value } = event.target;
       userIDDBEdit.current = value;

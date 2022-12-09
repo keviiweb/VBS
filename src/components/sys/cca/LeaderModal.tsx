@@ -44,6 +44,7 @@ import SessionModal from '@components/sys/cca/SessionModal';
 import SessionEditModal from '@components/sys/cca/SessionEditModal';
 import SessionDeleteConfirmationModal from '@components/sys/cca/SessionDeleteConfirmationModal';
 import SessionCreateModal from '@components/sys/cca/SessionCreateModal';
+import MemberEditModal from '@root/src/components/sys/cca/MemberEditModal';
 
 import { Result } from 'types/api';
 import { CCARecord } from 'types/cca/ccaRecord';
@@ -107,6 +108,8 @@ export default function LeaderModalComponent ({
 
   const [specificSessionDelete, setSpecificSessionDeleteData] =
     useState<CCASession | null>(null);
+
+  const [memberCreate, setMemberCreateData] = useState<CCARecord | null>(null);
 
   const [loadingData, setLoadingData] = useState(true);
 
@@ -229,6 +232,15 @@ export default function LeaderModalComponent ({
 
   const handleDeleteSession = useCallback((content: CCASession) => {
     setSpecificSessionDeleteData(content);
+  }, []);
+
+  const handleMemberCreate = useCallback(async () => {
+    if (checkerString(ccaRecordIDDB.current)) {
+      const sess: CCARecord = {
+        ccaID: ccaRecordIDDB.current
+      };
+      setMemberCreateData(sess);
+    }
   }, []);
 
   const handleCreateSession = useCallback(async () => {
@@ -392,10 +404,10 @@ export default function LeaderModalComponent ({
 
   const includeActionButton = useCallback(
     async (
-      content: { count: number, res: CCARecord[] | CCASession[], },
+      content: { count: number; res: CCARecord[] | CCASession[]; },
       action: number
     ) => {
-      if (content.res !== [] && content.count > 0) {
+      if (content.res.length > 0 && content.count > 0) {
         for (let key = 0; key < content.res.length; key += 1) {
           if (content.res[key]) {
             switch (action) {
@@ -514,7 +526,7 @@ export default function LeaderModalComponent ({
         const content: Result = await rawResponse.json();
 
         if (content.status) {
-          const dataField: { count: number, res: CCASession[], } = content.msg;
+          const dataField: { count: number; res: CCASession[]; } = content.msg;
           if (dataField.count > 0 && dataField.res.length > 0) {
             setCSVdataSession(dataField.res);
           }
@@ -585,6 +597,12 @@ export default function LeaderModalComponent ({
       await fetchSession(ccaRecordIDDB.current);
     }
   }, [fetchSession]);
+
+  const successCreateMember = useCallback(async () => {
+    if (checkerString(ccaRecordIDDB.current)) {
+      await fetchMembers(ccaRecordIDDB.current);
+    }
+  }, [fetchMembers]);
 
   const deleteSession = useCallback(
     async (sess: CCASession) => {
@@ -773,6 +791,13 @@ export default function LeaderModalComponent ({
         <ModalCloseButton />
         <ModalHeader />
         <ModalBody>
+          <MemberEditModal
+            isOpen={memberCreate}
+            onClose={() => setMemberCreateData(null)}
+            modalData={memberCreate}
+            dataHandler={successCreateMember}
+          />
+
           <SessionCreateModal
             isOpen={sessionCreate}
             onClose={() => setSessionCreateData(null)}
@@ -886,6 +911,17 @@ export default function LeaderModalComponent ({
                 justifyContent='center'
               >
                 <Stack direction={variantButtons} spacing={5}>
+                  <Button
+                    bg='cyan.700'
+                    color='white'
+                    w={{ base: 'full', md: '150px' }}
+                    size='lg'
+                    _hover={{ bg: 'cyan.800' }}
+                    onClick={handleMemberCreate}
+                  >
+                    Edit Member
+                  </Button>
+
                   <Button
                     bg='cyan.700'
                     color='white'

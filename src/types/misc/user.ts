@@ -9,4 +9,5 @@ export interface User {
   acceptedTermStr?: string;
   updated_at?: string;
   action?: any;
+  isMemberOfCCA?: boolean;
 }

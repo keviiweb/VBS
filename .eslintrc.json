@@ -17,6 +17,7 @@
   "plugins": ["react"],
   "rules": {
     "semi": "off",
+    "space-before-blocks": "off",
     "@typescript-eslint/semi": "off",
     "max-len": ["error", { "code": 650 }],
     "jsx-quotes": ["error", "prefer-single"],

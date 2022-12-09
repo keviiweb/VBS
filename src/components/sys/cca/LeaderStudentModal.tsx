@@ -95,8 +95,8 @@ export default function LeaderStudentModalComponent ({
   };
 
   const includeActionButton = useCallback(
-    async (content: { count: number, res: CCAAttendance[], }) => {
-      if (content.res !== [] && content.count > 0) {
+    async (content: { count: number; res: CCAAttendance[]; }) => {
+      if (content.res.length > 0 && content.count > 0) {
         setData(content.res);
 
         if (content.count % pageSizeDB.current === 0) {
@@ -127,7 +127,7 @@ export default function LeaderStudentModalComponent ({
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
-            const dataField: { count: number, res: CCAAttendance[], } =
+            const dataField: { count: number; res: CCAAttendance[]; } =
               content.msg;
             if (dataField.count > 0 && dataField.res.length > 0) {
               setCSVdata(dataField.res);

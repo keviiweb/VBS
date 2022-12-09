@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import Link from 'next/link';
-import Image from "next/image";
+import Image from 'next/image';
 
 /**
  * A clickable card that redirects the user to an external link
@@ -43,10 +43,11 @@ export default function LinkCard ({ product }) {
                     priority
                     alt='image'
                     fill
-                    sizes="100vw"
+                    sizes='100vw'
                     style={{
-                      objectFit: "cover"
-                    }} />
+                      objectFit: 'cover'
+                    }}
+                  />
                 </Box>
               )}
 

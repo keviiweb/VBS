@@ -239,7 +239,7 @@ export default function ManageVenues (props: any) {
   };
 
   const handleSubmit = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       setError('');
       event.preventDefault();
       const openingHours: string = `${startTimeDB.current} - ${endTimeDB.current}`;
@@ -304,7 +304,7 @@ export default function ManageVenues (props: any) {
     [fetchData, reset, toast]
   );
 
-  const onFileChange = async (event: { target: { files: any[] | any, }, }) => {
+  const onFileChange = async (event: { target: { files: any[] | any; }; }) => {
     setError('');
     try {
       const file = event.target.files[0];
@@ -319,14 +319,14 @@ export default function ManageVenues (props: any) {
     }
   };
 
-  const onParentVenueChange = async (event: { target: { value: string, }, }) => {
+  const onParentVenueChange = async (event: { target: { value: string; }; }) => {
     if (event.target.value) {
       const { value } = event.target;
       parentVenue.current = value;
     }
   };
 
-  const onStartTimeChange = async (event: { target: { value: string, }, }) => {
+  const onStartTimeChange = async (event: { target: { value: string; }; }) => {
     if (event.target.value) {
       const { value } = event.target;
       startTimeDB.current = value;
@@ -334,7 +334,7 @@ export default function ManageVenues (props: any) {
     }
   };
 
-  const onEndTimeChange = async (event: { target: { value: string, }, }) => {
+  const onEndTimeChange = async (event: { target: { value: string; }; }) => {
     if (event.target.value) {
       const { value } = event.target;
       endTimeDB.current = value;
@@ -343,7 +343,7 @@ export default function ManageVenues (props: any) {
   };
 
   const includeActionButton = useCallback(
-    async (content: { count: number, res: Venue[], }) => {
+    async (content: { count: number; res: Venue[]; }) => {
       if (
         (content.count !== undefined || content.count !== null) &&
         (content.res !== undefined || content.res !== null)
@@ -551,7 +551,7 @@ export default function ManageVenues (props: any) {
   };
 
   const onParentVenueChangeEdit = async (event: {
-    target: { value: string, },
+    target: { value: string; };
   }) => {
     if (event.target.value) {
       const { value } = event.target;
@@ -560,7 +560,7 @@ export default function ManageVenues (props: any) {
   };
 
   const onStartTimeChangeEdit = async (event: {
-    target: { value: string, },
+    target: { value: string; };
   }) => {
     if (event.target.value) {
       const { value } = event.target;
@@ -569,7 +569,7 @@ export default function ManageVenues (props: any) {
     }
   };
 
-  const onEndTimeChangeEdit = async (event: { target: { value: string, }, }) => {
+  const onEndTimeChangeEdit = async (event: { target: { value: string; }; }) => {
     if (event.target.value) {
       const { value } = event.target;
       endTimeDBEdit.current = value;
@@ -577,7 +577,7 @@ export default function ManageVenues (props: any) {
     }
   };
 
-  const onVenueIDChangeEdit = async (event: { target: { value: string, }, }) => {
+  const onVenueIDChangeEdit = async (event: { target: { value: string; }; }) => {
     if (event.target.value) {
       const { value } = event.target;
       venueIDDBEdit.current = value;
@@ -656,7 +656,7 @@ export default function ManageVenues (props: any) {
   };
 
   const handleSubmitEdit = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       setErrorEdit('');
       event.preventDefault();
 
@@ -729,7 +729,7 @@ export default function ManageVenues (props: any) {
   );
 
   const handleSubmitDelete = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       event.preventDefault();
 
       if (checkerString(venueIDDBEdit.current)) {

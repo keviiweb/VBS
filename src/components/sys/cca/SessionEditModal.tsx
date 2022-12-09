@@ -238,7 +238,7 @@ export default function SessionEditModal ({
     const members: CCAAttendance[] = JSON.parse(membersF) as CCAAttendance[];
     if (
       members.length > 0 &&
-      (selectedData.current != null) &&
+      selectedData.current != null &&
       selectedData.current.duration !== undefined
     ) {
       for (let key = 0; key < members.length; key += 1) {
@@ -489,7 +489,7 @@ export default function SessionEditModal ({
     }
   };
 
-  const onStartTimeChange = async (event: { target: { value: string, }, }) => {
+  const onStartTimeChange = async (event: { target: { value: string; }; }) => {
     try {
       if (event.target.value) {
         const { value } = event.target;
@@ -501,7 +501,7 @@ export default function SessionEditModal ({
     }
   };
 
-  const onEndTimeChange = async (event: { target: { value: string, }, }) => {
+  const onEndTimeChange = async (event: { target: { value: string; }; }) => {
     try {
       if (event.target.value) {
         const { value } = event.target;
@@ -737,7 +737,7 @@ export default function SessionEditModal ({
   }, []);
 
   const buildMemberList = useCallback(
-    async (content: { count: number, res: CCARecord[], }) => {
+    async (content: { count: number; res: CCARecord[]; }) => {
       if (content.res.length > 0 && content.count > 0) {
         const buttons: JSX.Element[] = [];
         const realityButtons: JSX.Element[] = [];

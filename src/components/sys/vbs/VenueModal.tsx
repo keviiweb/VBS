@@ -355,7 +355,7 @@ export default function VenueModal ({ isOpen, onClose, modalData }) {
                 alignItems='center'
                 justifyContent='center'
               >
-                {(childVenues != null) && loadingData && (
+                {childVenues != null && loadingData && (
                   <Box overflow='auto'>
                     <Text
                       fontSize={{ base: '16px', lg: '18px' }}
@@ -369,7 +369,7 @@ export default function VenueModal ({ isOpen, onClose, modalData }) {
                   </Box>
                 )}
 
-                {(childVenues != null) && !loadingData && (
+                {childVenues != null && !loadingData && (
                   <Box w='full' overflow='auto'>
                     <Text
                       fontSize={{ base: '16px', lg: '18px' }}

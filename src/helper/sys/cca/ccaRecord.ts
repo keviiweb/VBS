@@ -417,6 +417,47 @@ export const createCCARecord = async (
 };
 
 /**
+ * Deletes a CCA Record entry in the database
+ *
+ * @param data CCARecord Object
+ * @returns A Result containing the status wrapped in a Promise
+ */
+export const deleteCCARecord = async (
+  data: CCARecord,
+  session: Session
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    const query: CCARecord = await prisma.cCARecord.delete({
+      where: {
+        id: (data.id as string).trim()
+      }
+    });
+
+    if (query) {
+      result = {
+        status: true,
+        error: '',
+        msg: 'Successfully deleted record'
+      };
+    } else {
+      await logger(
+        'deleteCCARecord',
+        session.user.email,
+        'Failed to delete record'
+      );
+      result = { status: false, error: 'Failed to delete record', msg: '' };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: 'Failed to delete record', msg: '' };
+    await logger('deleteCCARecord', session.user.email, error.message);
+  }
+
+  return result;
+};
+
+/**
  * Populates the list of CCA Records read from a CSV file
  *
  * 1. First, the email of the user is validated against
@@ -445,8 +486,9 @@ export const createCCARecordFile = async (
 
         const ccaName: string = data.ccaName !== undefined ? data.ccaName : '';
         const email: string = data.email !== undefined ? data.email : '';
-        const leader: boolean =
-          !!(data.leader !== undefined && data.leader === 'yes');
+        const leader: boolean = !!(
+          data.leader !== undefined && data.leader === 'yes'
+        );
 
         const userRes: Result = await fetchUserByEmail(email.trim(), session);
         if (userRes.status) {

@@ -15,18 +15,20 @@ export const logger = async (
   username: string,
   content: string
 ): Promise<void> => {
-  try {
-    const data: Log = {
-      location,
-      username,
-      content
-    };
+  if (process.env.LOGGER !== undefined && process.env.LOGGER) {
+    try {
+      const data: Log = {
+        location,
+        username,
+        content
+      };
 
-    await prisma.log.create({
-      data
-    });
-  } catch (error) {
-    console.error(error);
+      await prisma.log.create({
+        data
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 };
 

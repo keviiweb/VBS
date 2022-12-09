@@ -92,11 +92,11 @@ export default function Community () {
         {content.map(
           (
             slide: {
-              img: string,
-              title: string,
-              description: string,
-              buttonText: string,
-              buttonLink: string,
+              img: string;
+              title: string;
+              description: string;
+              buttonText: string;
+              buttonLink: string;
             },
             sid
           ) => (

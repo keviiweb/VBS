@@ -39,7 +39,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     session !== null &&
     hasPermission(session.user.admin, actions.DELETE_ANNOUNCEMENT)
   ) {
-    const data: { fields: formidable.Fields, files: formidable.Files, } =
+    const data: { fields: formidable.Fields; files: formidable.Files; } =
       await new Promise((resolve, reject) => {
         const form = new IncomingForm();
         form.parse(req, (err, fields, files) => {

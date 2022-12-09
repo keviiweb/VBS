@@ -82,8 +82,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   const parsed: Booking = parsedBooking[pB];
 
                   let bookedTimeSlotsISO: {
-                    start: string | null,
-                    end: string | null,
+                    start: string | null;
+                    end: string | null;
                   } = { start: null, end: null };
 
                   if (
@@ -94,8 +94,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   ) {
                     let bookTimeSlots: string = '';
                     let timeSplit: {
-                      start: number | null,
-                      end: number | null,
+                      start: number | null;
+                      end: number | null;
                     } = { start: null, end: null };
 
                     if (book.timingSlot !== undefined) {
@@ -107,8 +107,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
                     let parsedtimeSlots: string = '';
                     let parsedtimeSlotsSplit: {
-                      start: number | null,
-                      end: number | null,
+                      start: number | null;
+                      end: number | null;
                     } = { start: null, end: null };
 
                     if (parsed.timeSlots !== undefined) {
@@ -215,8 +215,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   }
 
                   let bookedTimeSlotsISO: {
-                    start: string | null,
-                    end: string | null,
+                    start: string | null;
+                    end: string | null;
                   } = { start: null, end: null };
 
                   if (date !== null) {

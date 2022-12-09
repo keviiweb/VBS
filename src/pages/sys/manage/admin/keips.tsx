@@ -96,7 +96,7 @@ export default function ManageKEIPS (props: any) {
   }, []);
 
   const handleSubmitFileKEIPS = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       setErrorFileKEIPS('');
       event.preventDefault();
       if (selectedFileKEIPSDB.current !== null) {
@@ -144,7 +144,7 @@ export default function ManageKEIPS (props: any) {
   );
 
   const handleSubmitTruncateKEIPS = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       setErrorFileKEIPS('');
       event.preventDefault();
       setSubmitButtonPressed(true);
@@ -202,7 +202,7 @@ export default function ManageKEIPS (props: any) {
   );
 
   const includeActionButton = useCallback(
-    async (content: { count: number, res: KEIPS[], }) => {
+    async (content: { count: number; res: KEIPS[]; }) => {
       if (
         (content.count !== undefined || content.count !== null) &&
         (content.res !== undefined || content.res !== null)
@@ -260,7 +260,7 @@ export default function ManageKEIPS (props: any) {
   }, [fetchDataTable]);
 
   const onFileChangeKEIPS = async (event: {
-    target: { files: any[] | any, },
+    target: { files: any[] | any; };
   }) => {
     setErrorFileKEIPS('');
     try {

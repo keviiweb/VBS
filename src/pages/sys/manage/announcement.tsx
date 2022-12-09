@@ -143,7 +143,7 @@ export default function ManageAnnouncement () {
   };
 
   const handleSubmit = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       setError('');
       event.preventDefault();
       if (validateFields(descriptionDB.current)) {
@@ -189,7 +189,7 @@ export default function ManageAnnouncement () {
     [fetchData, reset, toast]
   );
 
-  const onFileChange = async (event: { target: { files: any[] | any, }, }) => {
+  const onFileChange = async (event: { target: { files: any[] | any; }; }) => {
     try {
       const file = event.target.files[0];
       if (file !== undefined && file !== null && file.name !== undefined) {
@@ -323,7 +323,7 @@ export default function ManageAnnouncement () {
   };
 
   const onAnnounceIDChangeEdit = async (event: {
-    target: { value: string, },
+    target: { value: string; };
   }) => {
     if (event.target.value) {
       const { value } = event.target;
@@ -358,7 +358,7 @@ export default function ManageAnnouncement () {
   };
 
   const handleSubmitEdit = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       setErrorEdit('');
       event.preventDefault();
 

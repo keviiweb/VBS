@@ -26,7 +26,7 @@ import hasPermission from '@constants/sys/permission';
 export default function Auth ({ children, admin }) {
   const { data: session, status } = useSession();
   const loading: boolean = status === 'loading';
-  const hasUser: boolean = !((session?.user) == null);
+  const hasUser: boolean = !(session?.user == null);
   const router = useRouter();
   const devSession = useRef<Session | null>(null);
   const isAdmin: boolean = admin !== undefined;

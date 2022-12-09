@@ -67,7 +67,9 @@ export default function UserProfile (props: any) {
             <MenuDivider />
             <MenuItem
               key='signout-menu'
-              onClick={async () => await signOut({ callbackUrl: `${url}/sys/signin` })}
+              onClick={async () =>
+                await signOut({ callbackUrl: `${url}/sys/signin` })
+              }
             >
               Sign out
             </MenuItem>

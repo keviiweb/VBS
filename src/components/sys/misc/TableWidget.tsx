@@ -97,7 +97,7 @@ export default function TableWidget ({
           <Thead>
             <Tr>
               {columns.map(
-                (item: { Header: string, accessor: string, }, idx: number) => (
+                (item: { Header: string; accessor: string; }, idx: number) => (
                   <Th key={`th-${id}-${idx}`}>{item.Header}</Th>
                 )
               )}

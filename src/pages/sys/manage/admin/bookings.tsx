@@ -471,7 +471,7 @@ export default function ManageBooking (props: any) {
 
   const includeActionButton = useCallback(
     async (
-      content: { count: number, res: BookingRequest[], },
+      content: { count: number; res: BookingRequest[]; },
       action: number
     ) => {
       if (
@@ -622,7 +622,7 @@ export default function ManageBooking (props: any) {
   );
 
   const onBookingChoiceChange = useCallback(
-    async (event: { target: { value: string, }, }) => {
+    async (event: { target: { value: string; }; }) => {
       if (event.target.value) {
         const { value } = event.target;
         if (
@@ -732,7 +732,7 @@ export default function ManageBooking (props: any) {
   }, []);
 
   const handleSubmitFile = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       setErrorFile('');
       event.preventDefault();
       if (selectedFileDB.current !== null) {
@@ -779,7 +779,7 @@ export default function ManageBooking (props: any) {
     [resetFile, toast]
   );
 
-  const onFileChange = async (event: { target: { files: any[] | any, }, }) => {
+  const onFileChange = async (event: { target: { files: any[] | any; }; }) => {
     setErrorFile('');
     try {
       const file = event.target.files[0];

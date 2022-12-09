@@ -67,7 +67,7 @@ export default function Sports () {
         animate='animate'
       >
         {content.map(
-          (slide: { title: string, description: string, img: string, }, sid) => (
+          (slide: { title: string; description: string; img: string; }, sid) => (
             <MotionBox key={sid} variants={cardVariant}>
               <Card
                 key={sid}

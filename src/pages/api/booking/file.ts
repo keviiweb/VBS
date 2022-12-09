@@ -42,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     session !== null &&
     hasPermission(session.user.admin, actions.CREATE_RECURRING_BOOKING_REQUEST)
   ) {
-    const dataField: { fields: formidable.Fields, files: formidable.Files, } =
+    const dataField: { fields: formidable.Fields; files: formidable.Files; } =
       await new Promise((resolve, reject) => {
         const form = new IncomingForm();
         form.parse(req, (err, fields, files) => {

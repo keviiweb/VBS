@@ -344,3 +344,37 @@ export const editUser = async (
 
   return result;
 };
+
+/**
+ * Search user by partial input
+ *
+ * @param input Partial input
+ * @returns A Result containing the list of User records wrapped in a Promise
+ */
+export const searchUser = async (
+  input: string,
+  session: Session
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+  try {
+    const users: User[] = await prisma.users.findMany({
+      where: {
+        name: {
+          contains: input.toUpperCase().trim()
+        }
+      }
+    });
+
+    if (users) {
+      result = { status: true, error: null, msg: users };
+    } else {
+      result = { status: false, error: 'Failed to fetch user', msg: [] };
+    }
+  } catch (error) {
+    console.error(error);
+    result = { status: false, error: 'Failed to fetch user', msg: [] };
+    await logger('fetchAllUser', session.user.email, error.message);
+  }
+
+  return result;
+};

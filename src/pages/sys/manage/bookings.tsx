@@ -96,7 +96,7 @@ export default function ManageBooking () {
   );
 
   const includeActionButton = useCallback(
-    async (content: { count: number, res: BookingRequest[], }) => {
+    async (content: { count: number; res: BookingRequest[]; }) => {
       if (
         (content.count !== undefined || content.count !== null) &&
         (content.res !== undefined || content.res !== null)

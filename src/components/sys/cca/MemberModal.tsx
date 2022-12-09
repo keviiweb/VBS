@@ -113,7 +113,7 @@ export default function LeaderStudentModalComponent ({
   );
 
   const includeActionButton = useCallback(
-    async (content: { count: number, res: CCASession[], }) => {
+    async (content: { count: number; res: CCASession[]; }) => {
       if (content.res.length > 0 && content.count > 0) {
         for (let key = 0; key < content.res.length; key += 1) {
           if (content.res[key]) {

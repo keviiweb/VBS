@@ -11,7 +11,7 @@ import { animateScroll } from 'react-scroll';
  */
 export default function ButtonScrollTop () {
   const [show, setShow] = useState(false);
-  const showStyle: { [key: string]: React.CSSProperties, } = show
+  const showStyle: { [key: string]: React.CSSProperties; } = show
     ? {
       show: {
         opacity: 1,

@@ -181,7 +181,7 @@ export default function KEIPSComponent () {
   );
 
   const handleSubmit = useCallback(
-    async (event: { preventDefault: () => void, }) => {
+    async (event: { preventDefault: () => void; }) => {
       event.preventDefault();
       if (checkerString(matnetDB.current) && validateField(matnetDB.current)) {
         setError('');

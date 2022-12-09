@@ -64,10 +64,10 @@ export default function Committee () {
         {content.map(
           (
             slide: {
-              img: string,
-              title: string,
-              description: string,
-              link: string,
+              img: string;
+              title: string;
+              description: string;
+              link: string;
             },
             sid
           ) => (

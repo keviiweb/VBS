@@ -31,7 +31,7 @@ export const currentSession = async (
   } else {
     const isServer = typeof window === 'undefined';
     let session: Session | null = null;
-    if (isServer && (req != null)) {
+    if (isServer && req != null) {
       session = await getSession({ req });
     } else {
       session = await getSession();

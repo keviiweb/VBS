@@ -57,8 +57,8 @@ interface CalendarData {
   start: string | undefined;
   end: string | undefined;
   extendedProps: {
-    description: string,
-    booking: Booking,
+    description: string;
+    booking: Booking;
   };
 }
 
@@ -208,7 +208,7 @@ export default function VBS (props: any) {
     [populateCalendar]
   );
 
-  const onVenueIDChange = async (event: { target: { value: string, }, }) => {
+  const onVenueIDChange = async (event: { target: { value: string; }; }) => {
     if (event.target.value) {
       const { value } = event.target;
 
@@ -229,11 +229,11 @@ export default function VBS (props: any) {
   const handleEventClick = (info: {
     event: {
       extendedProps: {
-        booking: Booking,
-        description: string,
-      },
-      title: string,
-    },
+        booking: Booking;
+        description: string;
+      };
+      title: string;
+    };
   }) => {
     if (info.event.extendedProps.description) {
       const bookings: Booking = info.event.extendedProps.booking;
@@ -242,7 +242,7 @@ export default function VBS (props: any) {
   };
 
   const handleMouseEnter = (info: {
-    event: { extendedProps: { description: string, }, title: string, },
+    event: { extendedProps: { description: string; }; title: string; };
   }) => {
     if (info.event.extendedProps.description) {
       toast({
@@ -325,7 +325,7 @@ export default function VBS (props: any) {
     fetchData(props);
   }, [props, generateVenueDropdown, changeCalendarDates]);
 
-  const handleSearch = (event: { target: { value: string, }, }) => {
+  const handleSearch = (event: { target: { value: string; }; }) => {
     if (event.target.value !== null && event.target.value !== undefined) {
       const searchInput: string = event.target.value;
       setSearch(searchInput);
@@ -496,7 +496,7 @@ export default function VBS (props: any) {
               initial='initial'
               animate='animate'
             >
-              {filteredData && (filteredData.length > 0) ? filteredData : cards}
+              {filteredData && filteredData.length > 0 ? filteredData : cards}
             </MotionSimpleGrid>
 
             <VenueBookingModal

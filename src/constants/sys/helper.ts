@@ -283,7 +283,7 @@ export const findSlotsByID = async (slot: number): Promise<string | null> => {
  */
 export const splitHours = async (
   opening: string
-): Promise<{ start: number | null, end: number | null, }> => {
+): Promise<{ start: number | null; end: number | null; }> => {
   try {
     if (opening) {
       if (!opening.includes('-')) {

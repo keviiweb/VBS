@@ -763,7 +763,7 @@ export default function VenueBookingModal ({
   };
 
   // Child venue generation
-  const onChildVenueChange = (event: { target: { value: string, }, }) => {
+  const onChildVenueChange = (event: { target: { value: string; }; }) => {
     setError('');
 
     try {

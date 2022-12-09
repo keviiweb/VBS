@@ -206,7 +206,7 @@ export const findVenueByName = async (
 export const fetchOpeningHours = async (
   id: string,
   session: Session
-): Promise<{ start: number | null, end: number | null, }> => {
+): Promise<{ start: number | null; end: number | null; }> => {
   try {
     const locations: Venue = await prisma.venue.findFirst({
       where: { id }
@@ -258,7 +258,7 @@ export const splitHoursISO = async (
   date: Date,
   timeSlot: string,
   session: Session
-): Promise<{ start: string | null, end: string | null, }> => {
+): Promise<{ start: string | null; end: string | null; }> => {
   try {
     if (!isValidDate(date)) {
       return { start: null, end: null };
@@ -320,7 +320,7 @@ export const splitHoursISO = async (
 export const splitOpeningHours = async (
   opening: string,
   session: Session
-): Promise<{ start: number | null, end: number | null, }> => {
+): Promise<{ start: number | null; end: number | null; }> => {
   try {
     if (opening) {
       const hours: string[] = opening.split('-');
