@@ -58,7 +58,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const skip: number = skipQuery !== undefined ? Number(skipQuery) : 0;
 
       const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
-      if (ccaDetailsRes.status && ccaDetailsRes.msg) {
+      if (
+        ccaDetailsRes.status &&
+        ccaDetailsRes.msg !== undefined &&
+        ccaDetailsRes !== null
+      ) {
         const ccaDetails: CCA = ccaDetailsRes.msg;
         const ccaDB: Result = await fetchAllCCASessionByCCAID(
           ccaID,
@@ -72,76 +76,83 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         );
         if (ccaDB.status) {
           const ccaData: CCASession[] = ccaDB.msg;
-          if (ccaData && ccaData.length > 0) {
+          if (ccaData !== null && ccaData !== undefined && ccaData.length > 0) {
             for (let ven = 0; ven < ccaData.length; ven += 1) {
-              if (ccaData[ven]) {
-                const record: CCASession = ccaData[ven];
+              const record: CCASession = ccaData[ven];
 
-                if (record.id !== undefined) {
-                  const { time } = record;
-                  const { start, end } = await splitHours(time);
-                  if (start !== null && end !== null) {
-                    const duration: number = await calculateDuration(
-                      start,
-                      end,
-                    );
+              if (record.id !== undefined) {
+                const { time } = record;
+                const { start, end } = await splitHours(time);
+                if (start !== null && end !== null) {
+                  const duration: number = await calculateDuration(start, end);
 
-                    const dateObj: Date | null = convertUnixToDate(record.date);
-                    let dateStr: string = '';
+                  const dateObj: Date | null = convertUnixToDate(record.date);
+                  let dateStr: string = '';
 
-                    if (dateObj !== null) {
-                      dateStr = dateISO(dateObj);
-                    }
+                  if (dateObj !== null) {
+                    dateStr = dateISO(dateObj);
+                  }
 
-                    const editableStr: string = record.editable ? 'Yes' : 'No';
-                    const optionalStr: string = record.optional ? 'Yes' : 'No';
+                  const editableStr: string =
+                    record.editable !== undefined && record.editable
+                      ? 'Yes'
+                      : 'No';
+                  const optionalStr: string =
+                    record.optional !== undefined && record.optional
+                      ? 'Yes'
+                      : 'No';
 
-                    const attendanceRes: Result =
-                      await fetchAllCCAAttendanceBySession(record.id, session);
+                  const attendanceRes: Result =
+                    await fetchAllCCAAttendanceBySession(record.id, session);
 
-                    if (attendanceRes.status && attendanceRes.msg) {
-                      const attendance: CCAAttendance[] = attendanceRes.msg;
-                      for (let key = 0; key < attendance.length; key += 1) {
-                        if (attendance[key]) {
-                          const attend: CCAAttendance = attendance[key];
+                  if (
+                    attendanceRes.status &&
+                    attendanceRes.msg !== undefined &&
+                    attendanceRes.msg !== null
+                  ) {
+                    const attendance: CCAAttendance[] = attendanceRes.msg;
+                    for (let key = 0; key < attendance.length; key += 1) {
+                      const attend: CCAAttendance = attendance[key];
 
-                          if (attend.sessionEmail !== undefined) {
-                            const userEmail: string = attend.sessionEmail;
-                            const userRes: Result = await fetchUserByEmail(
-                              userEmail,
-                              session,
-                            );
-                            if (userRes.status && userRes.msg) {
-                              const user: User = userRes.msg;
-                              attend.sessionID = user.id;
-                              attend.sessionName = user.name;
-                            }
-                          }
+                      if (attend.sessionEmail !== undefined) {
+                        const userEmail: string = attend.sessionEmail;
+                        const userRes: Result = await fetchUserByEmail(
+                          userEmail,
+                          session,
+                        );
+                        if (
+                          userRes.status &&
+                          userRes.msg !== undefined &&
+                          userRes.msg !== null
+                        ) {
+                          const user: User = userRes.msg;
+                          attend.sessionID = user.id;
+                          attend.sessionName = user.name;
                         }
                       }
-
-                      const data: CCASession = {
-                        id: record.id,
-                        ccaID,
-                        ccaName: ccaDetails.name,
-                        name: record.name,
-                        date: record.date,
-                        dateStr,
-                        time: record.time,
-                        duration,
-                        editable: record.editable,
-                        optional: record.optional,
-                        editableStr,
-                        optionalStr,
-                        remarks: record.remarks,
-                        ldrNotes: record.ldrNotes,
-                        expectedM: record.expectedM,
-                        expectedMName: record.expectedMName,
-                        realityM: JSON.stringify(attendance),
-                      };
-
-                      parsedCCASession.push(data);
                     }
+
+                    const data: CCASession = {
+                      id: record.id,
+                      ccaID,
+                      ccaName: ccaDetails.name,
+                      name: record.name,
+                      date: record.date,
+                      dateStr,
+                      time: record.time,
+                      duration,
+                      editable: record.editable,
+                      optional: record.optional,
+                      editableStr,
+                      optionalStr,
+                      remarks: record.remarks,
+                      ldrNotes: record.ldrNotes,
+                      expectedM: record.expectedM,
+                      expectedMName: record.expectedMName,
+                      realityM: JSON.stringify(attendance),
+                    };
+
+                    parsedCCASession.push(data);
                   }
                 }
               }

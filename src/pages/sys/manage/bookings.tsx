@@ -36,8 +36,7 @@ export default function ManageBooking() {
   const [loadingData, setLoadingData] = useState(true);
   const [data, setData] = useState<BookingRequest[]>([]);
 
-  let generateActionButton: any;
-  let fetchData: any;
+  let handleCancel: any;
 
   const PAGESIZE: number = 10;
   const PAGEINDEX: number = 0;
@@ -52,78 +51,7 @@ export default function ManageBooking() {
     setModalData(content);
   }, []);
 
-  const handleCancel = useCallback(
-    async (id: string) => {
-      if (checkerString(id)) {
-        setSubmitButtonPressed(true);
-        try {
-          const rawResponse = await fetch('/api/bookingReq/cancel', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              id,
-            }),
-          });
-          const content: Result = await rawResponse.json();
-          if (content.status) {
-            toast({
-              title: 'Request cancelled.',
-              description: content.msg,
-              status: 'success',
-              duration: 5000,
-              isClosable: true,
-            });
-            await fetchData();
-          } else {
-            toast({
-              title: 'Error',
-              description: content.error,
-              status: 'error',
-              duration: 5000,
-              isClosable: true,
-            });
-          }
-        } catch (error) {
-          console.error(error);
-        }
-        setSubmitButtonPressed(false);
-      }
-    },
-    [toast, fetchData],
-  );
-
-  const includeActionButton = useCallback(
-    async (content: { count: number; res: BookingRequest[]; }) => {
-      if (
-        (content.count !== undefined || content.count !== null) &&
-        (content.res !== undefined || content.res !== null)
-      ) {
-        const booking: BookingRequest[] = content.res;
-        if (booking.length > 0) {
-          for (let key = 0; key < booking.length; key += 1) {
-            if (booking[key]) {
-              const dataField: BookingRequest = booking[key];
-              const buttons = await generateActionButton(dataField);
-              dataField.action = buttons;
-            }
-          }
-          setData(booking);
-        }
-
-        if (content.count % pageSizeDB.current === 0) {
-          setPageCount(Math.floor(content.count / pageSizeDB.current));
-        } else {
-          setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
-        }
-      }
-    },
-    [generateActionButton],
-  );
-
-  generateActionButton = useCallback(
+  const generateActionButton = useCallback(
     async (content: BookingRequest) => {
       if (content.status === 'PENDING' || content.status === 'APPROVED') {
         const { id, editable } = content;
@@ -187,6 +115,34 @@ export default function ManageBooking() {
     [handleDetails, handleCancel, submitButtonPressed],
   );
 
+  const includeActionButton = useCallback(
+    async (content: { count: number; res: BookingRequest[]; }) => {
+      if (
+        (content.count !== undefined || content.count !== null) &&
+        (content.res !== undefined || content.res !== null)
+      ) {
+        const booking: BookingRequest[] = content.res;
+        if (booking.length > 0) {
+          for (let key = 0; key < booking.length; key += 1) {
+            if (booking[key]) {
+              const dataField: BookingRequest = booking[key];
+              const buttons = await generateActionButton(dataField);
+              dataField.action = buttons;
+            }
+          }
+          setData(booking);
+        }
+
+        if (content.count % pageSizeDB.current === 0) {
+          setPageCount(Math.floor(content.count / pageSizeDB.current));
+        } else {
+          setPageCount(Math.floor(content.count / pageSizeDB.current) + 1);
+        }
+      }
+    },
+    [generateActionButton],
+  );
+
   const fetchDataFromDB = useCallback(async () => {
     try {
       const rawResponse = await fetch(
@@ -207,7 +163,7 @@ export default function ManageBooking() {
     }
   }, [includeActionButton]);
 
-  fetchData = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     setLoadingData(true);
     setSubmitButtonPressed(true);
     setData([]);
@@ -217,6 +173,49 @@ export default function ManageBooking() {
     setLoadingData(false);
     setSubmitButtonPressed(false);
   }, [fetchDataFromDB]);
+
+  handleCancel = useCallback(
+    async (id: string) => {
+      if (checkerString(id)) {
+        setSubmitButtonPressed(true);
+        try {
+          const rawResponse = await fetch('/api/bookingReq/cancel', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id,
+            }),
+          });
+          const content: Result = await rawResponse.json();
+          if (content.status) {
+            toast({
+              title: 'Request cancelled.',
+              description: content.msg,
+              status: 'success',
+              duration: 5000,
+              isClosable: true,
+            });
+            await fetchData();
+          } else {
+            toast({
+              title: 'Error',
+              description: content.error,
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+        } catch (error) {
+          console.error(error);
+        }
+        setSubmitButtonPressed(false);
+      }
+    },
+    [toast, fetchData],
+  );
 
   const onTableChange = useCallback(
     async ({ pageIndex, pageSize }) => {

@@ -44,40 +44,42 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const venueData: Venue[] = venueDB.msg;
       if (count > 0) {
         for (let ven = 0; ven < venueData.length; ven += 1) {
-          if (venueData[ven]) {
-            const venue: Venue = venueData[ven];
+          const venue: Venue = venueData[ven];
 
-            let parentVenueName: string = '';
-            if (venue.isChildVenue) {
-              const venueReq = await findVenueByID(venue.parentVenue, session);
-              if (venueReq && venueReq.status) {
-                const venueReqMsg: Venue = venueReq.msg;
-                parentVenueName = venueReqMsg.name;
-              }
+          let parentVenueName: string = '';
+          if (venue.isChildVenue) {
+            const venueReq = await findVenueByID(venue.parentVenue, session);
+            if (
+              venueReq.status &&
+              venueReq !== null &&
+              venueReq !== undefined
+            ) {
+              const venueReqMsg: Venue = venueReq.msg;
+              parentVenueName = venueReqMsg.name;
             }
-
-            const isAvailable = venue.visible ? 'Yes' : 'No';
-            const childVenue = venue.isChildVenue ? 'Yes' : 'No';
-            const instantBook = venue.isInstantBook ? 'Yes' : 'No';
-
-            const data: Venue = {
-              capacity: venue.capacity,
-              description: venue.description,
-              id: venue.id,
-              isChildVenue: venue.isChildVenue,
-              isInstantBook: venue.isInstantBook,
-              name: venue.name,
-              openingHours: venue.openingHours,
-              parentVenue: venue.parentVenue,
-              parentVenueName,
-              visible: venue.visible,
-              isAvailable,
-              childVenue,
-              instantBook,
-            };
-
-            parsedVenue.push(data);
           }
+
+          const isAvailable = venue.visible ? 'Yes' : 'No';
+          const childVenue = venue.isChildVenue ? 'Yes' : 'No';
+          const instantBook = venue.isInstantBook ? 'Yes' : 'No';
+
+          const data: Venue = {
+            capacity: venue.capacity,
+            description: venue.description,
+            id: venue.id,
+            isChildVenue: venue.isChildVenue,
+            isInstantBook: venue.isInstantBook,
+            name: venue.name,
+            openingHours: venue.openingHours,
+            parentVenue: venue.parentVenue,
+            parentVenueName,
+            visible: venue.visible,
+            isAvailable,
+            childVenue,
+            instantBook,
+          };
+
+          parsedVenue.push(data);
         }
       }
 

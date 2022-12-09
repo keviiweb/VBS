@@ -278,7 +278,7 @@ export default function ManageVenues(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59',
+    'public, s-maxage=7200, stale-while-revalidate=100000',
   );
 
   let data: number = levels.USER;

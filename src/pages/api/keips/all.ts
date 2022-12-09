@@ -57,28 +57,26 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const keipsDataArr: KEIPS[] = keipsDB.msg;
       if (count > 0) {
         for (let ven = 0; ven < keipsDataArr.length; ven += 1) {
-          if (keipsDataArr[ven]) {
-            const keipsData: KEIPS = keipsDataArr[ven];
-            const contrastingStr: string = keipsData.contrasting ? 'Yes' : 'No';
-            const fulfilledStr: string = keipsData.fulfilled ? 'Yes' : 'No';
+          const keipsData: KEIPS = keipsDataArr[ven];
+          const contrastingStr: string = keipsData.contrasting ? 'Yes' : 'No';
+          const fulfilledStr: string = keipsData.fulfilled ? 'Yes' : 'No';
 
-            const data: KEIPS = {
-              matnet: keipsData.matnet,
-              topCCA: keipsData.topCCA,
-              allCCA: keipsData.allCCA,
-              bonusCCA: keipsData.bonusCCA,
-              contrasting: keipsData.contrasting,
-              OSA: keipsData.OSA,
-              osaPercentile: Number(keipsData.osaPercentile.toFixed(2)),
-              roomDraw: keipsData.roomDraw,
-              semesterStay: keipsData.semesterStay,
-              fulfilled: keipsData.fulfilled,
-              contrastingStr,
-              fulfilledStr,
-            };
+          const data: KEIPS = {
+            matnet: keipsData.matnet,
+            topCCA: keipsData.topCCA,
+            allCCA: keipsData.allCCA,
+            bonusCCA: keipsData.bonusCCA,
+            contrasting: keipsData.contrasting,
+            OSA: keipsData.OSA,
+            osaPercentile: Number(keipsData.osaPercentile.toFixed(2)),
+            roomDraw: keipsData.roomDraw,
+            semesterStay: keipsData.semesterStay,
+            fulfilled: keipsData.fulfilled,
+            contrastingStr,
+            fulfilledStr,
+          };
 
-            parsedKEIPS.push(data);
-          }
+          parsedKEIPS.push(data);
         }
       }
 

@@ -15,15 +15,23 @@ export default function EmailCallBack() {
   const { query } = router;
   const link = useRef('');
 
-  const timeout = useCallback(() => {
+  const timeout = useCallback(async () => {
     if (
-      query.email &&
-      query.callbackUrl &&
-      query.callback &&
-      query.token &&
+      query.email !== '' &&
+      query.email !== null &&
+      query.email !== undefined &&
+      query.callbackUrl !== '' &&
+      query.callbackUrl !== null &&
+      query.callbackUrl !== undefined &&
+      query.callback !== '' &&
+      query.callback !== null &&
+      query.callback !== undefined &&
+      query.token !== '' &&
+      query.token !== null &&
+      query.token !== undefined &&
       link.current !== ''
     ) {
-      router.push(link.current);
+      await router.push(link.current);
     }
   }, [query.callback, query.callbackUrl, query.email, query.token, router]);
 
@@ -43,7 +51,7 @@ export default function EmailCallBack() {
       query.token !== undefined
     ) {
       link.current = `/api/auth/callback/${query.callback}?callbackUrl=${query.callbackUrl}&token=${query.token}&email=${query.email}`;
-      setTimeout(timeout, 9000);
+      setTimeout(timeout, 6500);
     }
   }, [query.email, query.callbackUrl, query.callback, query.token, timeout]);
 

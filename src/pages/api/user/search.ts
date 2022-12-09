@@ -44,8 +44,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       inputRes = (input as string).trim();
     }
 
-    const parsedUserData: User[] = [];
-
     const userPermission: boolean = hasPermission(
       session.user.admin,
       actions.FETCH_USER_CCA_RECORD,
@@ -58,23 +56,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         if (userSearchRes.status) {
           const userSearchMsg: User[] = userSearchRes.msg;
           for (let i = 0; i < userSearchMsg.length; i++) {
-            if (userSearchMsg[i]) {
-              const user: User = userSearchMsg[i];
+            const user: User = userSearchMsg[i];
 
-              const ccaRecordRes: Result = await fetchSpecificCCARecord(
-                ccaIDRes,
-                user.email,
-                session,
-              );
-              if (
-                ccaRecordRes.status &&
-                ccaRecordRes.msg !== undefined &&
-                ccaRecordRes.msg !== null
-              ) {
-                user.isMemberOfCCA = true;
-              } else {
-                user.isMemberOfCCA = false;
-              }
+            const ccaRecordRes: Result = await fetchSpecificCCARecord(
+              ccaIDRes,
+              user.email,
+              session,
+            );
+            if (
+              ccaRecordRes.status &&
+              ccaRecordRes.msg !== undefined &&
+              ccaRecordRes.msg !== null
+            ) {
+              user.isMemberOfCCA = true;
+            } else {
+              user.isMemberOfCCA = false;
             }
           }
 

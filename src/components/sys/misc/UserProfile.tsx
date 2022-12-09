@@ -83,7 +83,7 @@ export default function UserProfile(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=240, stale-while-revalidate=480',
+    'public, s-maxage=7200, stale-while-revalidate=100000',
   );
 
   const data: string | null =

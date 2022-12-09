@@ -35,43 +35,45 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const childVenue: Venue[] = venueDB.msg;
         if (childVenue.length > 0) {
           for (let ven = 0; ven < childVenue.length; ven += 1) {
-            if (childVenue[ven]) {
-              const venueField: Venue = childVenue[ven];
+            const venueField: Venue = childVenue[ven];
 
-              let parentVenueName: string = '';
-              if (venueField.isChildVenue) {
-                const venueReq: Result = await findVenueByID(
-                  venueField.parentVenue,
-                  session,
-                );
-                if (venueReq && venueReq.status) {
-                  const venueReqMsg: Venue = venueReq.msg;
-                  parentVenueName = venueReqMsg.name;
-                }
+            let parentVenueName: string = '';
+            if (venueField.isChildVenue) {
+              const venueReq: Result = await findVenueByID(
+                venueField.parentVenue,
+                session,
+              );
+              if (
+                venueReq.status &&
+                venueReq !== null &&
+                venueReq !== undefined
+              ) {
+                const venueReqMsg: Venue = venueReq.msg;
+                parentVenueName = venueReqMsg.name;
               }
-
-              const isAvailable = venueField.visible ? 'Yes' : 'No';
-              const cv = venueField.isChildVenue ? 'Yes' : 'No';
-              const instantBook = venueField.isInstantBook ? 'Yes' : 'No';
-
-              const data: Venue = {
-                capacity: venueField.capacity,
-                description: venueField.description,
-                id: venueField.id,
-                isChildVenue: venueField.isChildVenue,
-                isInstantBook: venueField.isInstantBook,
-                name: venueField.name,
-                openingHours: venueField.openingHours,
-                parentVenue: venueField.parentVenue,
-                parentVenueName,
-                visible: venueField.visible,
-                isAvailable,
-                childVenue: cv,
-                instantBook,
-              };
-
-              parsedVenue.push(data);
             }
+
+            const isAvailable = venueField.visible ? 'Yes' : 'No';
+            const cv = venueField.isChildVenue ? 'Yes' : 'No';
+            const instantBook = venueField.isInstantBook ? 'Yes' : 'No';
+
+            const data: Venue = {
+              capacity: venueField.capacity,
+              description: venueField.description,
+              id: venueField.id,
+              isChildVenue: venueField.isChildVenue,
+              isInstantBook: venueField.isInstantBook,
+              name: venueField.name,
+              openingHours: venueField.openingHours,
+              parentVenue: venueField.parentVenue,
+              parentVenueName,
+              visible: venueField.visible,
+              isAvailable,
+              childVenue: cv,
+              instantBook,
+            };
+
+            parsedVenue.push(data);
           }
         }
 

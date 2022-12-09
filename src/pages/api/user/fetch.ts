@@ -49,25 +49,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const userData: User[] = userDB.msg;
       if (count > 0) {
         for (let ven = 0; ven < userData.length; ven += 1) {
-          if (userData[ven]) {
-            const user: User = userData[ven];
+          const user: User = userData[ven];
 
-            const isAdmin: string | undefined = Object.keys(levels).find(
-              (key) => levels[key] === user.admin,
-            );
-            const acceptedTermStr: string = user.acceptedTerm ? 'Yes' : 'No';
+          const isAdmin: string | undefined = Object.keys(levels).find(
+            (key) => levels[key] === user.admin,
+          );
+          const acceptedTermStr: string =
+            user.acceptedTerm !== undefined && user.acceptedTerm ? 'Yes' : 'No';
 
-            const data: User = {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              admin: user.admin,
-              adminStr: isAdmin,
-              acceptedTermStr,
-            };
+          const data: User = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            admin: user.admin,
+            adminStr: isAdmin,
+            acceptedTermStr,
+          };
 
-            parsedUser.push(data);
-          }
+          parsedUser.push(data);
         }
       }
 

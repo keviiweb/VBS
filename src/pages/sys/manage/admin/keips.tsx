@@ -537,7 +537,7 @@ export default function ManageKEIPS(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=120, stale-while-revalidate=240',
+    'public, s-maxage=7200, stale-while-revalidate=100000',
   );
 
   let data: number = levels.USER;

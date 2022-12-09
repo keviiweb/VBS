@@ -192,7 +192,7 @@ export default function ManageAnnouncement() {
   const onFileChange = async (event: { target: { files: any[] | any; }; }) => {
     try {
       const file = event.target.files[0];
-      if (file !== undefined && file !== null && file.name !== undefined) {
+      if (file.name !== undefined) {
         selectedFileDB.current = file;
         setFileName(file.name);
       }
@@ -330,13 +330,11 @@ export default function ManageAnnouncement() {
       announceIDDBEdit.current = value;
       setAnnounceIDEdit(value);
 
-      if (announceData.current !== []) {
+      if (announceData.current.length > 0) {
         for (let key = 0; key < announceData.current.length; key += 1) {
-          if (announceData.current[key]) {
-            const dataField: Announcement = announceData.current[key];
-            if (dataField.id === value) {
-              changeDataEdit(dataField);
-            }
+          const dataField: Announcement = announceData.current[key];
+          if (dataField.id === value) {
+            changeDataEdit(dataField);
           }
         }
       }
@@ -441,9 +439,11 @@ export default function ManageAnnouncement() {
         />
 
         <MotionBox variants={cardVariant} key='1'>
-          {loadingData && !data && <Text>Loading Please wait...</Text>}
+          {loadingData && (data === null || data === undefined) && (
+            <Text>Loading Please wait...</Text>
+          )}
 
-          {!loadingData && data && data.length === 0 && (
+          {!loadingData && data.length === 0 && (
             <Box mt={30}>
               <Stack align='center' justify='center'>
                 <Text>No announcements found</Text>

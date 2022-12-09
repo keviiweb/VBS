@@ -205,7 +205,7 @@ export default function VBS(props: any) {
   );
 
   const onVenueIDChange = async (event: { target: { value: string; }; }) => {
-    if (event.target.value) {
+    if (event.target.value !== undefined) {
       const { value } = event.target;
 
       for (let key = 0; key < venueData.current.length; key += 1) {
@@ -229,7 +229,7 @@ export default function VBS(props: any) {
       title: string;
     };
   }) => {
-    if (info.event.extendedProps.description) {
+    if (info.event.extendedProps.description !== undefined) {
       const bookings: Booking = info.event.extendedProps.booking;
       setModalBookingData(bookings);
     }
@@ -293,7 +293,7 @@ export default function VBS(props: any) {
 
       await changeCalendarDates();
 
-      if (propsField.data) {
+      if (propsField.data !== undefined && propsField !== null) {
         const res: Result = propsField.data;
         if (res.msg.length > 0) {
           if (res.status) {
@@ -371,9 +371,11 @@ export default function VBS(props: any) {
                   Booking Calendar
                 </Heading>
               </Stack>
-              {selectedVenue && <Text>Selected Venue: {selectedVenue}</Text>}
+              {checkerString(selectedVenue) && (
+                <Text>Selected Venue: {selectedVenue}</Text>
+              )}
 
-              {venueDropdown && (
+              {venueDropdown.length > 0 && (
                 <Stack spacing={2} w='full' mb='10'>
                   <FormLabel>Select Venue</FormLabel>
                   <Select value={venueID} onChange={onVenueIDChange} size='sm'>
@@ -383,7 +385,7 @@ export default function VBS(props: any) {
               )}
 
               <Stack display={variantDesktop}>
-                {venueDropdown && selectedVenue && (
+                {venueDropdown.length > 0 && checkerString(selectedVenue) && (
                   <BookingCalendar
                     slotMax={endTime}
                     slotMin={startTime}
@@ -493,11 +495,11 @@ export default function VBS(props: any) {
               initial='initial'
               animate='animate'
             >
-              {filteredData && filteredData.length > 0 ? filteredData : cards}
+              {filteredData.length > 0 ? filteredData : cards}
             </MotionSimpleGrid>
 
             <VenueBookingModal
-              isOpen={!!modalData}
+              isOpen={modalData}
               onClose={() => setModalData(null)}
               modalData={modalData}
               calendarMin={minDate.current}
@@ -513,7 +515,7 @@ export default function VBS(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=240, stale-while-revalidate=480',
+    'public, s-maxage=7200, stale-while-revalidate=100000',
   );
 
   let data: Result | null = null;
@@ -522,11 +524,7 @@ export const getServerSideProps: GetServerSideProps = async (cont) => {
   try {
     const session: Session | null = await currentSession(null, null, cont);
     if (session !== null) {
-      if (
-        session !== undefined &&
-        session.user !== undefined &&
-        session.user.admin !== undefined
-      ) {
+      if (session.user.admin !== undefined) {
         level = session.user.admin;
       }
       const res: Result = await fetchVenue(session);

@@ -47,17 +47,16 @@ export default function CCA(props: any) {
   useEffect(() => {
     async function generate(propsField: any) {
       setSubmitButtonPressed(true);
-
-      if (propsField.data) {
+      if (propsField.data !== undefined && propsField.data !== null) {
         const res: Result = propsField.data;
         if (res.status && res.msg.length > 0) {
           const result: CCARecord[] = res.msg;
-          if (result !== [] && result !== null && result !== undefined) {
+          if (result !== null && result !== undefined && result.length > 0) {
             const leaderRes: JSX.Element[] = [];
             const memberRes: JSX.Element[] = [];
             result.forEach((item) => {
               const itemField: CCARecord = item;
-              if (itemField.leader) {
+              if (itemField.leader !== undefined && itemField.leader) {
                 leaderRes.push(
                   <MotionBox
                     mt={5}
@@ -91,12 +90,12 @@ export default function CCA(props: any) {
         }
       }
 
-      if (propsField.threshold) {
-        setCalendarThreshold(propsField.threshold);
+      if (propsField.threshold !== undefined) {
+        setCalendarThreshold(propsField.threshold as string);
       }
 
-      if (propsField.userSession) {
-        setSession(propsField.userSession);
+      if (propsField.userSession !== undefined) {
+        setSession(propsField.userSession as Session);
       }
 
       setSubmitButtonPressed(false);
@@ -211,7 +210,7 @@ export default function CCA(props: any) {
 export const getServerSideProps: GetServerSideProps = async (cont) => {
   cont.res.setHeader(
     'Cache-Control',
-    'public, s-maxage=120, stale-while-revalidate=240',
+    'public, s-maxage=7200, stale-while-revalidate=100000',
   );
 
   let data: Result | null = null;

@@ -11,9 +11,9 @@ export default function Error() {
   const router = useRouter();
 
   useEffect(() => {
-    setTimeout(() => {
+    setTimeout(async () => {
       if (router.isReady) {
-        router.push('/sys');
+        await router.push('/sys');
       }
     }, 5000);
   }, [router, router.isReady]);

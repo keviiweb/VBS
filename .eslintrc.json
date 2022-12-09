@@ -26,6 +26,18 @@
     "@typescript-eslint/indent": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/no-floating-promises": [
+      "error",
+      {
+        "ignoreVoid": true
+      }
+    ],
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        "checksVoidReturn": false
+      }
+    ],
     "@typescript-eslint/member-delimiter-style": [
       "error",
       {
