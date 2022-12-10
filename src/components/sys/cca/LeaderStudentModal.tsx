@@ -212,21 +212,21 @@ export default function LeaderStudentModalComponent({
 
   useEffect(() => {
     async function setupData() {
-      if (modalData) {
+      if (modalData !== undefined && modalData !== null) {
         const sessionUserNameField: string =
-          modalData && modalData.sessionName ? modalData.sessionName : '';
+          modalData.sessionName !== undefined && modalData.sessionName !== null ? modalData.sessionName : '';
         setSessionUserName(sessionUserNameField);
 
         ccaRecordIDDB.current =
-          modalData && modalData.ccaID ? modalData.ccaID : '';
+          modalData.ccaID !== undefined && modalData.ccaID !== null ? modalData.ccaID : '';
         sessionEmailDB.current =
-          modalData && modalData.sessionEmail ? modalData.sessionEmail : '';
+          modalData.sessionEmail !== undefined && modalData.sessionEmail !== null ? modalData.sessionEmail : '';
 
         await tableChange();
       }
     }
 
-    if (modalData) {
+    if (modalData !== undefined && modalData !== null) {
       setData([]);
       setupData();
     }

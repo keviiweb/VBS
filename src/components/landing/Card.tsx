@@ -39,7 +39,7 @@ export default function Card({
         maxW='2xl'
         _hover={{ md: hoverStyles }}
       >
-        {img && (
+        {img !== null && img !== undefined && (
           <Image
             borderRadius='xl'
             w='full'
@@ -65,7 +65,7 @@ export default function Card({
             </Text>
           </Box>
 
-          {buttonLink && buttonText && (
+          {buttonLink !== undefined && buttonLink !== null && buttonText !== undefined && buttonText !== null && (
             <Link isExternal href={buttonLink}>
               <Button mt={10}>{buttonText}</Button>
             </Link>
@@ -78,7 +78,7 @@ export default function Card({
 
   const SubCard = useCallback(
     () => (
-      <NextLink href={link || ''} passHref>
+      <NextLink href={link !== undefined && link !== null ? link : ''} passHref>
         <Box
           display='block'
           mt={2}
@@ -93,7 +93,7 @@ export default function Card({
             maxW='2xl'
             _hover={{ md: hoverStyles }}
           >
-            {img && (
+            {img !== null && img !== undefined && (
               <Image
                 borderRadius='xl'
                 w='full'
@@ -127,7 +127,7 @@ export default function Card({
 
   return (
     <Flex p={50} w='full' alignItems='center' justifyContent='center'>
-      {buttonLink && buttonText ? <SubCardWButton /> : <SubCard />}
+      {buttonLink !== undefined && buttonLink !== null && buttonText !== undefined && buttonText !== null ? <SubCardWButton /> : <SubCard />}
     </Flex>
   );
 }

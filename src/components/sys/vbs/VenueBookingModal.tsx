@@ -79,7 +79,7 @@ export default function VenueBookingModal({
   const [openingHours, setOpeningHours] = useState('');
   const [capacity, setCapacity] = useState('');
   const isChildVenue: boolean =
-    modalData && modalData.isChildVenue ? modalData.isChildVenue : false;
+    modalData.isChildVenue !== null && modalData.isChilVenue !== undefined ? modalData.isChildVenue : false;
 
   const [hasChildVenue, setHasChildVenue] = useState(false);
   const [childVenueDrop, setChildVenueDrop] = useState<JSX.Element[]>([]);
@@ -192,11 +192,11 @@ export default function VenueBookingModal({
     }
 
     for (let key = 0; key < timeSlotsField.length; key += 1) {
-      if (timeSlotsField[key]) {
+   
         if (timeSlotsField[key].id) {
           return true;
         }
-      }
+      
     }
 
     return false;
@@ -251,7 +251,7 @@ export default function VenueBookingModal({
       return false;
     }
 
-    if (timeSlotsField === [] || !check(timeSlotsField)) {
+    if (timeSlotsField.length === 0 || !check(timeSlotsField)) {
       setErrorConfirm('No timeslots found');
       return false;
     }
@@ -380,11 +380,11 @@ export default function VenueBookingModal({
   };
 
   const displayVenue = (venue: string): string => {
-    if (id && venue === id) {
+    if (checkerString(id) && venue === id) {
       return `${name} (Whole Venue)`;
     }
 
-    if (rawChildVenue) {
+    if (rawChildVenue.length > 0) {
       const rawChild: Venue[] = rawChildVenue;
       for (let key = 0; key < rawChild.length; key += 1) {
         const ven: Venue = rawChild[key];
@@ -406,11 +406,11 @@ export default function VenueBookingModal({
     setDateConfirm(dateParsedField);
     let str = '';
     for (let key = 0; key < timeSlotsField.length; key += 1) {
-      if (timeSlotsField[key]) {
+  
         if (timeSlotsField[key].slot !== undefined) {
           str += `\n${timeSlotsField[key].slot}`;
         }
-      }
+      
     }
 
     setTimeSlotsConfirm(str);
@@ -498,7 +498,7 @@ export default function VenueBookingModal({
       const selection: JSX.Element[] = [];
       rawVenue.current = [];
 
-      if (modalData) {
+      if (modalData !== null && modalData !== undefined) {
         selection.push(
           <option key={modalData.id} value={modalData.id}>
             Whole Venue
@@ -544,7 +544,7 @@ export default function VenueBookingModal({
 
           if (ccaContent.length > 0) {
             for (let key = 0; key < ccaContent.length; key += 1) {
-              if (ccaContent[key]) {
+           
                 CCALISTConfirm.current.push({
                   id: ccaContent[key].id,
                   name: ccaContent[key].name,
@@ -554,7 +554,7 @@ export default function VenueBookingModal({
                     {ccaContent[key].name}
                   </option>,
                 );
-              }
+              
             }
           }
 
@@ -598,8 +598,8 @@ export default function VenueBookingModal({
       await buildCCAList();
     }
 
-    if (modalData) {
-      selectedVenue.current = modalData && modalData.id ? modalData.id : '';
+    if (modalData !== null && modalData !== undefined) {
+      selectedVenue.current = modalData.id !== undefined ? modalData.id : '';
       setID(modalData.id);
       setName(modalData.name);
       setDescription(modalData.description);
@@ -613,7 +613,7 @@ export default function VenueBookingModal({
     let counter: number = 0;
     for (let key = 0; key < slots.length; key += 1) {
       if (Object.prototype.hasOwnProperty.call(slots, key)) {
-        if (slots[key] && slots[key].slot !== undefined) {
+        if (slots[key].slot !== undefined) {
           counter += 1;
         }
       }
@@ -630,7 +630,7 @@ export default function VenueBookingModal({
       if (slots.length > 0) {
         for (let key = 0; key < slots.length; key += 1) {
           if (Object.prototype.hasOwnProperty.call(slots, key)) {
-            if (slots[key] && slots[key].slot !== undefined) {
+            if (slots[key].slot !== undefined) {
               counter += 1;
               if (counter !== total) {
                 text += ` ${slots[key].slot} ,`;
@@ -653,13 +653,13 @@ export default function VenueBookingModal({
   const handleClickTimeSlots = async (idField: number) => {
     setError('');
 
-    if (idField) {
+    if (idField !== null && idField !== undefined) {
       const slots: TimeSlot[] = selectedTimeSlots.current;
-      if (rawSlots.current) {
+      if (rawSlots.current.length > 0) {
         const rawS: TimeSlot[] = rawSlots.current;
         const slot: TimeSlot = rawS[idField];
         if (!slot.booked) {
-          if (slots[idField]) {
+          if (slots[idField] !== null && slots[idField] !== undefined) {
             slots[idField] = {
               id: undefined,
               slot: undefined,
@@ -681,7 +681,7 @@ export default function VenueBookingModal({
       try {
         for (let key = 0; key < content.length; key += 1) {
           if (Object.prototype.hasOwnProperty.call(content, key)) {
-            if (content[key]) {
+     
               const newID: string = `${selectedVenue.current}${date.current}${key}`;
               if (!content[key].booked) {
                 buttons.push(
@@ -706,7 +706,7 @@ export default function VenueBookingModal({
                   />,
                 );
               }
-            }
+            
           }
         }
       } catch (error) {
@@ -763,16 +763,16 @@ export default function VenueBookingModal({
   };
 
   // Child venue generation
-  const onChildVenueChange = (event: { target: { value: string; }; }) => {
+  const onChildVenueChange = async (event: { target: { value: string; }; }) => {
     setError('');
 
     try {
-      if (event && event.target.value) {
+      if (event.target.value !== undefined) {
         selectedVenue.current = event.target.value;
 
         if (rawDate.current !== null) {
           if (isValidDate(rawDate.current)) {
-            handleDate(rawDate.current);
+            await handleDate(rawDate.current);
             selectedTimeSlots.current = [];
             displaySlots([]);
           }
@@ -795,7 +795,7 @@ export default function VenueBookingModal({
 
   const setTypeHelper = (event: any) => {
     try {
-      if (event) {
+      if (event !== undefined) {
         if (event.cancelable) {
           event.preventDefault();
         }
@@ -819,7 +819,7 @@ export default function VenueBookingModal({
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     try {
-      if (event.target.value) {
+      if (event.target.value !== undefined) {
         typeDBConfirm.current = event.target.value;
         setCCASelectionConfirm(event.target.value);
       }
@@ -854,7 +854,7 @@ export default function VenueBookingModal({
             <Text>Description: {description}</Text>
             <Text>Opening Hours: {openingHours}</Text>
             <Text>Capacity: {capacity}</Text>
-            {hasChildVenue && childVenueDrop && (
+            {hasChildVenue && childVenueDrop.length > 0 && (
               <Box>
                 <Flex
                   w='full'
@@ -902,7 +902,7 @@ export default function VenueBookingModal({
                   shadow='lg'
                   borderWidth='1px'
                 >
-                  {selectedDate && timeSlots.length > 0 && (
+                  {checkerString(selectedDate) && timeSlots.length > 0 && (
                     <Box
                       w='100%'
                       h='full'
@@ -924,7 +924,7 @@ export default function VenueBookingModal({
                     </Box>
                   )}
 
-                  {!selectedDate && timeSlots.length === 0 && (
+                  {!checkerString(selectedDate) && timeSlots.length === 0 && (
                     <Box>
                       <Stack spacing={600} align='center'>
                         <Text>Please select a date</Text>
@@ -932,7 +932,7 @@ export default function VenueBookingModal({
                     </Box>
                   )}
 
-                  {selectedDate && timeSlots.length === 0 && (
+                  {checkerString(selectedDate) && timeSlots.length === 0 && (
                     <Box
                       w='100%'
                       h='full'
@@ -955,7 +955,7 @@ export default function VenueBookingModal({
               </MotionBox>
             </MotionSimpleGrid>
 
-            {displayedSlots && (
+            {checkerString(displayedSlots) && (
               <Box>
                 <Flex
                   w='full'

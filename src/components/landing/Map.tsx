@@ -53,7 +53,7 @@ export default function Map({ location, zoomLevel, apiKey }) {
     ({ text }) => (
       <Popover offset={[0, 10]} placement='top'>
         <PopoverTriggerNew>
-          <Image w={10} h={12} src='/landing/marker.png' />
+          <Image w={10} h={12} src='/landing/marker.png' alt='google-map-marker' />
         </PopoverTriggerNew>
         <PopoverContent>
           <PopoverCloseButton />

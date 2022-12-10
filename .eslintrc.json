@@ -26,12 +26,8 @@
     "@typescript-eslint/indent": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
-    "@typescript-eslint/no-floating-promises": [
-      "error",
-      {
-        "ignoreVoid": true
-      }
-    ],
+    "@typescript-eslint/prefer-optional-chain": "off",
+    "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/no-misused-promises": [
       "error",
       {

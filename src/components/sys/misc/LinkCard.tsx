@@ -10,13 +10,13 @@ import Image from 'next/image';
  * @returns A clickable card
  */
 export default function LinkCard({ product }) {
-  const img = (product && product.img) || null;
-  const title = (product && product.title) || null;
-  const link = (product && product.link) || null;
+  const img = product.img !== undefined ? product.img : null;
+  const title = product.title !== undefined ? product.title : null;
+  const link = product.link !== undefined ? product.link : null;
 
   return (
     <Box>
-      {link && (
+      {link !== null && (
         <Link href={link}>
           <Flex
             w='full'
@@ -30,7 +30,7 @@ export default function LinkCard({ product }) {
             borderWidth='1px'
           >
             <Box w='full' h='full'>
-              {img && (
+              {img !== null && (
                 <Box
                   w='100%'
                   height='200px'
@@ -51,7 +51,7 @@ export default function LinkCard({ product }) {
                 </Box>
               )}
 
-              {title && (
+              {title !== null && (
                 <Box p='6'>
                   <Box fontWeight='semibold' as='h5' lineHeight='tight'>
                     {title}

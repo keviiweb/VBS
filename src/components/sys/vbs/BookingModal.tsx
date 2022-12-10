@@ -119,11 +119,11 @@ export default function BookingModal({
   const includeActionButton = useCallback(
     async (content: BookingRequest[]) => {
       for (let key = 0; key < content.length; key += 1) {
-        if (content[key]) {
+      
           const dataField: BookingRequest = content[key];
           const buttons = await generateActionButton(dataField);
           dataField.action = buttons;
-        }
+        
       }
 
       setConflict(content);
@@ -159,63 +159,63 @@ export default function BookingModal({
 
   generateData = useCallback(
     async (modalDataField: BookingRequest) => {
-      if (modalDataField.id && checkerString(modalDataField.id)) {
+      if (modalDataField.id !== undefined && checkerString(modalDataField.id)) {
         setID(modalDataField.id);
       } else {
         setID('');
       }
 
-      if (modalDataField.venue && checkerString(modalDataField.venue)) {
+      if (checkerString(modalDataField.venue)) {
         setVenue(modalDataField.venue);
       } else {
         setVenue('');
       }
 
-      if (modalDataField.dateStr && checkerString(modalDataField.dateStr)) {
+      if (modalDataField.dateStr !== undefined && checkerString(modalDataField.dateStr)) {
         setDate(modalDataField.dateStr);
       } else {
         setDate('');
       }
 
-      if (modalDataField.timeSlots && checkerString(modalDataField.timeSlots)) {
+      if (checkerString(modalDataField.timeSlots)) {
         setTimeSlots(modalDataField.timeSlots);
       } else {
         setTimeSlots('');
       }
 
-      if (modalDataField.email && checkerString(modalDataField.email)) {
+      if (checkerString(modalDataField.email)) {
         setEmail(modalDataField.email);
       } else {
         setEmail('');
       }
 
-      if (modalDataField.cca && checkerString(modalDataField.cca)) {
+      if (checkerString(modalDataField.cca)) {
         setCCA(modalDataField.cca);
       } else {
         setCCA('');
       }
 
-      if (modalDataField.purpose && checkerString(modalDataField.purpose)) {
+      if (checkerString(modalDataField.purpose)) {
         setPurpose(modalDataField.purpose);
       } else {
         setPurpose('');
       }
 
-      if (modalDataField.status && checkerString(modalDataField.status)) {
+      if (modalDataField.status !== undefined && checkerString(modalDataField.status)) {
         setStatus(modalDataField.status);
       } else {
         setStatus('');
       }
 
-      if (modalDataField.userName && checkerString(modalDataField.userName)) {
+      if (modalDataField.userName !== undefined && checkerString(modalDataField.userName)) {
         setUserName(modalDataField.userName);
       } else {
         setUserName('');
       }
 
       if (
-        isAdmin &&
-        isBookingRequest &&
+        (isAdmin as boolean) &&
+        (isBookingRequest as boolean) &&
         modalDataField.conflictRequestObj != null &&
         modalDataField.conflictRequestObj.length > 0
       ) {
@@ -239,7 +239,7 @@ export default function BookingModal({
         setConflict([]);
       }
 
-      if (modalDataField.reason && checkerString(modalDataField.reason)) {
+      if (modalDataField.reason !== undefined && checkerString(modalDataField.reason)) {
         setReason(modalDataField.reason);
       } else {
         setReason('');
@@ -255,7 +255,7 @@ export default function BookingModal({
       await generateData(modalDataField);
     }
 
-    if (modalData) {
+    if (modalData !== null && modalData !== undefined) {
       setupData(modalData);
     }
   }, [modalData, isBookingRequest, generateData]);
@@ -316,7 +316,7 @@ export default function BookingModal({
 
           <SimpleGrid mt='3' minChildWidth='250px' spacing='2em' minH='full'>
             <Box>
-              {modalData && (
+              {modalData !== null && modalData !== undefined && (
                 <Flex
                   w='full'
                   h='full'
@@ -331,7 +331,7 @@ export default function BookingModal({
                       divider={<StackDivider borderColor='gray.200' />}
                     >
                       <Box>
-                        {isBookingRequest && (
+                        {(isBookingRequest as boolean) && (
                           <Text
                             fontSize={{ base: '16px', lg: '18px' }}
                             fontWeight='500'
@@ -342,7 +342,7 @@ export default function BookingModal({
                           </Text>
                         )}
 
-                        {!isBookingRequest && (
+                        {!(isBookingRequest as boolean) && (
                           <Text
                             fontSize={{ base: '16px', lg: '18px' }}
                             fontWeight='500'
@@ -446,9 +446,10 @@ export default function BookingModal({
                         </List>
                       </Box>
 
-                      {isAdmin &&
-                        isBookingRequest &&
-                        conflict &&
+                      {(isAdmin as boolean) &&
+                        (isBookingRequest as boolean) &&
+                        (conflict === null ||
+                        conflict === undefined) &&
                         loadingData && (
                           <Box overflow='auto'>
                             <Text
@@ -463,8 +464,8 @@ export default function BookingModal({
                           </Box>
                         )}
 
-                      {isAdmin &&
-                        isBookingRequest &&
+                      {(isAdmin as boolean) &&
+                        (isBookingRequest as boolean) &&
                         conflict.length > 0 &&
                         !loadingData && (
                           <Box w='full' overflow='auto'>
@@ -486,9 +487,10 @@ export default function BookingModal({
                           </Box>
                         )}
 
-                      {isAdmin &&
-                        isBookingRequest &&
-                        !conflict &&
+                      {(isAdmin as boolean) &&
+                        (isBookingRequest as boolean) &&
+                        (conflict === null ||
+                          conflict === undefined) &&
                         loadingData && (
                           <Box overflow='auto'>
                             <Text
@@ -503,9 +505,10 @@ export default function BookingModal({
                           </Box>
                         )}
 
-                      {isAdmin &&
-                        isBookingRequest &&
-                        !conflict &&
+                      {(isAdmin as boolean) &&
+                        (isBookingRequest as boolean) &&
+                        (conflict === null ||
+                          conflict === undefined) &&
                         !loadingData && (
                           <Box overflow='auto'>
                             <Text

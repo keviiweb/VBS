@@ -70,8 +70,8 @@ export default function UserModal({ isOpen, onClose, modalData }) {
     if (content.length > 0) {
       const text: JSX.Element[] = [];
       for (let key = 0; key < content.length; key += 1) {
-        if (content[key]) {
-          if (content[key].leader) {
+
+          if (content[key].leader !== undefined && content[key].leader) {
             text.push(
               <Box key={`box-e-${key}`}>
                 <Text>{content[key].ccaName} (Leader)</Text>
@@ -84,7 +84,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
               </Box>,
             );
           }
-        }
+        
       }
 
       setCCAList(text);
@@ -123,32 +123,32 @@ export default function UserModal({ isOpen, onClose, modalData }) {
 
   useEffect(() => {
     async function setupData(modalDataField: User) {
-      if (modalDataField.id && checkerString(modalDataField.id)) {
+      if (modalDataField.id !== undefined && checkerString(modalDataField.id)) {
         setID(modalDataField.id);
       } else {
         setID('');
       }
 
-      if (modalDataField.name && checkerString(modalDataField.name)) {
+      if (checkerString(modalDataField.name)) {
         setName(modalDataField.name);
       } else {
         setName('');
       }
 
-      if (modalDataField.email && checkerString(modalDataField.email)) {
+      if (checkerString(modalDataField.email)) {
         setEmail(modalDataField.email);
       } else {
         setEmail('');
       }
 
-      if (modalDataField.adminStr && checkerString(modalDataField.adminStr)) {
+      if (modalDataField.adminStr !== undefined && checkerString(modalDataField.adminStr)) {
         setAdminStr(modalDataField.adminStr);
       } else {
         setAdminStr('');
       }
 
       if (
-        modalDataField.acceptedTermStr &&
+        modalDataField.acceptedTermStr !== undefined &&
         checkerString(modalDataField.acceptedTermStr)
       ) {
         setAcceptedTermStr(modalDataField.acceptedTermStr);
@@ -159,7 +159,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
       await fetchCCARecords(modalDataField.email);
     }
 
-    if (modalData) {
+    if (modalData !== null && modalData !== undefined) {
       setupData(modalData);
     }
   }, [modalData, fetchCCARecords]);
@@ -194,7 +194,7 @@ export default function UserModal({ isOpen, onClose, modalData }) {
             animate='animate'
           >
             <MotionBox variants={cardVariant} key='2'>
-              {modalData && (
+              {modalData !== null && modalData !== undefined && (
                 <Flex
                   w='full'
                   h='full'

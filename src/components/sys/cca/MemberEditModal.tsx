@@ -57,7 +57,7 @@ export default function MemberEditModal({
 }) {
   const SEARCH_THRESHOLD = 4;
   const SEARCH_INTERVAL = 3000;
-  let currentTime = Date.now();
+  const currentTime = useRef(Date.now());
 
   const toast = useToast();
 
@@ -127,7 +127,7 @@ export default function MemberEditModal({
       setSearchInput('');
       setData([]);
     }
-  }, []);
+  }, [toast]);
 
   const handleRemoveMember = useCallback(async (email: string) => {
     if (checkerString(ccaIDDB.current) && checkerString(email)) {
@@ -169,7 +169,7 @@ export default function MemberEditModal({
       setSearchInput('');
       setData([]);
     }
-  }, []);
+  }, [toast]);
 
   const generateActionButton = useCallback(
     async (content: User) => {
@@ -205,7 +205,7 @@ export default function MemberEditModal({
         }
       }
     },
-    [submitButtonPressed],
+    [submitButtonPressed, handleRemoveMember, handleAddMember],
   );
 
   const includeActionButton = useCallback(
@@ -214,11 +214,11 @@ export default function MemberEditModal({
         const users: User[] = content;
         if (users.length > 0) {
           for (let key = 0; key < users.length; key += 1) {
-            if (users[key]) {
+          
               const dataField: User = users[key];
               const buttons = await generateActionButton(dataField);
               dataField.action = buttons;
-            }
+            
           }
           setData(users);
         }
@@ -228,7 +228,7 @@ export default function MemberEditModal({
   );
 
   const handleSearch = useCallback(async (input: string) => {
-    if (Date.now() - currentTime >= SEARCH_INTERVAL) {
+    if (Date.now() - currentTime.current >= SEARCH_INTERVAL) {
       if (checkerString(ccaIDDB.current)) {
         setSubmitButtonPressed(true);
         try {
@@ -252,18 +252,18 @@ export default function MemberEditModal({
         }
         setSubmitButtonPressed(false);
       }
-      currentTime = Date.now();
+      currentTime.current = Date.now();
     }
   }, []);
 
   useEffect(() => {
     async function setupData(modalDataField: CCARecord) {
       const ccaidField: string =
-        modalDataField && modalDataField.ccaID ? modalDataField.ccaID : '';
+        checkerString(modalDataField.ccaID) ? modalDataField.ccaID : '';
       ccaIDDB.current = ccaidField;
     }
 
-    if (modalData) {
+    if (modalData !== undefined && modalData !== null) {
       setupData(modalData);
     }
   }, [modalData]);
@@ -342,15 +342,15 @@ export default function MemberEditModal({
                         placeholder='Name'
                         value={searchInput}
                         size='lg'
-                        onChange={(event) => {
+                        onChange={async (event) => {
                           setSearchInput(event.currentTarget.value);
                           searchInputDB.current = event.currentTarget.value;
                         }}
-                        onKeyUp={(event) => {
+                        onKeyUp={async (event) => {
                           if (
-                            event.currentTarget.value.length > SEARCH_THRESHOLD
+                            event.currentTarget.value.length >= SEARCH_THRESHOLD
                           ) {
-                            handleSearch(event.currentTarget.value);
+                            await handleSearch(event.currentTarget.value);
                           }
                         }}
                       />

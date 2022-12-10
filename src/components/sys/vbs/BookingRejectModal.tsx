@@ -67,7 +67,7 @@ export default function BookingRejectModal({
     cancelable: any;
     preventDefault: () => void;
   }) => {
-    if (e.cancelable) {
+    if (e.cancelable !== undefined) {
       e.preventDefault();
     }
 
@@ -94,7 +94,7 @@ export default function BookingRejectModal({
       setCCA(modalData.cca);
     }
 
-    if (modalData) {
+    if (modalData !== null && modalData !== undefined) {
       setupData();
     }
   }, [modalData]);
@@ -115,7 +115,7 @@ export default function BookingRejectModal({
         <ModalHeader />
         <ModalBody>
           <Box mb={30}>
-            {modalData && (
+            {modalData !== null && modalData !== undefined && (
               <Flex
                 w='full'
                 h='full'
@@ -155,7 +155,7 @@ export default function BookingRejectModal({
                         reasonDB.current = event.currentTarget.value;
                       }}
                     />
-                    {errorMsg && <Text>{errorMsg}</Text>}
+                    {checkerString(errorMsg) && <Text>{errorMsg}</Text>}
                   </Stack>
                 </Stack>
               </Flex>

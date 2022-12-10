@@ -111,7 +111,7 @@ export default function SessionModal({
   };
 
   const handleModalCloseButton = useCallback(() => {
-    if (leader) {
+    if (leader as boolean) {
       dataHandler();
     }
 
@@ -169,13 +169,13 @@ export default function SessionModal({
       const membersA: string[] = members.split(',');
       const text: JSX.Element[] = [];
       for (let key = 0; key < membersA.length; key += 1) {
-        if (membersA[key]) {
+     
           text.push(
             <Box key={`box-e-${key}`}>
               <Text>{membersA[key]}</Text>
             </Box>,
           );
-        }
+        
       }
 
       setDisplayedExpected(text);
@@ -214,27 +214,27 @@ export default function SessionModal({
       setSession(userSessionField);
 
       const dateStrField: string =
-        modalDataField && modalDataField.dateStr ? modalDataField.dateStr : '';
+        modalDataField.dateStr !== undefined ? modalDataField.dateStr : '';
       const timeStrField: string =
-        modalDataField && modalDataField.time ? modalDataField.time : '';
+        checkerString(modalDataField.time) ? modalDataField.time : '';
       const optionalStrField: string =
-        modalDataField && modalDataField.optionalStr
+        modalDataField.optionalStr !== undefined
           ? modalDataField.optionalStr
           : '';
       const remarksField: string =
-        modalDataField && modalDataField.remarks ? modalDataField.remarks : '';
+        modalDataField.remarks !== undefined ? modalDataField.remarks : '';
       const ldrNotesField: string =
-        modalDataField && modalDataField.ldrNotes
+        modalDataField.ldrNotes !== undefined
           ? modalDataField.ldrNotes
           : '';
       const ccaNameField: string =
-        modalDataField && modalDataField.ccaName ? modalDataField.ccaName : '';
+        modalDataField.ccaName !== undefined ? modalDataField.ccaName : '';
       const editableField: boolean =
-        modalDataField && modalDataField.editable
+        modalDataField.editable !== undefined
           ? modalDataField.editable
           : false;
       const durationField: number =
-        modalDataField && modalDataField.duration ? modalDataField.duration : 0;
+        modalDataField.duration !== undefined ? modalDataField.duration : 0;
 
       setDateStr(dateStrField);
       setTime(timeStrField);
@@ -246,7 +246,6 @@ export default function SessionModal({
       setDuration(durationField);
 
       if (
-        modalDataField &&
         modalDataField.expectedMName &&
         modalDataField.expectedMName?.length > 0
       ) {
@@ -254,7 +253,6 @@ export default function SessionModal({
       }
 
       if (
-        modalDataField &&
         modalDataField.realityM &&
         modalDataField.realityM?.length > 0
       ) {
@@ -264,7 +262,7 @@ export default function SessionModal({
       setLoadingData(false);
     }
 
-    if (modalData) {
+    if (modalData !== null && modalData !== undefined) {
       setupData(modalData, userSession);
     }
   }, [modalData, userSession]);
@@ -347,7 +345,7 @@ export default function SessionModal({
             animate='animate'
           >
             <MotionBox variants={cardVariant} key='2'>
-              {modalData && !loadingData && (
+              {modalData !== null && modalData !== undefined && !loadingData && (
                 <Flex
                   w='full'
                   h='full'
@@ -452,7 +450,7 @@ export default function SessionModal({
                             </ListItem>
                           )}
 
-                          {leader && realityBool && (
+                          {(leader as boolean )&& realityBool && (
                             <ListItem key='real-list'>
                               <Stack direction='column'>
                                 <Stack spacing={20} direction='row'>
@@ -476,7 +474,7 @@ export default function SessionModal({
                             </ListItem>
                           )}
 
-                          {leader && checkerString(ldrNotes) && (
+                          {(leader as boolean) && checkerString(ldrNotes) && (
                             <ListItem key='ldr-note'>
                               <Stack direction='column'>
                                 <Text
@@ -499,7 +497,7 @@ export default function SessionModal({
                             session.user.admin,
                             actions.OVERRIDE_DELETE_SESSION,
                           )) ||
-                          (editable && leader)) && (
+                          (editable && (leader as boolean))) && (
                           <Button
                             key='delete-button'
                             bg='gray.400'
@@ -518,7 +516,7 @@ export default function SessionModal({
                             session.user.admin,
                             actions.OVERRIDE_EDIT_SESSION,
                           )) ||
-                          (editable && leader)) && (
+                          (editable && (leader as boolean))) && (
                           <Button
                             key='edit-button'
                             bg='red.700'

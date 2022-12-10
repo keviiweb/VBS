@@ -231,28 +231,22 @@ export default function SessionCreateModal({
   };
 
   const validateFieldsSubmit = (selectedDataField: CCASession) => {
-    if (!selectedDataField.name || !checkerString(selectedDataField.name)) {
+    if (!checkerString(selectedDataField.name)) {
       setError('Please set a name!');
       return false;
     }
 
-    if (!selectedDataField.time || !checkerString(selectedDataField.time)) {
+    if (!checkerString(selectedDataField.time)) {
       setError('Please set a time!');
       return false;
     }
 
-    if (
-      !selectedDataField.remarks ||
-      !checkerString(selectedDataField.remarks)
-    ) {
+    if (selectedDataField.remarks !== undefined && !checkerString(selectedDataField.remarks)) {
       setError('Please set a remark!');
       return false;
     }
 
-    if (
-      !selectedDataField.ldrNotes ||
-      !checkerString(selectedDataField.ldrNotes)
-    ) {
+    if (selectedDataField.ldrNotes !== undefined && !checkerString(selectedDataField.ldrNotes)) {
       setError('Please set a note!');
       return false;
     }
@@ -338,7 +332,7 @@ export default function SessionCreateModal({
 
   const onStartTimeChange = async (event: { target: { value: string; }; }) => {
     try {
-      if (event.target.value) {
+      if (event.target.value !== undefined) {
         const { value } = event.target;
         startTimeDB.current = value;
         setStartTime(value);
@@ -350,7 +344,7 @@ export default function SessionCreateModal({
 
   const onEndTimeChange = async (event: { target: { value: string; }; }) => {
     try {
-      if (event.target.value) {
+      if (event.target.value !== undefined) {
         const { value } = event.target;
         endTimeDB.current = value;
         setEndTime(value);
@@ -390,7 +384,7 @@ export default function SessionCreateModal({
     end.push(<option key='end' value='' aria-label='Default' />);
 
     for (let key = 0; key <= Object.keys(timeSlots).length; key += 1) {
-      if (timeSlots[key]) {
+  
         const dataField: string = timeSlots[key];
         start.push(
           <option key={`start${key}`} value={dataField}>
@@ -403,7 +397,7 @@ export default function SessionCreateModal({
             {dataField}
           </option>,
         );
-      }
+      
     }
 
     setStartTimeDropdown(start);
@@ -416,14 +410,14 @@ export default function SessionCreateModal({
       let counter: number = 0;
 
       for (let key = 0; key < members.length; key += 1) {
-        if (members[key]) {
+      
           counter += 1;
           if (counter !== members.length) {
             text += ` ${members[key]} ,`;
           } else {
             text += ` ${members[key]} `;
           }
-        }
+        
       }
 
       setDisplayedExpected(text);
@@ -437,7 +431,7 @@ export default function SessionCreateModal({
 
     if (memberData.current.length > 0) {
       for (let key = 0; key < memberData.current.length; key += 1) {
-        if (memberData.current[key]) {
+
           const record: CCARecord = memberData.current[key];
           if (
             record.sessionEmail === email &&
@@ -447,7 +441,7 @@ export default function SessionCreateModal({
             break;
           }
         }
-      }
+      
     }
 
     return res;
@@ -458,13 +452,13 @@ export default function SessionCreateModal({
 
     if (memberData.current.length > 0) {
       for (let key = 0; key < memberData.current.length; key += 1) {
-        if (memberData.current[key]) {
+     
           const record: CCARecord = memberData.current[key];
           if (record.sessionID === id && record.sessionName !== undefined) {
             res = record.sessionName;
             break;
           }
-        }
+        
       }
     }
 
@@ -476,13 +470,13 @@ export default function SessionCreateModal({
 
     if (memberData.current.length > 0) {
       for (let key = 0; key < memberData.current.length; key += 1) {
-        if (memberData.current[key]) {
+      
           const record: CCARecord = memberData.current[key];
           if (record.sessionEmail === email && record.sessionID !== undefined) {
             res = record.sessionID;
             break;
           }
-        }
+        
       }
     }
 
@@ -529,13 +523,13 @@ export default function SessionCreateModal({
         key < selectedExpectedMembers.current.length;
         key += 1
       ) {
-        if (selectedExpectedMembers.current[key]) {
+     
           const s: string = selectedExpectedMembers.current[key];
           const nameField: string = await fetchNameOfUserByID(s);
           if (checkerString(nameField)) {
             memberName.push(nameField);
           }
-        }
+        
       }
 
       selectedExpectedMembersName.current = memberName;
@@ -549,7 +543,7 @@ export default function SessionCreateModal({
         const buttons: JSX.Element[] = [];
 
         for (let key = 0; key < content.res.length; key += 1) {
-          if (content.res[key]) {
+        
             const record: CCARecord = content.res[key];
             if (
               record.sessionEmail !== undefined &&
@@ -568,7 +562,7 @@ export default function SessionCreateModal({
                 />,
               );
             }
-          }
+          
         }
 
         memberData.current = content.res;
@@ -621,11 +615,11 @@ export default function SessionCreateModal({
       setLoadingData(true);
 
       const ccaidField: string =
-        modalDataField && modalDataField.ccaID ? modalDataField.ccaID : '';
+        checkerString(modalDataField.ccaID) ? modalDataField.ccaID : '';
       ccaIDDB.current = ccaidField;
 
       const dateStrField: string =
-        modalDataField && modalDataField.dateStr ? modalDataField.dateStr : '';
+        modalDataField.dateStr !== undefined && checkerString(modalDataField.dateStr) ? modalDataField.dateStr : '';
 
       setDateStr(dateStrField);
       dateStrDB.current = dateStrField;
@@ -750,7 +744,7 @@ export default function SessionCreateModal({
                       </FormControl>
                     </Stack>
 
-                    {startTimeDropdown && (
+                    {startTimeDropdown.length > 0 && (
                       <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
                         <FormLabel id='start-time'>
                           <Text
@@ -774,7 +768,7 @@ export default function SessionCreateModal({
                       </Stack>
                     )}
 
-                    {endTimeDropdown && (
+                    {endTimeDropdown.length > 0 && (
                       <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
                         <FormLabel id='end-time'>
                           <Text
@@ -820,7 +814,7 @@ export default function SessionCreateModal({
                 </Flex>
               )}
 
-              {modalData &&
+              {modalData !== undefined && modalData !== null &&
                 !loadingData &&
                 progressLevel === levels.EXPECTATION && (
                   <Flex
@@ -885,7 +879,7 @@ export default function SessionCreateModal({
                   </Flex>
                 )}
 
-              {modalData &&
+              {modalData !== undefined && modalData !== null &&
                 !loadingData &&
                 progressLevel === levels.REMARKS && (
                   <Flex

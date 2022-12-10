@@ -118,20 +118,20 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
 
   useEffect(() => {
     async function setupData(modalDataField: Venue) {
-      if (modalDataField.id && checkerString(modalDataField.id)) {
+      if (modalDataField.id !== undefined && checkerString(modalDataField.id)) {
         setID(modalDataField.id);
       } else {
         setID('');
       }
 
-      if (modalDataField.name && checkerString(modalDataField.name)) {
+      if (checkerString(modalDataField.name)) {
         setName(modalDataField.name);
       } else {
         setName('');
       }
 
       if (
-        modalDataField.description &&
+ 
         checkerString(modalDataField.description)
       ) {
         setDescription(modalDataField.description);
@@ -140,7 +140,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
       }
 
       if (
-        modalDataField.openingHours &&
+  
         checkerString(modalDataField.openingHours)
       ) {
         setOpeningHours(modalDataField.openingHours);
@@ -148,14 +148,14 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         setOpeningHours('');
       }
 
-      if (modalDataField.capacity && checkerNumber(modalDataField.capacity)) {
+      if (checkerNumber(modalDataField.capacity)) {
         setCapacity(modalDataField.capacity);
       } else {
         setCapacity(0);
       }
 
       if (
-        modalDataField.childVenue &&
+        modalDataField.childVenue !== undefined &&
         checkerString(modalDataField.childVenue)
       ) {
         setChildVenue(modalDataField.childVenue);
@@ -164,7 +164,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
       }
 
       if (
-        modalDataField.isAvailable &&
+        modalDataField.isAvailable !== undefined &&
         checkerString(modalDataField.isAvailable)
       ) {
         setIsAvailable(modalDataField.isAvailable);
@@ -173,7 +173,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
       }
 
       if (
-        modalDataField.instantBook &&
+        modalDataField.instantBook !== undefined &&
         checkerString(modalDataField.instantBook)
       ) {
         setInstantBook(modalDataField.instantBook);
@@ -181,14 +181,14 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         setInstantBook('');
       }
 
-      if (!modalDataField.isChildVenue && modalDataField.id) {
+      if (!(modalDataField.isChildVenue as boolean) && modalDataField.id !== undefined) {
         await processChildVenue(modalDataField.id);
       }
 
       setLoadingData(false);
     }
 
-    if (modalData) {
+    if (modalData !== null && modalData !== undefined) {
       setupData(modalData);
     }
   }, [modalData]);

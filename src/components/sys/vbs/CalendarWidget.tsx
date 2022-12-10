@@ -38,7 +38,7 @@ export default function CalendarWidget({
       setMaxDate(addDays(currentDateField, locale, Number(max.current)));
     }
 
-    if (calendarMax && calendarMin) {
+    if (calendarMax !== null && calendarMax !== undefined && calendarMin !== null && calendarMin !== undefined) {
       setDates(Number(calendarMin), Number(calendarMax));
     }
   }, [calendarMin, calendarMax]);

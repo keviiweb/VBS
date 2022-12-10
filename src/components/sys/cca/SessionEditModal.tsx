@@ -242,12 +242,12 @@ export default function SessionEditModal({
       selectedData.current.duration !== undefined
     ) {
       for (let key = 0; key < members.length; key += 1) {
-        if (members[key]) {
+
           const attendance: CCAAttendance = members[key];
           if (attendance.ccaAttendance > selectedData.current.duration) {
             return false;
           }
-        }
+        
       }
     }
 
@@ -297,40 +297,37 @@ export default function SessionEditModal({
   };
 
   const validateFieldsSubmit = (selectedDataField: CCASession) => {
-    if (!selectedDataField.id || !checkerString(selectedDataField.id)) {
+    if (selectedDataField.id === undefined || !checkerString(selectedDataField.id)) {
       setError('Please select a session!');
       return false;
     }
 
-    if (!selectedDataField.name || !checkerString(selectedDataField.name)) {
+    if (!checkerString(selectedDataField.name)) {
       setError('Please set a name!');
       return false;
     }
 
-    if (!selectedDataField.time || !checkerString(selectedDataField.time)) {
+    if (!checkerString(selectedDataField.time)) {
       setError('Please set a time!');
       return false;
     }
 
     if (
-      !selectedDataField.remarks ||
-      !checkerString(selectedDataField.remarks)
+      selectedDataField.remarks === undefined || !checkerString(selectedDataField.remarks)
     ) {
       setError('Please set a remark!');
       return false;
     }
 
     if (
-      !selectedDataField.ldrNotes ||
-      !checkerString(selectedDataField.ldrNotes)
+      selectedDataField.ldrNotes === undefined || !checkerString(selectedDataField.ldrNotes)
     ) {
       setError('Please set a note!');
       return false;
     }
 
     if (
-      selectedDataField.realityM &&
-      !checkRealityMembers(selectedDataField.realityM)
+      selectedDataField.realityM === undefined || !checkRealityMembers(selectedDataField.realityM)
     ) {
       setError(
         'One or more members have an attendance exceeding the total duration',
@@ -360,14 +357,14 @@ export default function SessionEditModal({
       let counter: number = 0;
 
       for (let key = 0; key < members.length; key += 1) {
-        if (members[key]) {
+   
           counter += 1;
           if (counter !== members.length) {
             text += ` ${members[key]} ,`;
           } else {
             text += ` ${members[key]} `;
           }
-        }
+        
       }
 
       setDisplayedExpected(text);
@@ -382,7 +379,7 @@ export default function SessionEditModal({
       let counter: number = 0;
 
       for (let key = 0; key < members.length; key += 1) {
-        if (members[key]) {
+    
           counter += 1;
           if (
             members[key].sessionName !== undefined &&
@@ -394,7 +391,7 @@ export default function SessionEditModal({
               text += ` ${members[key].sessionName} (${members[key].ccaAttendance} hours)  `;
             }
           }
-        }
+        
       }
 
       setDisplayedReality(text);
@@ -491,7 +488,7 @@ export default function SessionEditModal({
 
   const onStartTimeChange = async (event: { target: { value: string; }; }) => {
     try {
-      if (event.target.value) {
+      if (event.target.value !== undefined) {
         const { value } = event.target;
         startTimeDB.current = value;
         setStartTime(value);
@@ -503,7 +500,7 @@ export default function SessionEditModal({
 
   const onEndTimeChange = async (event: { target: { value: string; }; }) => {
     try {
-      if (event.target.value) {
+      if (event.target.value !== undefined) {
         const { value } = event.target;
         endTimeDB.current = value;
         setEndTime(value);
@@ -554,7 +551,7 @@ export default function SessionEditModal({
     end.push(<option key='end' value='' aria-label='Default' />);
 
     for (let key = 0; key <= Object.keys(timeSlots).length; key += 1) {
-      if (timeSlots[key]) {
+
         const dataField: string = timeSlots[key];
         start.push(
           <option key={`start${key}`} value={dataField}>
@@ -567,7 +564,7 @@ export default function SessionEditModal({
             {dataField}
           </option>,
         );
-      }
+      
     }
 
     setStartTimeDropdown(start);
@@ -579,7 +576,7 @@ export default function SessionEditModal({
 
     if (memberData.current.length > 0) {
       for (let key = 0; key < memberData.current.length; key += 1) {
-        if (memberData.current[key]) {
+
           const record: CCARecord = memberData.current[key];
           if (
             record.sessionEmail === email &&
@@ -588,7 +585,7 @@ export default function SessionEditModal({
             res = record.sessionName;
             break;
           }
-        }
+        
       }
     }
 
@@ -600,13 +597,13 @@ export default function SessionEditModal({
 
     if (memberData.current.length > 0) {
       for (let key = 0; key < memberData.current.length; key += 1) {
-        if (memberData.current[key]) {
+        
           const record: CCARecord = memberData.current[key];
           if (record.sessionID === id && record.sessionName !== undefined) {
             res = record.sessionName;
             break;
           }
-        }
+        
       }
     }
 
@@ -618,13 +615,13 @@ export default function SessionEditModal({
 
     if (memberData.current.length > 0) {
       for (let key = 0; key < memberData.current.length; key += 1) {
-        if (memberData.current[key]) {
+     
           const record: CCARecord = memberData.current[key];
           if (record.sessionEmail === email && record.sessionID !== undefined) {
             res = record.sessionID;
             break;
           }
-        }
+        
       }
     }
 
@@ -671,14 +668,14 @@ export default function SessionEditModal({
         let notFound = false;
 
         for (let key = 0; key < realityHours.length; key += 1) {
-          if (realityHours[key]) {
+  
             const reality: CCAAttendance = realityHours[key];
             if (reality.sessionEmail === email) {
               reality.ccaAttendance = hour;
               notFound = true;
               break;
             }
-          }
+          
         }
 
         if (!notFound) {
@@ -743,7 +740,7 @@ export default function SessionEditModal({
         const realityButtons: JSX.Element[] = [];
 
         for (let key = 0; key < content.res.length; key += 1) {
-          if (content.res[key]) {
+      
             const record: CCARecord = content.res[key];
             if (
               record.sessionEmail !== undefined &&
@@ -773,7 +770,7 @@ export default function SessionEditModal({
                 />,
               );
             }
-          }
+          
         }
 
         memberData.current = content.res;
@@ -827,20 +824,20 @@ export default function SessionEditModal({
       setEditable(editableField);
 
       const idField: string =
-        modalDataField && modalDataField.id ? modalDataField.id : '';
+        modalDataField.id !== undefined ? modalDataField.id : '';
       sessionIDDB.current = idField;
 
       const ccaidField: string =
-        modalDataField && modalDataField.ccaID ? modalDataField.ccaID : '';
+        checkerString(modalDataField.ccaID) ? modalDataField.ccaID : '';
       ccaIDDB.current = ccaidField;
 
       const dateStrField: string =
-        modalDataField && modalDataField.dateStr ? modalDataField.dateStr : '';
+        modalDataField.dateStr !== undefined ? modalDataField.dateStr : '';
       const ccaNameField: string =
-        modalDataField && modalDataField.ccaName ? modalDataField.ccaName : '';
+        modalDataField.ccaName !== undefined ? modalDataField.ccaName : '';
 
       const nameField: string =
-        modalDataField && modalDataField.name ? modalDataField.name : '';
+        checkerString(modalDataField.name) ? modalDataField.name : '';
       setName(nameField);
       nameDB.current = nameField;
 
@@ -850,7 +847,7 @@ export default function SessionEditModal({
       setCCAName(ccaNameField);
 
       const split: string[] =
-        modalDataField && modalDataField.time
+        checkerString(modalDataField.time)
           ? modalDataField.time.split('-')
           : [' - '];
       const start: string = split[0].trim();
@@ -884,7 +881,7 @@ export default function SessionEditModal({
       }
 
       const opt: boolean =
-        modalDataField && modalDataField.optional
+        modalDataField.optional !== undefined
           ? modalDataField.optional
           : false;
       setOptional(opt);
@@ -892,7 +889,7 @@ export default function SessionEditModal({
       optionalStrDB.current = opt ? 'Yes' : 'No';
 
       const expectedM: string =
-        modalDataField && modalDataField.expectedM
+        modalDataField.expectedM !== undefined
           ? modalDataField.expectedM
           : '';
       if (expectedM.length > 0) {
@@ -900,7 +897,7 @@ export default function SessionEditModal({
       }
 
       const realityM: string =
-        modalDataField && modalDataField.realityM
+        modalDataField.realityM !== undefined
           ? modalDataField.realityM
           : '';
       if (realityM.length > 0) {
@@ -909,12 +906,12 @@ export default function SessionEditModal({
       }
 
       const remark: string =
-        modalDataField && modalDataField.remarks ? modalDataField.remarks : '';
+        modalDataField.remarks !== undefined ? modalDataField.remarks : '';
       setRemarks(remark);
       remarksDB.current = remark;
 
       const ldrNote: string =
-        modalDataField && modalDataField.ldrNotes
+        modalDataField.ldrNotes !== undefined
           ? modalDataField.ldrNotes
           : '';
       setLdrNotes(ldrNote);
@@ -928,7 +925,7 @@ export default function SessionEditModal({
       setSubmitButtonPressed(false);
     }
 
-    if (modalData) {
+    if (modalData !== undefined && modalData !== null) {
       setupData(modalData, userSession);
     }
   }, [modalData, userSession, generateTimeSlots, generateMemberList]);
@@ -998,7 +995,7 @@ export default function SessionEditModal({
                 animate='animate'
               >
                 <MotionBox variants={cardVariant} key='motion-box-time2'>
-                  {modalData &&
+                  {modalData !== null && modalData !== undefined &&
                     !loadingData &&
                     progressLevel === levels.TIME && (
                       <Flex
@@ -1064,7 +1061,7 @@ export default function SessionEditModal({
                               />
                             </FormControl>
                           </Stack>
-                          {startTimeDropdown && (
+                          {startTimeDropdown.length > 0 && (
                             <Stack
                               w={{ base: 'full', md: '500px', lg: '500px' }}
                             >
@@ -1090,7 +1087,7 @@ export default function SessionEditModal({
                             </Stack>
                           )}
 
-                          {endTimeDropdown && (
+                          {endTimeDropdown.length > 0 && (
                             <Stack
                               w={{ base: 'full', md: '500px', lg: '500px' }}
                             >
@@ -1138,7 +1135,7 @@ export default function SessionEditModal({
                       </Flex>
                     )}
 
-                  {modalData &&
+                  {modalData !== null && modalData !== undefined &&
                     !loadingData &&
                     progressLevel === levels.EXPECTATION && (
                       <Flex
@@ -1210,7 +1207,7 @@ export default function SessionEditModal({
                       </Flex>
                     )}
 
-                  {modalData &&
+                  {modalData !== null && modalData !== undefined &&
                     !loadingData &&
                     progressLevel === levels.REALITY &&
                     !upcoming && (
@@ -1281,7 +1278,7 @@ export default function SessionEditModal({
                       </Flex>
                     )}
 
-                  {modalData &&
+                  {modalData !== null && modalData !== undefined &&
                     !loadingData &&
                     progressLevel === levels.REALITY &&
                     upcoming && (
@@ -1302,7 +1299,7 @@ export default function SessionEditModal({
                       </Flex>
                     )}
 
-                  {modalData &&
+                  {modalData !== null && modalData !== undefined &&
                     !loadingData &&
                     progressLevel === levels.REMARKS && (
                       <Flex

@@ -134,13 +134,13 @@ export default function SessionEditConfirmationModal({
 
       if (membersA.length > 0) {
         for (let key = 0; key < membersA.length; key += 1) {
-          if (membersA[key]) {
+    
             text.push(
               <Box key={`box-e-${key}`}>
                 <Text>{membersA[key]}</Text>
               </Box>,
             );
-          }
+          
         }
       }
 
@@ -222,46 +222,45 @@ export default function SessionEditConfirmationModal({
       setSubmitButtonPressed(true);
 
       const dateStrField: string =
-        modalDataField && modalDataField.dateStr ? modalDataField.dateStr : '';
+        modalDataField.dateStr !== undefined && checkerString(modalDataField.dateStr) ? modalDataField.dateStr : '';
       const ccaNameField: string =
-        modalDataField && modalDataField.ccaName ? modalDataField.ccaName : '';
+        modalDataField.ccaName !== undefined && checkerString(modalDataField.ccaName) ? modalDataField.ccaName : '';
       const nameField: string =
-        modalDataField && modalDataField.name ? modalDataField.name : '';
+        checkerString(modalDataField.name) ? modalDataField.name : '';
 
       setDateStr(dateStrField);
       setCCAName(ccaNameField);
       setName(nameField);
 
       const timeField: string =
-        modalDataField && modalDataField.time ? modalDataField.time : '';
+        checkerString(modalDataField.time) ? modalDataField.time : '';
 
       setTime(timeField);
 
       const durationField: string =
-        modalDataField && modalDataField.duration
+        modalDataField.duration !== undefined
           ? modalDataField.duration.toString()
           : '';
 
       setDuration(durationField);
 
       const optionalStrField: string =
-        modalDataField && modalDataField.optionalStr
+        modalDataField.optionalStr !== undefined
           ? modalDataField.optionalStr
           : '';
       setOptionalStr(optionalStrField);
 
       const remark: string =
-        modalDataField && modalDataField.remarks ? modalDataField.remarks : '';
+        modalDataField.remarks !== undefined ? modalDataField.remarks : '';
       setRemarks(remark);
 
       const ldrNote: string =
-        modalDataField && modalDataField.ldrNotes
+        modalDataField.ldrNotes !== undefined
           ? modalDataField.ldrNotes
           : '';
       setLdrNotes(ldrNote);
 
       if (
-        modalDataField &&
         modalDataField.expectedMName !== undefined &&
         modalDataField.expectedMName?.length > 0
       ) {
@@ -269,7 +268,6 @@ export default function SessionEditConfirmationModal({
       }
 
       if (
-        modalDataField &&
         modalDataField.realityM !== undefined &&
         modalDataField.realityM?.length > 0
       ) {
@@ -282,7 +280,7 @@ export default function SessionEditConfirmationModal({
       setSubmitButtonPressed(false);
     }
 
-    if (modalData) {
+    if (modalData !== undefined && modalData !== null) {
       setupData(modalData);
     }
   }, [modalData]);
@@ -350,7 +348,7 @@ export default function SessionEditConfirmationModal({
             animate='animate'
           >
             <MotionBox variants={cardVariant} key='motion-box-time2'>
-              {modalData && !loadingData && (
+              {modalData !== undefined && modalData !== null && !loadingData && (
                 <Flex
                   w='full'
                   h='full'

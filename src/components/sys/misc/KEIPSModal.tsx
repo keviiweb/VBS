@@ -201,7 +201,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
       setLoadingData(false);
     }
 
-    if (modalData) {
+    if (modalData !== null && modalData !== undefined) {
       setupData(modalData);
     }
   }, [modalData, includeActionButton]);
@@ -323,7 +323,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
             </Stack>
           )}
 
-          {modalData && !loadingData && successData && (
+          {modalData !== null && modalData !== undefined && !loadingData && successData && (
             <Stack align='center'>
               <Box>
                 <Stack spacing={30}>

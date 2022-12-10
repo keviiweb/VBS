@@ -409,7 +409,7 @@ export default function LeaderModalComponent({
     ) => {
       if (content.res.length > 0 && content.count > 0) {
         for (let key = 0; key < content.res.length; key += 1) {
-          if (content.res[key]) {
+     
             switch (action) {
               case choice.MEMBER: {
                 const dataField: CCARecord = content.res[key] as CCARecord;
@@ -429,7 +429,7 @@ export default function LeaderModalComponent({
               default:
                 break;
             }
-          }
+          
         }
 
         switch (action) {
@@ -636,7 +636,7 @@ export default function LeaderModalComponent({
   );
 
   const onSelectionChange = async (event: any) => {
-    if (event.target.value) {
+    if (event.target.value !== null && event.target.value !== undefined) {
       const choiceSelection: string = event.target.value;
       setSelectedChoice(Number(choiceSelection));
 
@@ -707,13 +707,13 @@ export default function LeaderModalComponent({
 
   useEffect(() => {
     async function setupData(userSessionField: Session | null) {
-      if (modalData) {
+      if (modalData !== undefined && modalData !== null) {
         const ccaNameField: string =
-          modalData && modalData.ccaName ? modalData.ccaName : '';
+          modalData.ccaName !== undefined && modalData.ccaName !== null ? modalData.ccaName : '';
         setCCAName(ccaNameField);
 
         ccaRecordIDDB.current =
-          modalData && modalData.ccaID ? modalData.ccaID : '';
+          modalData.ccaID !== undefined && modalData.ccaID !== null ? modalData.ccaID : '';
 
         await buildDropDownMenu();
 
@@ -721,7 +721,7 @@ export default function LeaderModalComponent({
       }
     }
 
-    if (modalData) {
+    if (modalData !== undefined && modalData !== null) {
       setData([]);
       setDataSession([]);
       setupData(userSession);

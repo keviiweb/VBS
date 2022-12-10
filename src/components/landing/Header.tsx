@@ -47,7 +47,7 @@ export default function Header() {
     const dcl = 'gray.500';
     return (
       <Box>
-        {props.link && (
+        {props.link !== undefined && props.link !== null && (
           <NextLink passHref href={props.link}>
             <Box
               m={-3}
@@ -57,7 +57,7 @@ export default function Header() {
               rounded='lg'
               _hover={{ bg: hbg }}
             >
-              {props.icon && (
+              {props.icon !== undefined && props.icon !== null && (
                 <Icon
                   flexShrink={0}
                   h={6}

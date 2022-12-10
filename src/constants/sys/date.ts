@@ -3,7 +3,7 @@ import { monthNamesFull } from '@constants/sys/months';
 
 import moment from 'moment-timezone';
 
-export const locale: string = process.env.TZ
+export const locale: string = process.env.TZ !== undefined
   ? process.env.TZ
   : 'Asia/Singapore';
 export const timeFormat: string = 'YYYY-MM-DD';
@@ -128,7 +128,7 @@ export const isValidDate = (d: Date): boolean => {
  * @returns A string in YYYY-MM-DD format if valid, or 'Unknown Date' if not valid
  */
 export const dateISO = (date: Date): string => {
-  if (date && isValidDate(date)) {
+  if (date !== undefined && isValidDate(date)) {
     return moment.tz(date, locale).startOf('day').format(timeFormat);
   }
 
@@ -144,7 +144,7 @@ export const dateISO = (date: Date): string => {
  * @returns A string in specified format or 'Unknown Date' if date not valid
  */
 export const prettifyDate = (date: Date): string => {
-  if (date && isValidDate(date)) {
+  if (date !== undefined && isValidDate(date)) {
     const dateObj = moment.tz(date, locale);
     const day = numberToWeekday[dateObj.day()];
     const month = monthNamesFull[dateObj.month()];

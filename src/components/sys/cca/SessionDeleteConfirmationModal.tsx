@@ -35,7 +35,7 @@ export default function SessionDeleteConfirmationModal({
   };
 
   const handleSubmit = async () => {
-    if (modalData) {
+    if (modalData !== undefined && modalData !== null) {
       await dataHandler(modalData);
     }
 
@@ -60,7 +60,7 @@ export default function SessionDeleteConfirmationModal({
         <ModalHeader />
         <ModalBody>
           <Box mb={30}>
-            {modalData && (
+            {modalData !== undefined && modalData !== null && (
               <Flex
                 w='full'
                 h='full'

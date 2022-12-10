@@ -94,7 +94,7 @@ export default function Feature({ API_KEY }) {
                 </chakra.a>
               </Box>
             </Flex>
-            {API_KEY && (
+            {API_KEY !== undefined && API_KEY !== null && (
               <Flex
                 bg='#F9FAFB'
                 p={{ base: 4, md: 8, lg: 12, xl: 17 }}

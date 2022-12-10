@@ -122,7 +122,7 @@ export default function Sidebar({ session, onClose, ...rest }) {
         setMenu(adminMenu);
       }
     }
-    if (session) {
+    if (session !== null && session !== undefined) {
       setData(session);
     }
 
@@ -155,7 +155,7 @@ export default function Sidebar({ session, onClose, ...rest }) {
         </Link>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      {menu && menu.map((link, i) => <NavLink key={i} link={link} />)}
+      {menu !== null && menu !== undefined && menu.map((link, i) => <NavLink key={i} link={link} />)}
     </Box>
   );
 }

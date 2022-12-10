@@ -29,7 +29,7 @@ export default function NavLink({ link, ...rest }) {
             }}
             {...rest}
           >
-            {icon && (
+            {icon !== null && icon !== undefined && (
               <Icon
                 mr='4'
                 fontSize='16'

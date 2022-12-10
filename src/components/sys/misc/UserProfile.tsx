@@ -28,7 +28,7 @@ export default function UserProfile(props: any) {
   useEffect(() => {
     async function fetchData(propsField: any) {
       try {
-        if (propsField.data) {
+        if (propsField.data !== null && propsField.data !== undefined) {
           setURL(propsField.data);
         }
       } catch (error) {

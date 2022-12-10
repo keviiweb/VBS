@@ -18,7 +18,7 @@ export default function MemberButton({
   const [selected, setSelected] = useState(false);
 
   const click = async () => {
-    if (handleClick !== null && handleClick !== undefined && !reality) {
+    if (handleClick !== null && handleClick !== undefined && (!reality as boolean)) {
       setSelected(!selected);
       await handleClick(id);
     }
@@ -40,7 +40,7 @@ export default function MemberButton({
         </Button>
       )}
 
-      {reality && (
+      {(reality as boolean) && (
         <FormControl id='hours'>
           {checkerString(name) && <FormLabel>Hours for {name}</FormLabel>}
 
