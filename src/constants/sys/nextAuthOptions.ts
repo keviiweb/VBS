@@ -437,10 +437,15 @@ export const options = {
         url,
         provider: { server, from },
       }) {
-        const filterString = `${process.env.NEXTAUTH_URL}/api/auth/callback/`;
+        const hostURL: string =
+          process.env.NEXTAUTH_URL !== undefined
+            ? process.env.NEXTAUTH_URL
+            : 'kevii.azurewebsites.net';
+
+        const filterString = `${hostURL}/api/auth/callback/`;
         const urlSplit = url.replace(filterString, '');
 
-        const newURL = `${process.env.NEXTAUTH_URL}/sys/callback/${urlSplit}`;
+        const newURL = `${hostURL}/sys/callback/${urlSplit}`;
 
         const { host } = new URL(newURL);
         const transport = nodemailer.createTransport(server);

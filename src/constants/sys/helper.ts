@@ -111,11 +111,12 @@ export const mapSlotToTiming = (
 
     if (checkerArray(data)) {
       for (const key in data) {
-        if (data[key]) {
-          if (!isNaN(data[key])) {
-            const map = timingSlotNumberToTimingMapping[Number(data[key])];
-            result.push(map);
-          }
+        if (
+          !isNaN(data[key]) &&
+          timingSlotNumberToTimingMapping[Number(data[key])] !== undefined
+        ) {
+          const map = timingSlotNumberToTimingMapping[Number(data[key])];
+          result.push(map);
         }
       }
     }
@@ -123,7 +124,7 @@ export const mapSlotToTiming = (
     return result;
   } else {
     if (checkerNumber(Number(data))) {
-      if (timingSlotNumberToTimingMapping[Number(data)]) {
+      if (timingSlotNumberToTimingMapping[Number(data)] !== undefined) {
         const map: string = timingSlotNumberToTimingMapping[Number(data)];
         return map;
       }
@@ -180,7 +181,7 @@ export const convertSlotToArray = (
       const stringArr: string[] = strSlot.split(',');
       const result: number[] = [];
       for (const key in stringArr) {
-        if (stringArr[key]) {
+        if (stringArr[key].length > 0) {
           const res = Number(stringArr[key]);
           if (isNaN(res)) {
             return null;
@@ -199,9 +200,9 @@ export const convertSlotToArray = (
       const result: number[] = [];
       const slotArr = slots as TimeSlot[];
       for (const key in slotArr) {
-        if (slotArr[key]) {
+        if (slotArr[key] !== undefined) {
           const id = slotArr[key].id;
-          if (id === null || id === undefined) {
+          if (id === undefined || isNaN(id) || id === null) {
             continue;
           } else {
             if (isNaN(id)) {
@@ -241,7 +242,7 @@ export const findSlots = async (
     return null;
   } else {
     for (const i in timingSlotNumberToTimingMapping) {
-      if (timingSlotNumberToTimingMapping[i].includes(slot)) {
+      if (timingSlotNumberToTimingMapping[i].includes(slot) as boolean) {
         const split = timingSlotNumberToTimingMapping[i].split('-');
         const split0 = Number(split[0].trim());
         const split1 = Number(split[1].trim());
@@ -266,7 +267,7 @@ export const findSlots = async (
  * @returns a TimeSlot or null if invalid id
  */
 export const findSlotsByID = async (slot: number): Promise<string | null> => {
-  if (checkerNumber(slot) && timeSlots[slot]) {
+  if (checkerNumber(slot) && timeSlots[slot] !== undefined) {
     return timeSlots[slot];
   }
 
@@ -285,7 +286,7 @@ export const splitHours = async (
   opening: string,
 ): Promise<{ start: number | null; end: number | null; }> => {
   try {
-    if (opening) {
+    if (opening.length > 0) {
       if (!opening.includes('-')) {
         return { start: null, end: null };
       }
