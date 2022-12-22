@@ -7,6 +7,7 @@ import { prisma } from '@constants/sys/db';
 import { User } from 'types/misc/user';
 import { Session } from 'next-auth/core/types';
 import { logger } from '@helper/sys/misc/logger';
+import { NextAuthOptions } from 'next-auth';
 
 /**
  * Generates an email using the given template
@@ -420,7 +421,7 @@ function text({ newURL, host }) {
  * Options for the Next-Auth library, including sending of emails for passwordless-authentication,
  * as well as checking of session and populating session with custom details
  */
-export const options = {
+export const options: NextAuthOptions = {
   providers: [
     EmailProvider({
       server: {
@@ -462,12 +463,11 @@ export const options = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    jwt: true,
-    maxAge: 1 * 24 * 60 * 60, // 1 day
+    strategy: 'jwt',
+    maxAge: 2 * 24 * 60 * 60, // 2 day
   },
   jwt: {
     secret: process.env.NEXTAUTH_JWT_SIGNING_PRIVATE_KEY,
-    encryption: true,
   },
   pages: {
     signIn: '/sys/signin',
@@ -477,6 +477,7 @@ export const options = {
   callbacks: {
     async signIn({ user, email }) {
       let isAllowedToSignIn = true;
+
       try {
         if (
           Object.prototype.hasOwnProperty.call(email, 'verificationRequest') !==
