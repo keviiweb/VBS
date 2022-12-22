@@ -79,7 +79,9 @@ export default function VenueBookingModal({
   const [openingHours, setOpeningHours] = useState('');
   const [capacity, setCapacity] = useState('');
   const isChildVenue: boolean =
-    modalData.isChildVenue !== null && modalData.isChilVenue !== undefined ? modalData.isChildVenue : false;
+    modalData.isChildVenue !== null && modalData.isChilVenue !== undefined
+      ? modalData.isChildVenue
+      : false;
 
   const [hasChildVenue, setHasChildVenue] = useState(false);
   const [childVenueDrop, setChildVenueDrop] = useState<JSX.Element[]>([]);
@@ -192,11 +194,9 @@ export default function VenueBookingModal({
     }
 
     for (let key = 0; key < timeSlotsField.length; key += 1) {
-   
-        if (timeSlotsField[key].id) {
-          return true;
-        }
-      
+      if (timeSlotsField[key].id) {
+        return true;
+      }
     }
 
     return false;
@@ -406,11 +406,9 @@ export default function VenueBookingModal({
     setDateConfirm(dateParsedField);
     let str = '';
     for (let key = 0; key < timeSlotsField.length; key += 1) {
-  
-        if (timeSlotsField[key].slot !== undefined) {
-          str += `\n${timeSlotsField[key].slot}`;
-        }
-      
+      if (timeSlotsField[key].slot !== undefined) {
+        str += `\n${timeSlotsField[key].slot}`;
+      }
     }
 
     setTimeSlotsConfirm(str);
@@ -544,17 +542,15 @@ export default function VenueBookingModal({
 
           if (ccaContent.length > 0) {
             for (let key = 0; key < ccaContent.length; key += 1) {
-           
-                CCALISTConfirm.current.push({
-                  id: ccaContent[key].id,
-                  name: ccaContent[key].name,
-                });
-                selection.push(
-                  <option key={ccaContent[key].id} value={ccaContent[key].id}>
-                    {ccaContent[key].name}
-                  </option>,
-                );
-              
+              CCALISTConfirm.current.push({
+                id: ccaContent[key].id,
+                name: ccaContent[key].name,
+              });
+              selection.push(
+                <option key={ccaContent[key].id} value={ccaContent[key].id}>
+                  {ccaContent[key].name}
+                </option>,
+              );
             }
           }
 
@@ -681,32 +677,30 @@ export default function VenueBookingModal({
       try {
         for (let key = 0; key < content.length; key += 1) {
           if (Object.prototype.hasOwnProperty.call(content, key)) {
-     
-              const newID: string = `${selectedVenue.current}${date.current}${key}`;
-              if (!content[key].booked) {
-                buttons.push(
-                  <TimeSlotButton
-                    disable={false}
-                    key={newID}
-                    handleClick={handleClickTimeSlots}
-                    newKey={newID}
-                    id={key}
-                    slot={content[key].slot}
-                  />,
-                );
-              } else {
-                buttons.push(
-                  <TimeSlotButton
-                    handleClick={null}
-                    disable
-                    key={newID}
-                    newKey={newID}
-                    id={key}
-                    slot={content[key].slot}
-                  />,
-                );
-              }
-            
+            const newID: string = `${selectedVenue.current}${date.current}${key}`;
+            if (!content[key].booked) {
+              buttons.push(
+                <TimeSlotButton
+                  disable={false}
+                  key={newID}
+                  handleClick={handleClickTimeSlots}
+                  newKey={newID}
+                  id={key}
+                  slot={content[key].slot}
+                />,
+              );
+            } else {
+              buttons.push(
+                <TimeSlotButton
+                  handleClick={null}
+                  disable
+                  key={newID}
+                  newKey={newID}
+                  id={key}
+                  slot={content[key].slot}
+                />,
+              );
+            }
           }
         }
       } catch (error) {

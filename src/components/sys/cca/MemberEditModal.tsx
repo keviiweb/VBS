@@ -87,89 +87,95 @@ export default function MemberEditModal({
     }, 200);
   }, [dataHandler, onClose]);
 
-  const handleAddMember = useCallback(async (email: string) => {
-    if (checkerString(ccaIDDB.current) && checkerString(email)) {
-      setSubmitButtonPressed(true);
-      try {
-        const rawResponse = await fetch('/api/ccaRecord/create', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ccaID: ccaIDDB.current,
-            email,
-          }),
-        });
-        const content: Result = await rawResponse.json();
-        if (content.status) {
-          toast({
-            title: 'Resident added to CCA',
-            description: content.msg,
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
+  const handleAddMember = useCallback(
+    async (email: string) => {
+      if (checkerString(ccaIDDB.current) && checkerString(email)) {
+        setSubmitButtonPressed(true);
+        try {
+          const rawResponse = await fetch('/api/ccaRecord/create', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ccaID: ccaIDDB.current,
+              email,
+            }),
           });
-        } else {
-          toast({
-            title: 'Error',
-            description: content.error,
-            status: 'error',
-            duration: 20000,
-            isClosable: true,
-          });
+          const content: Result = await rawResponse.json();
+          if (content.status) {
+            toast({
+              title: 'Resident added to CCA',
+              description: content.msg,
+              status: 'success',
+              duration: 5000,
+              isClosable: true,
+            });
+          } else {
+            toast({
+              title: 'Error',
+              description: content.error,
+              status: 'error',
+              duration: 20000,
+              isClosable: true,
+            });
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
+        setSubmitButtonPressed(false);
+        setSearchInput('');
+        setData([]);
       }
-      setSubmitButtonPressed(false);
-      setSearchInput('');
-      setData([]);
-    }
-  }, [toast]);
+    },
+    [toast],
+  );
 
-  const handleRemoveMember = useCallback(async (email: string) => {
-    if (checkerString(ccaIDDB.current) && checkerString(email)) {
-      setSubmitButtonPressed(true);
-      try {
-        const rawResponse = await fetch('/api/ccaRecord/delete', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ccaID: ccaIDDB.current,
-            email,
-          }),
-        });
-        const content: Result = await rawResponse.json();
-        if (content.status) {
-          toast({
-            title: 'Resident removed from CCA',
-            description: content.msg,
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
+  const handleRemoveMember = useCallback(
+    async (email: string) => {
+      if (checkerString(ccaIDDB.current) && checkerString(email)) {
+        setSubmitButtonPressed(true);
+        try {
+          const rawResponse = await fetch('/api/ccaRecord/delete', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ccaID: ccaIDDB.current,
+              email,
+            }),
           });
-        } else {
-          toast({
-            title: 'Error',
-            description: content.error,
-            status: 'error',
-            duration: 20000,
-            isClosable: true,
-          });
+          const content: Result = await rawResponse.json();
+          if (content.status) {
+            toast({
+              title: 'Resident removed from CCA',
+              description: content.msg,
+              status: 'success',
+              duration: 5000,
+              isClosable: true,
+            });
+          } else {
+            toast({
+              title: 'Error',
+              description: content.error,
+              status: 'error',
+              duration: 20000,
+              isClosable: true,
+            });
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
+        setSubmitButtonPressed(false);
+        setSearchInput('');
+        setData([]);
       }
-      setSubmitButtonPressed(false);
-      setSearchInput('');
-      setData([]);
-    }
-  }, [toast]);
+    },
+    [toast],
+  );
 
   const generateActionButton = useCallback(
     async (content: User) => {
@@ -214,11 +220,9 @@ export default function MemberEditModal({
         const users: User[] = content;
         if (users.length > 0) {
           for (let key = 0; key < users.length; key += 1) {
-          
-              const dataField: User = users[key];
-              const buttons = await generateActionButton(dataField);
-              dataField.action = buttons;
-            
+            const dataField: User = users[key];
+            const buttons = await generateActionButton(dataField);
+            dataField.action = buttons;
           }
           setData(users);
         }
@@ -254,12 +258,13 @@ export default function MemberEditModal({
       }
       currentTime.current = Date.now();
     }
-  }, []);
+  }, [includeActionButton]);
 
   useEffect(() => {
     async function setupData(modalDataField: CCARecord) {
-      const ccaidField: string =
-        checkerString(modalDataField.ccaID) ? modalDataField.ccaID : '';
+      const ccaidField: string = checkerString(modalDataField.ccaID)
+        ? modalDataField.ccaID
+        : '';
       ccaIDDB.current = ccaidField;
     }
 

@@ -43,17 +43,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const announceData: Announcement[] = announcementDB.msg;
       if (announceData.length > 0) {
         for (let ven = 0; ven < announceData.length; ven += 1) {
-          if (announceData[ven]) {
-            const announce: Announcement = announceData[ven];
+          const announce: Announcement = announceData[ven];
 
-            const data: Announcement = {
-              id: announce.id,
-              image: announce.image,
-              description: announce.description,
-            };
+          const data: Announcement = {
+            id: announce.id,
+            image: announce.image,
+            description: announce.description,
+          };
 
-            parsedAnnouncement.push(data);
-          }
+          parsedAnnouncement.push(data);
         }
       }
 

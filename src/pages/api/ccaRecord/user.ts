@@ -53,22 +53,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const userRecords: CCARecord[] = fetchRes.msg as CCARecord[];
         if (userRecords.length > 0) {
           for (let key = 0; key < userRecords.length; key += 1) {
-            if (userRecords[key]) {
-              const record: CCARecord = userRecords[key];
-              const { ccaID } = record;
-              const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
-              if (ccaDetailsRes.status && ccaDetailsRes.msg) {
-                const ccaDetails: CCA = ccaDetailsRes.msg;
-                const data: CCARecord = {
-                  id: record.id,
-                  ccaID: record.ccaID,
-                  leader: record.leader,
-                  ccaName: ccaDetails.name,
-                  image: ccaDetails.image,
-                };
+            const record: CCARecord = userRecords[key];
+            const { ccaID } = record;
+            const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
+            if (
+              ccaDetailsRes.status &&
+              ccaDetailsRes.msg !== null &&
+              ccaDetailsRes !== undefined
+            ) {
+              const ccaDetails: CCA = ccaDetailsRes.msg;
+              const data: CCARecord = {
+                id: record.id,
+                ccaID: record.ccaID,
+                leader: record.leader,
+                ccaName: ccaDetails.name,
+                image: ccaDetails.image,
+              };
 
-                parsedCCARecord.push(data);
-              }
+              parsedCCARecord.push(data);
             }
           }
         }

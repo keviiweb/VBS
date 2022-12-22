@@ -9,13 +9,18 @@ import { checkerString } from '@constants/sys/helper';
  * @returns HTML Template with all fields populated
  */
 function html({ data }) {
-  const id: string = data.id ? data.id : '';
-  const email: string = data.email ? data.email : '';
-  const venue: string = data.venue ? data.venue : '';
-  const date: string = data.dateStr ? data.dateStr : '';
-  const cca: string = data.cca ? data.cca : '';
-  const timeSlots: string = data.timeSlots ? data.timeSlots : '';
-  const purpose: string = data.purpose ? data.purpose : '';
+  const id: string = data.id !== undefined ? (data.id as string).trim() : '';
+  const email: string =
+    data.email !== undefined ? (data.email as string).trim() : '';
+  const venue: string =
+    data.venue !== undefined ? (data.venue as string).trim() : '';
+  const date: string =
+    data.dateStr !== undefined ? (data.dateStr as string).trim() : '';
+  const cca: string = data.cca !== undefined ? (data.cca as string).trim() : '';
+  const timeSlots: string =
+    data.timeSlots !== undefined ? (data.timeSlots as string).trim() : '';
+  const purpose: string =
+    data.purpose !== undefined ? (data.purpose as string).trim() : '';
 
   return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -408,7 +413,7 @@ export const sendProgressMail = async (
   data: BookingRequest,
 ) => {
   if (
-    process.env.SEND_EMAIL &&
+    process.env.SEND_EMAIL !== undefined &&
     (process.env.SEND_EMAIL === '1' || Number(process.env.SEND_EMAIL) === 1)
   ) {
     try {
@@ -431,9 +436,9 @@ export const sendProgressMail = async (
           text: text(),
           html: html({ data }),
         },
-        function (err) {
-          if (err) {
-            console.error('Error ' + err);
+        function (err: any) {
+          if (err !== null && err !== undefined) {
+            console.error(err);
           }
         },
       );
@@ -443,10 +448,10 @@ export const sendProgressMail = async (
   }
 
   if (
-    process.env.SEND_EMAIL_SECRETARY &&
+    process.env.SEND_EMAIL_SECRETARY !== undefined &&
     (process.env.SEND_EMAIL_SECRETARY === '1' ||
       Number(process.env.SEND_EMAIL_SECRETARY) === 1) &&
-    process.env.SECRETARY_EMAIL &&
+    process.env.SECRETARY_EMAIL !== undefined &&
     checkerString(process.env.SECRETARY_EMAIL)
   ) {
     try {
@@ -469,8 +474,8 @@ export const sendProgressMail = async (
           text: text(),
           html: html({ data }),
         },
-        function (err) {
-          if (err) {
+        function (err: any) {
+          if (err !== null && err !== undefined) {
             console.error('Error ' + err);
           }
         },

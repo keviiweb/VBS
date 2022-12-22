@@ -55,7 +55,7 @@ export default function ManageAnnouncement() {
   const descriptionDB = useRef('');
 
   const selectedFileDB = useRef<string | Blob | null>(null);
-  const [fileName, setFileName] = useState(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   const [errorMsg, setError] = useState('');
 
@@ -211,19 +211,17 @@ export default function ManageAnnouncement() {
         selectionEdit.push(<option key='' value='' aria-label='Default' />);
 
         for (let key = 0; key < contentRes.length; key += 1) {
-          if (contentRes[key]) {
-            const dataField: Announcement = contentRes[key];
+          const dataField: Announcement = contentRes[key];
 
-            selectionEdit.push(
-              <option key={dataField.id} value={dataField.id}>
-                {dataField.description}
-              </option>,
-            );
+          selectionEdit.push(
+            <option key={dataField.id} value={dataField.id}>
+              {dataField.description}
+            </option>,
+          );
 
-            allAnnouncement.push(dataField);
-            const buttons = await generateActionButton(dataField);
-            dataField.action = buttons;
-          }
+          allAnnouncement.push(dataField);
+          const buttons = await generateActionButton(dataField);
+          dataField.action = buttons;
         }
 
         setAnnounceDropdown(selectionEdit);
@@ -325,7 +323,7 @@ export default function ManageAnnouncement() {
   const onAnnounceIDChangeEdit = async (event: {
     target: { value: string; };
   }) => {
-    if (event.target.value) {
+    if (event.target.value !== undefined) {
       const { value } = event.target;
       announceIDDBEdit.current = value;
       setAnnounceIDEdit(value);
@@ -451,7 +449,7 @@ export default function ManageAnnouncement() {
             </Box>
           )}
 
-          {!loadingData && data && data.length > 0 && (
+          {!loadingData && data.length > 0 && (
             <Box w='full' overflow='auto'>
               <Stack spacing={30} align='center' justify='center'>
                 <TableWidget
@@ -507,7 +505,9 @@ export default function ManageAnnouncement() {
                   <FormLabel fontSize='sm' fontWeight='md' color='gray.700'>
                     Announcement Photo
                   </FormLabel>
-                  {fileName && <Text>File uploaded: {fileName}</Text>}
+                  {fileName !== null && checkerString(fileName) && (
+                    <Text>File uploaded: {fileName}</Text>
+                  )}
                   <Flex
                     mt={1}
                     justify='center'
@@ -608,7 +608,7 @@ export default function ManageAnnouncement() {
             <Heading size='md'>Edit existing announcement</Heading>
             <form onSubmit={handleSubmitEdit}>
               <Stack spacing={4}>
-                {announceDropdown && (
+                {announceDropdown.length > 0 && (
                   <Stack spacing={3} w='full'>
                     <FormLabel>Select Announcement</FormLabel>
                     <Select

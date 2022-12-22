@@ -280,7 +280,7 @@ export default function ManageBooking() {
     <Auth admin={undefined}>
       <Box bg='white' borderRadius='lg' p={8} color='gray.700' shadow='base'>
         <MotionBox variants={cardVariant} key='1'>
-          {loadingData && !data && (
+          {loadingData && data.length === 0 && (
             <Box mt={30}>
               <Stack align='center' justify='center'>
                 <Text>Loading Please wait...</Text>
@@ -296,7 +296,7 @@ export default function ManageBooking() {
             </Box>
           )}
 
-          {!loadingData && data && data.length > 0 && (
+          {!loadingData && data.length > 0 && (
             <Box w='full' overflow='auto'>
               <Stack align='center' justify='center' spacing={30}>
                 <TableWidget

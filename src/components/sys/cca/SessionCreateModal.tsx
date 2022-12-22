@@ -241,12 +241,18 @@ export default function SessionCreateModal({
       return false;
     }
 
-    if (selectedDataField.remarks !== undefined && !checkerString(selectedDataField.remarks)) {
+    if (
+      selectedDataField.remarks !== undefined &&
+      !checkerString(selectedDataField.remarks)
+    ) {
       setError('Please set a remark!');
       return false;
     }
 
-    if (selectedDataField.ldrNotes !== undefined && !checkerString(selectedDataField.ldrNotes)) {
+    if (
+      selectedDataField.ldrNotes !== undefined &&
+      !checkerString(selectedDataField.ldrNotes)
+    ) {
       setError('Please set a note!');
       return false;
     }
@@ -384,20 +390,18 @@ export default function SessionCreateModal({
     end.push(<option key='end' value='' aria-label='Default' />);
 
     for (let key = 0; key <= Object.keys(timeSlots).length; key += 1) {
-  
-        const dataField: string = timeSlots[key];
-        start.push(
-          <option key={`start${key}`} value={dataField}>
-            {dataField}
-          </option>,
-        );
+      const dataField: string = timeSlots[key];
+      start.push(
+        <option key={`start${key}`} value={dataField}>
+          {dataField}
+        </option>,
+      );
 
-        end.push(
-          <option key={`end${key}`} value={dataField}>
-            {dataField}
-          </option>,
-        );
-      
+      end.push(
+        <option key={`end${key}`} value={dataField}>
+          {dataField}
+        </option>,
+      );
     }
 
     setStartTimeDropdown(start);
@@ -410,14 +414,12 @@ export default function SessionCreateModal({
       let counter: number = 0;
 
       for (let key = 0; key < members.length; key += 1) {
-      
-          counter += 1;
-          if (counter !== members.length) {
-            text += ` ${members[key]} ,`;
-          } else {
-            text += ` ${members[key]} `;
-          }
-        
+        counter += 1;
+        if (counter !== members.length) {
+          text += ` ${members[key]} ,`;
+        } else {
+          text += ` ${members[key]} `;
+        }
       }
 
       setDisplayedExpected(text);
@@ -431,17 +433,12 @@ export default function SessionCreateModal({
 
     if (memberData.current.length > 0) {
       for (let key = 0; key < memberData.current.length; key += 1) {
-
-          const record: CCARecord = memberData.current[key];
-          if (
-            record.sessionEmail === email &&
-            record.sessionName !== undefined
-          ) {
-            res = record.sessionName;
-            break;
-          }
+        const record: CCARecord = memberData.current[key];
+        if (record.sessionEmail === email && record.sessionName !== undefined) {
+          res = record.sessionName;
+          break;
         }
-      
+      }
     }
 
     return res;
@@ -452,13 +449,11 @@ export default function SessionCreateModal({
 
     if (memberData.current.length > 0) {
       for (let key = 0; key < memberData.current.length; key += 1) {
-     
-          const record: CCARecord = memberData.current[key];
-          if (record.sessionID === id && record.sessionName !== undefined) {
-            res = record.sessionName;
-            break;
-          }
-        
+        const record: CCARecord = memberData.current[key];
+        if (record.sessionID === id && record.sessionName !== undefined) {
+          res = record.sessionName;
+          break;
+        }
       }
     }
 
@@ -470,13 +465,11 @@ export default function SessionCreateModal({
 
     if (memberData.current.length > 0) {
       for (let key = 0; key < memberData.current.length; key += 1) {
-      
-          const record: CCARecord = memberData.current[key];
-          if (record.sessionEmail === email && record.sessionID !== undefined) {
-            res = record.sessionID;
-            break;
-          }
-        
+        const record: CCARecord = memberData.current[key];
+        if (record.sessionEmail === email && record.sessionID !== undefined) {
+          res = record.sessionID;
+          break;
+        }
       }
     }
 
@@ -523,13 +516,11 @@ export default function SessionCreateModal({
         key < selectedExpectedMembers.current.length;
         key += 1
       ) {
-     
-          const s: string = selectedExpectedMembers.current[key];
-          const nameField: string = await fetchNameOfUserByID(s);
-          if (checkerString(nameField)) {
-            memberName.push(nameField);
-          }
-        
+        const s: string = selectedExpectedMembers.current[key];
+        const nameField: string = await fetchNameOfUserByID(s);
+        if (checkerString(nameField)) {
+          memberName.push(nameField);
+        }
       }
 
       selectedExpectedMembersName.current = memberName;
@@ -543,26 +534,24 @@ export default function SessionCreateModal({
         const buttons: JSX.Element[] = [];
 
         for (let key = 0; key < content.res.length; key += 1) {
-        
-            const record: CCARecord = content.res[key];
-            if (
-              record.sessionEmail !== undefined &&
-              record.sessionName !== undefined
-            ) {
-              const { sessionEmail, sessionName } = record;
+          const record: CCARecord = content.res[key];
+          if (
+            record.sessionEmail !== undefined &&
+            record.sessionName !== undefined
+          ) {
+            const { sessionEmail, sessionName } = record;
 
-              buttons.push(
-                <MemberButton
-                  reality={false}
-                  key={sessionEmail}
-                  handleClick={onExpectedMemberChange}
-                  newKey={sessionEmail}
-                  id={sessionEmail}
-                  name={sessionName}
-                />,
-              );
-            }
-          
+            buttons.push(
+              <MemberButton
+                reality={false}
+                key={sessionEmail}
+                handleClick={onExpectedMemberChange}
+                newKey={sessionEmail}
+                id={sessionEmail}
+                name={sessionName}
+              />,
+            );
+          }
         }
 
         memberData.current = content.res;
@@ -614,12 +603,16 @@ export default function SessionCreateModal({
     async function setupData(modalDataField: CCASession) {
       setLoadingData(true);
 
-      const ccaidField: string =
-        checkerString(modalDataField.ccaID) ? modalDataField.ccaID : '';
+      const ccaidField: string = checkerString(modalDataField.ccaID)
+        ? modalDataField.ccaID
+        : '';
       ccaIDDB.current = ccaidField;
 
       const dateStrField: string =
-        modalDataField.dateStr !== undefined && checkerString(modalDataField.dateStr) ? modalDataField.dateStr : '';
+        modalDataField.dateStr !== undefined &&
+        checkerString(modalDataField.dateStr)
+          ? modalDataField.dateStr
+          : '';
 
       setDateStr(dateStrField);
       dateStrDB.current = dateStrField;
@@ -814,7 +807,8 @@ export default function SessionCreateModal({
                 </Flex>
               )}
 
-              {modalData !== undefined && modalData !== null &&
+              {modalData !== undefined &&
+                modalData !== null &&
                 !loadingData &&
                 progressLevel === levels.EXPECTATION && (
                   <Flex
@@ -879,7 +873,8 @@ export default function SessionCreateModal({
                   </Flex>
                 )}
 
-              {modalData !== undefined && modalData !== null &&
+              {modalData !== undefined &&
+                modalData !== null &&
                 !loadingData &&
                 progressLevel === levels.REMARKS && (
                   <Flex

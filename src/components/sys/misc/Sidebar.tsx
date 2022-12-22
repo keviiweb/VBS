@@ -155,7 +155,9 @@ export default function Sidebar({ session, onClose, ...rest }) {
         </Link>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      {menu !== null && menu !== undefined && menu.map((link, i) => <NavLink key={i} link={link} />)}
+      {menu !== null &&
+        menu !== undefined &&
+        menu.map((link, i) => <NavLink key={i} link={link} />)}
     </Box>
   );
 }

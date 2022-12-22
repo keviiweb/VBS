@@ -105,10 +105,10 @@ export default function ManageUsers(props: any) {
   const pageIndexDB = useRef(PAGEINDEX);
 
   const selectedFileDB = useRef<string | Blob | null>(null);
-  const [fileName, setFileName] = useState(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   const selectedFileCCADB = useRef<string | Blob | null>(null);
-  const [fileNameCCA, setFileNameCCA] = useState(null);
+  const [fileNameCCA, setFileNameCCA] = useState<string | null>(null);
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
@@ -364,19 +364,17 @@ export default function ManageUsers(props: any) {
         selectionEdit.push(<option key='' value='' aria-label='Default' />);
 
         for (let key = 0; key < contentRes.length; key += 1) {
-          if (contentRes[key]) {
-            const dataField: User = contentRes[key];
+          const dataField: User = contentRes[key];
 
-            selectionEdit.push(
-              <option key={dataField.id} value={dataField.id}>
-                {dataField.name}
-              </option>,
-            );
+          selectionEdit.push(
+            <option key={dataField.id} value={dataField.id}>
+              {dataField.name}
+            </option>,
+          );
 
-            allUser.push(dataField);
-            const buttons = await generateActionButton(dataField);
-            dataField.action = buttons;
-          }
+          allUser.push(dataField);
+          const buttons = await generateActionButton(dataField);
+          dataField.action = buttons;
         }
 
         userData.current = allUser;
@@ -619,18 +617,16 @@ export default function ManageUsers(props: any) {
   );
 
   const onUserIDChangeEdit = async (event: { target: { value: string; }; }) => {
-    if (event.target.value) {
+    if (event.target.value !== undefined) {
       const { value } = event.target;
       userIDDBEdit.current = value;
       setUserIDEdit(value);
 
       if (userData.current.length > 0) {
         for (let key = 0; key < userData.current.length; key += 1) {
-          if (userData.current[key]) {
-            const dataField: User = userData.current[key];
-            if (dataField.id === value) {
-              changeDataEdit(dataField);
-            }
+          const dataField: User = userData.current[key];
+          if (dataField.id === value) {
+            changeDataEdit(dataField);
           }
         }
       }
@@ -667,9 +663,11 @@ export default function ManageUsers(props: any) {
           onClose={() => setSubmitButtonPressed(false)}
         />
         <MotionBox variants={cardVariant} key='1'>
-          {loadingData && !data && <Text>Loading Please wait...</Text>}
+          {loadingData && (data === null || data === undefined) && (
+            <Text>Loading Please wait...</Text>
+          )}
 
-          {!loadingData && data && data.length === 0 && (
+          {!loadingData && data.length === 0 && (
             <Box mt={30}>
               <Stack align='center' justify='center'>
                 <Text>No users found</Text>
@@ -677,7 +675,7 @@ export default function ManageUsers(props: any) {
             </Box>
           )}
 
-          {!loadingData && data && data.length > 0 && (
+          {!loadingData && data.length > 0 && (
             <Box w='full' overflow='auto'>
               <Stack spacing={30} align='center' justify='center'>
                 <TableWidget
@@ -785,7 +783,9 @@ export default function ManageUsers(props: any) {
                     <FormLabel fontSize='sm' fontWeight='md' color='gray.700'>
                       CSV File
                     </FormLabel>
-                    {fileName && <Text>File uploaded: {fileName}</Text>}
+                    {fileName !== null && checkerString(fileName) && (
+                      <Text>File uploaded: {fileName}</Text>
+                    )}
                     <Flex
                       mt={1}
                       justify='center'
@@ -886,7 +886,9 @@ export default function ManageUsers(props: any) {
                     <FormLabel fontSize='sm' fontWeight='md' color='gray.700'>
                       CSV File
                     </FormLabel>
-                    {fileNameCCA && <Text>File uploaded: {fileNameCCA}</Text>}
+                    {fileNameCCA !== null && checkerString(fileNameCCA) && (
+                      <Text>File uploaded: {fileNameCCA}</Text>
+                    )}
                     <Flex
                       mt={1}
                       justify='center'
@@ -1011,7 +1013,7 @@ export default function ManageUsers(props: any) {
                     />
                   </FormControl>
 
-                  {levelDropdown && (
+                  {levelDropdown.length > 0 && (
                     <Stack spacing={3} w='full'>
                       <FormLabel>Permission Level</FormLabel>
                       <Select
@@ -1052,7 +1054,7 @@ export default function ManageUsers(props: any) {
           </MotionBox>
         )}
 
-        {hasPermission(level, actions.EDIT_USER) && userDropdown && (
+        {hasPermission(level, actions.EDIT_USER) && userDropdown.length > 0 && (
           <MotionBox key='edit-user'>
             <Stack
               spacing={4}
@@ -1067,7 +1069,7 @@ export default function ManageUsers(props: any) {
               <Heading size='md'>Edit existing user</Heading>
               <form onSubmit={handleSubmitEdit}>
                 <Stack spacing={4}>
-                  {userDropdown && (
+                  {userDropdown.length > 0 && (
                     <Stack spacing={3} w='full'>
                       <FormLabel>Select User</FormLabel>
                       <Select
@@ -1108,7 +1110,7 @@ export default function ManageUsers(props: any) {
                     />
                   </FormControl>
 
-                  {levelDropdown && (
+                  {levelDropdown.length > 0 && (
                     <Stack spacing={3} w='full'>
                       <FormLabel>Permission Level</FormLabel>
                       <Select

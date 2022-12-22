@@ -43,15 +43,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       );
 
       const sessionRes: Result = await findCCASessionByID(sessionID, session);
-      if (sessionRes.status && sessionRes.msg) {
+      if (
+        sessionRes.status &&
+        sessionRes.msg !== null &&
+        sessionRes !== undefined
+      ) {
         const ccaSession: CCASession = sessionRes.msg;
-        const editable: boolean = ccaSession.editable
-          ? ccaSession.editable
-          : false;
+        const editable: boolean =
+          ccaSession.editable !== undefined && ccaSession.editable;
 
         if (userPermission || editable) {
           const ldrRes: Result = await isLeader(ccaSession.ccaID, session);
-          if (userPermission || (ldrRes.status && ldrRes.msg)) {
+          if (userPermission || (ldrRes.status && (ldrRes.msg as boolean))) {
             const deleteAttendanceRes: Result =
               await deleteAttendanceBySessionID(id, session);
             if (deleteAttendanceRes.status) {

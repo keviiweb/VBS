@@ -195,47 +195,45 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const ccaData: CCARecord[] = ccaDB.msg;
         if (ccaData.length > 0) {
           for (let ven = 0; ven < ccaData.length; ven += 1) {
-            if (ccaData[ven]) {
-              const record: CCARecord = ccaData[ven];
-              const ccaAttendanceHours: number =
-                await countTotalSessionHoursByCCAID(record.ccaID, session);
-              const userAttendance: Result =
-                await fetchSpecificCCAAttendanceByUserEmail(
-                  record.ccaID,
-                  session.user.email,
-                  100000,
-                  0,
-                  session,
-                );
-              if (userAttendance.status) {
-                const userAttendanceHours = await countTotalAttendanceHours(
-                  userAttendance.msg as CCAAttendance[],
-                );
-                let rate: string = '100%';
-                if (ccaAttendanceHours !== 0) {
-                  if (userAttendanceHours > ccaAttendanceHours) {
-                    rate = '100%';
-                  } else {
-                    rate = `${(
-                      (userAttendanceHours / ccaAttendanceHours) *
-                      100
-                    ).toFixed(1)}%`;
-                  }
+            const record: CCARecord = ccaData[ven];
+            const ccaAttendanceHours: number =
+              await countTotalSessionHoursByCCAID(record.ccaID, session);
+            const userAttendance: Result =
+              await fetchSpecificCCAAttendanceByUserEmail(
+                record.ccaID,
+                session.user.email,
+                100000,
+                0,
+                session,
+              );
+            if (userAttendance.status) {
+              const userAttendanceHours = await countTotalAttendanceHours(
+                userAttendance.msg as CCAAttendance[],
+              );
+              let rate: string = '100%';
+              if (ccaAttendanceHours !== 0) {
+                if (userAttendanceHours > ccaAttendanceHours) {
+                  rate = '100%';
                 } else {
-                  rate = 'No sessions found';
+                  rate = `${(
+                    (userAttendanceHours / ccaAttendanceHours) *
+                    100
+                  ).toFixed(1)}%`;
                 }
-
-                const data: CCARecord = {
-                  id: record.id,
-                  ccaID: record.ccaID,
-                  leader: record.leader,
-                  ccaName: record.ccaName,
-                  rate,
-                  image: record.image,
-                };
-
-                parsedCCARecord.push(data);
+              } else {
+                rate = 'No sessions found';
               }
+
+              const data: CCARecord = {
+                id: record.id,
+                ccaID: record.ccaID,
+                leader: record.leader,
+                ccaName: record.ccaName,
+                rate,
+                image: record.image,
+              };
+
+              parsedCCARecord.push(data);
             }
           }
         }

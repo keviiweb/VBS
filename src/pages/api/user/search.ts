@@ -51,7 +51,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (ccaIDRes !== undefined && inputRes !== undefined) {
       const checkLdr: Result = await isLeader(ccaIDRes, session);
-      if (userPermission || (checkLdr.status && checkLdr.msg)) {
+      if (userPermission || (checkLdr.status && (checkLdr.msg as boolean))) {
         const userSearchRes: Result = await searchUser(inputRes, session);
         if (userSearchRes.status) {
           const userSearchMsg: User[] = userSearchRes.msg;

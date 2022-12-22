@@ -40,16 +40,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       );
 
       const findCCA: Result = await findCCAbyID(parsedData.ccaID, session);
-      if (findCCA.status && findCCA.msg) {
+      if (findCCA.status && findCCA.msg !== null && findCCA !== undefined) {
         const ldrRes: Result = await isLeader(parsedData.ccaID, session);
-        if (userPermission || (ldrRes.status && ldrRes.msg)) {
+        if (userPermission || (ldrRes.status && (ldrRes.msg as boolean))) {
           const expectedM: string =
-            parsedData && parsedData.expectedM
+            parsedData.expectedM !== undefined
               ? parsedData.expectedM.trim()
               : '';
 
           const expectedMName: string =
-            parsedData && parsedData.expectedMName
+            parsedData.expectedMName !== undefined
               ? parsedData.expectedMName.trim()
               : '';
 

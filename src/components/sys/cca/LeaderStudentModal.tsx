@@ -214,13 +214,20 @@ export default function LeaderStudentModalComponent({
     async function setupData() {
       if (modalData !== undefined && modalData !== null) {
         const sessionUserNameField: string =
-          modalData.sessionName !== undefined && modalData.sessionName !== null ? modalData.sessionName : '';
+          modalData.sessionName !== undefined && modalData.sessionName !== null
+            ? modalData.sessionName
+            : '';
         setSessionUserName(sessionUserNameField);
 
         ccaRecordIDDB.current =
-          modalData.ccaID !== undefined && modalData.ccaID !== null ? modalData.ccaID : '';
+          modalData.ccaID !== undefined && modalData.ccaID !== null
+            ? modalData.ccaID
+            : '';
         sessionEmailDB.current =
-          modalData.sessionEmail !== undefined && modalData.sessionEmail !== null ? modalData.sessionEmail : '';
+          modalData.sessionEmail !== undefined &&
+          modalData.sessionEmail !== null
+            ? modalData.sessionEmail
+            : '';
 
         await tableChange();
       }

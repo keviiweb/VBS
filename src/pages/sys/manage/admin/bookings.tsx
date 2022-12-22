@@ -88,7 +88,7 @@ export default function ManageBooking(props: any) {
   >([]);
 
   const selectedFileDB = useRef<string | Blob | null>(null);
-  const [fileName, setFileName] = useState(null);
+  const [fileName, setFileName] = useState<string | null>(null);
   const [errorMsgFile, setErrorFile] = useState('');
 
   const [levelUser, setLevelUser] = useState(levelsUser.USER);
@@ -481,11 +481,9 @@ export default function ManageBooking(props: any) {
         const booking: BookingRequest[] = content.res;
         if (booking.length > 0) {
           for (let key = 0; key < booking.length; key += 1) {
-            if (booking[key]) {
-              const dataField: BookingRequest = booking[key];
-              const buttons = await generateActionButton(dataField, action);
-              dataField.action = buttons;
-            }
+            const dataField: BookingRequest = booking[key];
+            const buttons = await generateActionButton(dataField, action);
+            dataField.action = buttons;
           }
           setData(booking);
         }
@@ -623,7 +621,7 @@ export default function ManageBooking(props: any) {
 
   const onBookingChoiceChange = useCallback(
     async (event: { target: { value: string; }; }) => {
-      if (event.target.value) {
+      if (event.target.value !== undefined) {
         const { value } = event.target;
         if (
           checkerNumber(Number(value)) &&
@@ -714,13 +712,11 @@ export default function ManageBooking(props: any) {
     selection.push(<option key='' value='' aria-label='Default' />);
 
     Object.keys(levels).forEach((key) => {
-      if (levels[key]) {
-        selection.push(
-          <option key={levels[key]} value={levels[key]}>
-            {key}
-          </option>,
-        );
-      }
+      selection.push(
+        <option key={levels[key]} value={levels[key]}>
+          {key}
+        </option>,
+      );
     });
 
     setBookingChoiceDropdown(selection);
@@ -846,7 +842,7 @@ export default function ManageBooking(props: any) {
             </Select>
           </Stack>
 
-          {loadingData && !data && (
+          {loadingData && (data === null || data === undefined) && (
             <Box mt={30}>
               <Stack align='center' justify='center'>
                 <Text>Loading Please wait...</Text>
@@ -854,7 +850,7 @@ export default function ManageBooking(props: any) {
             </Box>
           )}
 
-          {!loadingData && data !== null && data.length === 0 && (
+          {!loadingData && data.length === 0 && (
             <Box mt={30}>
               <Stack align='center' justify='center'>
                 <Text>No bookings found</Text>
@@ -862,7 +858,7 @@ export default function ManageBooking(props: any) {
             </Box>
           )}
 
-          {!loadingData && data !== null && data.length > 0 && (
+          {!loadingData && data.length > 0 && (
             <Box w='full' overflow='auto'>
               <Stack align='center' justify='center' spacing={30}>
                 <TableWidget
@@ -910,7 +906,9 @@ export default function ManageBooking(props: any) {
                     <FormLabel fontSize='sm' fontWeight='md' color='gray.700'>
                       CSV File
                     </FormLabel>
-                    {fileName && <Text>File uploaded: {fileName}</Text>}
+                    {fileName !== null && checkerString(fileName) && (
+                      <Text>File uploaded: {fileName}</Text>
+                    )}
                     <Flex
                       mt={1}
                       justify='center'

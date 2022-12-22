@@ -91,7 +91,7 @@ export default function ManageVenues(props: any) {
   const [endTimeDropdown, setEndTimeDropdown] = useState<JSX.Element[]>([]);
 
   const selectedFileDB = useRef<string | Blob | null>(null);
-  const [fileName, setFileName] = useState(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   const [errorMsg, setError] = useState('');
 
@@ -320,14 +320,14 @@ export default function ManageVenues(props: any) {
   };
 
   const onParentVenueChange = async (event: { target: { value: string; }; }) => {
-    if (event.target.value) {
+    if (event.target.value !== undefined) {
       const { value } = event.target;
       parentVenue.current = value;
     }
   };
 
   const onStartTimeChange = async (event: { target: { value: string; }; }) => {
-    if (event.target.value) {
+    if (event.target.value !== undefined) {
       const { value } = event.target;
       startTimeDB.current = value;
       setStartTime(value);
@@ -335,7 +335,7 @@ export default function ManageVenues(props: any) {
   };
 
   const onEndTimeChange = async (event: { target: { value: string; }; }) => {
-    if (event.target.value) {
+    if (event.target.value !== undefined) {
       const { value } = event.target;
       endTimeDB.current = value;
       setEndTime(value);
@@ -457,20 +457,18 @@ export default function ManageVenues(props: any) {
     end.push(<option key='end' value='' aria-label='Default' />);
 
     for (let key = 0; key <= Object.keys(timeSlots).length; key += 1) {
-      if (timeSlots[key]) {
-        const dataField: string = timeSlots[key];
-        start.push(
-          <option key={`start${key}`} value={dataField}>
-            {dataField}
-          </option>,
-        );
+      const dataField: string = timeSlots[key];
+      start.push(
+        <option key={`start${key}`} value={dataField}>
+          {dataField}
+        </option>,
+      );
 
-        end.push(
-          <option key={`end${key}`} value={dataField}>
-            {dataField}
-          </option>,
-        );
-      }
+      end.push(
+        <option key={`end${key}`} value={dataField}>
+          {dataField}
+        </option>,
+      );
     }
 
     setStartTimeDropdown(start);
@@ -536,7 +534,7 @@ export default function ManageVenues(props: any) {
     instantBookDBEdit.current = dataField.isInstantBook;
     isChildVenueDBEdit.current = dataField.isChildVenue;
     visibleDBEdit.current = dataField.visible;
-    parentVenueEdit.current = dataField.parentVenue
+    parentVenueEdit.current = checkerString(dataField.parentVenue)
       ? dataField.parentVenue
       : '';
 
@@ -553,7 +551,7 @@ export default function ManageVenues(props: any) {
   const onParentVenueChangeEdit = async (event: {
     target: { value: string; };
   }) => {
-    if (event.target.value) {
+    if (event.target.value !== undefined) {
       const { value } = event.target;
       parentVenueEdit.current = value;
     }
@@ -562,7 +560,7 @@ export default function ManageVenues(props: any) {
   const onStartTimeChangeEdit = async (event: {
     target: { value: string; };
   }) => {
-    if (event.target.value) {
+    if (event.target.value !== undefined) {
       const { value } = event.target;
       startTimeDBEdit.current = value;
       setStartTimeEdit(value);
@@ -570,7 +568,7 @@ export default function ManageVenues(props: any) {
   };
 
   const onEndTimeChangeEdit = async (event: { target: { value: string; }; }) => {
-    if (event.target.value) {
+    if (event.target.value !== undefined) {
       const { value } = event.target;
       endTimeDBEdit.current = value;
       setEndTimeEdit(value);
@@ -578,18 +576,16 @@ export default function ManageVenues(props: any) {
   };
 
   const onVenueIDChangeEdit = async (event: { target: { value: string; }; }) => {
-    if (event.target.value) {
+    if (event.target.value !== undefined) {
       const { value } = event.target;
       venueIDDBEdit.current = value;
       setVenueIDEdit(value);
 
       if (venueData.current.length > 0) {
         for (let key = 0; key < venueData.current.length; key += 1) {
-          if (venueData.current[key]) {
-            const dataField: Venue = venueData.current[key];
-            if (dataField.id === value) {
-              changeDataEdit(dataField);
-            }
+          const dataField: Venue = venueData.current[key];
+          if (dataField.id === value) {
+            changeDataEdit(dataField);
           }
         }
       }
@@ -803,9 +799,11 @@ export default function ManageVenues(props: any) {
           onClose={() => setSubmitButtonPressed(false)}
         />
         <MotionBox variants={cardVariant} key='1'>
-          {loadingData && !data && <Text>Loading Please wait...</Text>}
+          {loadingData && (data === null || data === undefined) && (
+            <Text>Loading Please wait...</Text>
+          )}
 
-          {!loadingData && data && data.length === 0 && (
+          {!loadingData && data.length === 0 && (
             <Box mt={30}>
               <Stack align='center' justify='center'>
                 <Text>No venues found</Text>
@@ -813,7 +811,7 @@ export default function ManageVenues(props: any) {
             </Box>
           )}
 
-          {!loadingData && data && data.length > 0 && (
+          {!loadingData && data.length > 0 && (
             <Box w='full' overflow='auto'>
               <Stack spacing={30} align='center' justify='center'>
                 <TableWidget
@@ -897,7 +895,7 @@ export default function ManageVenues(props: any) {
                       }}
                     />
                   </FormControl>
-                  {startTimeDropdown && (
+                  {startTimeDropdown.length > 0 && (
                     <Stack w='full'>
                       <FormLabel>Start Time</FormLabel>
                       <Select
@@ -910,7 +908,7 @@ export default function ManageVenues(props: any) {
                     </Stack>
                   )}
 
-                  {endTimeDropdown && (
+                  {endTimeDropdown.length > 0 && (
                     <Stack w='full'>
                       <FormLabel>End Time</FormLabel>
                       <Select
@@ -966,7 +964,9 @@ export default function ManageVenues(props: any) {
                     <FormLabel fontSize='sm' fontWeight='md' color='gray.700'>
                       Venue Photo
                     </FormLabel>
-                    {fileName && <Text>File uploaded: {fileName}</Text>}
+                    {fileName !== null && checkerString(fileName) && (
+                      <Text>File uploaded: {fileName}</Text>
+                    )}
                     <Flex
                       mt={1}
                       justify='center'
@@ -1069,7 +1069,7 @@ export default function ManageVenues(props: any) {
               <Heading size='md'>Edit existing venue</Heading>
 
               <Stack spacing={4}>
-                {venueDropdown && (
+                {venueDropdown.length > 0 && (
                   <Stack spacing={3} w='full'>
                     <FormLabel>Select Venue</FormLabel>
                     <Select
@@ -1123,7 +1123,7 @@ export default function ManageVenues(props: any) {
                     }}
                   />
                 </FormControl>
-                {startTimeDropdown && (
+                {startTimeDropdown.length > 0 && (
                   <Stack w='full'>
                     <FormLabel>Start Time</FormLabel>
                     <Select
@@ -1136,7 +1136,7 @@ export default function ManageVenues(props: any) {
                   </Stack>
                 )}
 
-                {endTimeDropdown && (
+                {endTimeDropdown.length > 0 && (
                   <Stack w='full'>
                     <FormLabel>End Time</FormLabel>
                     <Select

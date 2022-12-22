@@ -119,11 +119,9 @@ export default function BookingModal({
   const includeActionButton = useCallback(
     async (content: BookingRequest[]) => {
       for (let key = 0; key < content.length; key += 1) {
-      
-          const dataField: BookingRequest = content[key];
-          const buttons = await generateActionButton(dataField);
-          dataField.action = buttons;
-        
+        const dataField: BookingRequest = content[key];
+        const buttons = await generateActionButton(dataField);
+        dataField.action = buttons;
       }
 
       setConflict(content);
@@ -171,7 +169,10 @@ export default function BookingModal({
         setVenue('');
       }
 
-      if (modalDataField.dateStr !== undefined && checkerString(modalDataField.dateStr)) {
+      if (
+        modalDataField.dateStr !== undefined &&
+        checkerString(modalDataField.dateStr)
+      ) {
         setDate(modalDataField.dateStr);
       } else {
         setDate('');
@@ -201,13 +202,19 @@ export default function BookingModal({
         setPurpose('');
       }
 
-      if (modalDataField.status !== undefined && checkerString(modalDataField.status)) {
+      if (
+        modalDataField.status !== undefined &&
+        checkerString(modalDataField.status)
+      ) {
         setStatus(modalDataField.status);
       } else {
         setStatus('');
       }
 
-      if (modalDataField.userName !== undefined && checkerString(modalDataField.userName)) {
+      if (
+        modalDataField.userName !== undefined &&
+        checkerString(modalDataField.userName)
+      ) {
         setUserName(modalDataField.userName);
       } else {
         setUserName('');
@@ -239,7 +246,10 @@ export default function BookingModal({
         setConflict([]);
       }
 
-      if (modalDataField.reason !== undefined && checkerString(modalDataField.reason)) {
+      if (
+        modalDataField.reason !== undefined &&
+        checkerString(modalDataField.reason)
+      ) {
         setReason(modalDataField.reason);
       } else {
         setReason('');
@@ -448,8 +458,7 @@ export default function BookingModal({
 
                       {(isAdmin as boolean) &&
                         (isBookingRequest as boolean) &&
-                        (conflict === null ||
-                        conflict === undefined) &&
+                        (conflict === null || conflict === undefined) &&
                         loadingData && (
                           <Box overflow='auto'>
                             <Text
@@ -489,8 +498,7 @@ export default function BookingModal({
 
                       {(isAdmin as boolean) &&
                         (isBookingRequest as boolean) &&
-                        (conflict === null ||
-                          conflict === undefined) &&
+                        (conflict === null || conflict === undefined) &&
                         loadingData && (
                           <Box overflow='auto'>
                             <Text
@@ -507,8 +515,7 @@ export default function BookingModal({
 
                       {(isAdmin as boolean) &&
                         (isBookingRequest as boolean) &&
-                        (conflict === null ||
-                          conflict === undefined) &&
+                        (conflict === null || conflict === undefined) &&
                         !loadingData && (
                           <Box overflow='auto'>
                             <Text

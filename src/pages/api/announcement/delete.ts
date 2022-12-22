@@ -43,7 +43,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       await new Promise((resolve, reject) => {
         const form = new IncomingForm();
         form.parse(req, (err, fields, files) => {
-          if (err) {
+          if (err !== null && err !== undefined) {
             return reject(err);
           }
           resolve({ fields, files });

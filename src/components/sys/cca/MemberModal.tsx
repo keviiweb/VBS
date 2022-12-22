@@ -116,12 +116,10 @@ export default function LeaderStudentModalComponent({
     async (content: { count: number; res: CCASession[]; }) => {
       if (content.res.length > 0 && content.count > 0) {
         for (let key = 0; key < content.res.length; key += 1) {
-        
-            const dataField: CCASession = content.res[key];
+          const dataField: CCASession = content.res[key];
 
-            const buttons = await generateActionButtonSession(dataField);
-            dataField.action = buttons;
-          
+          const buttons = await generateActionButtonSession(dataField);
+          dataField.action = buttons;
         }
         setData(content.res);
 
@@ -223,12 +221,14 @@ export default function LeaderStudentModalComponent({
       if (modalDataField !== undefined && modalDataField !== null) {
         setSession(userSessionField);
 
-        const ccaRecordField: string =
-          checkerString(modalDataField.ccaID) ? modalDataField.ccaID : '';
+        const ccaRecordField: string = checkerString(modalDataField.ccaID)
+          ? modalDataField.ccaID
+          : '';
         ccaRecordIDDB.current = ccaRecordField;
 
         const ccaNameField: string =
-          modalDataField.ccaName !== undefined && checkerString(modalDataField.ccaName)
+          modalDataField.ccaName !== undefined &&
+          checkerString(modalDataField.ccaName)
             ? modalDataField.ccaName
             : '';
         ccaNameDB.current = ccaNameField;

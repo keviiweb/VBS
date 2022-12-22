@@ -65,11 +65,14 @@ export default function Card({
             </Text>
           </Box>
 
-          {buttonLink !== undefined && buttonLink !== null && buttonText !== undefined && buttonText !== null && (
-            <Link isExternal href={buttonLink}>
-              <Button mt={10}>{buttonText}</Button>
-            </Link>
-          )}
+          {buttonLink !== undefined &&
+            buttonLink !== null &&
+            buttonText !== undefined &&
+            buttonText !== null && (
+              <Link isExternal href={buttonLink}>
+                <Button mt={10}>{buttonText}</Button>
+              </Link>
+            )}
         </Box>
       </Box>
     ),
@@ -127,7 +130,14 @@ export default function Card({
 
   return (
     <Flex p={50} w='full' alignItems='center' justifyContent='center'>
-      {buttonLink !== undefined && buttonLink !== null && buttonText !== undefined && buttonText !== null ? <SubCardWButton /> : <SubCard />}
+      {buttonLink !== undefined &&
+      buttonLink !== null &&
+      buttonText !== undefined &&
+      buttonText !== null ? (
+        <SubCardWButton />
+      ) : (
+        <SubCard />
+      )}
     </Flex>
   );
 }

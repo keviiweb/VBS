@@ -116,7 +116,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             const userRes: Result = await fetchUserByEmail(book.email, session);
             const user: User = userRes.msg;
             let username: string = '';
-            if (user && checkerString(user.name)) {
+            if (checkerString(user.name)) {
               username = user.name;
             }
 

@@ -43,15 +43,7 @@ export const fetchChildVenue = async (
       where: { parentVenue: venue, isChildVenue: true },
     });
 
-    if (childVenues) {
-      result = { status: true, error: null, msg: childVenues };
-    } else {
-      result = {
-        status: false,
-        error: 'Failed to fetch child venues',
-        msg: [],
-      };
-    }
+    result = { status: true, error: null, msg: childVenues };
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch child venues', msg: [] };
@@ -87,11 +79,7 @@ export const fetchAllVenue = async (
       take: limit,
     });
 
-    if (locations) {
-      result = { status: true, error: null, msg: locations };
-    } else {
-      result = { status: false, error: 'Failed to fetch venues', msg: [] };
-    }
+    result = { status: true, error: null, msg: locations };
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch venues', msg: [] };
@@ -113,11 +101,7 @@ export const fetchVenue = async (session: Session): Promise<Result> => {
       where: { visible: true, isChildVenue: false },
     });
 
-    if (locations) {
-      result = { status: true, error: null, msg: locations };
-    } else {
-      result = { status: false, error: 'Failed to fetch venues', msg: [] };
-    }
+    result = { status: true, error: null, msg: locations };
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch venues', msg: [] };
@@ -176,11 +160,7 @@ export const findVenueByName = async (
       where: { name },
     });
 
-    if (locations) {
-      result = { status: true, error: null, msg: locations };
-    } else {
-      result = { status: false, error: 'Failed to fetch venues', msg: null };
-    }
+    result = { status: true, error: null, msg: locations };
   } catch (error) {
     console.error(error);
     result = { status: false, error: 'Failed to fetch venues', msg: null };
@@ -212,7 +192,7 @@ export const fetchOpeningHours = async (
       where: { id },
     });
 
-    if (locations) {
+    if (locations !== null && locations !== undefined) {
       const opening: string = locations.openingHours;
       const hours: string[] = opening.split('-');
       const start: string | null = await findSlots(hours[0].trim(), true);
@@ -264,7 +244,7 @@ export const splitHoursISO = async (
       return { start: null, end: null };
     }
 
-    if (timeSlot) {
+    if (checkerString(timeSlot)) {
       if (!timeSlot.includes('-')) {
         return { start: null, end: null };
       }
@@ -275,7 +255,7 @@ export const splitHoursISO = async (
         const startHour: string = hours[0].trim();
         const endHour: string = hours[1].trim();
 
-        const iso = dateISO(date);
+        const iso: string = dateISO(date);
         if (iso !== null) {
           const start: string =
             iso +
@@ -322,7 +302,7 @@ export const splitOpeningHours = async (
   session: Session,
 ): Promise<{ start: number | null; end: number | null; }> => {
   try {
-    if (opening) {
+    if (checkerString(opening)) {
       const hours: string[] = opening.split('-');
       const start: string | null = await findSlots(hours[0].trim(), true);
       const end: string | null = await findSlots(hours[1].trim(), false);
@@ -357,7 +337,7 @@ export const isInstantBook = async (
       where: { id },
     });
 
-    if (locations) {
+    if (locations !== null && locations !== undefined) {
       return locations.isInstantBook;
     } else {
       return false;
@@ -386,7 +366,7 @@ export const isVisible = async (
       where: { id },
     });
 
-    if (locations) {
+    if (locations !== null && locations !== undefined) {
       return locations.visible;
     } else {
       return false;
@@ -416,7 +396,7 @@ export const createVenue = async (
       data,
     });
 
-    if (venue) {
+    if (venue !== null && venue !== undefined) {
       await logger(
         'createVenue',
         session.user.email,
@@ -471,7 +451,7 @@ export const editVenue = async (
       data,
     });
 
-    if (venue) {
+    if (venue !== null && venue !== undefined) {
       await logger(
         'editVenue',
         session.user.email,
@@ -567,7 +547,7 @@ export const deleteVenueByID = async (
       },
     });
 
-    if (venue) {
+    if (venue !== null && venue !== undefined) {
       result = {
         status: true,
         error: '',

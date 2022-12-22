@@ -130,19 +130,13 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         setName('');
       }
 
-      if (
- 
-        checkerString(modalDataField.description)
-      ) {
+      if (checkerString(modalDataField.description)) {
         setDescription(modalDataField.description);
       } else {
         setDescription('');
       }
 
-      if (
-  
-        checkerString(modalDataField.openingHours)
-      ) {
+      if (checkerString(modalDataField.openingHours)) {
         setOpeningHours(modalDataField.openingHours);
       } else {
         setOpeningHours('');
@@ -181,7 +175,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         setInstantBook('');
       }
 
-      if (!(modalDataField.isChildVenue as boolean) && modalDataField.id !== undefined) {
+      if (!modalDataField.isChildVenue && modalDataField.id !== undefined) {
         await processChildVenue(modalDataField.id);
       }
 

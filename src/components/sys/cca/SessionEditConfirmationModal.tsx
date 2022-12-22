@@ -134,13 +134,11 @@ export default function SessionEditConfirmationModal({
 
       if (membersA.length > 0) {
         for (let key = 0; key < membersA.length; key += 1) {
-    
-            text.push(
-              <Box key={`box-e-${key}`}>
-                <Text>{membersA[key]}</Text>
-              </Box>,
-            );
-          
+          text.push(
+            <Box key={`box-e-${key}`}>
+              <Text>{membersA[key]}</Text>
+            </Box>,
+          );
         }
       }
 
@@ -222,18 +220,26 @@ export default function SessionEditConfirmationModal({
       setSubmitButtonPressed(true);
 
       const dateStrField: string =
-        modalDataField.dateStr !== undefined && checkerString(modalDataField.dateStr) ? modalDataField.dateStr : '';
+        modalDataField.dateStr !== undefined &&
+        checkerString(modalDataField.dateStr)
+          ? modalDataField.dateStr
+          : '';
       const ccaNameField: string =
-        modalDataField.ccaName !== undefined && checkerString(modalDataField.ccaName) ? modalDataField.ccaName : '';
-      const nameField: string =
-        checkerString(modalDataField.name) ? modalDataField.name : '';
+        modalDataField.ccaName !== undefined &&
+        checkerString(modalDataField.ccaName)
+          ? modalDataField.ccaName
+          : '';
+      const nameField: string = checkerString(modalDataField.name)
+        ? modalDataField.name
+        : '';
 
       setDateStr(dateStrField);
       setCCAName(ccaNameField);
       setName(nameField);
 
-      const timeField: string =
-        checkerString(modalDataField.time) ? modalDataField.time : '';
+      const timeField: string = checkerString(modalDataField.time)
+        ? modalDataField.time
+        : '';
 
       setTime(timeField);
 
@@ -255,9 +261,7 @@ export default function SessionEditConfirmationModal({
       setRemarks(remark);
 
       const ldrNote: string =
-        modalDataField.ldrNotes !== undefined
-          ? modalDataField.ldrNotes
-          : '';
+        modalDataField.ldrNotes !== undefined ? modalDataField.ldrNotes : '';
       setLdrNotes(ldrNote);
 
       if (
@@ -348,164 +352,166 @@ export default function SessionEditConfirmationModal({
             animate='animate'
           >
             <MotionBox variants={cardVariant} key='motion-box-time2'>
-              {modalData !== undefined && modalData !== null && !loadingData && (
-                <Flex
-                  w='full'
-                  h='full'
-                  alignItems='center'
-                  justifyContent='center'
-                >
-                  <Stack
-                    w={{ base: 'full', md: '500px', lg: '500px' }}
-                    direction='row'
+              {modalData !== undefined &&
+                modalData !== null &&
+                !loadingData && (
+                  <Flex
+                    w='full'
+                    h='full'
+                    alignItems='center'
+                    justifyContent='center'
                   >
-                    <List spacing={5}>
-                      {checkerString(name) && (
-                        <ListItem key='name-list'>
-                          <Stack direction='row'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Name
-                            </Text>{' '}
-                            <Text>{name}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {checkerString(dateStr) && (
-                        <ListItem key='date-list'>
-                          <Stack direction='row'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Date
-                            </Text>{' '}
-                            <Text>{dateStr}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {checkerString(time) && (
-                        <ListItem key='time-list'>
-                          <Stack direction='row'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Time
-                            </Text>{' '}
-                            <Text>{time}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {checkerString(duration) && (
-                        <ListItem key='durat-list'>
-                          <Stack direction='row'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Duration
-                            </Text>{' '}
-                            <Text>{duration}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {checkerString(optionalStr) && (
-                        <ListItem key='opt-list'>
-                          <Stack direction='row'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Optional
-                            </Text>{' '}
-                            <Text>{optionalStr}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {checkerString(remarks) && (
-                        <ListItem key='rem-list'>
-                          <Stack direction='column'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Remarks
-                            </Text>{' '}
-                            <Text>{remarks}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {checkerString(ldrNotes) && (
-                        <ListItem key='ldr-list'>
-                          <Stack direction='column'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Leaders&apos; Notes
-                            </Text>{' '}
-                            <Text>{ldrNotes}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {expectedBool && (
-                        <ListItem key='exp-list'>
-                          <Stack direction='column'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Expected Members
-                            </Text>{' '}
-                            {expectedM}
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {realityBool && (
-                        <ListItem key='real-list'>
-                          <Stack direction='column'>
-                            <Stack spacing={20} direction='row'>
+                    <Stack
+                      w={{ base: 'full', md: '500px', lg: '500px' }}
+                      direction='row'
+                    >
+                      <List spacing={5}>
+                        {checkerString(name) && (
+                          <ListItem key='name-list'>
+                            <Stack direction='row'>
                               <Text
                                 textTransform='uppercase'
                                 letterSpacing='tight'
                                 fontWeight='bold'
                               >
-                                Members Present
-                              </Text>
-                              <Text
-                                textTransform='uppercase'
-                                letterSpacing='tight'
-                                fontWeight='bold'
-                              >
-                                Hours
-                              </Text>
+                                Name
+                              </Text>{' '}
+                              <Text>{name}</Text>
                             </Stack>
-                            <TableWidget
-                              id='realityM-table'
-                              columns={columns}
-                              data={dataM}
-                              controlledPageCount={pageCount}
-                              dataHandler={null}
-                              showPage={false}
-                            />
-                          </Stack>
-                        </ListItem>
-                      )}
-                    </List>
-                  </Stack>
-                </Flex>
-              )}
+                          </ListItem>
+                        )}
+                        {checkerString(dateStr) && (
+                          <ListItem key='date-list'>
+                            <Stack direction='row'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Date
+                              </Text>{' '}
+                              <Text>{dateStr}</Text>
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {checkerString(time) && (
+                          <ListItem key='time-list'>
+                            <Stack direction='row'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Time
+                              </Text>{' '}
+                              <Text>{time}</Text>
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {checkerString(duration) && (
+                          <ListItem key='durat-list'>
+                            <Stack direction='row'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Duration
+                              </Text>{' '}
+                              <Text>{duration}</Text>
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {checkerString(optionalStr) && (
+                          <ListItem key='opt-list'>
+                            <Stack direction='row'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Optional
+                              </Text>{' '}
+                              <Text>{optionalStr}</Text>
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {checkerString(remarks) && (
+                          <ListItem key='rem-list'>
+                            <Stack direction='column'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Remarks
+                              </Text>{' '}
+                              <Text>{remarks}</Text>
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {checkerString(ldrNotes) && (
+                          <ListItem key='ldr-list'>
+                            <Stack direction='column'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Leaders&apos; Notes
+                              </Text>{' '}
+                              <Text>{ldrNotes}</Text>
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {expectedBool && (
+                          <ListItem key='exp-list'>
+                            <Stack direction='column'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Expected Members
+                              </Text>{' '}
+                              {expectedM}
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {realityBool && (
+                          <ListItem key='real-list'>
+                            <Stack direction='column'>
+                              <Stack spacing={20} direction='row'>
+                                <Text
+                                  textTransform='uppercase'
+                                  letterSpacing='tight'
+                                  fontWeight='bold'
+                                >
+                                  Members Present
+                                </Text>
+                                <Text
+                                  textTransform='uppercase'
+                                  letterSpacing='tight'
+                                  fontWeight='bold'
+                                >
+                                  Hours
+                                </Text>
+                              </Stack>
+                              <TableWidget
+                                id='realityM-table'
+                                columns={columns}
+                                data={dataM}
+                                controlledPageCount={pageCount}
+                                dataHandler={null}
+                                showPage={false}
+                              />
+                            </Stack>
+                          </ListItem>
+                        )}
+                      </List>
+                    </Stack>
+                  </Flex>
+                )}
 
               {checkerString(errorMsg) && (
                 <Stack align='center'>

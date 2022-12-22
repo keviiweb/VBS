@@ -199,7 +199,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             if (!isApproved && !isCancelled && !isRejected) {
               status = 'PENDING';
               if (!compareDate(bookingDate, minDay)) {
-                if (query && query === 'USER') {
+                if (query !== undefined && query === 'USER') {
                   status = 'EXPIRED';
                 } else {
                   success = false;
@@ -227,7 +227,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               );
               const user: User = userRes.msg;
               let username: string = '';
-              if (user && checkerString(user.name)) {
+              if (checkerString(user.name)) {
                 username = user.name;
               }
 

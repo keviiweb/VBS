@@ -147,23 +147,21 @@ export default function KEIPSComponent() {
     async (content: KEIPS[]) => {
       if (content.length > 0) {
         for (let key = 0; key < content.length; key += 1) {
-          if (content[key]) {
-            const record: KEIPS = content[key];
+          const record: KEIPS = content[key];
 
-            if (checkerString(record.topCCA)) {
-              const recordTop: string[] = record.topCCA.split('|');
-              await populateTopCCA(recordTop);
-            }
+          if (checkerString(record.topCCA)) {
+            const recordTop: string[] = record.topCCA.split('|');
+            await populateTopCCA(recordTop);
+          }
 
-            if (checkerString(record.allCCA)) {
-              const recordAll: string[] = record.allCCA.split('|');
-              await populateAllCCA(recordAll);
-            }
+          if (checkerString(record.allCCA)) {
+            const recordAll: string[] = record.allCCA.split('|');
+            await populateAllCCA(recordAll);
+          }
 
-            if (checkerString(record.bonusCCA)) {
-              const recordBonus: string[] = record.bonusCCA.split('|');
-              await populateBonusCCA(recordBonus);
-            }
+          if (checkerString(record.bonusCCA)) {
+            const recordBonus: string[] = record.bonusCCA.split('|');
+            await populateBonusCCA(recordBonus);
           }
         }
         setData(content);
@@ -356,7 +354,7 @@ export default function KEIPSComponent() {
           </Box>
         )}
 
-        {!loadingData && !successData && data && data.length === 0 && (
+        {!loadingData && !successData && data.length === 0 && (
           <Box mt={30}>
             <Stack align='center' justify='center'>
               <Text>MATNET {matnet} is not in our database.</Text>
@@ -364,78 +362,74 @@ export default function KEIPSComponent() {
           </Box>
         )}
 
-        {!loadingData &&
-          successData &&
-          data &&
-          data !== [] &&
-          data.length > 0 && (
-            <Box>
-              <Stack spacing={30}>
-                <Box overflow='auto'>
-                  <Stack align='center' justify='center' spacing={10}>
-                    {checkerString(matnet) && <Text>MATNET: {matnet}</Text>}
+        {!loadingData && successData && data.length > 0 && (
+          <Box>
+            <Stack spacing={30}>
+              <Box overflow='auto'>
+                <Stack align='center' justify='center' spacing={10}>
+                  {checkerString(matnet) && <Text>MATNET: {matnet}</Text>}
 
+                  <TableWidget
+                    id='overall-keips'
+                    columns={columns}
+                    data={data}
+                    controlledPageCount={pageCount}
+                    dataHandler={null}
+                    showPage={false}
+                  />
+                </Stack>
+              </Box>
+
+              {showTop && topCCA.length > 0 && (
+                <Box overflow='auto'>
+                  <Stack align='center' justify='center'>
+                    <Text>Top CCAs</Text>
                     <TableWidget
-                      id='overall-keips'
-                      columns={columns}
-                      data={data}
+                      id='topcca-keips'
+                      columns={columnsData}
+                      data={topCCA}
                       controlledPageCount={pageCount}
                       dataHandler={null}
                       showPage={false}
                     />
                   </Stack>
                 </Box>
+              )}
 
-                {showTop && topCCA.length > 0 && (
-                  <Box overflow='auto'>
-                    <Stack align='center' justify='center'>
-                      <Text>Top CCAs</Text>
-                      <TableWidget
-                        id='topcca-keips'
-                        columns={columnsData}
-                        data={topCCA}
-                        controlledPageCount={pageCount}
-                        dataHandler={null}
-                        showPage={false}
-                      />
-                    </Stack>
-                  </Box>
-                )}
+              {showAll && allCCA.length > 0 && (
+                <Box overflow='auto'>
+                  <Stack align='center' justify='center'>
+                    <Text>All CCAs</Text>
+                    <TableWidget
+                      id='all-keips'
+                      columns={columnsData}
+                      data={allCCA}
+                      controlledPageCount={pageCount}
+                      dataHandler={null}
+                      showPage={false}
+                    />
+                  </Stack>
+                </Box>
+              )}
 
-                {showAll && allCCA.length > 0 && (
-                  <Box overflow='auto'>
-                    <Stack align='center' justify='center'>
-                      <Text>All CCAs</Text>
-                      <TableWidget
-                        id='all-keips'
-                        columns={columnsData}
-                        data={allCCA}
-                        controlledPageCount={pageCount}
-                        dataHandler={null}
-                        showPage={false}
-                      />
-                    </Stack>
-                  </Box>
-                )}
-
-                {showBonus && bonusCCA.length > 0 && (
-                  <Box overflow='auto'>
-                    <Stack align='center' justify='center'>
-                      <Text>Bonus</Text>
-                      <TableWidget
-                        id='bonus-keips'
-                        columns={columnsBonus}
-                        data={bonusCCA}
-                        controlledPageCount={pageCount}
-                        dataHandler={null}
-                        showPage={false}
-                      />
-                    </Stack>
-                  </Box>
-                )}
-              </Stack>
-            </Box>
-          )}
+              {showBonus && bonusCCA.length > 0 && (
+                <Box overflow='auto'>
+                  <Stack align='center' justify='center'>
+                    <Text>Bonus</Text>
+                    <TableWidget
+                      id='bonus-keips'
+                      columns={columnsBonus}
+                      data={bonusCCA}
+                      controlledPageCount={pageCount}
+                      dataHandler={null}
+                      showPage={false}
+                    />
+                  </Stack>
+                </Box>
+              )}
+            </Stack>
+          </Box>
+        )}
       </Stack>
     </Flex>
   );

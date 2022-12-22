@@ -70,21 +70,19 @@ export default function UserModal({ isOpen, onClose, modalData }) {
     if (content.length > 0) {
       const text: JSX.Element[] = [];
       for (let key = 0; key < content.length; key += 1) {
-
-          if (content[key].leader !== undefined && content[key].leader) {
-            text.push(
-              <Box key={`box-e-${key}`}>
-                <Text>{content[key].ccaName} (Leader)</Text>
-              </Box>,
-            );
-          } else {
-            text.push(
-              <Box key={`box-e-${key}`}>
-                <Text>{content[key].ccaName} (Member)</Text>
-              </Box>,
-            );
-          }
-        
+        if (content[key].leader !== undefined && content[key].leader) {
+          text.push(
+            <Box key={`box-e-${key}`}>
+              <Text>{content[key].ccaName} (Leader)</Text>
+            </Box>,
+          );
+        } else {
+          text.push(
+            <Box key={`box-e-${key}`}>
+              <Text>{content[key].ccaName} (Member)</Text>
+            </Box>,
+          );
+        }
       }
 
       setCCAList(text);
@@ -141,7 +139,10 @@ export default function UserModal({ isOpen, onClose, modalData }) {
         setEmail('');
       }
 
-      if (modalDataField.adminStr !== undefined && checkerString(modalDataField.adminStr)) {
+      if (
+        modalDataField.adminStr !== undefined &&
+        checkerString(modalDataField.adminStr)
+      ) {
         setAdminStr(modalDataField.adminStr);
       } else {
         setAdminStr('');

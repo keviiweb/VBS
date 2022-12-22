@@ -169,13 +169,11 @@ export default function SessionModal({
       const membersA: string[] = members.split(',');
       const text: JSX.Element[] = [];
       for (let key = 0; key < membersA.length; key += 1) {
-     
-          text.push(
-            <Box key={`box-e-${key}`}>
-              <Text>{membersA[key]}</Text>
-            </Box>,
-          );
-        
+        text.push(
+          <Box key={`box-e-${key}`}>
+            <Text>{membersA[key]}</Text>
+          </Box>,
+        );
       }
 
       setDisplayedExpected(text);
@@ -215,8 +213,9 @@ export default function SessionModal({
 
       const dateStrField: string =
         modalDataField.dateStr !== undefined ? modalDataField.dateStr : '';
-      const timeStrField: string =
-        checkerString(modalDataField.time) ? modalDataField.time : '';
+      const timeStrField: string = checkerString(modalDataField.time)
+        ? modalDataField.time
+        : '';
       const optionalStrField: string =
         modalDataField.optionalStr !== undefined
           ? modalDataField.optionalStr
@@ -224,15 +223,11 @@ export default function SessionModal({
       const remarksField: string =
         modalDataField.remarks !== undefined ? modalDataField.remarks : '';
       const ldrNotesField: string =
-        modalDataField.ldrNotes !== undefined
-          ? modalDataField.ldrNotes
-          : '';
+        modalDataField.ldrNotes !== undefined ? modalDataField.ldrNotes : '';
       const ccaNameField: string =
         modalDataField.ccaName !== undefined ? modalDataField.ccaName : '';
       const editableField: boolean =
-        modalDataField.editable !== undefined
-          ? modalDataField.editable
-          : false;
+        modalDataField.editable !== undefined ? modalDataField.editable : false;
       const durationField: number =
         modalDataField.duration !== undefined ? modalDataField.duration : 0;
 
@@ -252,10 +247,7 @@ export default function SessionModal({
         await displayExpectedMembers(modalDataField.expectedMName);
       }
 
-      if (
-        modalDataField.realityM &&
-        modalDataField.realityM?.length > 0
-      ) {
+      if (modalDataField.realityM && modalDataField.realityM?.length > 0) {
         await displayRealityMembers(modalDataField.realityM);
       }
 
@@ -345,195 +337,197 @@ export default function SessionModal({
             animate='animate'
           >
             <MotionBox variants={cardVariant} key='2'>
-              {modalData !== null && modalData !== undefined && !loadingData && (
-                <Flex
-                  w='full'
-                  h='full'
-                  alignItems='center'
-                  justifyContent='center'
-                >
-                  <Stack spacing={{ base: 6, md: 10 }}>
-                    <Stack
-                      spacing={{ base: 4, sm: 6 }}
-                      direction='column'
-                      divider={<StackDivider borderColor='gray.200' />}
-                    >
-                      <Box>
-                        <List spacing={5}>
-                          {checkerString(dateStr) && (
-                            <ListItem key='session-date'>
-                              <Stack direction='row'>
-                                <Text
-                                  textTransform='uppercase'
-                                  letterSpacing='tight'
-                                  fontWeight='bold'
-                                >
-                                  Date
-                                </Text>
-                                <Text>{dateStr}</Text>
-                              </Stack>
-                            </ListItem>
-                          )}
-
-                          {checkerString(time) && (
-                            <ListItem key='session-time'>
-                              <Stack direction='row'>
-                                <Text
-                                  textTransform='uppercase'
-                                  letterSpacing='tight'
-                                  fontWeight='bold'
-                                >
-                                  Time
-                                </Text>
-                                <Text>{time}</Text>
-                              </Stack>
-                            </ListItem>
-                          )}
-
-                          {duration !== 0 && (
-                            <ListItem key='session-duration'>
-                              <Stack direction='row'>
-                                <Text
-                                  textTransform='uppercase'
-                                  letterSpacing='tight'
-                                  fontWeight='bold'
-                                >
-                                  Duration
-                                </Text>
-                                <Text>{duration} Hours</Text>
-                              </Stack>
-                            </ListItem>
-                          )}
-
-                          {checkerString(optionalStr) && (
-                            <ListItem key='session-opt'>
-                              <Stack direction='row'>
-                                <Text
-                                  textTransform='uppercase'
-                                  letterSpacing='tight'
-                                  fontWeight='bold'
-                                >
-                                  Optional
-                                </Text>
-                                <Text>{optionalStr}</Text>
-                              </Stack>
-                            </ListItem>
-                          )}
-
-                          {checkerString(remarks) && (
-                            <ListItem key='session-remark'>
-                              <Stack direction='column'>
-                                <Text
-                                  textTransform='uppercase'
-                                  letterSpacing='tight'
-                                  fontWeight='bold'
-                                >
-                                  Remarks
-                                </Text>
-                                <Text>{remarks}</Text>
-                              </Stack>
-                            </ListItem>
-                          )}
-
-                          {expectedBool && (
-                            <ListItem key='exp-list'>
-                              <Stack direction='column'>
-                                <Text
-                                  textTransform='uppercase'
-                                  letterSpacing='tight'
-                                  fontWeight='bold'
-                                >
-                                  Expected Members
-                                </Text>
-                                {expectedM}
-                              </Stack>
-                            </ListItem>
-                          )}
-
-                          {(leader as boolean )&& realityBool && (
-                            <ListItem key='real-list'>
-                              <Stack direction='column'>
-                                <Stack spacing={20} direction='row'>
+              {modalData !== null &&
+                modalData !== undefined &&
+                !loadingData && (
+                  <Flex
+                    w='full'
+                    h='full'
+                    alignItems='center'
+                    justifyContent='center'
+                  >
+                    <Stack spacing={{ base: 6, md: 10 }}>
+                      <Stack
+                        spacing={{ base: 4, sm: 6 }}
+                        direction='column'
+                        divider={<StackDivider borderColor='gray.200' />}
+                      >
+                        <Box>
+                          <List spacing={5}>
+                            {checkerString(dateStr) && (
+                              <ListItem key='session-date'>
+                                <Stack direction='row'>
                                   <Text
                                     textTransform='uppercase'
                                     letterSpacing='tight'
                                     fontWeight='bold'
                                   >
-                                    Members Present
+                                    Date
                                   </Text>
+                                  <Text>{dateStr}</Text>
                                 </Stack>
-                                <TableWidget
-                                  id='realityM-table'
-                                  columns={columns}
-                                  data={dataM}
-                                  controlledPageCount={pageCount}
-                                  dataHandler={null}
-                                  showPage={false}
-                                />
-                              </Stack>
-                            </ListItem>
+                              </ListItem>
+                            )}
+
+                            {checkerString(time) && (
+                              <ListItem key='session-time'>
+                                <Stack direction='row'>
+                                  <Text
+                                    textTransform='uppercase'
+                                    letterSpacing='tight'
+                                    fontWeight='bold'
+                                  >
+                                    Time
+                                  </Text>
+                                  <Text>{time}</Text>
+                                </Stack>
+                              </ListItem>
+                            )}
+
+                            {duration !== 0 && (
+                              <ListItem key='session-duration'>
+                                <Stack direction='row'>
+                                  <Text
+                                    textTransform='uppercase'
+                                    letterSpacing='tight'
+                                    fontWeight='bold'
+                                  >
+                                    Duration
+                                  </Text>
+                                  <Text>{duration} Hours</Text>
+                                </Stack>
+                              </ListItem>
+                            )}
+
+                            {checkerString(optionalStr) && (
+                              <ListItem key='session-opt'>
+                                <Stack direction='row'>
+                                  <Text
+                                    textTransform='uppercase'
+                                    letterSpacing='tight'
+                                    fontWeight='bold'
+                                  >
+                                    Optional
+                                  </Text>
+                                  <Text>{optionalStr}</Text>
+                                </Stack>
+                              </ListItem>
+                            )}
+
+                            {checkerString(remarks) && (
+                              <ListItem key='session-remark'>
+                                <Stack direction='column'>
+                                  <Text
+                                    textTransform='uppercase'
+                                    letterSpacing='tight'
+                                    fontWeight='bold'
+                                  >
+                                    Remarks
+                                  </Text>
+                                  <Text>{remarks}</Text>
+                                </Stack>
+                              </ListItem>
+                            )}
+
+                            {expectedBool && (
+                              <ListItem key='exp-list'>
+                                <Stack direction='column'>
+                                  <Text
+                                    textTransform='uppercase'
+                                    letterSpacing='tight'
+                                    fontWeight='bold'
+                                  >
+                                    Expected Members
+                                  </Text>
+                                  {expectedM}
+                                </Stack>
+                              </ListItem>
+                            )}
+
+                            {(leader as boolean) && realityBool && (
+                              <ListItem key='real-list'>
+                                <Stack direction='column'>
+                                  <Stack spacing={20} direction='row'>
+                                    <Text
+                                      textTransform='uppercase'
+                                      letterSpacing='tight'
+                                      fontWeight='bold'
+                                    >
+                                      Members Present
+                                    </Text>
+                                  </Stack>
+                                  <TableWidget
+                                    id='realityM-table'
+                                    columns={columns}
+                                    data={dataM}
+                                    controlledPageCount={pageCount}
+                                    dataHandler={null}
+                                    showPage={false}
+                                  />
+                                </Stack>
+                              </ListItem>
+                            )}
+
+                            {(leader as boolean) && checkerString(ldrNotes) && (
+                              <ListItem key='ldr-note'>
+                                <Stack direction='column'>
+                                  <Text
+                                    textTransform='uppercase'
+                                    letterSpacing='tight'
+                                    fontWeight='bold'
+                                  >
+                                    Leaders&apos; Notes
+                                  </Text>
+                                  <Text>{ldrNotes}</Text>
+                                </Stack>
+                              </ListItem>
+                            )}
+                          </List>
+                        </Box>
+
+                        <Stack direction='row'>
+                          {((session !== null &&
+                            hasPermission(
+                              session.user.admin,
+                              actions.OVERRIDE_DELETE_SESSION,
+                            )) ||
+                            (editable && (leader as boolean))) && (
+                            <Button
+                              key='delete-button'
+                              bg='gray.400'
+                              color='white'
+                              w='150px'
+                              size='lg'
+                              onClick={handleDelete}
+                              _hover={{ bg: 'cyan.800' }}
+                            >
+                              Delete
+                            </Button>
                           )}
 
-                          {(leader as boolean) && checkerString(ldrNotes) && (
-                            <ListItem key='ldr-note'>
-                              <Stack direction='column'>
-                                <Text
-                                  textTransform='uppercase'
-                                  letterSpacing='tight'
-                                  fontWeight='bold'
-                                >
-                                  Leaders&apos; Notes
-                                </Text>
-                                <Text>{ldrNotes}</Text>
-                              </Stack>
-                            </ListItem>
+                          {((session !== null &&
+                            hasPermission(
+                              session.user.admin,
+                              actions.OVERRIDE_EDIT_SESSION,
+                            )) ||
+                            (editable && (leader as boolean))) && (
+                            <Button
+                              key='edit-button'
+                              bg='red.700'
+                              color='white'
+                              w='150px'
+                              size='lg'
+                              onClick={handleEdit}
+                              _hover={{ bg: 'cyan.800' }}
+                            >
+                              Edit
+                            </Button>
                           )}
-                        </List>
-                      </Box>
-
-                      <Stack direction='row'>
-                        {((session !== null &&
-                          hasPermission(
-                            session.user.admin,
-                            actions.OVERRIDE_DELETE_SESSION,
-                          )) ||
-                          (editable && (leader as boolean))) && (
-                          <Button
-                            key='delete-button'
-                            bg='gray.400'
-                            color='white'
-                            w='150px'
-                            size='lg'
-                            onClick={handleDelete}
-                            _hover={{ bg: 'cyan.800' }}
-                          >
-                            Delete
-                          </Button>
-                        )}
-
-                        {((session !== null &&
-                          hasPermission(
-                            session.user.admin,
-                            actions.OVERRIDE_EDIT_SESSION,
-                          )) ||
-                          (editable && (leader as boolean))) && (
-                          <Button
-                            key='edit-button'
-                            bg='red.700'
-                            color='white'
-                            w='150px'
-                            size='lg'
-                            onClick={handleEdit}
-                            _hover={{ bg: 'cyan.800' }}
-                          >
-                            Edit
-                          </Button>
-                        )}
+                        </Stack>
                       </Stack>
                     </Stack>
-                  </Stack>
-                </Flex>
-              )}
+                  </Flex>
+                )}
             </MotionBox>
           </MotionSimpleGrid>
         </ModalBody>

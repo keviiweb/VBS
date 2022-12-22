@@ -3,9 +3,8 @@ import { monthNamesFull } from '@constants/sys/months';
 
 import moment from 'moment-timezone';
 
-export const locale: string = process.env.TZ !== undefined
-  ? process.env.TZ
-  : 'Asia/Singapore';
+export const locale: string =
+  process.env.TZ !== undefined ? process.env.TZ : 'Asia/Singapore';
 export const timeFormat: string = 'YYYY-MM-DD';
 
 /**

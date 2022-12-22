@@ -52,9 +52,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       );
 
       const parsedData: CCASession = data as CCASession;
-      const editable: boolean = parsedData.editable
-        ? parsedData.editable
-        : false;
+      const editable: boolean =
+        parsedData.editable !== undefined && parsedData.editable;
 
       if (parsedData.date !== undefined) {
         const currentDate: number = convertDateToUnix(
@@ -101,14 +100,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           if (findCCA.status && findCCA.msg) {
             if (userPermission || editable) {
               const ldrRes: Result = await isLeader(parsedData.ccaID, session);
-              if (userPermission || (ldrRes.status && ldrRes.msg)) {
+              if (
+                userPermission ||
+                (ldrRes.status && (ldrRes.msg as boolean))
+              ) {
                 const expectedM: string =
-                  parsedData && parsedData.expectedM
+                  parsedData.expectedM !== undefined
                     ? parsedData.expectedM.trim()
                     : '';
 
                 const expectedMName: string =
-                  parsedData && parsedData.expectedMName
+                  parsedData.expectedMName !== undefined
                     ? parsedData.expectedMName.trim()
                     : '';
 
@@ -145,8 +147,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     session,
                   );
                   if (editSessionRes.status) {
-                    if (parsedData && parsedData.realityM !== undefined) {
-                      let canEdit = false;
+                    if (parsedData.realityM !== undefined) {
+                      let canEdit: boolean = false;
 
                       if (parsedData.dateStr !== undefined) {
                         const day: Date = new Date(parsedData.dateStr);

@@ -114,13 +114,11 @@ export default function SessionCreateConfirmationModal({
 
       if (membersA.length > 0) {
         for (let key = 0; key < membersA.length; key += 1) {
-         
-            text.push(
-              <Box key={`box-e-${key}`}>
-                <Text>{membersA[key]}</Text>
-              </Box>,
-            );
-          
+          text.push(
+            <Box key={`box-e-${key}`}>
+              <Text>{membersA[key]}</Text>
+            </Box>,
+          );
         }
       }
 
@@ -216,9 +214,7 @@ export default function SessionCreateConfirmationModal({
       setRemarks(remark);
 
       const ldrNote: string =
-        modalDataField.ldrNotes !== undefined
-          ? modalDataField.ldrNotes
-          : '';
+        modalDataField.ldrNotes !== undefined ? modalDataField.ldrNotes : '';
       setLdrNotes(ldrNote);
 
       if (
@@ -288,134 +284,136 @@ export default function SessionCreateConfirmationModal({
             animate='animate'
           >
             <MotionBox variants={cardVariant} key='motion-box-time2'>
-              {modalData !== null && modalData !== undefined && !loadingData && (
-                <Flex
-                  w='full'
-                  h='full'
-                  alignItems='center'
-                  justifyContent='center'
-                >
-                  <Stack
-                    w={{ base: 'full', md: '500px', lg: '500px' }}
-                    direction='row'
+              {modalData !== null &&
+                modalData !== undefined &&
+                !loadingData && (
+                  <Flex
+                    w='full'
+                    h='full'
+                    alignItems='center'
+                    justifyContent='center'
                   >
-                    <List spacing={5}>
-                      {checkerString(name) && (
-                        <ListItem key='name-list'>
-                          <Stack direction='row'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Name
-                            </Text>{' '}
-                            <Text>{name}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {checkerString(dateStr) && (
-                        <ListItem key='date-list'>
-                          <Stack direction='row'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Date
-                            </Text>{' '}
-                            <Text>{dateStr}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {checkerString(time) && (
-                        <ListItem key='time-list'>
-                          <Stack direction='row'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Time
-                            </Text>{' '}
-                            <Text>{time}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {checkerString(duration) && (
-                        <ListItem key='durat-list'>
-                          <Stack direction='row'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Duration
-                            </Text>{' '}
-                            <Text>{duration}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {checkerString(optionalStr) && (
-                        <ListItem key='opt-list'>
-                          <Stack direction='row'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Optional
-                            </Text>{' '}
-                            <Text>{optionalStr}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {checkerString(remarks) && (
-                        <ListItem key='rem-list'>
-                          <Stack direction='column'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Remarks
-                            </Text>{' '}
-                            <Text>{remarks}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {checkerString(ldrNotes) && (
-                        <ListItem key='ldr-list'>
-                          <Stack direction='column'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Leaders&apos; Notes
-                            </Text>{' '}
-                            <Text>{ldrNotes}</Text>
-                          </Stack>
-                        </ListItem>
-                      )}
-                      {expectedBool && (
-                        <ListItem key='exp-list'>
-                          <Stack direction='column'>
-                            <Text
-                              textTransform='uppercase'
-                              letterSpacing='tight'
-                              fontWeight='bold'
-                            >
-                              Expected Members
-                            </Text>{' '}
-                            {expectedM}
-                          </Stack>
-                        </ListItem>
-                      )}
-                    </List>
-                  </Stack>
-                </Flex>
-              )}
+                    <Stack
+                      w={{ base: 'full', md: '500px', lg: '500px' }}
+                      direction='row'
+                    >
+                      <List spacing={5}>
+                        {checkerString(name) && (
+                          <ListItem key='name-list'>
+                            <Stack direction='row'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Name
+                              </Text>{' '}
+                              <Text>{name}</Text>
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {checkerString(dateStr) && (
+                          <ListItem key='date-list'>
+                            <Stack direction='row'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Date
+                              </Text>{' '}
+                              <Text>{dateStr}</Text>
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {checkerString(time) && (
+                          <ListItem key='time-list'>
+                            <Stack direction='row'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Time
+                              </Text>{' '}
+                              <Text>{time}</Text>
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {checkerString(duration) && (
+                          <ListItem key='durat-list'>
+                            <Stack direction='row'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Duration
+                              </Text>{' '}
+                              <Text>{duration}</Text>
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {checkerString(optionalStr) && (
+                          <ListItem key='opt-list'>
+                            <Stack direction='row'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Optional
+                              </Text>{' '}
+                              <Text>{optionalStr}</Text>
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {checkerString(remarks) && (
+                          <ListItem key='rem-list'>
+                            <Stack direction='column'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Remarks
+                              </Text>{' '}
+                              <Text>{remarks}</Text>
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {checkerString(ldrNotes) && (
+                          <ListItem key='ldr-list'>
+                            <Stack direction='column'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Leaders&apos; Notes
+                              </Text>{' '}
+                              <Text>{ldrNotes}</Text>
+                            </Stack>
+                          </ListItem>
+                        )}
+                        {expectedBool && (
+                          <ListItem key='exp-list'>
+                            <Stack direction='column'>
+                              <Text
+                                textTransform='uppercase'
+                                letterSpacing='tight'
+                                fontWeight='bold'
+                              >
+                                Expected Members
+                              </Text>{' '}
+                              {expectedM}
+                            </Stack>
+                          </ListItem>
+                        )}
+                      </List>
+                    </Stack>
+                  </Flex>
+                )}
 
               {checkerString(errorMsg) && (
                 <Stack align='center'>

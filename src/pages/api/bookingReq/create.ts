@@ -86,14 +86,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const checkLdr: Result = await isLeader(typeField, session);
 
           if (checkLdr.status) {
-            if (dbSearch && dbSearch.status) {
+            if (dbSearch.status) {
               const ccaNameMsg: CCA = dbSearch.msg;
               cca = ccaNameMsg.name;
             } else {
               cca = PERSONAL;
             }
 
-            if (!checkLdr.msg) {
+            if (!(checkLdr.msg as boolean)) {
               isALeader = false;
             }
           } else {

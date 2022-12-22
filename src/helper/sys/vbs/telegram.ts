@@ -7,7 +7,7 @@ import { BookingRequest } from 'types/vbs/bookingReq';
 import { logger } from '@helper/sys/misc/logger';
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
-const channel_id = process.env.TELEGRAM_BOT_CHANNEL_ID;
+const channelID = process.env.TELEGRAM_BOT_CHANNEL_ID;
 
 /**
  * Sends a message to the telegram channel
@@ -19,19 +19,19 @@ export const sendMessageToChannel = async (
   session: Session,
 ): Promise<void> => {
   if (
-    process.env.SEND_TELEGRAM &&
+    process.env.SEND_TELEGRAM !== undefined &&
     (process.env.SEND_TELEGRAM === '1' ||
       Number(process.env.SEND_TELEGRAM) === 1)
   ) {
     try {
       if (
         token !== undefined &&
-        channel_id !== undefined &&
+        channelID !== undefined &&
         checkerString(message)
       ) {
-        const bot = new TelegramBot(token, { polling: true });
+        const bot: TelegramBot = new TelegramBot(token, { polling: true });
         if (bot.isPolling() && checkerString(message)) {
-          bot.sendMessage(channel_id, message).catch((err) => {
+          bot.sendMessage(channelID, message).catch((err) => {
             console.error('Channel message not sent', err);
           });
           await bot.stopPolling();

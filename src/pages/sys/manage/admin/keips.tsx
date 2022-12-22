@@ -82,7 +82,7 @@ export default function ManageKEIPS(props: any) {
   const pageIndexDB = useRef(PAGEINDEX);
 
   const selectedFileKEIPSDB = useRef<string | Blob | null>(null);
-  const [fileNameKEIPS, setFileNameKEIPS] = useState(null);
+  const [fileNameKEIPS, setFileNameKEIPS] = useState<string | null>(null);
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
@@ -210,11 +210,9 @@ export default function ManageKEIPS(props: any) {
         const contentRes: KEIPS[] = content.res;
 
         for (let key = 0; key < contentRes.length; key += 1) {
-          if (contentRes[key]) {
-            const dataField: KEIPS = contentRes[key];
-            const buttons = await generateActionButton(dataField);
-            dataField.action = buttons;
-          }
+          const dataField: KEIPS = contentRes[key];
+          const buttons = await generateActionButton(dataField);
+          dataField.action = buttons;
         }
 
         setData(contentRes);
@@ -354,9 +352,11 @@ export default function ManageKEIPS(props: any) {
           onClose={() => setSubmitButtonPressed(false)}
         />
         <MotionBox variants={cardVariant} key='1'>
-          {loadingData && !data && <Text>Loading Please wait...</Text>}
+          {loadingData && (data === null || data === undefined) && (
+            <Text>Loading Please wait...</Text>
+          )}
 
-          {!loadingData && data && data.length === 0 && (
+          {!loadingData && data.length === 0 && (
             <Box mt={30}>
               <Stack align='center' justify='center'>
                 <Text>No KEIPS found</Text>
@@ -364,7 +364,7 @@ export default function ManageKEIPS(props: any) {
             </Box>
           )}
 
-          {!loadingData && data && data.length > 0 && (
+          {!loadingData && data.length > 0 && (
             <Box w='full' overflow='auto'>
               <Stack spacing={30} align='center' justify='center'>
                 <TableWidget
@@ -413,7 +413,7 @@ export default function ManageKEIPS(props: any) {
                     <FormLabel fontSize='sm' fontWeight='md' color='gray.700'>
                       CSV File
                     </FormLabel>
-                    {fileNameKEIPS && (
+                    {fileNameKEIPS !== null && checkerString(fileNameKEIPS) && (
                       <Text>File uploaded: {fileNameKEIPS}</Text>
                     )}
                     <Flex

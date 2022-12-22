@@ -323,76 +323,79 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
             </Stack>
           )}
 
-          {modalData !== null && modalData !== undefined && !loadingData && successData && (
-            <Stack align='center'>
-              <Box>
-                <Stack spacing={30}>
-                  {data.length > 0 && (
-                    <Box w='900px' overflow='auto' key='box-overall'>
-                      <Stack align='center' justify='center' spacing={10}>
-                        <TableWidget
-                          id='overall-modal-table'
-                          columns={columns}
-                          data={data}
-                          controlledPageCount={pageCount}
-                          dataHandler={null}
-                          showPage={false}
-                        />
-                      </Stack>
-                    </Box>
-                  )}
+          {modalData !== null &&
+            modalData !== undefined &&
+            !loadingData &&
+            successData && (
+              <Stack align='center'>
+                <Box>
+                  <Stack spacing={30}>
+                    {data.length > 0 && (
+                      <Box w='900px' overflow='auto' key='box-overall'>
+                        <Stack align='center' justify='center' spacing={10}>
+                          <TableWidget
+                            id='overall-modal-table'
+                            columns={columns}
+                            data={data}
+                            controlledPageCount={pageCount}
+                            dataHandler={null}
+                            showPage={false}
+                          />
+                        </Stack>
+                      </Box>
+                    )}
 
-                  {showTop && topCCA.length > 0 && (
-                    <Box w='900px' overflow='auto' key='box-top'>
-                      <Stack align='center' justify='center'>
-                        <Text>Top CCAs</Text>
-                        <TableWidget
-                          id='topcca-modal-table'
-                          columns={columnsData}
-                          data={topCCA}
-                          controlledPageCount={pageCount}
-                          dataHandler={null}
-                          showPage={false}
-                        />
-                      </Stack>
-                    </Box>
-                  )}
+                    {showTop && topCCA.length > 0 && (
+                      <Box w='900px' overflow='auto' key='box-top'>
+                        <Stack align='center' justify='center'>
+                          <Text>Top CCAs</Text>
+                          <TableWidget
+                            id='topcca-modal-table'
+                            columns={columnsData}
+                            data={topCCA}
+                            controlledPageCount={pageCount}
+                            dataHandler={null}
+                            showPage={false}
+                          />
+                        </Stack>
+                      </Box>
+                    )}
 
-                  {showAll && allCCA.length > 0 && (
-                    <Box w='900px' overflow='auto' key='box-all'>
-                      <Stack align='center' justify='center'>
-                        <Text>All CCAs</Text>
-                        <TableWidget
-                          id='allcca-modal-table'
-                          columns={columnsData}
-                          data={allCCA}
-                          controlledPageCount={pageCount}
-                          dataHandler={null}
-                          showPage={false}
-                        />
-                      </Stack>
-                    </Box>
-                  )}
+                    {showAll && allCCA.length > 0 && (
+                      <Box w='900px' overflow='auto' key='box-all'>
+                        <Stack align='center' justify='center'>
+                          <Text>All CCAs</Text>
+                          <TableWidget
+                            id='allcca-modal-table'
+                            columns={columnsData}
+                            data={allCCA}
+                            controlledPageCount={pageCount}
+                            dataHandler={null}
+                            showPage={false}
+                          />
+                        </Stack>
+                      </Box>
+                    )}
 
-                  {showBonus && bonusCCA.length > 0 && (
-                    <Box w='900px' overflow='auto' key='box-bonus'>
-                      <Stack align='center' justify='center'>
-                        <Text>Bonus</Text>
-                        <TableWidget
-                          id='bonus-modal-table'
-                          columns={columnsBonus}
-                          data={bonusCCA}
-                          controlledPageCount={pageCount}
-                          dataHandler={null}
-                          showPage={false}
-                        />
-                      </Stack>
-                    </Box>
-                  )}
-                </Stack>
-              </Box>
-            </Stack>
-          )}
+                    {showBonus && bonusCCA.length > 0 && (
+                      <Box w='900px' overflow='auto' key='box-bonus'>
+                        <Stack align='center' justify='center'>
+                          <Text>Bonus</Text>
+                          <TableWidget
+                            id='bonus-modal-table'
+                            columns={columnsBonus}
+                            data={bonusCCA}
+                            controlledPageCount={pageCount}
+                            dataHandler={null}
+                            showPage={false}
+                          />
+                        </Stack>
+                      </Box>
+                    )}
+                  </Stack>
+                </Box>
+              </Stack>
+            )}
         </ModalBody>
         <ModalFooter>
           <Button

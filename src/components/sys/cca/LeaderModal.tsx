@@ -409,27 +409,25 @@ export default function LeaderModalComponent({
     ) => {
       if (content.res.length > 0 && content.count > 0) {
         for (let key = 0; key < content.res.length; key += 1) {
-     
-            switch (action) {
-              case choice.MEMBER: {
-                const dataField: CCARecord = content.res[key] as CCARecord;
+          switch (action) {
+            case choice.MEMBER: {
+              const dataField: CCARecord = content.res[key] as CCARecord;
 
-                const buttons = await generateActionButtonRecord(dataField);
-                dataField.action = buttons;
-                break;
-              }
-              case choice.SESSION: {
-                const dataField: CCASession = content.res[key] as CCASession;
-
-                const buttons = await generateActionButtonSession(dataField);
-                dataField.action = buttons;
-
-                break;
-              }
-              default:
-                break;
+              const buttons = await generateActionButtonRecord(dataField);
+              dataField.action = buttons;
+              break;
             }
-          
+            case choice.SESSION: {
+              const dataField: CCASession = content.res[key] as CCASession;
+
+              const buttons = await generateActionButtonSession(dataField);
+              dataField.action = buttons;
+
+              break;
+            }
+            default:
+              break;
+          }
         }
 
         switch (action) {
@@ -709,11 +707,15 @@ export default function LeaderModalComponent({
     async function setupData(userSessionField: Session | null) {
       if (modalData !== undefined && modalData !== null) {
         const ccaNameField: string =
-          modalData.ccaName !== undefined && modalData.ccaName !== null ? modalData.ccaName : '';
+          modalData.ccaName !== undefined && modalData.ccaName !== null
+            ? modalData.ccaName
+            : '';
         setCCAName(ccaNameField);
 
         ccaRecordIDDB.current =
-          modalData.ccaID !== undefined && modalData.ccaID !== null ? modalData.ccaID : '';
+          modalData.ccaID !== undefined && modalData.ccaID !== null
+            ? modalData.ccaID
+            : '';
 
         await buildDropDownMenu();
 

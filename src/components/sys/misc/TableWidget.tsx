@@ -73,7 +73,11 @@ export default function TableWidget({
 
   useEffect(() => {
     async function sendData() {
-      if (dataHandler !== undefined && dataHandler !== null && buttonClicked.current) {
+      if (
+        dataHandler !== undefined &&
+        dataHandler !== null &&
+        buttonClicked.current
+      ) {
         buttonClicked.current = false;
         await dataHandler({ pageIndex, pageSize });
       }
@@ -187,7 +191,8 @@ export default function TableWidget({
               min={1}
               max={pageOptions.length}
               onChange={(value) => {
-                const pageID = value !== undefined && value !== null ? Number(value) - 1 : 0;
+                const pageID =
+                  value !== undefined && value !== null ? Number(value) - 1 : 0;
                 buttonClicked.current = true;
                 gotoPage(pageID);
               }}

@@ -33,9 +33,13 @@ export default function Profile() {
     async function fetchData() {
       const session = await currentSession();
       const usernameField: string =
-        session != null && session.user.username ? session.user.username : '';
+        session != null && checkerString(session.user.username)
+          ? session.user.username
+          : '';
       const emailField: string =
-        session != null && session.user.email ? session.user.email : '';
+        session != null && checkerString(session.user.email)
+          ? session.user.email
+          : '';
 
       setUsername(usernameField);
       setEmail(emailField);
