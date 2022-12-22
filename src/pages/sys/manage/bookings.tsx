@@ -124,11 +124,9 @@ export default function ManageBooking() {
         const booking: BookingRequest[] = content.res;
         if (booking.length > 0) {
           for (let key = 0; key < booking.length; key += 1) {
-            if (booking[key]) {
-              const dataField: BookingRequest = booking[key];
-              const buttons = await generateActionButton(dataField);
-              dataField.action = buttons;
-            }
+            const dataField: BookingRequest = booking[key];
+            const buttons = await generateActionButton(dataField);
+            dataField.action = buttons;
           }
           setData(booking);
         }

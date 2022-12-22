@@ -103,7 +103,7 @@ export const findCCASessionByID = async (
       },
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       result = { status: true, error: null, msg: query };
     } else {
       result = { status: false, error: null, msg: null };
@@ -143,18 +143,13 @@ export const countTotalSessionHoursByCCAID = async (
 
     if (query !== undefined && query !== null && query.length > 0) {
       for (let key = 0; key < query.length; key += 1) {
-        if (query[key]) {
-          const session: CCASession = query[key];
-          if (session.optional !== undefined && !session.optional) {
-            const sessionAttendanceHourStr: string = session.time;
-            const { start, end } = await splitHours(sessionAttendanceHourStr);
-            if (start !== null && end !== null) {
-              const sessionDuration: number = await calculateDuration(
-                start,
-                end,
-              );
-              count += sessionDuration;
-            }
+        const session: CCASession = query[key];
+        if (session.optional !== undefined && !session.optional) {
+          const sessionAttendanceHourStr: string = session.time;
+          const { start, end } = await splitHours(sessionAttendanceHourStr);
+          if (start !== null && end !== null) {
+            const sessionDuration: number = await calculateDuration(start, end);
+            count += sessionDuration;
           }
         }
       }
@@ -191,7 +186,7 @@ export const editSession = async (
       data,
     });
 
-    if (sess) {
+    if (sess !== null && sess !== undefined) {
       if (data.id !== undefined && checkerString(data.id)) {
         await logger(
           `editSession - ${data.id}`,
@@ -252,7 +247,7 @@ export const lockSession = async (
       },
     });
 
-    if (sess) {
+    if (sess !== undefined && sess !== null) {
       result = {
         status: true,
         error: '',
@@ -295,7 +290,7 @@ export const deleteSessionByID = async (
       },
     });
 
-    if (sess) {
+    if (sess !== undefined && sess !== null) {
       if (id !== undefined && checkerString(id)) {
         await logger(
           `deleteSessionByID - ${id}`,
@@ -350,7 +345,7 @@ export const createSession = async (
       data,
     });
 
-    if (sess) {
+    if (sess !== null && sess !== undefined) {
       await logger(
         'createSession',
         session.user.email,
@@ -448,30 +443,25 @@ export const checkConflict = async (
         const endHNum: number = Number(endH);
 
         for (let key = 0; key < existingRequest.length; key += 1) {
-          if (existingRequest[key]) {
-            const exist: CCASession = existingRequest[key];
+          const exist: CCASession = existingRequest[key];
 
-            const { start, end } = await splitHours(exist.time);
-            if (start !== null && end !== null) {
-              const eStartH: string | null = await findSlots(
-                start.toString(),
-                true,
-              );
-              const eEndH: string | null = await findSlots(
-                end.toString(),
-                false,
-              );
+          const { start, end } = await splitHours(exist.time);
+          if (start !== null && end !== null) {
+            const eStartH: string | null = await findSlots(
+              start.toString(),
+              true,
+            );
+            const eEndH: string | null = await findSlots(end.toString(), false);
 
-              if (startH !== null && endH !== null) {
-                const eStartHNum: number = Number(eStartH);
-                const eEndHNum: number = Number(eEndH);
+            if (startH !== null && endH !== null) {
+              const eStartHNum: number = Number(eStartH);
+              const eEndHNum: number = Number(eEndH);
 
-                if (
-                  (eStartHNum >= startHNum && eStartHNum <= endHNum) ||
-                  (eEndHNum >= startHNum && eEndHNum <= endHNum)
-                ) {
-                  return true;
-                }
+              if (
+                (eStartHNum >= startHNum && eStartHNum <= endHNum) ||
+                (eEndHNum >= startHNum && eEndHNum <= endHNum)
+              ) {
+                return true;
               }
             }
           }

@@ -18,7 +18,11 @@ export default function MemberButton({
   const [selected, setSelected] = useState(false);
 
   const click = async () => {
-    if (handleClick !== null && handleClick !== undefined && !(reality as boolean)) {
+    if (
+      handleClick !== null &&
+      handleClick !== undefined &&
+      !(reality as boolean)
+    ) {
       setSelected(!selected);
       await handleClick(id);
     }

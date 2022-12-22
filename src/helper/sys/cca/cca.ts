@@ -26,7 +26,7 @@ export const findCCAbyID = async (
       },
     });
 
-    if (query) {
+    if (query !== null && query !== undefined) {
       result = { status: true, error: null, msg: query };
     } else {
       result = { status: false, error: 'Failed to fetch CCA', msg: null };
@@ -63,7 +63,7 @@ export const findCCAbyName = async (
       },
     });
 
-    if (query) {
+    if (query !== null && query !== undefined) {
       result = { status: true, error: null, msg: query };
     } else {
       result = { status: false, error: 'Failed to fetch CCA', msg: null };
@@ -98,7 +98,7 @@ export const findAllCCA = async (session: Session): Promise<Result> => {
       },
     });
 
-    if (ccaList) {
+    if (ccaList !== null && ccaList !== undefined) {
       result = { status: true, error: null, msg: ccaList };
     } else {
       result = { status: false, error: 'Failed to fetch CCA', msg: [] };

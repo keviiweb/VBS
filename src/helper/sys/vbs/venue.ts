@@ -127,7 +127,7 @@ export const findVenueByID = async (
       where: { id },
     });
 
-    if (locations) {
+    if (locations !== null && locations !== undefined) {
       result = { status: true, error: null, msg: locations };
     } else {
       result = { status: false, error: 'Failed to fetch venues', msg: null };

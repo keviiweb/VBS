@@ -32,7 +32,7 @@ export const fetchAllCCARecordByUserEmail = async (
       distinct: ['ccaID'],
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       result = { status: true, error: null, msg: query };
     } else {
       result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
@@ -69,7 +69,7 @@ export const fetchAllCCARecordByUser = async (
       distinct: ['ccaID'],
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       result = { status: true, error: null, msg: query };
     } else {
       result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
@@ -112,19 +112,17 @@ export const fetchAllCCARecordByUserWDetails = async (
       if (permission) {
         const ccaData: CCA[] = query.msg;
         for (let ven = 0; ven < ccaData.length; ven += 1) {
-          if (ccaData[ven]) {
-            const ccaDetails: CCA = ccaData[ven];
-            if (ccaDetails.id !== undefined) {
-              const data: CCARecord = {
-                id: ccaDetails.id,
-                ccaID: ccaDetails.id,
-                leader: true,
-                ccaName: ccaDetails.name,
-                image: ccaDetails.image,
-              };
+          const ccaDetails: CCA = ccaData[ven];
+          if (ccaDetails.id !== undefined) {
+            const data: CCARecord = {
+              id: ccaDetails.id,
+              ccaID: ccaDetails.id,
+              leader: true,
+              ccaName: ccaDetails.name,
+              image: ccaDetails.image,
+            };
 
-              parsedCCARecord.push(data);
-            }
+            parsedCCARecord.push(data);
           }
         }
       } else {
@@ -132,22 +130,24 @@ export const fetchAllCCARecordByUserWDetails = async (
 
         if (ccaData.length > 0) {
           for (let ven = 0; ven < ccaData.length; ven += 1) {
-            if (ccaData[ven]) {
-              const record: CCARecord = ccaData[ven];
-              const { ccaID } = record;
-              const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
-              if (ccaDetailsRes.status && ccaDetailsRes.msg) {
-                const ccaDetails: CCA = ccaDetailsRes.msg;
-                const data: CCARecord = {
-                  id: record.id,
-                  ccaID: record.ccaID,
-                  leader: record.leader,
-                  ccaName: ccaDetails.name,
-                  image: ccaDetails.image,
-                };
+            const record: CCARecord = ccaData[ven];
+            const { ccaID } = record;
+            const ccaDetailsRes: Result = await findCCAbyID(ccaID, session);
+            if (
+              ccaDetailsRes.status &&
+              ccaDetailsRes.msg !== null &&
+              ccaDetailsRes.msg !== undefined
+            ) {
+              const ccaDetails: CCA = ccaDetailsRes.msg;
+              const data: CCARecord = {
+                id: record.id,
+                ccaID: record.ccaID,
+                leader: record.leader,
+                ccaName: ccaDetails.name,
+                image: ccaDetails.image,
+              };
 
-                parsedCCARecord.push(data);
-              }
+              parsedCCARecord.push(data);
             }
           }
         }
@@ -196,7 +196,7 @@ export const fetchAllCCARecordByID = async (
       distinct: ['sessionEmail'],
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       result = { status: true, error: null, msg: query };
     } else {
       result = { status: false, error: 'Failed to fetch CCA records', msg: [] };
@@ -258,7 +258,7 @@ export const isLeader = async (
       },
     });
 
-    if (ldr) {
+    if (ldr !== undefined && ldr !== null) {
       result = { status: true, error: null, msg: true };
     } else {
       result = { status: true, error: null, msg: false };
@@ -294,7 +294,7 @@ export const fetchSpecificCCARecord = async (
       },
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       result = { status: true, error: null, msg: query };
     } else {
       result = {
@@ -331,7 +331,7 @@ export const editCCARecord = async (
       data,
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       if (data.id !== undefined && checkerString(data.id)) {
         await logger(
           `editCCARecord - ${data.id}`,
@@ -385,7 +385,7 @@ export const createCCARecord = async (
       data,
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       if (query.id !== undefined && checkerString(query.id)) {
         await logger(
           `createCCARecord - ${query.id}`,
@@ -434,7 +434,7 @@ export const deleteCCARecord = async (
       },
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       result = {
         status: true,
         error: '',
@@ -480,106 +480,112 @@ export const createCCARecordFile = async (
 
   try {
     for (let key = 0; key < dataField.length; key += 1) {
-      if (dataField[key]) {
-        const data = dataField[key];
-        totalCount += 1;
+      const data = dataField[key];
+      totalCount += 1;
 
-        const ccaName: string = data.ccaName !== undefined ? data.ccaName : '';
-        const email: string = data.email !== undefined ? data.email : '';
-        const leader: boolean = !!(
-          data.leader !== undefined && data.leader === 'yes'
-        );
+      const ccaName: string = data.ccaName !== undefined ? data.ccaName : '';
+      const email: string = data.email !== undefined ? data.email : '';
+      const leader: boolean = !!(
+        data.leader !== undefined && data.leader === 'yes'
+      );
 
-        const userRes: Result = await fetchUserByEmail(email.trim(), session);
-        if (userRes.status) {
-          if (checkerString(ccaName)) {
-            const ccaRes: Result = await findCCAbyName(ccaName.trim(), session);
-            if (ccaRes.status) {
-              const ccaDetails: CCA = ccaRes.msg as CCA;
-              if (ccaDetails && ccaDetails.id !== undefined) {
-                const existingRecordsRes: Result = await fetchSpecificCCARecord(
-                  ccaDetails.id.trim(),
-                  email.trim(),
+      const userRes: Result = await fetchUserByEmail(email.trim(), session);
+      if (userRes.status) {
+        if (checkerString(ccaName)) {
+          const ccaRes: Result = await findCCAbyName(ccaName.trim(), session);
+          if (ccaRes.status) {
+            const ccaDetails: CCA = ccaRes.msg as CCA;
+            if (
+              ccaDetails !== null &&
+              ccaDetails !== undefined &&
+              ccaDetails.id !== undefined
+            ) {
+              const existingRecordsRes: Result = await fetchSpecificCCARecord(
+                ccaDetails.id.trim(),
+                email.trim(),
+                session,
+              );
+              if (
+                existingRecordsRes.status &&
+                existingRecordsRes.msg !== undefined &&
+                existingRecordsRes !== null
+              ) {
+                const existingRecords: CCARecord = existingRecordsRes.msg;
+                const userData: CCARecord = {
+                  id: existingRecords.id,
+                  sessionEmail: email.trim(),
+                  ccaID: ccaDetails.id.trim(),
+                  leader,
+                  updated_at: new Date().toISOString(),
+                };
+
+                const updateRes: Result = await editCCARecord(
+                  userData,
                   session,
                 );
-                if (existingRecordsRes.status && existingRecordsRes.msg) {
-                  const existingRecords: CCARecord = existingRecordsRes.msg;
-                  const userData: CCARecord = {
-                    id: existingRecords.id,
-                    sessionEmail: email.trim(),
-                    ccaID: ccaDetails.id.trim(),
-                    leader,
-                    updated_at: new Date().toISOString(),
+                if (!updateRes.status) {
+                  success = false;
+                  result = {
+                    status: false,
+                    error: updateRes.error,
+                    msg: '',
                   };
-
-                  const updateRes: Result = await editCCARecord(
-                    userData,
-                    session,
-                  );
-                  if (!updateRes.status) {
-                    success = false;
-                    result = {
-                      status: false,
-                      error: updateRes.error,
-                      msg: '',
-                    };
-                    break;
-                  } else {
-                    count += 1;
-                  }
+                  break;
                 } else {
-                  const userData: CCARecord = {
-                    sessionEmail: email.trim(),
-                    ccaID: ccaDetails.id.trim(),
-                    leader,
-                  };
+                  count += 1;
+                }
+              } else {
+                const userData: CCARecord = {
+                  sessionEmail: email.trim(),
+                  ccaID: ccaDetails.id.trim(),
+                  leader,
+                };
 
-                  const createRes: Result = await createCCARecord(
-                    userData,
-                    session,
-                  );
-                  if (!createRes.status) {
-                    success = false;
-                    result = {
-                      status: false,
-                      error: createRes.error,
-                      msg: '',
-                    };
-                    break;
-                  } else {
-                    count += 1;
-                  }
+                const createRes: Result = await createCCARecord(
+                  userData,
+                  session,
+                );
+                if (!createRes.status) {
+                  success = false;
+                  result = {
+                    status: false,
+                    error: createRes.error,
+                    msg: '',
+                  };
+                  break;
+                } else {
+                  count += 1;
                 }
               }
-            } else {
-              await logger(
-                'createCCARecordFile',
-                session.user.email,
-                `Failed to find CCA ${ccaName.trim()}`,
-              );
-              success = false;
-              result = {
-                status: false,
-                error: `Failed to find CCA ${ccaName.trim()}`,
-                msg: '',
-              };
-              break;
             }
+          } else {
+            await logger(
+              'createCCARecordFile',
+              session.user.email,
+              `Failed to find CCA ${ccaName.trim()}`,
+            );
+            success = false;
+            result = {
+              status: false,
+              error: `Failed to find CCA ${ccaName.trim()}`,
+              msg: '',
+            };
+            break;
           }
-        } else {
-          await logger(
-            'createCCARecordFile',
-            session.user.email,
-            `Failed to find user ${email.trim()}`,
-          );
-          success = false;
-          result = {
-            status: false,
-            error: `Failed to find user ${email.trim()}`,
-            msg: '',
-          };
-          break;
         }
+      } else {
+        await logger(
+          'createCCARecordFile',
+          session.user.email,
+          `Failed to find user ${email.trim()}`,
+        );
+        success = false;
+        result = {
+          status: false,
+          error: `Failed to find user ${email.trim()}`,
+          msg: '',
+        };
+        break;
       }
     }
 

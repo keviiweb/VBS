@@ -26,7 +26,7 @@ export const fetchAllAnnouncements = async (
       take: limit,
     });
 
-    if (announce) {
+    if (announce !== undefined && announce !== null) {
       result = { status: true, error: null, msg: announce };
     } else {
       result = {
@@ -60,7 +60,7 @@ export const createAnnouncement = async (
       data,
     });
 
-    if (announce) {
+    if (announce !== undefined && announce !== null) {
       if (announce.id !== undefined && checkerString(announce.id)) {
         await logger(
           'createAnnouncement',
@@ -113,7 +113,7 @@ export const editAnnouncement = async (
       data,
     });
 
-    if (announce) {
+    if (announce !== undefined && announce !== null) {
       if (data.id !== undefined && checkerString(data.id)) {
         await logger(
           `editAnnouncement - ${data.id}`,
@@ -173,7 +173,7 @@ export const deleteAnnouncement = async (
       },
     });
 
-    if (announce) {
+    if (announce !== undefined && announce !== null) {
       if (id !== undefined && checkerString(id)) {
         await logger(
           `deleteAnnouncement - ${id}`,

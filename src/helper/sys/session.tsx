@@ -14,7 +14,9 @@ export const currentSession = async (
 ): Promise<Session | null> => {
   if (
     process.env.NEXT_PUBLIC_SETDEV === 'true' &&
-    (!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+    (process.env.NODE_ENV === null ||
+      process.env.NODE_ENV === undefined ||
+      process.env.NODE_ENV === 'development')
   ) {
     let session: Session | null = null;
     session = {

@@ -26,7 +26,7 @@ export const fetchUserByEmail = async (
       },
     });
 
-    if (userFromDB) {
+    if (userFromDB !== undefined && userFromDB !== null) {
       result = { status: true, error: null, msg: userFromDB };
     } else {
       result = { status: false, error: 'Failed to fetch user', msg: null };
@@ -73,7 +73,7 @@ export const acceptTermsForUser = async (
       },
     });
 
-    if (user) {
+    if (user !== undefined && user !== null) {
       if (data.id !== undefined && checkerString(data.id)) {
         await logger(
           `acceptTermsForUser - ${data.id}`,
@@ -135,7 +135,7 @@ export const createUser = async (
       data,
     });
 
-    if (user) {
+    if (user !== undefined && user !== null) {
       await logger(
         'createUser',
         session.user.email,
@@ -188,39 +188,37 @@ export const createUserFile = async (
 
   try {
     for (let key = 0; key < dataField.length; key += 1) {
-      if (dataField[key]) {
-        const data = dataField[key];
-        totalCount += 1;
+      const data = dataField[key];
+      totalCount += 1;
 
-        const name: string = data.name !== undefined ? data.name : '';
-        const email: string = data.email !== undefined ? data.email : '';
-        const admin: number =
-          data.admin !== undefined ? Number(data.admin) : levels.USER;
+      const name: string = data.name !== undefined ? data.name : '';
+      const email: string = data.email !== undefined ? data.email : '';
+      const admin: number =
+        data.admin !== undefined ? Number(data.admin) : levels.USER;
 
-        if (checkerString(name) && checkerString(email)) {
-          const userData: User = {
-            name: name.trim(),
-            email: email.trim().toLowerCase(),
-            admin,
-          };
+      if (checkerString(name) && checkerString(email)) {
+        const userData: User = {
+          name: name.trim(),
+          email: email.trim().toLowerCase(),
+          admin,
+        };
 
-          await prisma.users.upsert({
-            where: {
-              email: userData.email,
-            },
-            update: {
-              name: userData.name,
-              admin: userData.admin,
-            },
-            create: {
-              email: userData.email,
-              name: userData.name,
-              admin: userData.admin,
-            },
-          });
+        await prisma.users.upsert({
+          where: {
+            email: userData.email,
+          },
+          update: {
+            name: userData.name,
+            admin: userData.admin,
+          },
+          create: {
+            email: userData.email,
+            name: userData.name,
+            admin: userData.admin,
+          },
+        });
 
-          count += 1;
-        }
+        count += 1;
       }
     }
 
@@ -278,7 +276,7 @@ export const fetchAllUser = async (
       take: limit,
     });
 
-    if (users) {
+    if (users !== undefined && users !== null) {
       result = { status: true, error: null, msg: users };
     } else {
       result = { status: false, error: 'Failed to fetch user', msg: [] };
@@ -311,7 +309,7 @@ export const editUser = async (
       data,
     });
 
-    if (user) {
+    if (user !== undefined && user !== null) {
       if (data.id !== undefined && checkerString(data.id)) {
         await logger(
           `editUser - ${data.id}`,
@@ -365,7 +363,7 @@ export const searchUser = async (
       },
     });
 
-    if (users) {
+    if (users !== undefined && users !== null) {
       result = { status: true, error: null, msg: users };
     } else {
       result = { status: false, error: 'Failed to fetch user', msg: [] };

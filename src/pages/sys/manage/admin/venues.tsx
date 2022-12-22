@@ -356,33 +356,31 @@ export default function ManageVenues(props: any) {
         selectionEdit.push(<option key='' value='' aria-label='Default' />);
 
         for (let key = 0; key < contentRes.length; key += 1) {
-          if (contentRes[key]) {
-            const dataField: Venue = contentRes[key];
-            if (!dataField.isChildVenue) {
-              selection.push(
-                <option key={dataField.id} value={dataField.id}>
-                  {dataField.name}
-                </option>,
-              );
-
-              if (count === 0) {
-                if (dataField.id !== undefined) {
-                  parentVenue.current = dataField.id;
-                  count += 1;
-                }
-              }
-            }
-
-            selectionEdit.push(
+          const dataField: Venue = contentRes[key];
+          if (!dataField.isChildVenue) {
+            selection.push(
               <option key={dataField.id} value={dataField.id}>
                 {dataField.name}
               </option>,
             );
 
-            allVenues.push(dataField);
-            const buttons = await generateActionButton(dataField);
-            dataField.action = buttons;
+            if (count === 0) {
+              if (dataField.id !== undefined) {
+                parentVenue.current = dataField.id;
+                count += 1;
+              }
+            }
           }
+
+          selectionEdit.push(
+            <option key={dataField.id} value={dataField.id}>
+              {dataField.name}
+            </option>,
+          );
+
+          allVenues.push(dataField);
+          const buttons = await generateActionButton(dataField);
+          dataField.action = buttons;
         }
 
         venueData.current = allVenues;

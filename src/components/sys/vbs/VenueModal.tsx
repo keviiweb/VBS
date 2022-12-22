@@ -247,7 +247,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
             animate='animate'
           >
             <MotionBox variants={cardVariant} key='venue-data'>
-              {modalData && (
+              {modalData !== undefined && modalData !== null && (
                 <Flex
                   w='full'
                   h='full'

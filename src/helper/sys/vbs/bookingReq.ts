@@ -1339,25 +1339,23 @@ export const notifyConflicts = async (
         const conflicts: string[] = bookingRequest.conflictRequest.split(',');
         if (conflicts.length > 0) {
           for (let key = 0; key < conflicts.length; key += 1) {
-            if (conflicts[key]) {
-              const conflictID: string = conflicts[key];
-              const sameDayVenue: BookingRequest | null = await findBookingByID(
-                conflictID,
+            const conflictID: string = conflicts[key];
+            const sameDayVenue: BookingRequest | null = await findBookingByID(
+              conflictID,
+              session,
+            );
+
+            if (sameDayVenue !== null) {
+              const email: Result = await notifyConflictsEmail(
+                sameDayVenue,
                 session,
               );
-
-              if (sameDayVenue !== null) {
-                const email: Result = await notifyConflictsEmail(
-                  sameDayVenue,
-                  session,
-                );
-                if (!email.status) {
-                  console.error(email.error);
-                  success = false;
-                }
-              } else {
+              if (!email.status) {
+                console.error(email.error);
                 success = false;
               }
+            } else {
+              success = false;
             }
           }
         }

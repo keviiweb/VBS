@@ -474,7 +474,8 @@ export const options = {
       let isAllowedToSignIn = true;
       try {
         if (
-          Object.prototype.hasOwnProperty.call(email, 'verificationRequest')
+          Object.prototype.hasOwnProperty.call(email, 'verificationRequest') !==
+          undefined
         ) {
           isAllowedToSignIn = false;
 
@@ -503,7 +504,10 @@ export const options = {
     },
     async session({ session, user }) {
       try {
-        if (!session.user.username) {
+        if (
+          session.user.username === null ||
+          session.user.username === undefined
+        ) {
           const userFromDB: User = await prisma.users.findUnique({
             where: {
               email: user.email,

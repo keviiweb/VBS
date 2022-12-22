@@ -241,13 +241,16 @@ export default function SessionModal({
       setDuration(durationField);
 
       if (
-        modalDataField.expectedMName &&
+        modalDataField.expectedMName !== undefined &&
         modalDataField.expectedMName?.length > 0
       ) {
         await displayExpectedMembers(modalDataField.expectedMName);
       }
 
-      if (modalDataField.realityM && modalDataField.realityM?.length > 0) {
+      if (
+        modalDataField.realityM !== undefined &&
+        modalDataField.realityM.length > 0
+      ) {
         await displayRealityMembers(modalDataField.realityM);
       }
 

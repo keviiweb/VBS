@@ -706,7 +706,7 @@ export default function SessionEditModal({
         key < selectedExpectedMembers.current.length;
         key += 1
       ) {
-        if (selectedExpectedMembers.current[key]) {
+        if (selectedExpectedMembers.current[key].length > 0) {
           const s: string = selectedExpectedMembers.current[key];
           const nameField: string = await fetchNameOfUserByID(s);
           if (checkerString(nameField)) {
@@ -803,7 +803,10 @@ export default function SessionEditModal({
       setSession(userSessionField);
 
       const editableField: boolean =
-        modalDataField && modalDataField.editable
+        modalDataField !== null &&
+        modalDataField !== undefined &&
+        modalDataField.editable !== undefined &&
+        modalDataField.editable
           ? modalDataField.editable
           : false;
       setEditable(editableField);
@@ -1130,24 +1133,26 @@ export default function SessionEditModal({
                             w={{ base: 'full', md: '500px', lg: '500px' }}
                             direction='row'
                           >
-                            {selectedData.current?.duration && (
-                              <List spacing={5}>
-                                <ListItem>
-                                  <Stack direction='row'>
-                                    <Text
-                                      textTransform='uppercase'
-                                      letterSpacing='tight'
-                                      fontWeight='bold'
-                                    >
-                                      Duration
-                                    </Text>{' '}
-                                    <Text>
-                                      {selectedData.current?.duration} Hours
-                                    </Text>
-                                  </Stack>
-                                </ListItem>
-                              </List>
-                            )}
+                            {selectedData.current !== null &&
+                              selectedData.current.duration !== undefined &&
+                              selectedData.current.duration !== null && (
+                                <List spacing={5}>
+                                  <ListItem>
+                                    <Stack direction='row'>
+                                      <Text
+                                        textTransform='uppercase'
+                                        letterSpacing='tight'
+                                        fontWeight='bold'
+                                      >
+                                        Duration
+                                      </Text>{' '}
+                                      <Text>
+                                        {selectedData.current.duration} Hours
+                                      </Text>
+                                    </Stack>
+                                  </ListItem>
+                                </List>
+                              )}
                           </Stack>
 
                           {expectedMemberButtons.length > 0 && (

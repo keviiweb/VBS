@@ -476,7 +476,7 @@ export const sendProgressMail = async (
         },
         function (err: any) {
           if (err !== null && err !== undefined) {
-            console.error('Error ' + err);
+            console.error('Error ' + (err.toString() as string));
           }
         },
       );

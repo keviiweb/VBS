@@ -65,7 +65,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               Object.prototype.hasOwnProperty.call(
                 timingSlotNumberToTimingMapping,
                 key,
-              )
+              ) !== undefined
             ) {
               if (Number(key) >= startHour && Number(key) <= endHour) {
                 slots[key] = {
@@ -97,7 +97,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               Object.prototype.hasOwnProperty.call(
                 timingSlotNumberToTimingMapping,
                 key,
-              )
+              ) !== undefined
             ) {
               if (Number(key) >= startHour && Number(key) <= endHour) {
                 slots[key] = {
@@ -125,7 +125,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             Object.prototype.hasOwnProperty.call(
               timingSlotNumberToTimingMapping,
               key,
-            )
+            ) !== undefined
           ) {
             slots[key] = {
               id: Number(key),

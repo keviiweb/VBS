@@ -627,7 +627,7 @@ export default function SessionCreateModal({
       setLoadingData(false);
     }
 
-    if (modalData) {
+    if (modalData !== null && modalData !== undefined) {
       setupData(modalData);
     }
   }, [modalData, generateTimeSlots, generateMemberList, changeCalendarDates]);
@@ -671,141 +671,144 @@ export default function SessionCreateModal({
             animate='animate'
           >
             <MotionBox variants={cardVariant} key='motion-box-time2'>
-              {modalData && !loadingData && progressLevel === levels.TIME && (
-                <Flex
-                  w='full'
-                  h='full'
-                  alignItems='center'
-                  justifyContent='center'
-                  mt={30}
-                >
-                  <Stack spacing={10}>
-                    <Stack
-                      w={{ base: 'full', md: '500px', lg: '500px' }}
-                      direction='row'
-                    >
-                      <FormControl id='name'>
-                        <FormLabel>
-                          <Text
-                            w={40}
-                            textTransform='uppercase'
-                            lineHeight='5'
-                            fontWeight='bold'
-                            letterSpacing='tight'
-                            mr={5}
-                          >
-                            Name
-                          </Text>
-                        </FormLabel>
-                        <Input
-                          type='text'
-                          placeholder='Name'
-                          value={name}
-                          size='lg'
-                          onChange={(event) => {
-                            setName(event.currentTarget.value);
-                            nameDB.current = event.currentTarget.value;
-                          }}
-                        />
-                      </FormControl>
-
-                      <FormControl id='date'>
-                        <FormLabel>
-                          <Text
-                            w={40}
-                            textTransform='uppercase'
-                            lineHeight='5'
-                            fontWeight='bold'
-                            letterSpacing='tight'
-                            mr={5}
-                          >
-                            Date
-                          </Text>
-                        </FormLabel>
-                        <Input
-                          type='date'
-                          placeholder='Date'
-                          value={dateStr}
-                          size='lg'
-                          min={startDateCalendar}
-                          max={endDateCalendar}
-                          onChange={(event) => {
-                            setDateStr(event.currentTarget.value);
-                            dateStrDB.current = event.currentTarget.value;
-                          }}
-                        />
-                      </FormControl>
-                    </Stack>
-
-                    {startTimeDropdown.length > 0 && (
-                      <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
-                        <FormLabel id='start-time'>
-                          <Text
-                            w={40}
-                            textTransform='uppercase'
-                            lineHeight='5'
-                            fontWeight='bold'
-                            letterSpacing='tight'
-                            mr={5}
-                          >
-                            Start Time
-                          </Text>
-                        </FormLabel>
-                        <Select
-                          value={startTime}
-                          onChange={onStartTimeChange}
-                          size='md'
-                        >
-                          {endTimeDropdown}
-                        </Select>
-                      </Stack>
-                    )}
-
-                    {endTimeDropdown.length > 0 && (
-                      <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
-                        <FormLabel id='end-time'>
-                          <Text
-                            w={40}
-                            textTransform='uppercase'
-                            lineHeight='5'
-                            fontWeight='bold'
-                            letterSpacing='tight'
-                            mr={5}
-                          >
-                            End Time
-                          </Text>
-                        </FormLabel>
-                        <Select
-                          value={endTime}
-                          onChange={onEndTimeChange}
-                          size='md'
-                        >
-                          {endTimeDropdown}
-                        </Select>
-                      </Stack>
-                    )}
-
-                    <Stack spacing={5} direction='row'>
-                      <Checkbox
-                        isChecked={optional}
-                        onChange={(event) => {
-                          if (event.cancelable) {
-                            event.preventDefault();
-                          }
-                          setOptional(event.target.checked);
-                          optionalDB.current = event.target.checked;
-                          optionalStrDB.current = event.target.checked
-                            ? 'Yes'
-                            : 'No';
-                        }}
+              {modalData !== undefined &&
+                modalData !== null &&
+                !loadingData &&
+                progressLevel === levels.TIME && (
+                  <Flex
+                    w='full'
+                    h='full'
+                    alignItems='center'
+                    justifyContent='center'
+                    mt={30}
+                  >
+                    <Stack spacing={10}>
+                      <Stack
+                        w={{ base: 'full', md: '500px', lg: '500px' }}
+                        direction='row'
                       >
-                        Optional Session
-                      </Checkbox>
-                      <InfoIcon onMouseEnter={handleOptionalHover} />
+                        <FormControl id='name'>
+                          <FormLabel>
+                            <Text
+                              w={40}
+                              textTransform='uppercase'
+                              lineHeight='5'
+                              fontWeight='bold'
+                              letterSpacing='tight'
+                              mr={5}
+                            >
+                              Name
+                            </Text>
+                          </FormLabel>
+                          <Input
+                            type='text'
+                            placeholder='Name'
+                            value={name}
+                            size='lg'
+                            onChange={(event) => {
+                              setName(event.currentTarget.value);
+                              nameDB.current = event.currentTarget.value;
+                            }}
+                          />
+                        </FormControl>
+
+                        <FormControl id='date'>
+                          <FormLabel>
+                            <Text
+                              w={40}
+                              textTransform='uppercase'
+                              lineHeight='5'
+                              fontWeight='bold'
+                              letterSpacing='tight'
+                              mr={5}
+                            >
+                              Date
+                            </Text>
+                          </FormLabel>
+                          <Input
+                            type='date'
+                            placeholder='Date'
+                            value={dateStr}
+                            size='lg'
+                            min={startDateCalendar}
+                            max={endDateCalendar}
+                            onChange={(event) => {
+                              setDateStr(event.currentTarget.value);
+                              dateStrDB.current = event.currentTarget.value;
+                            }}
+                          />
+                        </FormControl>
+                      </Stack>
+
+                      {startTimeDropdown.length > 0 && (
+                        <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
+                          <FormLabel id='start-time'>
+                            <Text
+                              w={40}
+                              textTransform='uppercase'
+                              lineHeight='5'
+                              fontWeight='bold'
+                              letterSpacing='tight'
+                              mr={5}
+                            >
+                              Start Time
+                            </Text>
+                          </FormLabel>
+                          <Select
+                            value={startTime}
+                            onChange={onStartTimeChange}
+                            size='md'
+                          >
+                            {endTimeDropdown}
+                          </Select>
+                        </Stack>
+                      )}
+
+                      {endTimeDropdown.length > 0 && (
+                        <Stack w={{ base: 'full', md: '500px', lg: '500px' }}>
+                          <FormLabel id='end-time'>
+                            <Text
+                              w={40}
+                              textTransform='uppercase'
+                              lineHeight='5'
+                              fontWeight='bold'
+                              letterSpacing='tight'
+                              mr={5}
+                            >
+                              End Time
+                            </Text>
+                          </FormLabel>
+                          <Select
+                            value={endTime}
+                            onChange={onEndTimeChange}
+                            size='md'
+                          >
+                            {endTimeDropdown}
+                          </Select>
+                        </Stack>
+                      )}
+
+                      <Stack spacing={5} direction='row'>
+                        <Checkbox
+                          isChecked={optional}
+                          onChange={(event) => {
+                            if (event.cancelable) {
+                              event.preventDefault();
+                            }
+                            setOptional(event.target.checked);
+                            optionalDB.current = event.target.checked;
+                            optionalStrDB.current = event.target.checked
+                              ? 'Yes'
+                              : 'No';
+                          }}
+                        >
+                          Optional Session
+                        </Checkbox>
+                        <InfoIcon onMouseEnter={handleOptionalHover} />
+                      </Stack>
                     </Stack>
-                  </Stack>
-                </Flex>
-              )}
+                  </Flex>
+                )}
 
               {modalData !== undefined &&
                 modalData !== null &&
@@ -823,24 +826,26 @@ export default function SessionCreateModal({
                         w={{ base: 'full', md: '500px', lg: '500px' }}
                         direction='row'
                       >
-                        {selectedData.current?.duration && (
-                          <List spacing={5}>
-                            <ListItem>
-                              <Stack direction='row'>
-                                <Text
-                                  textTransform='uppercase'
-                                  letterSpacing='tight'
-                                  fontWeight='bold'
-                                >
-                                  Duration
-                                </Text>
-                                <Text>
-                                  {selectedData.current?.duration} Hours
-                                </Text>
-                              </Stack>
-                            </ListItem>
-                          </List>
-                        )}
+                        {selectedData.current !== null &&
+                          selectedData.current.duration !== undefined &&
+                          selectedData.current.duration !== null && (
+                            <List spacing={5}>
+                              <ListItem>
+                                <Stack direction='row'>
+                                  <Text
+                                    textTransform='uppercase'
+                                    letterSpacing='tight'
+                                    fontWeight='bold'
+                                  >
+                                    Duration
+                                  </Text>
+                                  <Text>
+                                    {selectedData.current.duration} Hours
+                                  </Text>
+                                </Stack>
+                              </ListItem>
+                            </List>
+                          )}
                       </Stack>
 
                       {expectedMemberButtons.length > 0 && (

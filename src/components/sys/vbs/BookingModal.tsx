@@ -238,8 +238,8 @@ export default function BookingModal({
 
         await processConflicts(modalDataField.conflictRequestObj);
       } else if (
-        isAdmin &&
-        isBookingRequest &&
+        (isAdmin as boolean) &&
+        (isBookingRequest as boolean) &&
         modalDataField.conflictRequestObj != null &&
         modalDataField.conflictRequestObj?.length === 0
       ) {

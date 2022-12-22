@@ -194,7 +194,10 @@ export default function VenueBookingModal({
     }
 
     for (let key = 0; key < timeSlotsField.length; key += 1) {
-      if (timeSlotsField[key].id) {
+      if (
+        timeSlotsField[key].id !== null &&
+        timeSlotsField[key].id !== undefined
+      ) {
         return true;
       }
     }
@@ -608,7 +611,7 @@ export default function VenueBookingModal({
   const countSlots = (slots: TimeSlot[]): number => {
     let counter: number = 0;
     for (let key = 0; key < slots.length; key += 1) {
-      if (Object.prototype.hasOwnProperty.call(slots, key)) {
+      if (Object.prototype.hasOwnProperty.call(slots, key) !== undefined) {
         if (slots[key].slot !== undefined) {
           counter += 1;
         }
@@ -618,14 +621,14 @@ export default function VenueBookingModal({
   };
 
   const displaySlots = (slots: TimeSlot[]) => {
-    if (slots) {
+    if (slots.length > 0) {
       setDisplayedVenue(displayVenue(selectedVenue.current));
       let text: string = 'Selected timeslot(s): ';
       let counter: number = 0;
       const total: number = countSlots(slots);
       if (slots.length > 0) {
         for (let key = 0; key < slots.length; key += 1) {
-          if (Object.prototype.hasOwnProperty.call(slots, key)) {
+          if (Object.prototype.hasOwnProperty.call(slots, key) !== undefined) {
             if (slots[key].slot !== undefined) {
               counter += 1;
               if (counter !== total) {
@@ -654,7 +657,7 @@ export default function VenueBookingModal({
       if (rawSlots.current.length > 0) {
         const rawS: TimeSlot[] = rawSlots.current;
         const slot: TimeSlot = rawS[idField];
-        if (!slot.booked) {
+        if (slot.booked !== undefined && !slot.booked) {
           if (slots[idField] !== null && slots[idField] !== undefined) {
             slots[idField] = {
               id: undefined,
@@ -676,9 +679,15 @@ export default function VenueBookingModal({
     if (checkerArray(content)) {
       try {
         for (let key = 0; key < content.length; key += 1) {
-          if (Object.prototype.hasOwnProperty.call(content, key)) {
+          if (
+            Object.prototype.hasOwnProperty.call(content, key) !== undefined
+          ) {
             const newID: string = `${selectedVenue.current}${date.current}${key}`;
-            if (!content[key].booked) {
+            if (
+              content[key].booked !== undefined &&
+              content[key].booked !== null &&
+              !(content[key].booked as boolean)
+            ) {
               buttons.push(
                 <TimeSlotButton
                   disable={false}
@@ -790,7 +799,7 @@ export default function VenueBookingModal({
   const setTypeHelper = (event: any) => {
     try {
       if (event !== undefined) {
-        if (event.cancelable) {
+        if (event.cancelable as boolean) {
           event.preventDefault();
         }
 

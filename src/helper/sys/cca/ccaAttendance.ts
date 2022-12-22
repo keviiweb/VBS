@@ -20,7 +20,7 @@ export const fetchAllCCAAttendance = async (
   try {
     const query: CCAAttendance[] = await prisma.cCAAttendance.findMany();
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       result = { status: true, error: null, msg: query };
     } else {
       result = { status: false, error: 'Failed to fetch attendance', msg: [] };
@@ -62,7 +62,7 @@ export const fetchSpecificCCAAttendanceByUserEmail = async (
       take: limit,
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       result = { status: true, error: null, msg: query };
     } else {
       result = { status: false, error: 'Failed to fetch attendance', msg: [] };
@@ -99,7 +99,7 @@ export const fetchAllCCAAttendanceBySession = async (
       },
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       result = { status: true, error: null, msg: query };
     } else {
       result = { status: false, error: 'Failed to fetch attendance', msg: [] };
@@ -136,7 +136,7 @@ export const fetchAllCCAAttendanceByCCA = async (
       },
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       result = { status: true, error: null, msg: query };
     } else {
       result = { status: false, error: 'Failed to fetch attendance', msg: [] };
@@ -171,10 +171,8 @@ export const countTotalAttendanceHours = async (
     let count = 0;
 
     for (let key = 0; key < attendance.length; key += 1) {
-      if (attendance[key]) {
-        const attend: CCAAttendance = attendance[key];
-        count += attend.ccaAttendance;
-      }
+      const attend: CCAAttendance = attendance[key];
+      count += attend.ccaAttendance;
     }
 
     return count;
@@ -212,7 +210,7 @@ export const deleteAttendance = async (
       },
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       await logger(
         'deleteAttendance',
         session.user.email,
@@ -259,7 +257,7 @@ export const deleteAttendanceBySessionID = async (
       },
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       await logger(
         'deleteAttendanceBySessionID',
         session.user.email,
@@ -304,7 +302,7 @@ export const createAttendance = async (
       data: attend,
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       await logger(
         'createAttendance',
         session.user.email,
@@ -361,46 +359,30 @@ export const editAttendance = async (
   try {
     if (attendance.length > 0) {
       for (let key = 0; key < attendance.length; key += 1) {
-        if (attendance[key]) {
-          const attend: CCAAttendance = attendance[key];
-          const id: string = attend.id !== undefined ? attend.id : '';
-          if (checkerString(id)) {
-            const deleteRes: Result = await deleteAttendance(
-              ccaSessionID,
-              attend,
-              session,
-            );
-            if (!deleteRes.status) {
-              result = { status: false, error: deleteRes.error, msg: '' };
-              break;
-            }
+        const attend: CCAAttendance = attendance[key];
+        const id: string = attend.id !== undefined ? attend.id : '';
+        if (checkerString(id)) {
+          const deleteRes: Result = await deleteAttendance(
+            ccaSessionID,
+            attend,
+            session,
+          );
+          if (!deleteRes.status) {
+            result = { status: false, error: deleteRes.error, msg: '' };
+            break;
           }
+        }
 
-          if (attend.ccaAttendance > 0) {
-            const data: CCAAttendance = {
-              ccaID: attend.ccaID,
-              ccaAttendance: attend.ccaAttendance,
-              sessionID: ccaSessionID,
-              sessionEmail: attend.sessionEmail,
-            };
+        if (attend.ccaAttendance > 0) {
+          const data: CCAAttendance = {
+            ccaID: attend.ccaID,
+            ccaAttendance: attend.ccaAttendance,
+            sessionID: ccaSessionID,
+            sessionEmail: attend.sessionEmail,
+          };
 
-            const createRes: Result = await createAttendance(data, session);
-            if (createRes.status) {
-              await logger(
-                'editAttendance',
-                session.user.email,
-                'Successfully edited attendance',
-              );
-              result = {
-                status: true,
-                error: null,
-                msg: createRes.msg,
-              };
-            } else {
-              result = { status: false, error: createRes.error, msg: '' };
-              break;
-            }
-          } else {
+          const createRes: Result = await createAttendance(data, session);
+          if (createRes.status) {
             await logger(
               'editAttendance',
               session.user.email,
@@ -409,9 +391,23 @@ export const editAttendance = async (
             result = {
               status: true,
               error: null,
-              msg: 'Successfully edited attendance',
+              msg: createRes.msg,
             };
+          } else {
+            result = { status: false, error: createRes.error, msg: '' };
+            break;
           }
+        } else {
+          await logger(
+            'editAttendance',
+            session.user.email,
+            'Successfully edited attendance',
+          );
+          result = {
+            status: true,
+            error: null,
+            msg: 'Successfully edited attendance',
+          };
         }
       }
     }

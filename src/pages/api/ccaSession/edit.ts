@@ -97,7 +97,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           }
         } else {
           const findCCA: Result = await findCCAbyID(parsedData.ccaID, session);
-          if (findCCA.status && findCCA.msg) {
+          if (
+            findCCA.status &&
+            findCCA.msg !== undefined &&
+            findCCA.msg !== null
+          ) {
             if (userPermission || editable) {
               const ldrRes: Result = await isLeader(parsedData.ccaID, session);
               if (

@@ -30,7 +30,7 @@ export const fetchKEIPSByMatNet = async (matnet: string): Promise<Result> => {
       },
     });
 
-    if (keipsFromDB) {
+    if (keipsFromDB !== undefined && keipsFromDB !== null) {
       result = { status: true, error: null, msg: keipsFromDB };
     } else {
       result = { status: false, error: 'Failed to fetch KEIPS', msg: null };
@@ -64,75 +64,73 @@ export const createKEIPSFile = async (
   let count = 0;
   try {
     for (let key = 0; key < dataField.length; key += 1) {
-      if (dataField[key]) {
-        const data = dataField[key];
+      const data = dataField[key];
 
-        const matnet: string =
-          data.MATNET !== undefined
-            ? data.MATNET
-            : data['﻿MATNET'] !== undefined
-            ? data['﻿MATNET']
-            : '';
-        const top: string = data.Top4cca !== undefined ? data.Top4cca : '';
-        const all: string = data.Allcca !== undefined ? data.Allcca : '';
-        const bonus: string = data.Bonus !== undefined ? data.Bonus : '';
-        const contrasting: boolean =
-          data.Contrasting !== undefined ? data.Contrasting === 'Y' : false;
-        const OSA: number = data.OSA !== undefined ? Number(data.OSA) : 0;
-        const osaPercentile: number =
-          data.OSApercentile !== undefined ? Number(data.OSApercentile) : 0;
-        const roomDraw: number =
-          data.Roomdraw !== undefined ? Number(data.Roomdraw) : 0;
-        const sem: string =
-          data.Semesterstay !== undefined ? data.Semesterstay : '';
-        const fulfil: boolean =
-          data.Fullfilled !== undefined ? data.Fullfilled === 'Y' : false;
+      const matnet: string =
+        data.MATNET !== undefined
+          ? data.MATNET
+          : data['﻿MATNET'] !== undefined
+          ? data['﻿MATNET']
+          : '';
+      const top: string = data.Top4cca !== undefined ? data.Top4cca : '';
+      const all: string = data.Allcca !== undefined ? data.Allcca : '';
+      const bonus: string = data.Bonus !== undefined ? data.Bonus : '';
+      const contrasting: boolean =
+        data.Contrasting !== undefined ? data.Contrasting === 'Y' : false;
+      const OSA: number = data.OSA !== undefined ? Number(data.OSA) : 0;
+      const osaPercentile: number =
+        data.OSApercentile !== undefined ? Number(data.OSApercentile) : 0;
+      const roomDraw: number =
+        data.Roomdraw !== undefined ? Number(data.Roomdraw) : 0;
+      const sem: string =
+        data.Semesterstay !== undefined ? data.Semesterstay : '';
+      const fulfil: boolean =
+        data.Fullfilled !== undefined ? data.Fullfilled === 'Y' : false;
 
-        if (checkerString(matnet)) {
-          const userData: KEIPS = {
-            matnet: matnet.trim(),
-            topCCA: top.trim(),
-            allCCA: all.trim(),
-            bonusCCA: bonus.trim(),
-            contrasting,
-            OSA,
-            osaPercentile,
-            roomDraw,
-            semesterStay: sem.trim(),
-            fulfilled: fulfil,
-          };
+      if (checkerString(matnet)) {
+        const userData: KEIPS = {
+          matnet: matnet.trim(),
+          topCCA: top.trim(),
+          allCCA: all.trim(),
+          bonusCCA: bonus.trim(),
+          contrasting,
+          OSA,
+          osaPercentile,
+          roomDraw,
+          semesterStay: sem.trim(),
+          fulfilled: fulfil,
+        };
 
-          await prisma.kEIPS.upsert({
-            where: {
-              matnet: userData.matnet,
-            },
-            update: {
-              topCCA: userData.topCCA,
-              allCCA: userData.allCCA,
-              bonusCCA: userData.bonusCCA,
-              contrasting: userData.contrasting,
-              OSA: userData.OSA,
-              osaPercentile: userData.osaPercentile,
-              roomDraw: userData.roomDraw,
-              semesterStay: userData.semesterStay,
-              fulfilled: userData.fulfilled,
-            },
-            create: {
-              matnet: userData.matnet,
-              topCCA: userData.topCCA,
-              allCCA: userData.allCCA,
-              bonusCCA: userData.bonusCCA,
-              contrasting: userData.contrasting,
-              OSA: userData.OSA,
-              osaPercentile: userData.osaPercentile,
-              roomDraw: userData.roomDraw,
-              semesterStay: userData.semesterStay,
-              fulfilled: userData.fulfilled,
-            },
-          });
+        await prisma.kEIPS.upsert({
+          where: {
+            matnet: userData.matnet,
+          },
+          update: {
+            topCCA: userData.topCCA,
+            allCCA: userData.allCCA,
+            bonusCCA: userData.bonusCCA,
+            contrasting: userData.contrasting,
+            OSA: userData.OSA,
+            osaPercentile: userData.osaPercentile,
+            roomDraw: userData.roomDraw,
+            semesterStay: userData.semesterStay,
+            fulfilled: userData.fulfilled,
+          },
+          create: {
+            matnet: userData.matnet,
+            topCCA: userData.topCCA,
+            allCCA: userData.allCCA,
+            bonusCCA: userData.bonusCCA,
+            contrasting: userData.contrasting,
+            OSA: userData.OSA,
+            osaPercentile: userData.osaPercentile,
+            roomDraw: userData.roomDraw,
+            semesterStay: userData.semesterStay,
+            fulfilled: userData.fulfilled,
+          },
+        });
 
-          count += 1;
-        }
+        count += 1;
       }
     }
 
@@ -190,7 +188,7 @@ export const fetchAllKEIPS = async (
       take: limit,
     });
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       result = { status: true, error: null, msg: query };
     } else {
       result = { status: false, error: 'Failed to fetch KEIPS', msg: [] };
@@ -214,7 +212,7 @@ export const deleteAllKEIPS = async (session: Session): Promise<Result> => {
   try {
     const query: KEIPS[] = await prisma.kEIPS.deleteMany({});
 
-    if (query) {
+    if (query !== undefined && query !== null) {
       result = { status: true, error: null, msg: 'Successfully deleted KEIPS' };
     } else {
       result = { status: false, error: 'Failed to delete KEIPS', msg: '' };

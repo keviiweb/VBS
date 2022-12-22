@@ -15,7 +15,10 @@ export const logger = async (
   username: string,
   content: string,
 ): Promise<void> => {
-  if (process.env.LOGGER !== undefined && process.env.LOGGER) {
+  if (
+    process.env.LOGGER !== undefined &&
+    process.env.LOGGER.toLowerCase() === 'true'
+  ) {
     try {
       const data: Log = {
         location,

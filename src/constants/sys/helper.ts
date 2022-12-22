@@ -149,7 +149,7 @@ export const prettifyTiming = (data: string[]): string => {
 
   for (const key in data) {
     count += 1;
-    if (count != data.length) {
+    if (count !== data.length) {
       str += data[key] + ', ';
     } else {
       str += data[key];

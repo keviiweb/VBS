@@ -231,34 +231,37 @@ export default function MemberEditModal({
     [generateActionButton],
   );
 
-  const handleSearch = useCallback(async (input: string) => {
-    if (Date.now() - currentTime.current >= SEARCH_INTERVAL) {
-      if (checkerString(ccaIDDB.current)) {
-        setSubmitButtonPressed(true);
-        try {
-          const rawResponse = await fetch('/api/user/search', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              ccaID: ccaIDDB.current,
-              input,
-            }),
-          });
-          const content: Result = await rawResponse.json();
-          if (content.status) {
-            await includeActionButton(content.msg);
+  const handleSearch = useCallback(
+    async (input: string) => {
+      if (Date.now() - currentTime.current >= SEARCH_INTERVAL) {
+        if (checkerString(ccaIDDB.current)) {
+          setSubmitButtonPressed(true);
+          try {
+            const rawResponse = await fetch('/api/user/search', {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                ccaID: ccaIDDB.current,
+                input,
+              }),
+            });
+            const content: Result = await rawResponse.json();
+            if (content.status) {
+              await includeActionButton(content.msg);
+            }
+          } catch (error) {
+            console.error(error);
           }
-        } catch (error) {
-          console.error(error);
+          setSubmitButtonPressed(false);
         }
-        setSubmitButtonPressed(false);
+        currentTime.current = Date.now();
       }
-      currentTime.current = Date.now();
-    }
-  }, [includeActionButton]);
+    },
+    [includeActionButton],
+  );
 
   useEffect(() => {
     async function setupData(modalDataField: CCARecord) {
