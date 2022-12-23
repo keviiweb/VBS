@@ -62,7 +62,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const fulfilledStr: string = keipsData.fulfilled ? 'Yes' : 'No';
 
           const data: KEIPS = {
-            matnet: keipsData.matnet,
+            matnet: keipsData.matnet.toLowerCase(),
             topCCA: keipsData.topCCA,
             allCCA: keipsData.allCCA,
             bonusCCA: keipsData.bonusCCA,

@@ -13,6 +13,8 @@ import {
   PERSONAL,
 } from '@constants/sys/helper';
 import { convertDateToUnix } from '@constants/sys/date';
+import hasPermission from '@constants/sys/permission';
+import { actions } from '@constants/sys/admin';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { findCCAbyID } from '@helper/sys/cca/cca';
@@ -94,6 +96,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const dbSearch: Result = await findCCAbyID(typeField, session);
           const checkLdr: Result = await isLeader(typeField, session);
 
+          const permission: boolean = hasPermission(
+            session.user.admin,
+            actions.MANAGE_BOOKING_REQUEST,
+          );
+          
           if (checkLdr.status) {
             if (dbSearch.status) {
               const ccaNameMsg: CCA = dbSearch.msg;
@@ -109,6 +116,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             console.error(checkLdr.error);
             isALeader = false;
           }
+
+          isALeader = isALeader || permission;
         } else {
           cca = PERSONAL;
         }

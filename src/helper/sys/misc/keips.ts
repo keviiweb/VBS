@@ -89,7 +89,7 @@ export const createKEIPSFile = async (
 
       if (checkerString(matnet)) {
         const userData: KEIPS = {
-          matnet: matnet.trim(),
+          matnet: matnet.trim().toLowerCase(),
           topCCA: top.trim(),
           allCCA: all.trim(),
           bonusCCA: bonus.trim(),

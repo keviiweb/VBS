@@ -57,8 +57,9 @@ export default function KEIPSComponent() {
 
   const validateField = (matnetField: string): boolean => {
     const userKeyRegExp = /[0-9]{3}[A-Z]{1}[0-9]{4}/;
+    const trimmed: string = matnetField.trim();
 
-    if (userKeyRegExp.test(matnetField) && matnetField.length === 8) {
+    if (userKeyRegExp.test(trimmed) && trimmed.length === 8) {
       return true;
     }
     setError('MATNET not of the correct format');
@@ -205,8 +206,10 @@ export default function KEIPSComponent() {
 
         setSubmitButtonPressed(false);
         setLoadingData(false);
+      } else {
+        setError('Please enter a valid MATNET');
       }
-      setError('Please enter a valid MATNET');
+
     },
     [includeActionButton],
   );
@@ -260,7 +263,7 @@ export default function KEIPSComponent() {
         accessor: 'perf',
       },
       {
-        Header: 'Outstanding',
+        Header: 'IHG/Others',
         accessor: 'outs',
       },
       {
@@ -333,7 +336,7 @@ export default function KEIPSComponent() {
                       setSuccessData(false);
                       setLoadingData(true);
                       setMATNET(event.currentTarget.value);
-                      matnetDB.current = event.currentTarget.value;
+                      matnetDB.current = event.currentTarget.value.trim();
                     }}
                   />
                 </FormControl>

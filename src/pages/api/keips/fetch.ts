@@ -33,7 +33,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { matnet } = req.body;
 
   if (matnet !== undefined && checkerString(matnet)) {
-    const matnetField: string = (matnet as string).trim();
+    const matnetField: string = (matnet as string).toLowerCase().trim();
 
     const keipsDB: Result = await fetchKEIPSByMatNet(matnetField);
     const parsedKEIPS: KEIPS[] = [];

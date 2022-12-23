@@ -125,7 +125,7 @@ export default function LeaderModalComponent({
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
 
-  const PAGESIZE: number = 10;
+  const PAGESIZE: number = 50;
   const PAGEINDEX: number = 0;
 
   const [pageCount, setPageCount] = useState(0);
