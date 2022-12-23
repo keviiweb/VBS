@@ -72,9 +72,6 @@ export default function SessionEditConfirmationModal({
   const [remarks, setRemarks] = useState('');
   const [ldrNotes, setLdrNotes] = useState('');
 
-  const [expectedM, setDisplayedExpected] = useState<JSX.Element[]>([]);
-  const [expectedBool, setExpectedBool] = useState(false);
-
   const [realityBool, setRealityBool] = useState(false);
 
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
@@ -97,9 +94,6 @@ export default function SessionEditConfirmationModal({
     setDuration('');
     setRemarks('');
     setLdrNotes('');
-
-    setDisplayedExpected([]);
-    setExpectedBool(false);
 
     setRealityBool(false);
 
@@ -126,29 +120,6 @@ export default function SessionEditConfirmationModal({
       onClose();
     }, 200);
   }, [dataHandler, onClose]);
-
-  const displayExpectedMembers = async (members: string) => {
-    if (members.length > 0) {
-      const membersA: string[] = members.split(',');
-      const text: JSX.Element[] = [];
-
-      if (membersA.length > 0) {
-        for (let key = 0; key < membersA.length; key += 1) {
-          text.push(
-            <Box key={`box-e-${key}`}>
-              <Text>{membersA[key]}</Text>
-            </Box>,
-          );
-        }
-      }
-
-      setDisplayedExpected(text);
-      setExpectedBool(true);
-    } else {
-      setDisplayedExpected([]);
-      setExpectedBool(false);
-    }
-  };
 
   const displayRealityMembers = async (members: string) => {
     if (members.length > 0) {
@@ -263,13 +234,6 @@ export default function SessionEditConfirmationModal({
       const ldrNote: string =
         modalDataField.ldrNotes !== undefined ? modalDataField.ldrNotes : '';
       setLdrNotes(ldrNote);
-
-      if (
-        modalDataField.expectedMName !== undefined &&
-        modalDataField.expectedMName?.length > 0
-      ) {
-        await displayExpectedMembers(modalDataField.expectedMName);
-      }
 
       if (
         modalDataField.realityM !== undefined &&
@@ -461,20 +425,6 @@ export default function SessionEditConfirmationModal({
                                 Leaders&apos; Notes
                               </Text>{' '}
                               <Text>{ldrNotes}</Text>
-                            </Stack>
-                          </ListItem>
-                        )}
-                        {expectedBool && (
-                          <ListItem key='exp-list'>
-                            <Stack direction='column'>
-                              <Text
-                                textTransform='uppercase'
-                                letterSpacing='tight'
-                                fontWeight='bold'
-                              >
-                                Expected Members
-                              </Text>{' '}
-                              {expectedM}
                             </Stack>
                           </ListItem>
                         )}

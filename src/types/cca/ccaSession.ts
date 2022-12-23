@@ -11,8 +11,6 @@ export interface CCASession {
   optional?: boolean;
   editableStr?: string;
   optionalStr?: string;
-  expectedM?: string;
-  expectedMName?: string;
   realityM?: string;
   remarks?: string;
   ldrNotes?: string;

@@ -107,23 +107,26 @@ export default function Sidebar({ session, onClose, ...rest }) {
   const router = useRouter();
   const [menu, setMenu] = useState(userMenu);
 
-  const setData = useCallback((sessionField: Session) => {
-    if (session !== null && session !== undefined) {
-      if (
-        hasPermission(sessionField.user.admin, actions.VIEW_FULL_ADMIN_PAGE)
-      ) {
-        setMenu(fullMenu);
-      } else if (
-        hasPermission(sessionField.user.admin, actions.VIEW_ADMIN_PAGE)
-      ) {
-        setMenu(adminMenu);
+  const setData = useCallback(
+    (sessionField: Session) => {
+      if (session !== null && session !== undefined) {
+        if (
+          hasPermission(sessionField.user.admin, actions.VIEW_FULL_ADMIN_PAGE)
+        ) {
+          setMenu(fullMenu);
+        } else if (
+          hasPermission(sessionField.user.admin, actions.VIEW_ADMIN_PAGE)
+        ) {
+          setMenu(adminMenu);
+        }
       }
-    }
-  }, [session]);
+    },
+    [session],
+  );
 
   useEffect(() => {
     setData(session);
-  
+
     if (router.events !== undefined && router.events !== null) {
       router.events.on('routeChangeComplete', onClose);
 
@@ -132,7 +135,7 @@ export default function Sidebar({ session, onClose, ...rest }) {
       };
     }
     return () => {};
-  }, [router, onClose, session]);
+  }, [setData, router, onClose, session]);
 
   return (
     <Box

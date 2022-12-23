@@ -69,9 +69,6 @@ export default function SessionModal({
   const [editable, setEditable] = useState(false);
   const [duration, setDuration] = useState(0);
 
-  const [expectedM, setDisplayedExpected] = useState<JSX.Element[]>([]);
-  const [expectedBool, setExpectedBool] = useState(false);
-
   const [dataM, setDataM] = useState<CCAAttendance[]>([]);
   const [realityBool, setRealityBool] = useState(false);
 
@@ -96,9 +93,6 @@ export default function SessionModal({
     setLdrNotes('');
     setEditable(false);
     setDuration(0);
-
-    setDisplayedExpected([]);
-    setExpectedBool(false);
 
     setDataM([]);
     setRealityBool(false);
@@ -164,26 +158,6 @@ export default function SessionModal({
     [handleModalCloseButton],
   );
 
-  const displayExpectedMembers = async (members: string) => {
-    if (members.length > 0) {
-      const membersA: string[] = members.split(',');
-      const text: JSX.Element[] = [];
-      for (let key = 0; key < membersA.length; key += 1) {
-        text.push(
-          <Box key={`box-e-${key}`}>
-            <Text>{membersA[key]}</Text>
-          </Box>,
-        );
-      }
-
-      setDisplayedExpected(text);
-      setExpectedBool(true);
-    } else {
-      setDisplayedExpected([]);
-      setExpectedBool(false);
-    }
-  };
-
   const displayRealityMembers = async (members: string) => {
     if (members.length > 0) {
       const membersA: CCAAttendance[] = JSON.parse(members) as CCAAttendance[];
@@ -239,13 +213,6 @@ export default function SessionModal({
       setCCAName(ccaNameField);
       setEditable(editableField);
       setDuration(durationField);
-
-      if (
-        modalDataField.expectedMName !== undefined &&
-        modalDataField.expectedMName?.length > 0
-      ) {
-        await displayExpectedMembers(modalDataField.expectedMName);
-      }
 
       if (
         modalDataField.realityM !== undefined &&
@@ -428,21 +395,6 @@ export default function SessionModal({
                                     Remarks
                                   </Text>
                                   <Text>{remarks}</Text>
-                                </Stack>
-                              </ListItem>
-                            )}
-
-                            {expectedBool && (
-                              <ListItem key='exp-list'>
-                                <Stack direction='column'>
-                                  <Text
-                                    textTransform='uppercase'
-                                    letterSpacing='tight'
-                                    fontWeight='bold'
-                                  >
-                                    Expected Members
-                                  </Text>
-                                  {expectedM}
                                 </Stack>
                               </ListItem>
                             )}

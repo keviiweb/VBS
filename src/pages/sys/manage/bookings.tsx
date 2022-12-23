@@ -234,7 +234,7 @@ export default function ManageBooking() {
 
       setLoadingData(false);
     }
-  }, [fetchData]);
+  }, [fetchData, loadingData]);
 
   const columns = useMemo(
     () => [

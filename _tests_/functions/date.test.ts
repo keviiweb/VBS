@@ -85,7 +85,6 @@ test('convertUnixToDate test 2', async () => {
   expect(convertUnixToDate(-123154151123)).toBeNull();
   expect(convertUnixToDate(-12213131)).toBeNull();
   expect(convertUnixToDate(-1231541511213)).toBeNull();
-  expect(convertUnixToDate(1212321312323)).toBeNull();
 });
 
 test('compareDate test 1', async () => {
@@ -94,9 +93,9 @@ test('compareDate test 1', async () => {
     1000;
   expect(compareDate(res1, 10)).toBe(false);
   const res2 =
-    moment.tz('2022-12-31', timeFormat, true, locale).startOf('day').valueOf() /
+    moment.tz('2034-12-31', timeFormat, true, locale).startOf('day').valueOf() /
     1000;
-  expect(compareDate(res2, 7)).toBe(true);
+  expect(compareDate(res2, 4)).toBe(true);
 });
 
 test('dateISO test 1', async () => {

@@ -1,11 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
-  provider = "mysql"
-  url = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -27,13 +27,13 @@ model User {
 }
 
 model Users {
-  id         String    @id @default(cuid())
-  name       String
-  email      String  @unique
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @default(now()) @db.DateTime(0)
-  admin      Int?     @default(0)
-  acceptedTerm Boolean @default(false)
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  created_at   DateTime @default(now()) @db.DateTime(0)
+  updated_at   DateTime @default(now()) @db.DateTime(0)
+  admin        Int?     @default(0)
+  acceptedTerm Boolean  @default(false)
 }
 
 model VerificationToken {
@@ -45,133 +45,149 @@ model VerificationToken {
 }
 
 model Venue {
-  id         String    @id @default(cuid())
-  name      String     @unique
-  image  String?
-  openingHours String
-  description  String
-  visible   Boolean @default(true)
-  capacity  Int
+  id            String   @id @default(cuid())
+  name          String   @unique
+  image         String?
+  openingHours  String
+  description   String
+  visible       Boolean  @default(true)
+  capacity      Int
+  isChildVenue  Boolean  @default(false)
+  isInstantBook Boolean  @default(false)
+  created_at    DateTime @default(now()) @db.DateTime(0)
+  updated_at    DateTime @default(now()) @db.DateTime(0)
   parentVenue   String?
-  isChildVenue  Boolean @default(false)
-  isInstantBook  Boolean @default(false)
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @default(now()) @db.DateTime(0)
 }
 
 model VenueBooking {
-  id      String    @id @default(cuid())
-  email     String      
-  venue     String
-  date      Int
-  cca     String
-  timingSlot    Int
-  purpose     String  @db.VarChar(500)
-  sessionEmail  String?
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @default(now()) @db.DateTime(0)
+  id           String   @id @default(cuid())
+  email        String
+  venue        String
+  timingSlot   Int
+  date         Int
+  created_at   DateTime @default(now()) @db.DateTime(0)
+  updated_at   DateTime @default(now()) @db.DateTime(0)
+  purpose      String   @db.VarChar(500)
+  cca          String
+  sessionEmail String?
 }
 
 model VenueBookingRequest {
-  id    String    @id @default(cuid())
-  email   String
-  venue     String
-  date    Int
-  timeSlots    String
-  isApproved    Boolean @default(false)
-  isRejected    Boolean @default(false)
-  isCancelled   Boolean @default(false)
-  purpose   String  @db.VarChar(500)
-  cca  String @default("PERSONAL")
-  sessionEmail  String?
+  id              String   @id @default(cuid())
+  email           String
+  venue           String
+  date            Int
+  isApproved      Boolean  @default(false)
+  isRejected      Boolean  @default(false)
+  isCancelled     Boolean  @default(false)
+  cca             String   @default("PERSONAL")
+  created_at      DateTime @default(now()) @db.DateTime(0)
+  updated_at      DateTime @default(now()) @db.DateTime(0)
+  purpose         String   @db.VarChar(500)
+  timeSlots       String
+  sessionEmail    String?
   conflictRequest String?
-  reason    String? 
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @default(now()) @db.DateTime(0)
+  reason          String?
 }
 
 model CCA {
-  id    String    @id @default(cuid())
+  id         String   @id @default(cuid())
   name       String   @unique(map: "name") @db.VarChar(50)
   categoryID String
-  workload    String  @default("minor")
-  image     String?
   created_at DateTime @default(now()) @db.DateTime(0)
   updated_at DateTime @default(now()) @db.DateTime(0)
+  workload   String   @default("minor")
+  image      String?
 }
 
 model CCACategory {
-  id    String    @id @default(cuid())
+  id         String   @id @default(cuid())
   name       String   @unique(map: "name") @db.VarChar(50)
   created_at DateTime @default(now()) @db.DateTime(0)
   updated_at DateTime @default(now()) @db.DateTime(0)
-}  
+}
 
 model CCARecord {
-  id    String    @id @default(cuid())
-  ccaID       String
-  sessionEmail    String
-  leader    Boolean @default(false)   
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @default(now()) @db.DateTime(0)
-}  
+  id           String   @id @default(cuid())
+  ccaID        String
+  sessionEmail String
+  leader       Boolean  @default(false)
+  created_at   DateTime @default(now()) @db.DateTime(0)
+  updated_at   DateTime @default(now()) @db.DateTime(0)
+}
 
 model CCAAttendance {
-  id    String    @id @default(cuid())
-  sessionID   String
-  ccaID     String
-  ccaAttendance   Float
+  id            String   @id @default(cuid())
+  sessionID     String
+  ccaID         String
+  ccaAttendance Float
   sessionEmail  String
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @default(now()) @db.DateTime(0)
+  created_at    DateTime @default(now()) @db.DateTime(0)
+  updated_at    DateTime @default(now()) @db.DateTime(0)
 }
 
 model CCASessions {
-  id    String    @id @default(cuid())
-  ccaID String 
-  name  String
-  date  Int
-  time  String
-  editable  Boolean @default(true)
-  optional  Boolean @default(false)
-  remarks String
-  ldrNotes  String
-  expectedM String?
-  expectedMName String?
+  id         String   @id @default(cuid())
+  name       String
+  date       Int
+  time       String
+  editable   Boolean  @default(true)
+  optional   Boolean  @default(false)
+  remarks    String
+  ldrNotes   String
   created_at DateTime @default(now()) @db.DateTime(0)
   updated_at DateTime @default(now()) @db.DateTime(0)
+  ccaID      String
 }
 
 model Announcement {
-  id    String    @id @default(cuid())
-  description   String
-  image       String
-  sessionEmail    String   
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @default(now()) @db.DateTime(0)
+  id           String   @id @default(cuid())
+  description  String
+  image        String
+  sessionEmail String
+  created_at   DateTime @default(now()) @db.DateTime(0)
+  updated_at   DateTime @default(now()) @db.DateTime(0)
 }
 
 model KEIPS {
-  id  String    @id @default(cuid())
-  matnet  String  @unique
-  topCCA    String @db.MediumText
-  allCCA    String @db.MediumText
-  bonusCCA  String @db.MediumText
-  contrasting Boolean
-  OSA Int
-  osaPercentile Float 
-  roomDraw  Int
+  id            String   @id @default(cuid())
+  matnet        String   @unique
+  topCCA        String   @db.MediumText
+  allCCA        String   @db.MediumText
+  bonusCCA      String   @db.MediumText
+  contrasting   Boolean
+  OSA           Int
+  osaPercentile Float
+  roomDraw      Int
   semesterStay  String
-  fulfilled Boolean
+  fulfilled     Boolean
+  created_at    DateTime @default(now()) @db.DateTime(0)
+  updated_at    DateTime @default(now()) @db.DateTime(0)
+}
+
+model Log {
+  id         String   @id @default(cuid())
+  location   String
+  username   String
+  content    String   @db.LongText
   created_at DateTime @default(now()) @db.DateTime(0)
   updated_at DateTime @default(now()) @db.DateTime(0)
 }
 
-model Log {
-  id      String    @id @default(cuid())
-  location  String
-  username   String
-  content   String @db.LongText
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @default(now()) @db.DateTime(0)
+model a467_c263_54ff_853e_b193485c5b32_20221223172317_vrepl {
+  id            String   @id
+  name          String
+  date          Int
+  time          String
+  editable      Boolean  @default(true)
+  optional      Boolean  @default(false)
+  remarks       String
+  ldrNotes      String
+  created_at    DateTime @default(now()) @db.DateTime(0)
+  updated_at    DateTime @default(now()) @db.DateTime(0)
+  ccaID         String
+  expectedM     String?
+  expectedMName String?
+
+  @@map("_0167a467_c263_54ff_853e_b193485c5b32_20221223172317_vrepl")
 }

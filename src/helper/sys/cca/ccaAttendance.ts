@@ -181,7 +181,6 @@ export const countTotalAttendanceHours = async (
   return 0;
 };
 
-
 /**
  * Deletes all attendance by the user in the CCA:
  *

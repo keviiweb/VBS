@@ -80,7 +80,9 @@ export default function VenueBookingModal({
   const [capacity, setCapacity] = useState('');
   const isChildVenue: boolean =
     modalData !== undefined && modalData !== null
-      ? modalData.isChildVenue !== null && modalData.isChilVenue !== undefined && modalData.isChildVenue
+      ? modalData.isChildVenue !== null &&
+        modalData.isChilVenue !== undefined &&
+        modalData.isChildVenue
       : false;
 
   const [hasChildVenue, setHasChildVenue] = useState(false);
@@ -411,7 +413,11 @@ export default function VenueBookingModal({
     setDateConfirm(dateParsedField);
     let str = '';
     for (let key = 0; key < timeSlotsField.length; key += 1) {
-      if (timeSlotsField[key] !== undefined && timeSlotsField[key] !== null && timeSlotsField[key].slot !== undefined) {
+      if (
+        timeSlotsField[key] !== undefined &&
+        timeSlotsField[key] !== null &&
+        timeSlotsField[key].slot !== undefined
+      ) {
         str += `\n${timeSlotsField[key].slot}`;
       }
     }
@@ -613,7 +619,7 @@ export default function VenueBookingModal({
   const countSlots = (slots: TimeSlot[]): number => {
     let counter: number = 0;
     for (let key = 0; key < slots.length; key += 1) {
-      if ((Object.prototype.hasOwnProperty.call(slots, key) as boolean)) {
+      if (Object.prototype.hasOwnProperty.call(slots, key) as boolean) {
         if (slots[key].slot !== undefined) {
           counter += 1;
         }
@@ -661,14 +667,22 @@ export default function VenueBookingModal({
         const rawS: TimeSlot[] = rawSlots.current;
         const slot: TimeSlot = rawS[idField];
 
-        if (slot !== null && slot !== undefined && slot.booked !== undefined && !slot.booked) { 
+        if (
+          slot !== null &&
+          slot !== undefined &&
+          slot.booked !== undefined &&
+          !slot.booked
+        ) {
           if (slots[idField] !== undefined && slots[idField].id !== undefined) {
             slots[idField] = {
               id: undefined,
               slot: undefined,
               booked: undefined,
             };
-          } else if (slots[idField] === undefined || slots[idField].id === undefined) {
+          } else if (
+            slots[idField] === undefined ||
+            slots[idField].id === undefined
+          ) {
             slots[idField] = slot;
           }
         }
@@ -683,9 +697,7 @@ export default function VenueBookingModal({
     if (checkerArray(content)) {
       try {
         for (let key = 0; key < content.length; key += 1) {
-          if (
-            (Object.prototype.hasOwnProperty.call(content, key) as boolean)
-          ) {
+          if (Object.prototype.hasOwnProperty.call(content, key) as boolean) {
             const newID: string = `${selectedVenue.current}${date.current}${key}`;
             if (content[key] !== null && content[key] !== undefined) {
               if (

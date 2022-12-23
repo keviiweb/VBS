@@ -43,16 +43,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (findCCA.status && findCCA.msg !== null && findCCA !== undefined) {
         const ldrRes: Result = await isLeader(parsedData.ccaID, session);
         if (userPermission || (ldrRes.status && (ldrRes.msg as boolean))) {
-          const expectedM: string =
-            parsedData.expectedM !== undefined
-              ? parsedData.expectedM.trim()
-              : '';
-
-          const expectedMName: string =
-            parsedData.expectedMName !== undefined
-              ? parsedData.expectedMName.trim()
-              : '';
-
           const sessionData: CCASession = {
             ccaID: parsedData.ccaID.trim(),
             date: parsedData.date,
@@ -62,8 +52,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             editable: true,
             remarks: parsedData.remarks?.trim(),
             ldrNotes: parsedData.ldrNotes?.trim(),
-            expectedM,
-            expectedMName,
           };
 
           const findSessRes: boolean = await isConflict(sessionData, session);

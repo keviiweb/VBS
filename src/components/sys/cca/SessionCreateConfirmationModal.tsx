@@ -64,9 +64,6 @@ export default function SessionCreateConfirmationModal({
   const [remarks, setRemarks] = useState('');
   const [ldrNotes, setLdrNotes] = useState('');
 
-  const [expectedM, setDisplayedExpected] = useState<JSX.Element[]>([]);
-  const [expectedBool, setExpectedBool] = useState(false);
-
   const [submitButtonPressed, setSubmitButtonPressed] = useState(false);
   const [isSubmitting, setIsSubmit] = useState(false);
 
@@ -83,9 +80,6 @@ export default function SessionCreateConfirmationModal({
     setDuration('');
     setRemarks('');
     setLdrNotes('');
-
-    setDisplayedExpected([]);
-    setExpectedBool(false);
 
     setSubmitButtonPressed(false);
     setIsSubmit(false);
@@ -106,30 +100,6 @@ export default function SessionCreateConfirmationModal({
       onClose();
     }, 200);
   }, [dataHandler, onClose]);
-
-  const displayExpectedMembers = async (members: string) => {
-    if (members.length > 0) {
-      const membersA: string[] = members.split(',');
-      const text: JSX.Element[] = [];
-
-      if (membersA.length > 0) {
-        for (let key = 0; key < membersA.length; key += 1) {
-          text.push(
-            <Box key={`box-e-${key}`}>
-              <Text>{membersA[key]}</Text>
-            </Box>,
-          );
-        }
-      }
-
-      if (text.length > 0) {
-        setDisplayedExpected(text);
-        setExpectedBool(true);
-      }
-    } else {
-      setDisplayedExpected([]);
-    }
-  };
 
   const handleSubmit = useCallback(async () => {
     setSubmitButtonPressed(true);
@@ -216,13 +186,6 @@ export default function SessionCreateConfirmationModal({
       const ldrNote: string =
         modalDataField.ldrNotes !== undefined ? modalDataField.ldrNotes : '';
       setLdrNotes(ldrNote);
-
-      if (
-        modalDataField.expectedMName !== undefined &&
-        modalDataField.expectedMName?.length > 0
-      ) {
-        await displayExpectedMembers(modalDataField.expectedMName);
-      }
 
       selectedData.current = JSON.parse(JSON.stringify(modalDataField));
 
@@ -393,20 +356,6 @@ export default function SessionCreateConfirmationModal({
                                 Leaders&apos; Notes
                               </Text>{' '}
                               <Text>{ldrNotes}</Text>
-                            </Stack>
-                          </ListItem>
-                        )}
-                        {expectedBool && (
-                          <ListItem key='exp-list'>
-                            <Stack direction='column'>
-                              <Text
-                                textTransform='uppercase'
-                                letterSpacing='tight'
-                                fontWeight='bold'
-                              >
-                                Expected Members
-                              </Text>{' '}
-                              {expectedM}
                             </Stack>
                           </ListItem>
                         )}

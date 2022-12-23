@@ -59,15 +59,13 @@ const MotionBox = motion(Box);
 
 const levels = {
   TIME: 0,
-  EXPECTATION: 1,
-  REALITY: 2,
-  REMARKS: 3,
+  REALITY: 1,
+  REMARKS: 2,
 };
 
 const progressBarLevel = {
-  TIME: 25,
-  EXPECTATION: 50,
-  REALITY: 75,
+  TIME: 33,
+  REALITY: 66,
   REMARKS: 100,
 };
 
@@ -77,9 +75,8 @@ const progressBarLevel = {
  * This modal consist of the entire workflow process of editing a session
  *
  * 1. The name, start time, end time is displayed and edited
- * 2. All members of the CCA is displayed for expected member section
- * 3. Attendance hours are clocked in
- * 4. Redirect to confirmation modal
+ * 2. Attendance hours are clocked in
+ * 3. Redirect to confirmation modal
  *
  * @param param0 Modal functions
  * @returns A modal
@@ -139,9 +136,6 @@ export default function SessionEditModal({
       Example: Yunus has attended 10 out of 12 hours. 
       If he attends a 3 hour optional session, his attendance will be boosted to 12 out of 12 hours`;
 
-  const expectedText: string =
-    'Members who are expected to turn up for the session';
-
   const realityText: string = `Members who turned up for the session can be selected, then assigned partial or
       full hours.`;
 
@@ -149,13 +143,6 @@ export default function SessionEditModal({
   const [disableButton, setDisableButton] = useState(false);
 
   const memberData = useRef<CCARecord[]>([]);
-
-  const [expectedMemberButtons, setExpectedMemberButtons] = useState<
-    JSX.Element[]
-  >([]);
-  const selectedExpectedMembers = useRef<string[]>([]);
-  const selectedExpectedMembersName = useRef<string[]>([]);
-  const [displayedExpected, setDisplayedExpected] = useState('');
 
   const selectedRealityMembers = useRef<string[]>([]);
   const [displayedReality, setDisplayedReality] = useState('');
@@ -208,12 +195,6 @@ export default function SessionEditModal({
     setDisableButton(false);
 
     memberData.current = [];
-
-    setExpectedMemberButtons([]);
-
-    selectedExpectedMembers.current = [];
-    selectedExpectedMembersName.current = [];
-    setDisplayedExpected('');
 
     setRealityMemberButtons([]);
     setDisplayedReality('');
@@ -355,26 +336,6 @@ export default function SessionEditModal({
     }
   };
 
-  const displayExpectedMembers = (members: string[]) => {
-    if (members.length > 0) {
-      let text: string = 'Selected members(s): ';
-      let counter: number = 0;
-
-      for (let key = 0; key < members.length; key += 1) {
-        counter += 1;
-        if (counter !== members.length) {
-          text += ` ${members[key]} ,`;
-        } else {
-          text += ` ${members[key]} `;
-        }
-      }
-
-      setDisplayedExpected(text);
-    } else {
-      setDisplayedExpected('');
-    }
-  };
-
   const displayRealityMembers = (members: CCAAttendance[]) => {
     if (members.length > 0) {
       let text: string = 'Selected members(s): ';
@@ -429,24 +390,9 @@ export default function SessionEditModal({
           selectedData.current = data;
 
           if (next) {
-            setProgressLevel(levels.EXPECTATION);
-            setProgressBar(progressBarLevel.EXPECTATION);
+            setProgressLevel(levels.REALITY);
+            setProgressBar(progressBarLevel.REALITY);
           }
-        }
-      }
-    } else if (progressLevel === levels.EXPECTATION) {
-      if (selectedData.current !== null) {
-        setError('');
-        const data: CCASession = selectedData.current;
-        data.expectedM = selectedExpectedMembers.current.toString();
-        data.expectedMName = selectedExpectedMembersName.current.toString();
-        selectedData.current = data;
-        if (next) {
-          setProgressLevel(levels.REALITY);
-          setProgressBar(progressBarLevel.REALITY);
-        } else {
-          setProgressLevel(levels.TIME);
-          setProgressBar(progressBarLevel.TIME);
         }
       }
     } else if (progressLevel === levels.REALITY) {
@@ -467,8 +413,8 @@ export default function SessionEditModal({
           setProgressLevel(levels.REMARKS);
           setProgressBar(progressBarLevel.REMARKS);
         } else {
-          setProgressLevel(levels.EXPECTATION);
-          setProgressBar(progressBarLevel.EXPECTATION);
+          setProgressLevel(levels.TIME);
+          setProgressBar(progressBarLevel.TIME);
         }
       }
     } else if (progressLevel === levels.REMARKS) {
@@ -515,17 +461,6 @@ export default function SessionEditModal({
 
     toast({
       description: optionalText,
-      status: 'info',
-      duration: 2000,
-      isClosable: true,
-    });
-  };
-
-  const handleExpectedHover = () => {
-    toast.closeAll();
-
-    toast({
-      description: expectedText,
       status: 'info',
       duration: 2000,
       isClosable: true,
@@ -617,31 +552,6 @@ export default function SessionEditModal({
     return res;
   };
 
-  const onExpectedMemberChange = useCallback(async (sessionEmail: string) => {
-    if (checkerString(sessionEmail)) {
-      const nameField: string = await fetchNameOfUser(sessionEmail);
-      const idField: string = await fetchUserIDByEmail(sessionEmail);
-      let members: string[] = selectedExpectedMembers.current;
-      let membersName: string[] = selectedExpectedMembersName.current;
-      if (members.includes(idField)) {
-        members = members.filter((item) => item !== idField);
-        if (checkerString(nameField)) {
-          membersName = membersName.filter((item) => item !== nameField);
-        }
-      } else {
-        members.push(idField);
-        if (checkerString(nameField)) {
-          membersName.push(nameField);
-        }
-      }
-
-      selectedExpectedMembers.current = members;
-      selectedExpectedMembersName.current = membersName;
-
-      displayExpectedMembers(selectedExpectedMembersName.current);
-    }
-  }, []);
-
   const onHoursChange = useCallback(
     async (email: string, nameField: string, hour: number) => {
       setError('');
@@ -694,36 +604,9 @@ export default function SessionEditModal({
     [],
   );
 
-  const generateExpectedMemberList = useCallback(async () => {
-    if (
-      memberData.current.length > 0 &&
-      selectedExpectedMembers.current.length > 0
-    ) {
-      const memberName: string[] = [];
-
-      for (
-        let key = 0;
-        key < selectedExpectedMembers.current.length;
-        key += 1
-      ) {
-        if (selectedExpectedMembers.current[key].length > 0) {
-          const s: string = selectedExpectedMembers.current[key];
-          const nameField: string = await fetchNameOfUserByID(s);
-          if (checkerString(nameField)) {
-            memberName.push(nameField);
-          }
-        }
-      }
-
-      selectedExpectedMembersName.current = memberName;
-      displayExpectedMembers(selectedExpectedMembersName.current);
-    }
-  }, []);
-
   const buildMemberList = useCallback(
     async (content: { count: number; res: CCARecord[]; }) => {
       if (content.res.length > 0 && content.count > 0) {
-        const buttons: JSX.Element[] = [];
         const realityButtons: JSX.Element[] = [];
 
         for (let key = 0; key < content.res.length; key += 1) {
@@ -733,17 +616,6 @@ export default function SessionEditModal({
             record.sessionName !== undefined
           ) {
             const { sessionEmail, sessionName } = record;
-
-            buttons.push(
-              <MemberButton
-                reality={false}
-                key={sessionEmail}
-                handleClick={onExpectedMemberChange}
-                newKey={sessionEmail}
-                id={sessionEmail}
-                name={sessionName}
-              />,
-            );
 
             realityButtons.push(
               <MemberButton
@@ -759,12 +631,10 @@ export default function SessionEditModal({
         }
 
         memberData.current = content.res;
-        setExpectedMemberButtons(buttons);
         setRealityMemberButtons(realityButtons);
-        await generateExpectedMemberList();
       }
     },
-    [onExpectedMemberChange, onHoursChange, generateExpectedMemberList],
+    [onHoursChange],
   );
 
   const generateMemberList = useCallback(async () => {
@@ -874,12 +744,6 @@ export default function SessionEditModal({
       setOptional(opt);
       optionalDB.current = opt;
       optionalStrDB.current = opt ? 'Yes' : 'No';
-
-      const expectedM: string =
-        modalDataField.expectedM !== undefined ? modalDataField.expectedM : '';
-      if (expectedM.length > 0) {
-        selectedExpectedMembers.current = expectedM.split(',');
-      }
 
       const realityM: string =
         modalDataField.realityM !== undefined ? modalDataField.realityM : '';
@@ -1113,81 +977,6 @@ export default function SessionEditModal({
                             </Checkbox>
                             <InfoIcon onMouseEnter={handleOptionalHover} />
                           </Stack>
-                        </Stack>
-                      </Flex>
-                    )}
-
-                  {modalData !== null &&
-                    modalData !== undefined &&
-                    !loadingData &&
-                    progressLevel === levels.EXPECTATION && (
-                      <Flex
-                        w='full'
-                        h='full'
-                        alignItems='center'
-                        justifyContent='center'
-                        mt={30}
-                      >
-                        <Stack spacing={10}>
-                          <Stack
-                            w={{ base: 'full', md: '500px', lg: '500px' }}
-                            direction='row'
-                          >
-                            {selectedData.current !== null &&
-                              selectedData.current.duration !== undefined &&
-                              selectedData.current.duration !== null && (
-                                <List spacing={5}>
-                                  <ListItem>
-                                    <Stack direction='row'>
-                                      <Text
-                                        textTransform='uppercase'
-                                        letterSpacing='tight'
-                                        fontWeight='bold'
-                                      >
-                                        Duration
-                                      </Text>{' '}
-                                      <Text>
-                                        {selectedData.current.duration} Hours
-                                      </Text>
-                                    </Stack>
-                                  </ListItem>
-                                </List>
-                              )}
-                          </Stack>
-
-                          {expectedMemberButtons.length > 0 && (
-                            <Stack
-                              w={{ base: 'full', md: '500px', lg: '500px' }}
-                            >
-                              <FormLabel>
-                                <Stack direction='row'>
-                                  <Text
-                                    w={40}
-                                    textTransform='uppercase'
-                                    lineHeight='5'
-                                    fontWeight='bold'
-                                    letterSpacing='tight'
-                                    mr={5}
-                                  >
-                                    Expected Members
-                                  </Text>
-                                  <InfoIcon
-                                    onMouseEnter={handleExpectedHover}
-                                  />
-                                </Stack>
-                              </FormLabel>
-
-                              <Text>{displayedExpected}</Text>
-                              <Stack
-                                direction={['column', 'row']}
-                                align='center'
-                              >
-                                <ButtonGroup display='flex' flexWrap='wrap'>
-                                  {expectedMemberButtons}
-                                </ButtonGroup>
-                              </Stack>
-                            </Stack>
-                          )}
                         </Stack>
                       </Flex>
                     )}

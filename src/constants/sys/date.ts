@@ -47,9 +47,6 @@ export const convertDateToUnix = (date: string): number => {
 /**
  * Converts a Unix timestamp in seconds to a Date object
  *
- * Checks if the date provided is within 1 year of today's date,
- * else marks it as invalid and return null
- *
  * @param date
  * @returns A Date object or Null
  */
@@ -60,11 +57,12 @@ export const convertUnixToDate = (date: number): Date | null => {
 
   const converted = moment.tz(date * 1000, locale).startOf('day');
   if (converted.isValid()) {
+    /* 
     const today = moment.tz(new Date(), locale).startOf('day');
     const diff = converted.diff(today, 'years', true);
     if (diff > 1 || diff < -1) {
       return null;
-    }
+    } */
     return converted.toDate();
   } else {
     return null;
@@ -87,7 +85,6 @@ export const convertUnixToDate = (date: number): Date | null => {
  */
 export const compareDate = (comparedDate: number, number: number): boolean => {
   const compared: Date | null = convertUnixToDate(comparedDate);
-
   if (compared !== null) {
     let date: Date = fetchCurrentDate();
     date = addDays(date, locale, number);

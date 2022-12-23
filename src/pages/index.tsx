@@ -28,6 +28,10 @@ export default function Index({ API_KEY }) {
 
 export const getServerSideProps: GetServerSideProps = async () => ({
   props: {
-    API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY || null,
+    API_KEY:
+      process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY !== null &&
+      process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY !== undefined
+        ? process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY.trim()
+        : null,
   },
 });

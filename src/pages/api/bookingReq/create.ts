@@ -70,11 +70,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         checkerString(typeField) &&
         checkerString(purposeField)
       ) {
-
         // clean timeslots
         const timeSlotsCleaned: TimeSlot[] = [];
         for (let key = 0; key < timeSlotsField.length; key++) {
-          if (timeSlotsField[key] !== undefined && timeSlotsField[key] !== null && timeSlotsField[key].id !== undefined) {
+          if (
+            timeSlotsField[key] !== undefined &&
+            timeSlotsField[key] !== null &&
+            timeSlotsField[key].id !== undefined
+          ) {
             timeSlotsCleaned.push(timeSlotsField[key]);
           }
         }
@@ -100,7 +103,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             session.user.admin,
             actions.MANAGE_BOOKING_REQUEST,
           );
-          
+
           if (checkLdr.status) {
             if (dbSearch.status) {
               const ccaNameMsg: CCA = dbSearch.msg;
@@ -172,7 +175,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 bookingID = bookingRequest.id;
                 isBookingCreated = true;
               }
-            } 
+            }
 
             if (isBookingCreated && bookingRequest !== null) {
               isInstantBooked = await isInstantBook(venue, session);

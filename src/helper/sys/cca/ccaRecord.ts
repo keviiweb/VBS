@@ -437,7 +437,11 @@ export const deleteCCARecord = async (
 
     if (query !== undefined && query !== null) {
       if (data.sessionEmail !== undefined) {
-        const deleteAttendanceRes: Result = await deleteAttendanceByUser(data.ccaID, data.sessionEmail, session);
+        const deleteAttendanceRes: Result = await deleteAttendanceByUser(
+          data.ccaID,
+          data.sessionEmail,
+          session,
+        );
         if (deleteAttendanceRes.status) {
           result = {
             status: true,
@@ -458,7 +462,6 @@ export const deleteCCARecord = async (
           msg: '',
         };
       }
- 
     } else {
       await logger(
         'deleteCCARecord',

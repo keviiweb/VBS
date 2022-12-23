@@ -108,16 +108,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 userPermission ||
                 (ldrRes.status && (ldrRes.msg as boolean))
               ) {
-                const expectedM: string =
-                  parsedData.expectedM !== undefined
-                    ? parsedData.expectedM.trim()
-                    : '';
-
-                const expectedMName: string =
-                  parsedData.expectedMName !== undefined
-                    ? parsedData.expectedMName.trim()
-                    : '';
-
                 const sessionData: CCASession = {
                   id: parsedData.id?.trim(),
                   ccaID: parsedData.ccaID.trim(),
@@ -127,8 +117,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   optional: parsedData.optional === true,
                   remarks: parsedData.remarks?.trim(),
                   ldrNotes: parsedData.ldrNotes?.trim(),
-                  expectedM: expectedM.trim(),
-                  expectedMName: expectedMName.trim(),
                   updated_at: new Date().toISOString(),
                 };
 

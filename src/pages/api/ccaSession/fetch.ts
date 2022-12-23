@@ -10,6 +10,7 @@ import { findCCAbyID } from '@helper/sys/cca/cca';
 import {
   countAllCCASessionByCCAID,
   fetchAllCCASessionByCCAID,
+  lockSession,
 } from '@helper/sys/cca/ccaSession';
 import { fetchAllCCAAttendanceBySession } from '@helper/sys/cca/ccaAttendance';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
@@ -18,8 +19,13 @@ import {
   convertUnixToDate,
   dateISO,
   calculateDuration,
+  convertDateToUnix,
+  fetchCurrentDate,
+  compareDate,
 } from '@constants/sys/date';
 import { splitHours } from '@constants/sys/helper';
+import hasPermission from '@constants/sys/permission';
+import { actions } from '@constants/sys/admin';
 
 /**
  * Fetches the list of CCA sessions filtered by CCA ID
@@ -84,6 +90,53 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 const { time } = record;
                 const { start, end } = await splitHours(time);
                 if (start !== null && end !== null) {
+                  let editableStr: string =
+                    record.editable !== undefined && record.editable
+                      ? 'Yes'
+                      : 'No';
+
+                  if (record.editable !== undefined && record.editable) {
+                    const currentDate: number = convertDateToUnix(
+                      dateISO(fetchCurrentDate()),
+                    );
+                    const sessionDate: number = record.date;
+                    const threshold: number =
+                      process.env.SESSION_EDITABLE_DAY !== undefined
+                        ? Number(process.env.SESSION_EDITABLE_DAY)
+                        : 14;
+
+                    const userPermission: boolean = hasPermission(
+                      session.user.admin,
+                      actions.OVERRIDE_EDIT_SESSION,
+                    );
+
+                    if (
+                      sessionDate <= currentDate &&
+                      !compareDate(sessionDate, threshold)
+                    ) {
+                      let lockSessionSuccess = true;
+                      if (record.editable !== undefined && record.editable) {
+                        const lockRes: Result = await lockSession(
+                          record,
+                          session,
+                        );
+                        if (!lockRes.status) {
+                          lockSessionSuccess = false;
+                          result = {
+                            status: false,
+                            error: lockRes.error,
+                            msg: '',
+                          };
+                          res.status(200).send(result);
+                          res.end();
+                        }
+                      }
+
+                      editableStr = 'No';
+                      record.editable = false;
+                    }
+                  }
+
                   const duration: number = await calculateDuration(start, end);
 
                   const dateObj: Date | null = convertUnixToDate(record.date);
@@ -93,10 +146,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     dateStr = dateISO(dateObj);
                   }
 
-                  const editableStr: string =
-                    record.editable !== undefined && record.editable
-                      ? 'Yes'
-                      : 'No';
                   const optionalStr: string =
                     record.optional !== undefined && record.optional
                       ? 'Yes'
@@ -147,8 +196,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                       optionalStr,
                       remarks: record.remarks,
                       ldrNotes: record.ldrNotes,
-                      expectedM: record.expectedM,
-                      expectedMName: record.expectedMName,
                       realityM: JSON.stringify(attendance),
                     };
 
