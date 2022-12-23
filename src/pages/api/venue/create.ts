@@ -81,7 +81,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         try {
           await fs.writeFile(pathToWriteImage, image);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
 
         const venueData: Venue = {

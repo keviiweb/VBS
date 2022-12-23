@@ -111,7 +111,7 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         setChildVenues(content.msg);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     setSubmitButtonPressed(false);
   };

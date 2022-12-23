@@ -51,7 +51,6 @@ export default function ManageVenues(props: any) {
         },
       });
       const content: Result = await rawResponse.json();
-      console.log(content);
       if (content.status) {
         toast({
           title: 'Logs',
@@ -87,7 +86,6 @@ export default function ManageVenues(props: any) {
         },
       });
       const content: Result = await rawResponse.json();
-      console.log(content);
       if (content.status) {
         toast({
           title: 'Booking',
@@ -123,7 +121,6 @@ export default function ManageVenues(props: any) {
         },
       });
       const content: Result = await rawResponse.json();
-      console.log(content);
       if (content.status) {
         toast({
           title: 'Booking Request',

@@ -79,8 +79,8 @@ export default function VenueBookingModal({
   const [openingHours, setOpeningHours] = useState('');
   const [capacity, setCapacity] = useState('');
   const isChildVenue: boolean =
-    modalData.isChildVenue !== null && modalData.isChilVenue !== undefined
-      ? modalData.isChildVenue
+    modalData !== undefined && modalData !== null
+      ? modalData.isChildVenue !== null && modalData.isChilVenue !== undefined && modalData.isChildVenue
       : false;
 
   const [hasChildVenue, setHasChildVenue] = useState(false);
@@ -195,6 +195,8 @@ export default function VenueBookingModal({
 
     for (let key = 0; key < timeSlotsField.length; key += 1) {
       if (
+        timeSlotsField[key] !== undefined &&
+        timeSlotsField[key] !== null &&
         timeSlotsField[key].id !== null &&
         timeSlotsField[key].id !== undefined
       ) {
@@ -409,7 +411,7 @@ export default function VenueBookingModal({
     setDateConfirm(dateParsedField);
     let str = '';
     for (let key = 0; key < timeSlotsField.length; key += 1) {
-      if (timeSlotsField[key].slot !== undefined) {
+      if (timeSlotsField[key] !== undefined && timeSlotsField[key] !== null && timeSlotsField[key].slot !== undefined) {
         str += `\n${timeSlotsField[key].slot}`;
       }
     }
@@ -611,7 +613,7 @@ export default function VenueBookingModal({
   const countSlots = (slots: TimeSlot[]): number => {
     let counter: number = 0;
     for (let key = 0; key < slots.length; key += 1) {
-      if (Object.prototype.hasOwnProperty.call(slots, key) !== undefined) {
+      if ((Object.prototype.hasOwnProperty.call(slots, key) as boolean)) {
         if (slots[key].slot !== undefined) {
           counter += 1;
         }
@@ -626,9 +628,10 @@ export default function VenueBookingModal({
       let text: string = 'Selected timeslot(s): ';
       let counter: number = 0;
       const total: number = countSlots(slots);
+
       if (slots.length > 0) {
         for (let key = 0; key < slots.length; key += 1) {
-          if (Object.prototype.hasOwnProperty.call(slots, key) !== undefined) {
+          if (slots[key] !== null && slots[key] !== undefined) {
             if (slots[key].slot !== undefined) {
               counter += 1;
               if (counter !== total) {
@@ -657,14 +660,15 @@ export default function VenueBookingModal({
       if (rawSlots.current.length > 0) {
         const rawS: TimeSlot[] = rawSlots.current;
         const slot: TimeSlot = rawS[idField];
-        if (slot.booked !== undefined && !slot.booked) {
-          if (slots[idField] !== null && slots[idField] !== undefined) {
+
+        if (slot !== null && slot !== undefined && slot.booked !== undefined && !slot.booked) { 
+          if (slots[idField] !== undefined && slots[idField].id !== undefined) {
             slots[idField] = {
               id: undefined,
               slot: undefined,
               booked: undefined,
             };
-          } else {
+          } else if (slots[idField] === undefined || slots[idField].id === undefined) {
             slots[idField] = slot;
           }
         }
@@ -680,35 +684,37 @@ export default function VenueBookingModal({
       try {
         for (let key = 0; key < content.length; key += 1) {
           if (
-            Object.prototype.hasOwnProperty.call(content, key) !== undefined
+            (Object.prototype.hasOwnProperty.call(content, key) as boolean)
           ) {
             const newID: string = `${selectedVenue.current}${date.current}${key}`;
-            if (
-              content[key].booked !== undefined &&
-              content[key].booked !== null &&
-              !(content[key].booked as boolean)
-            ) {
-              buttons.push(
-                <TimeSlotButton
-                  disable={false}
-                  key={newID}
-                  handleClick={handleClickTimeSlots}
-                  newKey={newID}
-                  id={key}
-                  slot={content[key].slot}
-                />,
-              );
-            } else {
-              buttons.push(
-                <TimeSlotButton
-                  handleClick={null}
-                  disable
-                  key={newID}
-                  newKey={newID}
-                  id={key}
-                  slot={content[key].slot}
-                />,
-              );
+            if (content[key] !== null && content[key] !== undefined) {
+              if (
+                content[key].booked !== undefined &&
+                content[key].booked !== null &&
+                !(content[key].booked as boolean)
+              ) {
+                buttons.push(
+                  <TimeSlotButton
+                    disable={false}
+                    key={newID}
+                    handleClick={handleClickTimeSlots}
+                    newKey={newID}
+                    id={key}
+                    slot={content[key].slot}
+                  />,
+                );
+              } else {
+                buttons.push(
+                  <TimeSlotButton
+                    handleClick={null}
+                    disable
+                    key={newID}
+                    newKey={newID}
+                    id={key}
+                    slot={content[key].slot}
+                  />,
+                );
+              }
             }
           }
         }

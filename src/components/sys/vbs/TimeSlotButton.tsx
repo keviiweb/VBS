@@ -32,7 +32,7 @@ export default function TimeSlotButton({
     <Button
       isDisabled={disable}
       colorScheme='gray'
-      variant={selected ? 'solid' : 'outline'}
+      variant='outline'
       size='sm'
       margin='8px'
       key={newKey}

@@ -541,7 +541,6 @@ export default function LeaderModalComponent({
   const fetchMembers = useCallback(
     async (id: string) => {
       if (checkerString(id)) {
-        console.log('fetchMembers called');
         try {
           const rawResponse = await fetch('/api/ccaRecord/fetch', {
             method: 'POST',
@@ -557,7 +556,6 @@ export default function LeaderModalComponent({
           });
           const content: Result = await rawResponse.json();
           if (content.status) {
-            console.log(content.msg);
             await includeActionButton(content.msg, choice.MEMBER);
           }
         } catch (error) {
@@ -669,7 +667,6 @@ export default function LeaderModalComponent({
         pageSize !== pageSizeDB.current ||
         pageIndex !== pageIndexDB.current
       ) {
-        console.log('onTableChange called');
         pageSizeDB.current = pageSize;
         pageIndexDB.current = pageIndex;
 

@@ -68,9 +68,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         checkerString(typeField) &&
         checkerString(purposeField)
       ) {
+
+        // clean timeslots
+        const timeSlotsCleaned: TimeSlot[] = [];
+        for (let key = 0; key < timeSlotsField.length; key++) {
+          if (timeSlotsField[key] !== undefined && timeSlotsField[key] !== null && timeSlotsField[key].id !== undefined) {
+            timeSlotsCleaned.push(timeSlotsField[key]);
+          }
+        }
+
         const convertedDate: number = convertDateToUnix(dateField);
         const slots: string = convertSlotToArray(
-          timeSlotsField,
+          timeSlotsCleaned,
           false,
         ) as string;
 
@@ -154,15 +163,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 bookingID = bookingRequest.id;
                 isBookingCreated = true;
               }
-            } else {
-              result = {
-                status: false,
-                error: 'Booking request not created',
-                msg: '',
-              };
-              res.status(200).send(result);
-              res.end();
-            }
+            } 
 
             if (isBookingCreated && bookingRequest !== null) {
               isInstantBooked = await isInstantBook(venue, session);
@@ -321,7 +322,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.end();
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     result = { status: false, error: 'Information of wrong type', msg: '' };
     res.status(200).send(result);
     res.end();

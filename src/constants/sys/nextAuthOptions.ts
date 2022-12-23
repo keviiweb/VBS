@@ -502,7 +502,7 @@ export const options: NextAuthOptions = {
           return true;
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
         await logger('nextAuthOptions Signin', 'user', error.message);
       }
 
@@ -536,7 +536,7 @@ export const options: NextAuthOptions = {
           return session;
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
         await logger('nextAuthOptions Session', 'user', error.message);
       }
 

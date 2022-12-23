@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { Box, CloseButton, Flex, Text } from '@chakra-ui/react';
@@ -110,8 +110,8 @@ export default function Sidebar({ session, onClose, ...rest }) {
   const router = useRouter();
   const [menu, setMenu] = useState(userMenu);
 
-  useEffect(() => {
-    function setData(sessionField: Session) {
+  const setData = useCallback((sessionField: Session) => {
+    if (session !== null && session !== undefined) {
       if (
         hasPermission(sessionField.user.admin, actions.VIEW_FULL_ADMIN_PAGE)
       ) {
@@ -122,10 +122,11 @@ export default function Sidebar({ session, onClose, ...rest }) {
         setMenu(adminMenu);
       }
     }
-    if (session !== null && session !== undefined) {
-      setData(session);
-    }
+  }, [session]);
 
+  useEffect(() => {
+    setData(session);
+  
     if (router.events !== undefined && router.events !== null) {
       router.events.on('routeChangeComplete', onClose);
 

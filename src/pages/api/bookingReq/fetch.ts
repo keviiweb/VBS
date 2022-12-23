@@ -227,7 +227,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               );
               const user: User = userRes.msg;
               let username: string = '';
-              if (checkerString(user.name)) {
+              if (user !== null && user !== undefined && checkerString(user.name)) {
                 username = user.name;
               }
 

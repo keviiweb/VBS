@@ -72,7 +72,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.end();
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     result = { status: false, error: 'Information of wrong type', msg: '' };
     res.status(200).send(result);
     res.end();

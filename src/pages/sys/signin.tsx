@@ -50,7 +50,7 @@ export default function SignIn(props: any) {
           callbackUrl: `${url}/sys`,
         });
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
 
       setLoading(false);
