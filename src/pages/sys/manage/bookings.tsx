@@ -162,13 +162,11 @@ export default function ManageBooking() {
   }, [includeActionButton]);
 
   const fetchData = useCallback(async () => {
-    setLoadingData(true);
     setSubmitButtonPressed(true);
     setData([]);
 
     await fetchDataFromDB();
 
-    setLoadingData(false);
     setSubmitButtonPressed(false);
   }, [fetchDataFromDB]);
 
@@ -233,8 +231,10 @@ export default function ManageBooking() {
   useEffect(() => {
     if (loadingData) {
       fetchData();
+
+      setLoadingData(false);
     }
-  }, [fetchData, loadingData]);
+  }, [fetchData]);
 
   const columns = useMemo(
     () => [
