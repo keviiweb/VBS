@@ -11,6 +11,7 @@ import { actions } from '@constants/sys/admin';
 import { findAllCCA, findCCAbyID, findCCAbyName } from '@helper/sys/cca/cca';
 import { fetchUserByEmail } from '@helper/sys/misc/user';
 import { logger } from '@helper/sys/misc/logger';
+import { deleteAttendanceByUser } from '@helper/sys/cca/ccaAttendance';
 
 /**
  * Finds all CCA Records filtered by the user email
@@ -435,11 +436,29 @@ export const deleteCCARecord = async (
     });
 
     if (query !== undefined && query !== null) {
-      result = {
-        status: true,
-        error: '',
-        msg: 'Successfully deleted record',
-      };
+      if (data.sessionEmail !== undefined) {
+        const deleteAttendanceRes: Result = await deleteAttendanceByUser(data.ccaID, data.sessionEmail, session);
+        if (deleteAttendanceRes.status) {
+          result = {
+            status: true,
+            error: '',
+            msg: 'Successfully deleted record',
+          };
+        } else {
+          result = {
+            status: false,
+            error: deleteAttendanceRes.error,
+            msg: '',
+          };
+        }
+      } else {
+        result = {
+          status: false,
+          error: `Failed to delete attendance for user`,
+          msg: '',
+        };
+      }
+ 
     } else {
       await logger(
         'deleteCCARecord',

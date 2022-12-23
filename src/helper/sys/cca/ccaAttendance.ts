@@ -181,6 +181,70 @@ export const countTotalAttendanceHours = async (
   return 0;
 };
 
+
+/**
+ * Deletes all attendance by the user in the CCA:
+ *
+ * 1. CCA ID
+ * 2. Email address of the user
+ *
+ * @param ccaID CCA ID
+ * @param email Email of user
+ * @returns A Result containing the status wrapped in a Promise
+ */
+export const deleteAttendanceByUser = async (
+  ccaID: string,
+  sessionEmail: string,
+  session: Session,
+): Promise<Result> => {
+  let result: Result = { status: false, error: null, msg: '' };
+
+  try {
+    const query: CCAAttendance = await prisma.cCAAttendance.deleteMany({
+      where: {
+        AND: [
+          {
+            ccaID: {
+              equals: ccaID,
+            },
+          },
+          {
+            sessionEmail: {
+              equals: sessionEmail,
+            },
+          },
+        ],
+      },
+    });
+
+    if (query !== undefined && query !== null) {
+      await logger(
+        'deleteAttendanceByUser',
+        session.user.email,
+        'Successfully deleted attendance',
+      );
+      result = {
+        status: true,
+        error: null,
+        msg: 'Successfully deleted attendance',
+      };
+    } else {
+      await logger(
+        'deleteAttendanceByUser',
+        session.user.email,
+        'Failed to delete attendance',
+      );
+      result = { status: false, error: 'Failed to delete attendance', msg: '' };
+    }
+  } catch (error) {
+    console.error(error);
+    await logger('deleteAttendanceByUser', session.user.email, error.message);
+    result = { status: false, error: 'Failed to delete attendance', msg: '' };
+  }
+
+  return result;
+};
+
 /**
  * Deletes the specified attendance by four criterias:
  *

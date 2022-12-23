@@ -589,13 +589,13 @@ export default function LeaderModalComponent({
   );
 
   const successEditSession = useCallback(async () => {
-    if (checkerString(ccaRecordIDDB.current)) {
+    if (checkerString(ccaRecordIDDB.current) && selectionChoiceDB.current === choice.SESSION) {
       await fetchSession(ccaRecordIDDB.current);
     }
   }, [fetchSession]);
 
   const successCreateMember = useCallback(async () => {
-    if (checkerString(ccaRecordIDDB.current)) {
+    if (checkerString(ccaRecordIDDB.current) && selectionChoiceDB.current === choice.MEMBER) {
       await fetchMembers(ccaRecordIDDB.current);
     }
   }, [fetchMembers]);
