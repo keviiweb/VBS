@@ -6,11 +6,6 @@ import Head from 'next/head';
 import '@styles/sys/Calendar.css';
 import '@styles/landing/styles.css';
 
-import '@fullcalendar/common/main.css';
-import '@fullcalendar/daygrid/main.css';
-import '@fullcalendar/timegrid/main.css';
-import '@fullcalendar/list/main.css';
-
 /**
  * Main entry point of the entire application.
  *

@@ -2,26 +2,19 @@
  * @type {import('next').NextConfig}
  */
 
-const nextConfig = {
-  transpilePackages: [
-    '@fullcalendar/common',
-    '@fullcalendar/react',
-    '@fullcalendar/timegrid',
-    '@fullcalendar/daygrid',
-    '@fullcalendar/interaction',
-    '@fullcalendar/list',
-  ],
-};
+const withTM = require('next-transpile-modules')([
+  '@fullcalendar/common',
+  '@fullcalendar/react',
+  '@fullcalendar/timegrid',
+  '@fullcalendar/daygrid',
+  '@fullcalendar/interaction',
+  '@fullcalendar/list',
+]);
 
-module.exports = nextConfig({
+module.exports = withTM({
   reactStrictMode: false,
   optimizeFonts: false,
   images: {
-    domains: [
-      'https://vbs-kevii.vercel.app/',
-      'https://vbs-hikoya.vercel.app',
-      'https://kevii-vbs.herokuapp.com/',
-      'https://kevii.azurewebsites.net/',
-    ],
+    domains: ['https://kevii.azurewebsites.net/'],
   },
 });
