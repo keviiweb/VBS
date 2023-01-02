@@ -480,8 +480,7 @@ export const options: NextAuthOptions = {
 
       try {
         if (
-          Object.prototype.hasOwnProperty.call(email, 'verificationRequest') !==
-          undefined
+          Object.prototype.hasOwnProperty.call(email, 'verificationRequest') as boolean
         ) {
           isAllowedToSignIn = false;
 

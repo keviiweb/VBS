@@ -2,16 +2,18 @@
  * @type {import('next').NextConfig}
  */
 
-const withTM = require('next-transpile-modules')([
-  '@fullcalendar/common',
-  '@fullcalendar/react',
-  '@fullcalendar/timegrid',
-  '@fullcalendar/daygrid',
-  '@fullcalendar/interaction',
-  '@fullcalendar/list',
-]);
+const nextConfig = {
+  transpilePackages: [
+    '@fullcalendar/common',
+    '@fullcalendar/react',
+    '@fullcalendar/timegrid',
+    '@fullcalendar/daygrid',
+    '@fullcalendar/interaction',
+    '@fullcalendar/list',
+  ],
+};
 
-module.exports = withTM({
+module.exports = nextConfig({
   reactStrictMode: false,
   optimizeFonts: false,
   images: {

@@ -173,21 +173,3 @@ model Log {
   created_at DateTime @default(now()) @db.DateTime(0)
   updated_at DateTime @default(now()) @db.DateTime(0)
 }
-
-model a467_c263_54ff_853e_b193485c5b32_20221223172317_vrepl {
-  id            String   @id
-  name          String
-  date          Int
-  time          String
-  editable      Boolean  @default(true)
-  optional      Boolean  @default(false)
-  remarks       String
-  ldrNotes      String
-  created_at    DateTime @default(now()) @db.DateTime(0)
-  updated_at    DateTime @default(now()) @db.DateTime(0)
-  ccaID         String
-  expectedM     String?
-  expectedMName String?
-
-  @@map("_0167a467_c263_54ff_853e_b193485c5b32_20221223172317_vrepl")
-}
