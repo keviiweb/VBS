@@ -619,7 +619,11 @@ export default function VenueBookingModal({
   const countSlots = (slots: TimeSlot[]): number => {
     let counter: number = 0;
     for (let key = 0; key < slots.length; key += 1) {
-      if (Object.prototype.hasOwnProperty.call(slots, key) as boolean) {
+      if (
+        slots !== null &&
+        slots !== undefined &&
+        (Object.prototype.hasOwnProperty.call(slots, key) as boolean)
+      ) {
         if (slots[key].slot !== undefined) {
           counter += 1;
         }
@@ -697,7 +701,11 @@ export default function VenueBookingModal({
     if (checkerArray(content)) {
       try {
         for (let key = 0; key < content.length; key += 1) {
-          if (Object.prototype.hasOwnProperty.call(content, key) as boolean) {
+          if (
+            content !== null &&
+            content !== undefined &&
+            (Object.prototype.hasOwnProperty.call(content, key) as boolean)
+          ) {
             const newID: string = `${selectedVenue.current}${date.current}${key}`;
             if (content[key] !== null && content[key] !== undefined) {
               if (

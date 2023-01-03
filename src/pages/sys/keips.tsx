@@ -314,12 +314,6 @@ export default function KEIPSComponent() {
           onClose={() => setSubmitButtonPressed(false)}
         />
 
-        {checkerString(errorMsg) && (
-          <Stack align='center'>
-            <Text>{errorMsg}</Text>
-          </Stack>
-        )}
-
         {!successData && (
           <Box rounded='lg' bg='white' boxShadow='lg' p={8}>
             <form onSubmit={handleSubmit}>
@@ -360,6 +354,14 @@ export default function KEIPSComponent() {
           <Box mt={30}>
             <Stack align='center' justify='center'>
               <Text>MATNET {matnet} is not in our database.</Text>
+            </Stack>
+          </Box>
+        )}
+
+        {checkerString(errorMsg) && (
+          <Box mt={30}>
+            <Stack align='center' justify='center'>
+              <Text>{errorMsg}</Text>
             </Stack>
           </Box>
         )}

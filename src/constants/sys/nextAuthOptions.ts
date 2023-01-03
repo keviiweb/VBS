@@ -8,6 +8,7 @@ import { User } from 'types/misc/user';
 import { Session } from 'next-auth/core/types';
 import { logger } from '@helper/sys/misc/logger';
 import { NextAuthOptions } from 'next-auth';
+import { checkerString } from '@constants/sys/helper';
 
 /**
  * Generates an email using the given template
@@ -480,23 +481,27 @@ export const options: NextAuthOptions = {
 
       try {
         if (
-          Object.prototype.hasOwnProperty.call(
+          email !== undefined &&
+          email !== null &&
+          (Object.prototype.hasOwnProperty.call(
             email,
             'verificationRequest',
-          ) as boolean
+          ) as boolean)
         ) {
           isAllowedToSignIn = false;
-
+          console.log(user);
           const email: string = (user.email as string).trim().toLowerCase();
+          console.log(email);
+          if (checkerString(email)) {
+            const doesUserExist = await prisma.users.findUnique({
+              where: {
+                email,
+              },
+            });
 
-          const doesUserExist = await prisma.users.findUnique({
-            where: {
-              email,
-            },
-          });
-
-          if (doesUserExist !== null) {
-            isAllowedToSignIn = true;
+            if (doesUserExist !== null) {
+              isAllowedToSignIn = true;
+            }
           }
         }
 
@@ -516,11 +521,21 @@ export const options: NextAuthOptions = {
           session.user.username === null ||
           session.user.username === undefined
         ) {
-          const userFromDB: User = await prisma.users.findUnique({
-            where: {
-              email: user.email,
-            },
-          });
+          let userFromDB: User | null = null;
+
+          if (user !== undefined) {
+            userFromDB = await prisma.users.findUnique({
+              where: {
+                email: user.email,
+              },
+            });
+          } else {
+            userFromDB = await prisma.users.findUnique({
+              where: {
+                email: session.user.email,
+              },
+            });
+          }
 
           if (userFromDB != null) {
             const newSession: Session = JSON.parse(JSON.stringify(session));
