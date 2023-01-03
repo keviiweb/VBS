@@ -62,4 +62,3 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_002135375B864A19B990B30E03878CE6 }}
           package: .
-          startup-command: pm2 start /home/site/wwwroot/ecosystem.config.js --no-daemon
