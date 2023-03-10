@@ -22,7 +22,6 @@ import hasPermission from '@constants/sys/permission';
 const fullMenu = [
   { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },
   { label: 'CCA ATTENDANCE', icon: FiSettings, href: '/sys/cca' },
-  { label: 'CONTACT US', icon: FiCompass, href: '/sys/contact' },
   {
     label: 'APPROVE BOOKINGS',
     icon: FiCalendar,
@@ -63,7 +62,6 @@ const fullMenu = [
 const adminMenu = [
   { label: 'VENUE BOOKING SYSTEM', icon: FiHome, href: '/sys/vbs' },
   { label: 'CCA ATTENDANCE', icon: FiSettings, href: '/sys/cca' },
-  { label: 'CONTACT US', icon: FiCompass, href: '/sys/contact' },
   {
     label: 'APPROVE BOOKINGS',
     icon: FiCalendar,
