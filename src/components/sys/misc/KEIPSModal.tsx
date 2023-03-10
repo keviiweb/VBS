@@ -103,14 +103,13 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
         const dataF: string = dataField[key];
         const dataArr: string[] = dataF.split('.');
 
-        if (dataArr.length > 5) {
+        if (dataArr.length > 4) {
           const parsedData: KEIPSCCA = {
             cca: dataArr[0],
             cat: dataArr[1],
             atte: Number(dataArr[2]),
             perf: Number(dataArr[3]),
-            outs: Number(dataArr[4]),
-            total: Number(dataArr[5]),
+            total: Number(dataArr[4]),
           };
 
           totalData.push(parsedData);
@@ -132,14 +131,13 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
         const dataF: string = dataField[key];
         const dataArr: string[] = dataF.split('.');
 
-        if (dataArr.length > 5) {
+        if (dataArr.length > 4) {
           const parsedData: KEIPSCCA = {
             cca: dataArr[0],
             cat: dataArr[1],
             atte: Number(dataArr[2]),
             perf: Number(dataArr[3]),
-            outs: Number(dataArr[4]),
-            total: Number(dataArr[5]),
+            total: Number(dataArr[4]),
           };
 
           totalData.push(parsedData);
@@ -253,10 +251,6 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
       {
         Header: 'Performance',
         accessor: 'perf',
-      },
-      {
-        Header: 'Outstanding',
-        accessor: 'outs',
       },
       {
         Header: 'Total',

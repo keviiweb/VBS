@@ -21,7 +21,6 @@ export interface KEIPSCCA {
   cat: string;
   atte: number;
   perf: number;
-  outs: number;
   total: number;
 }
 
