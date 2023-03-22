@@ -4,12 +4,12 @@ export interface KEIPS {
   topCCA: string;
   allCCA: string;
   bonusCCA: string;
-  contrasting: boolean;
-  OSA: number;
-  osaPercentile: number;
-  roomDraw: number;
+  contrasting: string;
+  OSA: string;
+  osaPercentile: string;
+  roomDraw: string;
   semesterStay: string;
-  fulfilled: boolean;
+  fulfilled: string;
   contrastingStr?: string;
   fulfilledStr?: string;
   updated_at?: string;
@@ -19,13 +19,13 @@ export interface KEIPS {
 export interface KEIPSCCA {
   cca: string;
   cat: string;
-  atte: number;
-  perf: number;
-  total: number;
+  atte: string;
+  perf: string;
+  total: string;
 }
 
 export interface KEIPSBonus {
   cca: string;
   description: string;
-  total: number;
+  total: string;
 }

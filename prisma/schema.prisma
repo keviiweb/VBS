@@ -155,12 +155,12 @@ model KEIPS {
   topCCA        String   @db.MediumText
   allCCA        String   @db.MediumText
   bonusCCA      String   @db.MediumText
-  contrasting   Boolean
-  OSA           Int
-  osaPercentile Float
-  roomDraw      Int
+  contrasting   String
+  OSA           String   @db.MediumText
+  osaPercentile String   @db.MediumText
+  roomDraw      String   @db.MediumText
   semesterStay  String
-  fulfilled     Boolean
+  fulfilled     String
   created_at    DateTime @default(now()) @db.DateTime(0)
   updated_at    DateTime @default(now()) @db.DateTime(0)
 }

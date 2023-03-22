@@ -75,17 +75,16 @@ export const createKEIPSFile = async (
       const top: string = data.Top4cca !== undefined ? data.Top4cca : '';
       const all: string = data.Allcca !== undefined ? data.Allcca : '';
       const bonus: string = data.Bonus !== undefined ? data.Bonus : '';
-      const contrasting: boolean =
-        data.Contrasting !== undefined ? data.Contrasting === 'Y' : false;
-      const OSA: number = data.OSA !== undefined ? Number(data.OSA) : 0;
-      const osaPercentile: number =
-        data.OSApercentile !== undefined ? Number(data.OSApercentile) : 0;
-      const roomDraw: number =
-        data.Roomdraw !== undefined ? Number(data.Roomdraw) : 0;
+      const contrasting: string =
+        data.Contrasting !== undefined ? data.Contrasting : '';
+      const OSA: string = data.OSA !== undefined ? data.OSA : '';
+      const osaPercentile: string =
+        data.OSApercentile !== undefined ? data.OSApercentile : '';
+      const roomDraw: string = data.Roomdraw !== undefined ? data.Roomdraw : '';
       const sem: string =
         data.Semesterstay !== undefined ? data.Semesterstay : '';
-      const fulfil: boolean =
-        data.Fullfilled !== undefined ? data.Fullfilled === 'Y' : false;
+      const fulfil: string =
+        data.Fullfilled !== undefined ? data.Fullfilled : '';
 
       if (checkerString(matnet)) {
         const userData: KEIPS = {
