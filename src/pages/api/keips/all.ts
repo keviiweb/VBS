@@ -7,6 +7,7 @@ import { currentSession } from '@helper/sys/sessionServer';
 
 import { actions } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
+import { checkerNumber } from '@constants/sys/helper';
 
 /**
  * In this file, MATNET is defined as
@@ -58,8 +59,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (count > 0) {
         for (let ven = 0; ven < keipsDataArr.length; ven += 1) {
           const keipsData: KEIPS = keipsDataArr[ven];
-          const contrastingStr: string = keipsData.contrasting ? 'Yes' : 'No';
-          const fulfilledStr: string = keipsData.fulfilled ? 'Yes' : 'No';
+
+          let osaPercentile: string = '';
+          if (checkerNumber(Number(keipsData.osaPercentile))) {
+            const numosaPercentile: number = Number(keipsData.osaPercentile);
+            osaPercentile = numosaPercentile.toFixed(2);
+          } else {
+            osaPercentile = keipsData.osaPercentile;
+          }
 
           const data: KEIPS = {
             matnet: keipsData.matnet.toLowerCase(),
@@ -68,12 +75,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             bonusCCA: keipsData.bonusCCA,
             contrasting: keipsData.contrasting,
             OSA: keipsData.OSA,
-            osaPercentile: keipsData.osaPercentile,
+            osaPercentile,
             roomDraw: keipsData.roomDraw,
             semesterStay: keipsData.semesterStay,
             fulfilled: keipsData.fulfilled,
-            contrastingStr,
-            fulfilledStr,
+            contrastingStr: keipsData.contrasting,
+            fulfilledStr: keipsData.fulfilled,
           };
 
           parsedKEIPS.push(data);
