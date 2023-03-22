@@ -489,9 +489,7 @@ export const options: NextAuthOptions = {
           ) as boolean)
         ) {
           isAllowedToSignIn = false;
-          console.log(user);
           const email: string = (user.email as string).trim().toLowerCase();
-          console.log(email);
           if (checkerString(email)) {
             const doesUserExist = await prisma.users.findUnique({
               where: {

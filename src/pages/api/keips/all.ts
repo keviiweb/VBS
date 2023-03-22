@@ -68,7 +68,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             bonusCCA: keipsData.bonusCCA,
             contrasting: keipsData.contrasting,
             OSA: keipsData.OSA,
-            osaPercentile: Number(keipsData.osaPercentile.toFixed(2)),
+            osaPercentile: keipsData.osaPercentile,
             roomDraw: keipsData.roomDraw,
             semesterStay: keipsData.semesterStay,
             fulfilled: keipsData.fulfilled,

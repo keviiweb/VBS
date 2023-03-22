@@ -81,7 +81,7 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
           const parsedData: KEIPSBonus = {
             cca: dataArr[0],
             description: dataArr[1],
-            total: Number(dataArr[2]),
+            total: dataArr[2],
           };
 
           totalData.push(parsedData);
@@ -107,9 +107,9 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
           const parsedData: KEIPSCCA = {
             cca: dataArr[0],
             cat: dataArr[1],
-            atte: Number(dataArr[2]),
-            perf: Number(dataArr[3]),
-            total: Number(dataArr[4]),
+            atte: dataArr[2],
+            perf: dataArr[3],
+            total: dataArr[4],
           };
 
           totalData.push(parsedData);
@@ -135,9 +135,9 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
           const parsedData: KEIPSCCA = {
             cca: dataArr[0],
             cat: dataArr[1],
-            atte: Number(dataArr[2]),
-            perf: Number(dataArr[3]),
-            total: Number(dataArr[4]),
+            atte: dataArr[2],
+            perf: dataArr[3],
+            total: dataArr[4],
           };
 
           totalData.push(parsedData);
