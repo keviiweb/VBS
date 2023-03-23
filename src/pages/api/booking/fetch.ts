@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { Venue } from 'types/vbs/venue';
-import { Booking } from 'types/vbs/booking';
-import { User } from 'types/misc/user';
+import { type Result } from 'types/api';
+import { type Venue } from 'types/vbs/venue';
+import { type Booking } from 'types/vbs/booking';
+import { type User } from 'types/misc/user';
 
 import {
   mapSlotToTiming,

@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Box, Flex, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 
 import safeJsonStringify from 'safe-json-stringify';
-import { GetServerSideProps } from 'next';
+import { type GetServerSideProps } from 'next';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { fetchAllCCARecordByUserWDetails } from '@helper/sys/cca/ccaRecord';
 
 import Auth from '@components/sys/Auth';
 
-import { CCARecord } from 'types/cca/ccaRecord';
-import { Result } from 'types/api';
-import { Session } from 'next-auth/core/types';
+import { type CCARecord } from 'types/cca/ccaRecord';
+import { type Result } from 'types/api';
+import { type Session } from 'next-auth/core/types';
 
 import { parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
@@ -108,7 +108,9 @@ export default function CCA(props: any) {
     <Auth admin={undefined}>
       <LoadingModal
         isOpen={!!submitButtonPressed}
-        onClose={() => setSubmitButtonPressed(false)}
+        onClose={() => {
+          setSubmitButtonPressed(false);
+        }}
       />
 
       {leaderCards.length > 0 && (
@@ -192,14 +194,18 @@ export default function CCA(props: any) {
 
       <LeaderModalComponent
         isOpen={leaderModalData}
-        onClose={() => setLeaderModalData(null)}
+        onClose={() => {
+          setLeaderModalData(null);
+        }}
         calendarThreshold={calendarThreshold}
         modalData={leaderModalData}
         userSession={session}
       />
       <MemberModalComponent
         isOpen={memberModalData}
-        onClose={() => setMemberModalData(null)}
+        onClose={() => {
+          setMemberModalData(null);
+        }}
         modalData={memberModalData}
         userSession={session}
       />

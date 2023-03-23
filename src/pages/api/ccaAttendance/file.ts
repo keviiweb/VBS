@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { CCAAttendance } from 'types/cca/ccaAttendance';
-import { CCASession } from 'types/cca/ccaSession';
-import { CCA } from 'types/cca/cca';
+import { type Result } from 'types/api';
+import { type CCAAttendance } from 'types/cca/ccaAttendance';
+import { type CCASession } from 'types/cca/ccaSession';
+import { type CCA } from 'types/cca/cca';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { actions } from '@constants/sys/admin';

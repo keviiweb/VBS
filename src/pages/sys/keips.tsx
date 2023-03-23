@@ -14,8 +14,8 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 import TableWidget from '@components/sys/misc/TableWidget';
 
 import { checkerString } from '@constants/sys/helper';
-import { Result } from 'types/api';
-import { KEIPS, KEIPSCCA, KEIPSBonus } from 'types/misc/keips';
+import { type Result } from 'types/api';
+import { type KEIPS, type KEIPSCCA, type KEIPSBonus } from 'types/misc/keips';
 
 /**
  * In this file, MATNET is defined as
@@ -60,7 +60,10 @@ export default function KEIPSComponent() {
     const userKeyRegExp2 = /[0-9]{3}[a-z]{1}[0-9]{4}/;
     const trimmed: string = matnetField.trim();
 
-    if ((userKeyRegExp.test(trimmed) || userKeyRegExp2.test(trimmed)) && trimmed.length === 8) {
+    if (
+      (userKeyRegExp.test(trimmed) || userKeyRegExp2.test(trimmed)) &&
+      trimmed.length === 8
+    ) {
       return true;
     }
 
@@ -294,7 +297,7 @@ export default function KEIPSComponent() {
           <Stack align='center'>
             <Heading fontSize='4xl'>KEVII</Heading>
             <Text fontSize={{ base: 'xs', md: 'md', lg: 'lg' }}>
-              Student ID: AXXXX<Text as='b'>123Z</Text>
+              Matric Number: AXXXX<Text as='b'>123Z</Text>
             </Text>
             <Text fontSize={{ base: 'xs', md: 'md', lg: 'lg' }}>
               NUSNET: EXXX<Text as='b'>4567</Text>
@@ -307,7 +310,9 @@ export default function KEIPSComponent() {
 
         <LoadingModal
           isOpen={!!submitButtonPressed}
-          onClose={() => setSubmitButtonPressed(false)}
+          onClose={() => {
+            setSubmitButtonPressed(false);
+          }}
         />
 
         {!successData && (

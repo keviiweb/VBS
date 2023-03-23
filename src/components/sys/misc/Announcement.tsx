@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Box, SimpleGrid, Text } from '@chakra-ui/react';
 import { cardVariant, parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
-import { Result } from 'types/api';
-import { Announcement } from 'types/misc/announcement';
+import { type Result } from 'types/api';
+import { type Announcement } from 'types/misc/announcement';
 
 import LinkCard from '@components/sys/misc/LinkCard';
 import AnnouncementCard from './AnnouncementCard';

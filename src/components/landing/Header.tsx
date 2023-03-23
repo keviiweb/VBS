@@ -20,7 +20,7 @@ import { AiOutlineMenu } from 'react-icons/ai';
 import Image from 'next/image';
 import NextLink from 'next/link';
 
-import { PopoverTriggerProps } from 'types/popover';
+import { type PopoverTriggerProps } from 'types/popover';
 
 const PopoverTriggerNew: React.FC<
   React.PropsWithChildren<PopoverTriggerProps>

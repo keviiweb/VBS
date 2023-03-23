@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { BookingRequest } from 'types/vbs/bookingReq';
-import { CCA } from 'types/cca/cca';
-import { TimeSlot } from 'types/vbs/timeslot';
+import { type Result } from 'types/api';
+import { type BookingRequest } from 'types/vbs/bookingReq';
+import { type CCA } from 'types/cca/cca';
+import { type TimeSlot } from 'types/vbs/timeslot';
 
 import {
   mapSlotToTiming,

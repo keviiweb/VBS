@@ -16,10 +16,10 @@ import Auth from '@components/sys/Auth';
 import { actions, levels } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
 
-import { Result } from 'types/api';
-import { Session } from 'next-auth/core/types';
+import { type Result } from 'types/api';
+import { type Session } from 'next-auth/core/types';
 
-import { GetServerSideProps } from 'next';
+import { type GetServerSideProps } from 'next';
 import { currentSession } from '@helper/sys/sessionServer';
 
 const MotionSimpleGrid = motion(SimpleGrid);
@@ -157,7 +157,9 @@ export default function ManageVenues(props: any) {
     <Auth admin>
       <LoadingModal
         isOpen={!!submitButtonPressed}
-        onClose={() => setSubmitButtonPressed(false)}
+        onClose={() => {
+          setSubmitButtonPressed(false);
+        }}
       />
       <MotionSimpleGrid
         mt='3'

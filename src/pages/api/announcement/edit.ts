@@ -1,11 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { Announcement } from 'types/misc/announcement';
+import { type Result } from 'types/api';
+import { type Announcement } from 'types/misc/announcement';
 
 import { editAnnouncement } from '@helper/sys/misc/announcement';
 import { currentSession } from '@helper/sys/sessionServer';
 
-import formidable, { IncomingForm } from 'formidable';
+import type formidable from 'formidable';
+import { IncomingForm } from 'formidable';
 
 import { actions } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
@@ -45,7 +46,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const form = new IncomingForm();
         form.parse(req, (err, fields, files) => {
           if (err !== null && err !== undefined) {
-            return reject(err);
+            reject(err);
+            return;
           }
           resolve({ fields, files });
           return true;

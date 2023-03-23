@@ -32,11 +32,11 @@ import MemberButton from '@components/sys/cca/MemberButton';
 
 import { cardVariant, parentVariant } from '@root/motion';
 import { InfoIcon } from '@chakra-ui/icons';
-import { CCASession } from 'types/cca/ccaSession';
-import { Result } from 'types/api';
-import { CCARecord } from 'types/cca/ccaRecord';
-import { CCAAttendance } from 'types/cca/ccaAttendance';
-import { Session } from 'next-auth/core/types';
+import { type CCASession } from 'types/cca/ccaSession';
+import { type Result } from 'types/api';
+import { type CCARecord } from 'types/cca/ccaRecord';
+import { type CCAAttendance } from 'types/cca/ccaAttendance';
+import { type Session } from 'next-auth/core/types';
 
 import { checkerString } from '@constants/sys/helper';
 import { timeSlots } from '@constants/sys/timeslot';
@@ -792,14 +792,18 @@ export default function SessionEditModal({
         <ModalBody>
           <SessionEditConfirmationModal
             isOpen={confirmationData}
-            onClose={() => setConfirmationData(null)}
+            onClose={() => {
+              setConfirmationData(null);
+            }}
             modalData={confirmationData}
             dataHandler={handleModalCloseButton}
           />
 
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           {(editable ||

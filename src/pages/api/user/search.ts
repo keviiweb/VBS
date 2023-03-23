@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { User } from 'types/misc/user';
+import { type Result } from 'types/api';
+import { type User } from 'types/misc/user';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { searchUser } from '@helper/sys/misc/user';

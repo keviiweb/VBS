@@ -15,7 +15,7 @@ import {
 } from 'react-icons/fi';
 
 import NavLink from '@components/sys/misc/NavLink';
-import { Session } from 'next-auth/core/types';
+import { type Session } from 'next-auth/core/types';
 import { actions } from '@root/src/constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
 

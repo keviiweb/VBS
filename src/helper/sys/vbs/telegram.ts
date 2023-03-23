@@ -1,8 +1,8 @@
-import { Session } from 'next-auth/core/types';
+import { type Session } from 'next-auth/core/types';
 
 import { checkerString } from '@constants/sys/helper';
 import TelegramBot from 'node-telegram-bot-api';
-import { BookingRequest } from 'types/vbs/bookingReq';
+import { type BookingRequest } from 'types/vbs/bookingReq';
 
 import { logger } from '@helper/sys/misc/logger';
 

@@ -1,8 +1,8 @@
 import { prisma } from '@constants/sys/db';
 
-import { KEIPS } from 'types/misc/keips';
-import { Result } from 'types/api';
-import { Session } from 'next-auth/core/types';
+import { type KEIPS } from 'types/misc/keips';
+import { type Result } from 'types/api';
+import { type Session } from 'next-auth/core/types';
 
 import { checkerString } from '@constants/sys/helper';
 

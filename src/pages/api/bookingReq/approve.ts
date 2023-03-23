@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { BookingRequest } from 'types/vbs/bookingReq';
+import { type Result } from 'types/api';
+import { type BookingRequest } from 'types/vbs/bookingReq';
 
 import { convertSlotToArray, checkerString } from '@constants/sys/helper';
 

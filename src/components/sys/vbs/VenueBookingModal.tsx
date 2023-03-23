@@ -38,11 +38,11 @@ import moment from 'moment-timezone';
 import { isValidDate, prettifyDate } from '@constants/sys/date';
 import { checkerArray, checkerString, PERSONAL } from '@constants/sys/helper';
 
-import { Venue } from 'types/vbs/venue';
-import { TimeSlot } from 'types/vbs/timeslot';
-import { Result } from 'types/api';
-import { CCA } from 'types/cca/cca';
-import { BookingRequest } from '@root/src/types/vbs/bookingReq';
+import { type Venue } from 'types/vbs/venue';
+import { type TimeSlot } from 'types/vbs/timeslot';
+import { type Result } from 'types/api';
+import { type CCA } from 'types/cca/cca';
+import { type BookingRequest } from '@root/src/types/vbs/bookingReq';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -874,7 +874,9 @@ export default function VenueBookingModal({
         <ModalBody>
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           <Box

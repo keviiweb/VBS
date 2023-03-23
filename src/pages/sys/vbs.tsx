@@ -41,12 +41,12 @@ import {
 import hasPermission from '@constants/sys/permission';
 
 import safeJsonStringify from 'safe-json-stringify';
-import { GetServerSideProps } from 'next';
+import { type GetServerSideProps } from 'next';
 
-import { Result } from 'types/api';
-import { Venue } from 'types/vbs/venue';
-import { Session } from 'next-auth/core/types';
-import { Booking } from 'types/vbs/booking';
+import { type Result } from 'types/api';
+import { type Venue } from 'types/vbs/venue';
+import { type Session } from 'next-auth/core/types';
+import { type Booking } from 'types/vbs/booking';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -353,7 +353,9 @@ export default function VBS(props: any) {
           <Box>
             <LoadingModal
               isOpen={!!submitButtonPressed}
-              onClose={() => setSubmitButtonPressed(false)}
+              onClose={() => {
+                setSubmitButtonPressed(false);
+              }}
             />
 
             <Box
@@ -452,7 +454,9 @@ export default function VBS(props: any) {
               <BookingModal
                 isBookingRequest={false}
                 isOpen={!(modalBookingData == null)}
-                onClose={() => setModalBookingData(null)}
+                onClose={() => {
+                  setModalBookingData(null);
+                }}
                 modalData={modalBookingData}
                 isAdmin
               />
@@ -462,7 +466,9 @@ export default function VBS(props: any) {
               <BookingModal
                 isBookingRequest={false}
                 isOpen={!(modalBookingData == null)}
-                onClose={() => setModalBookingData(null)}
+                onClose={() => {
+                  setModalBookingData(null);
+                }}
                 modalData={modalBookingData}
                 isAdmin={false}
               />
@@ -500,7 +506,9 @@ export default function VBS(props: any) {
 
             <VenueBookingModal
               isOpen={modalData}
-              onClose={() => setModalData(null)}
+              onClose={() => {
+                setModalData(null);
+              }}
               modalData={modalData}
               calendarMin={minDate.current}
               calendarMax={maxDate.current}

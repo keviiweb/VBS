@@ -1,6 +1,6 @@
 import { prisma } from '@constants/sys/db';
-import { Result } from 'types/api';
-import { Log } from 'types/misc/logger';
+import { type Result } from 'types/api';
+import { type Log } from 'types/misc/logger';
 
 /**
  * Adds a logging entry in the database

@@ -15,12 +15,12 @@ import {
   locale,
 } from '@constants/sys/date';
 
-import { BookingRequest } from 'types/vbs/bookingReq';
-import { Result } from 'types/api';
-import { Booking } from 'types/vbs/booking';
-import { Session } from 'next-auth/core/types';
-import { Venue } from 'types/vbs/venue';
-import { CCA } from 'types/cca/cca';
+import { type BookingRequest } from 'types/vbs/bookingReq';
+import { type Result } from 'types/api';
+import { type Booking } from 'types/vbs/booking';
+import { type Session } from 'next-auth/core/types';
+import { type Venue } from 'types/vbs/venue';
+import { type CCA } from 'types/cca/cca';
 
 import { findVenueByName } from '@helper/sys/vbs/venue';
 import { findCCAbyName } from '@helper/sys/cca/cca';

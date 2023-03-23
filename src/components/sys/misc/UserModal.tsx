@@ -19,9 +19,9 @@ import {
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
-import { User } from 'types/misc/user';
-import { Result } from 'types/api';
-import { CCARecord } from 'types/cca/ccaRecord';
+import { type User } from 'types/misc/user';
+import { type Result } from 'types/api';
+import { type CCARecord } from 'types/cca/ccaRecord';
 
 import LoadingModal from '@components/sys/misc/LoadingModal';
 
@@ -186,7 +186,9 @@ export default function UserModal({ isOpen, onClose, modalData }) {
         <ModalBody>
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           <MotionSimpleGrid

@@ -2,9 +2,9 @@ import { prisma } from '@constants/sys/db';
 import { checkerString, findSlots } from '@constants/sys/helper';
 import { dateISO, isValidDate } from '@constants/sys/date';
 
-import { Venue } from 'types/vbs/venue';
-import { Result } from 'types/api';
-import { Session } from 'next-auth/core/types';
+import { type Venue } from 'types/vbs/venue';
+import { type Result } from 'types/api';
+import { type Session } from 'next-auth/core/types';
 
 import { logger } from '@helper/sys/misc/logger';
 import { deleteAllByVenueID } from '@helper/sys/vbs/bookingReq';

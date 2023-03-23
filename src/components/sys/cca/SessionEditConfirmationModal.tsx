@@ -28,9 +28,9 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 import TableWidget from '@components/sys/misc/TableWidget';
 
 import { cardVariant, parentVariant } from '@root/motion';
-import { CCASession } from 'types/cca/ccaSession';
-import { CCAAttendance } from 'types/cca/ccaAttendance';
-import { Result } from 'types/api';
+import { type CCASession } from 'types/cca/ccaSession';
+import { type CCAAttendance } from 'types/cca/ccaAttendance';
+import { type Result } from 'types/api';
 
 import { checkerString } from '@constants/sys/helper';
 
@@ -284,7 +284,9 @@ export default function SessionEditConfirmationModal({
         <ModalBody>
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           {checkerString(ccaName) && (

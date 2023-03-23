@@ -37,10 +37,10 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 import { parentVariant } from '@root/motion';
 import { motion } from 'framer-motion';
 
-import { Result } from 'types/api';
-import { BookingRequest } from 'types/vbs/bookingReq';
-import { GetServerSideProps } from 'next';
-import { Session } from 'next-auth/core/types';
+import { type Result } from 'types/api';
+import { type BookingRequest } from 'types/vbs/bookingReq';
+import { type GetServerSideProps } from 'next';
+import { type Session } from 'next-auth/core/types';
 
 import { checkerNumber, checkerString } from '@constants/sys/helper';
 import { actions, levels as levelsUser } from '@constants/sys/admin';
@@ -234,7 +234,9 @@ export default function ManageBooking(props: any) {
                       size='sm'
                       leftIcon={<CheckIcon />}
                       disabled={submitButtonPressed}
-                      onClick={async () => await handleApprove(id)}
+                      onClick={async () => {
+                        await handleApprove(id);
+                      }}
                     >
                       Approve
                     </Button>
@@ -243,7 +245,9 @@ export default function ManageBooking(props: any) {
                       size='sm'
                       leftIcon={<CloseIcon />}
                       disabled={submitButtonPressed}
-                      onClick={async () => await handleReject(content)}
+                      onClick={async () => {
+                        await handleReject(content);
+                      }}
                     >
                       Reject
                     </Button>
@@ -251,7 +255,9 @@ export default function ManageBooking(props: any) {
                       key={`details-pending-all-button-${id}`}
                       size='sm'
                       leftIcon={<InfoOutlineIcon />}
-                      onClick={() => handleDetails(content)}
+                      onClick={() => {
+                        handleDetails(content);
+                      }}
                     >
                       View Details
                     </Button>
@@ -265,7 +271,9 @@ export default function ManageBooking(props: any) {
                     key={`details-pending-all-button-${id}`}
                     size='sm'
                     leftIcon={<InfoOutlineIcon />}
-                    onClick={() => handleDetails(content)}
+                    onClick={() => {
+                      handleDetails(content);
+                    }}
                   >
                     View Details
                   </Button>
@@ -285,7 +293,9 @@ export default function ManageBooking(props: any) {
                       size='sm'
                       leftIcon={<CloseIcon />}
                       disabled={submitButtonPressed}
-                      onClick={async () => await handleReject(content)}
+                      onClick={async () => {
+                        await handleReject(content);
+                      }}
                     >
                       Reject
                     </Button>
@@ -293,7 +303,9 @@ export default function ManageBooking(props: any) {
                       key={`details-approve-all-button-${id}`}
                       size='sm'
                       leftIcon={<InfoOutlineIcon />}
-                      onClick={() => handleDetails(content)}
+                      onClick={() => {
+                        handleDetails(content);
+                      }}
                     >
                       View Details
                     </Button>
@@ -307,7 +319,9 @@ export default function ManageBooking(props: any) {
                     key={`details-approve-all-button-${id}`}
                     size='sm'
                     leftIcon={<InfoOutlineIcon />}
-                    onClick={() => handleDetails(content)}
+                    onClick={() => {
+                      handleDetails(content);
+                    }}
                   >
                     View Details
                   </Button>
@@ -323,7 +337,9 @@ export default function ManageBooking(props: any) {
                 key={`details-details-all-button-${id}`}
                 size='sm'
                 leftIcon={<InfoOutlineIcon />}
-                onClick={() => handleDetails(content)}
+                onClick={() => {
+                  handleDetails(content);
+                }}
               >
                 View Details
               </Button>
@@ -343,7 +359,9 @@ export default function ManageBooking(props: any) {
                     size='sm'
                     leftIcon={<CloseIcon />}
                     disabled={submitButtonPressed}
-                    onClick={async () => await handleReject(content)}
+                    onClick={async () => {
+                      await handleReject(content);
+                    }}
                   >
                     Reject
                   </Button>
@@ -351,7 +369,9 @@ export default function ManageBooking(props: any) {
                     key={`details-approve-button-${id}`}
                     size='sm'
                     leftIcon={<InfoOutlineIcon />}
-                    onClick={() => handleDetails(content)}
+                    onClick={() => {
+                      handleDetails(content);
+                    }}
                   >
                     View Details
                   </Button>
@@ -365,7 +385,9 @@ export default function ManageBooking(props: any) {
                   key={`details-approve-button-${id}`}
                   size='sm'
                   leftIcon={<InfoOutlineIcon />}
-                  onClick={() => handleDetails(content)}
+                  onClick={() => {
+                    handleDetails(content);
+                  }}
                 >
                   View Details
                 </Button>
@@ -383,7 +405,9 @@ export default function ManageBooking(props: any) {
                 key={`details-reject-button-${id}`}
                 size='sm'
                 leftIcon={<InfoOutlineIcon />}
-                onClick={() => handleDetails(content)}
+                onClick={() => {
+                  handleDetails(content);
+                }}
               >
                 View Details
               </Button>
@@ -404,7 +428,9 @@ export default function ManageBooking(props: any) {
                       size='sm'
                       leftIcon={<CheckIcon />}
                       disabled={submitButtonPressed}
-                      onClick={async () => await handleApprove(id)}
+                      onClick={async () => {
+                        await handleApprove(id);
+                      }}
                     >
                       Approve
                     </Button>
@@ -413,7 +439,9 @@ export default function ManageBooking(props: any) {
                       size='sm'
                       leftIcon={<CloseIcon />}
                       disabled={submitButtonPressed}
-                      onClick={async () => await handleReject(content)}
+                      onClick={async () => {
+                        await handleReject(content);
+                      }}
                     >
                       Reject
                     </Button>
@@ -421,7 +449,9 @@ export default function ManageBooking(props: any) {
                       key={`details-pending-button-${id}`}
                       size='sm'
                       leftIcon={<InfoOutlineIcon />}
-                      onClick={() => handleDetails(content)}
+                      onClick={() => {
+                        handleDetails(content);
+                      }}
                     >
                       View Details
                     </Button>
@@ -435,7 +465,9 @@ export default function ManageBooking(props: any) {
                     key={`details-pending-button-${id}`}
                     size='sm'
                     leftIcon={<InfoOutlineIcon />}
-                    onClick={() => handleDetails(content)}
+                    onClick={() => {
+                      handleDetails(content);
+                    }}
                   >
                     View Details
                   </Button>
@@ -452,7 +484,9 @@ export default function ManageBooking(props: any) {
                 key={`details-no-status-pending-button-${id}`}
                 size='sm'
                 leftIcon={<InfoOutlineIcon />}
-                onClick={() => handleDetails(content)}
+                onClick={() => {
+                  handleDetails(content);
+                }}
               >
                 View Details
               </Button>
@@ -812,7 +846,9 @@ export default function ManageBooking(props: any) {
       >
         <LoadingModal
           isOpen={!!submitButtonPressed}
-          onClose={() => setSubmitButtonPressed(false)}
+          onClose={() => {
+            setSubmitButtonPressed(false);
+          }}
         />
 
         <Box
@@ -875,13 +911,17 @@ export default function ManageBooking(props: any) {
           <BookingModal
             isBookingRequest
             isOpen={!(modalData == null)}
-            onClose={() => setModalData(null)}
+            onClose={() => {
+              setModalData(null);
+            }}
             modalData={modalData}
             isAdmin
           />
           <BookingRejectModal
             isOpen={!(rejectModalData == null)}
-            onClose={() => setRejectModalData(null)}
+            onClose={() => {
+              setRejectModalData(null);
+            }}
             modalData={rejectModalData}
             dataHandler={dataFromBookingRejectVenueModal}
           />

@@ -1,6 +1,6 @@
 import { getSession } from 'next-auth/react';
-import { Session } from 'next-auth/core/types';
-import { NextApiRequest } from 'next';
+import { type Session } from 'next-auth/core/types';
+import { type NextApiRequest } from 'next';
 import { levels } from '@constants/sys/admin';
 
 /**

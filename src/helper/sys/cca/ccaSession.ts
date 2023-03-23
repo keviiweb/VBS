@@ -1,6 +1,6 @@
-import { Result } from 'types/api';
-import { CCASession } from 'types/cca/ccaSession';
-import { Session } from 'next-auth/core/types';
+import { type Result } from 'types/api';
+import { type CCASession } from 'types/cca/ccaSession';
+import { type Session } from 'next-auth/core/types';
 
 import { prisma } from '@constants/sys/db';
 import { calculateDuration } from '@constants/sys/date';

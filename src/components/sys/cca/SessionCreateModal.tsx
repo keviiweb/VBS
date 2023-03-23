@@ -31,9 +31,9 @@ import SessionCreateConfirmationModal from '@components/sys/cca/SessionCreateCon
 
 import { cardVariant, parentVariant } from '@root/motion';
 import { InfoIcon } from '@chakra-ui/icons';
-import { CCASession } from 'types/cca/ccaSession';
-import { Result } from 'types/api';
-import { CCARecord } from 'types/cca/ccaRecord';
+import { type CCASession } from 'types/cca/ccaSession';
+import { type Result } from 'types/api';
+import { type CCARecord } from 'types/cca/ccaRecord';
 
 import { checkerNumber, checkerString } from '@constants/sys/helper';
 import { timeSlots } from '@constants/sys/timeslot';
@@ -522,14 +522,18 @@ export default function SessionCreateModal({
         <ModalBody>
           <SessionCreateConfirmationModal
             isOpen={confirmationData}
-            onClose={() => setConfirmationData(null)}
+            onClose={() => {
+              setConfirmationData(null);
+            }}
             modalData={confirmationData}
             dataHandler={handleModalCloseButton}
           />
 
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           <Progress hasStripe value={progressBar} />

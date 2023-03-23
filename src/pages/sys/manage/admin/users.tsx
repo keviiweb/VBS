@@ -35,12 +35,12 @@ import { checkerString } from '@constants/sys/helper';
 import { actions, levels } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
 
-import { User } from 'types/misc/user';
-import { Result } from 'types/api';
-import { CCAAttendance } from 'types/cca/ccaAttendance';
-import { Session } from 'next-auth/core/types';
+import { type User } from 'types/misc/user';
+import { type Result } from 'types/api';
+import { type CCAAttendance } from 'types/cca/ccaAttendance';
+import { type Session } from 'next-auth/core/types';
 
-import { GetServerSideProps } from 'next';
+import { type GetServerSideProps } from 'next';
 import { currentSession } from '@helper/sys/sessionServer';
 
 import { CSVLink } from 'react-csv';
@@ -397,7 +397,9 @@ export default function ManageUsers(props: any) {
         <Button
           size='sm'
           leftIcon={<InfoOutlineIcon />}
-          onClick={() => handleDetails(content)}
+          onClick={() => {
+            handleDetails(content);
+          }}
         >
           View Details
         </Button>
@@ -660,7 +662,9 @@ export default function ManageUsers(props: any) {
       >
         <LoadingModal
           isOpen={!!submitButtonPressed}
-          onClose={() => setSubmitButtonPressed(false)}
+          onClose={() => {
+            setSubmitButtonPressed(false);
+          }}
         />
         <MotionBox variants={cardVariant} key='1'>
           {loadingData && (data === null || data === undefined) && (
@@ -689,7 +693,9 @@ export default function ManageUsers(props: any) {
 
               <UserModal
                 isOpen={modalData}
-                onClose={() => setModalData(null)}
+                onClose={() => {
+                  setModalData(null);
+                }}
                 modalData={modalData}
               />
             </Box>

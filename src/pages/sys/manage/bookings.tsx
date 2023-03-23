@@ -15,8 +15,8 @@ import TableWidget from '@components/sys/misc/TableWidget';
 import BookingModal from '@components/sys/vbs/BookingModal';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 
-import { Result } from 'types/api';
-import { BookingRequest } from 'types/vbs/bookingReq';
+import { type Result } from 'types/api';
+import { type BookingRequest } from 'types/vbs/bookingReq';
 
 import { checkerString } from '@constants/sys/helper';
 
@@ -72,7 +72,9 @@ export default function ManageBooking() {
                   key={`details-button-${id}`}
                   size='sm'
                   leftIcon={<InfoOutlineIcon />}
-                  onClick={() => handleDetails(content)}
+                  onClick={() => {
+                    handleDetails(content);
+                  }}
                 >
                   View Details
                 </Button>
@@ -86,7 +88,9 @@ export default function ManageBooking() {
                 key={`details-button-${id}`}
                 size='sm'
                 leftIcon={<InfoOutlineIcon />}
-                onClick={() => handleDetails(content)}
+                onClick={() => {
+                  handleDetails(content);
+                }}
               >
                 View Details
               </Button>
@@ -103,7 +107,9 @@ export default function ManageBooking() {
             key={`details-button-${id}`}
             size='sm'
             leftIcon={<InfoOutlineIcon />}
-            onClick={() => handleDetails(content)}
+            onClick={() => {
+              handleDetails(content);
+            }}
           >
             View Details
           </Button>
@@ -310,7 +316,9 @@ export default function ManageBooking() {
 
           <BookingModal
             isOpen={!(modalData == null)}
-            onClose={() => setModalData(null)}
+            onClose={() => {
+              setModalData(null);
+            }}
             modalData={modalData}
             isAdmin={undefined}
             isBookingRequest
@@ -318,7 +326,9 @@ export default function ManageBooking() {
 
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
         </MotionBox>
       </Box>

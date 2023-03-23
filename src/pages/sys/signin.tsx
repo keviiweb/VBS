@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { signIn } from 'next-auth/react';
 
-import { GetServerSideProps } from 'next';
+import { type GetServerSideProps } from 'next';
 import { checkerString } from '@constants/sys/helper';
 
 /**

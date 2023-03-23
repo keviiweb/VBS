@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { BookingRequest } from 'types/vbs/bookingReq';
-import { TimeSlot } from 'types/vbs/timeslot';
+import { type Result } from 'types/api';
+import { type BookingRequest } from 'types/vbs/bookingReq';
+import { type TimeSlot } from 'types/vbs/timeslot';
 
 import {
   convertSlotToArray,

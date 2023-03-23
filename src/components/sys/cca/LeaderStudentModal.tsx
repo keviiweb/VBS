@@ -21,8 +21,8 @@ import { checkerString } from '@constants/sys/helper';
 import TableWidget from '@components/sys/misc/TableWidget';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 
-import { Result } from 'types/api';
-import { CCAAttendance } from 'types/cca/ccaAttendance';
+import { type Result } from 'types/api';
+import { type CCAAttendance } from 'types/cca/ccaAttendance';
 
 import { CSVLink } from 'react-csv';
 
@@ -274,7 +274,9 @@ export default function LeaderStudentModalComponent({
         <ModalBody>
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           {checkerString(sessionUserName) && (

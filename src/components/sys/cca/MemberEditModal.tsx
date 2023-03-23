@@ -30,9 +30,9 @@ import TableWidget from '@components/sys/misc/TableWidget';
 
 import { cardVariant, parentVariant } from '@root/motion';
 import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
-import { Result } from 'types/api';
-import { User } from 'types/misc/user';
-import { CCARecord } from 'types/cca/ccaRecord';
+import { type Result } from 'types/api';
+import { type User } from 'types/misc/user';
+import { type CCARecord } from 'types/cca/ccaRecord';
 import { checkerString } from '@root/src/constants/sys/helper';
 
 const MotionSimpleGrid = motion(SimpleGrid);
@@ -189,7 +189,9 @@ export default function MemberEditModal({
               size='sm'
               leftIcon={<CloseIcon />}
               disabled={submitButtonPressed}
-              onClick={async () => await handleRemoveMember(email)}
+              onClick={async () => {
+                await handleRemoveMember(email);
+              }}
             >
               Remove Member
             </Button>
@@ -202,7 +204,9 @@ export default function MemberEditModal({
               size='sm'
               leftIcon={<CheckIcon />}
               disabled={submitButtonPressed}
-              onClick={async () => await handleAddMember(email)}
+              onClick={async () => {
+                await handleAddMember(email);
+              }}
             >
               Add Member
             </Button>
@@ -307,7 +311,9 @@ export default function MemberEditModal({
         <ModalBody>
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           <MotionSimpleGrid

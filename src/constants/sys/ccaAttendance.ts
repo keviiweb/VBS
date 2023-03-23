@@ -1,4 +1,4 @@
-import { CCAAttendance } from 'types/cca/ccaAttendance';
+import { type CCAAttendance } from 'types/cca/ccaAttendance';
 
 /**
  * Remove duplicates from CCAAttendance Array

@@ -33,8 +33,8 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { checkerString } from '@constants/sys/helper';
 
-import { Result } from 'types/api';
-import { Announcement } from 'types/misc/announcement';
+import { type Result } from 'types/api';
+import { type Announcement } from 'types/misc/announcement';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -433,7 +433,9 @@ export default function ManageAnnouncement() {
       >
         <LoadingModal
           isOpen={!!submitButtonPressed}
-          onClose={() => setSubmitButtonPressed(false)}
+          onClose={() => {
+            setSubmitButtonPressed(false);
+          }}
         />
 
         <MotionBox variants={cardVariant} key='1'>
@@ -660,7 +662,9 @@ export default function ManageAnnouncement() {
                     _hover={{
                       bg: 'red.500',
                     }}
-                    onClick={async () => await handleDelete()}
+                    onClick={async () => {
+                      await handleDelete();
+                    }}
                   >
                     Delete
                   </Button>

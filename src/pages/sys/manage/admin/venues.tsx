@@ -37,11 +37,11 @@ import { checkerNumber, checkerString } from '@constants/sys/helper';
 import { actions, levels } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
 
-import { Venue } from 'types/vbs/venue';
-import { Result } from 'types/api';
-import { Session } from 'next-auth/core/types';
+import { type Venue } from 'types/vbs/venue';
+import { type Result } from 'types/api';
+import { type Session } from 'next-auth/core/types';
 
-import { GetServerSideProps } from 'next';
+import { type GetServerSideProps } from 'next';
 import { currentSession } from '@helper/sys/sessionServer';
 
 const MotionSimpleGrid = motion(SimpleGrid);
@@ -404,7 +404,9 @@ export default function ManageVenues(props: any) {
         <Button
           size='sm'
           leftIcon={<InfoOutlineIcon />}
-          onClick={() => handleDetails(content)}
+          onClick={() => {
+            handleDetails(content);
+          }}
         >
           View Details
         </Button>
@@ -794,7 +796,9 @@ export default function ManageVenues(props: any) {
       >
         <LoadingModal
           isOpen={!!submitButtonPressed}
-          onClose={() => setSubmitButtonPressed(false)}
+          onClose={() => {
+            setSubmitButtonPressed(false);
+          }}
         />
         <MotionBox variants={cardVariant} key='1'>
           {loadingData && (data === null || data === undefined) && (
@@ -825,7 +829,9 @@ export default function ManageVenues(props: any) {
 
           <VenueModal
             isOpen={modalData}
-            onClose={() => setModalData(null)}
+            onClose={() => {
+              setModalData(null);
+            }}
             modalData={modalData}
           />
         </MotionBox>

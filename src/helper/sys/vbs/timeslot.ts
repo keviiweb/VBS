@@ -1,6 +1,6 @@
-import { Booking } from 'types/vbs/booking';
-import { Result } from 'types/api';
-import { Session } from 'next-auth/core/types';
+import { type Booking } from 'types/vbs/booking';
+import { type Result } from 'types/api';
+import { type Session } from 'next-auth/core/types';
 
 import { prisma } from '@constants/sys/db';
 import { checkerString } from '@constants/sys/helper';

@@ -21,8 +21,8 @@ import {
 import TableWidget from '@components/sys/misc/TableWidget';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 
-import { BookingRequest } from 'types/vbs/bookingReq';
-import { Result } from 'types/api';
+import { type BookingRequest } from 'types/vbs/bookingReq';
+import { type Result } from 'types/api';
 
 import { checkerString } from '@constants/sys/helper';
 
@@ -105,7 +105,9 @@ export default function BookingModal({
         <Button
           size='sm'
           leftIcon={<InfoOutlineIcon />}
-          onClick={() => handleDetails(content)}
+          onClick={() => {
+            handleDetails(content);
+          }}
         >
           View Details
         </Button>
@@ -321,7 +323,9 @@ export default function BookingModal({
         <ModalBody>
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           <SimpleGrid mt='3' minChildWidth='250px' spacing='2em' minH='full'>

@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
+import { type Result } from 'types/api';
 
 import { actions } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
 
-import formidable, { IncomingForm } from 'formidable';
+import type formidable from 'formidable';
+import { IncomingForm } from 'formidable';
 import fs from 'fs';
 import csv from 'csv-parser';
 
@@ -47,7 +48,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const form = new IncomingForm();
         form.parse(req, (err, fields, files) => {
           if (err !== null && err !== undefined) {
-            return reject(err);
+            reject(err);
+            return;
           }
           resolve({ fields, files });
           return true;
