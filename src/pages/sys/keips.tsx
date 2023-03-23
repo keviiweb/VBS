@@ -57,11 +57,13 @@ export default function KEIPSComponent() {
 
   const validateField = (matnetField: string): boolean => {
     const userKeyRegExp = /[0-9]{3}[A-Z]{1}[0-9]{4}/;
+    const userKeyRegExp2 = /[0-9]{3}[a-z]{1}[0-9]{4}/;
     const trimmed: string = matnetField.trim();
 
-    if (userKeyRegExp.test(trimmed) && trimmed.length === 8) {
+    if ((userKeyRegExp.test(trimmed) || userKeyRegExp2.test(trimmed)) && trimmed.length === 8) {
       return true;
     }
+
     setError('MATNET not of the correct format');
     return false;
   };
@@ -292,13 +294,13 @@ export default function KEIPSComponent() {
           <Stack align='center'>
             <Heading fontSize='4xl'>KEVII</Heading>
             <Text fontSize={{ base: 'xs', md: 'md', lg: 'lg' }}>
-              Student ID: AXXXX111Z
+              Student ID: AXXXX<Text as='b'>123Z</Text>
             </Text>
             <Text fontSize={{ base: 'xs', md: 'md', lg: 'lg' }}>
-              NUSNET: EXXX2222
+              NUSNET: EXXX<Text as='b'>4567</Text>
             </Text>
             <Text fontSize={{ base: 'xs', md: 'md', lg: 'lg' }}>
-              MATNET: 111Z2222
+              MATNET: <Text as='b'>123Z4567</Text>
             </Text>
           </Stack>
         )}
