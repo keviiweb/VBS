@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { KEIPS } from 'types/misc/keips';
+import { type Result } from 'types/api';
+import { type KEIPS } from 'types/misc/keips';
 
 import { fetchAllKEIPS, countKEIPS } from '@helper/sys/misc/keips';
 import { currentSession } from '@helper/sys/sessionServer';

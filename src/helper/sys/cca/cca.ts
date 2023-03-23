@@ -1,6 +1,6 @@
-import { Result } from 'types/api';
-import { CCA } from 'types/cca/cca';
-import { Session } from 'next-auth/core/types';
+import { type Result } from 'types/api';
+import { type CCA } from 'types/cca/cca';
+import { type Session } from 'next-auth/core/types';
 
 import { prisma } from '@constants/sys/db';
 import { checkerString } from '@constants/sys/helper';

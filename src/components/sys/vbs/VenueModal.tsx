@@ -29,8 +29,8 @@ import { cardVariant, parentVariant } from '@root/motion';
 import TableWidget from '@components/sys/misc/TableWidget';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 
-import { Result } from 'types/api';
-import { Venue } from 'types/vbs/venue';
+import { type Result } from 'types/api';
+import { type Venue } from 'types/vbs/venue';
 import { checkerNumber, checkerString } from '@constants/sys/helper';
 
 const MotionSimpleGrid = motion(SimpleGrid);
@@ -234,7 +234,9 @@ export default function VenueModal({ isOpen, onClose, modalData }) {
         <ModalBody>
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           <MotionSimpleGrid

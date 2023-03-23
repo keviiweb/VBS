@@ -4,10 +4,10 @@ import nodemailer from 'nodemailer';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
 import { prisma } from '@constants/sys/db';
-import { User } from 'types/misc/user';
-import { Session } from 'next-auth/core/types';
+import { type User } from 'types/misc/user';
+import { type Session } from 'next-auth/core/types';
 import { logger } from '@helper/sys/misc/logger';
-import { NextAuthOptions } from 'next-auth';
+import { type NextAuthOptions } from 'next-auth';
 import { checkerString } from '@constants/sys/helper';
 
 /**

@@ -1,4 +1,4 @@
-import { Session } from 'next-auth/core/types';
+import { type Session } from 'next-auth/core/types';
 import { options } from '@constants/sys/nextAuthOptions';
 import { unstable_getServerSession } from 'next-auth/next';
 import { levels } from '@constants/sys/admin';

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { CCARecord } from 'types/cca/ccaRecord';
-import { CCA } from 'types/cca/cca';
+import { type Result } from 'types/api';
+import { type CCARecord } from 'types/cca/ccaRecord';
+import { type CCA } from 'types/cca/cca';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { fetchAllCCARecordByUserEmail } from '@helper/sys/cca/ccaRecord';

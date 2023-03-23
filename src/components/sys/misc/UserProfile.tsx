@@ -13,7 +13,7 @@ import {
 import { FiChevronDown } from 'react-icons/fi';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { GetServerSideProps } from 'next';
+import { type GetServerSideProps } from 'next';
 
 /**
  * Renders a dropdown menu when the user clicks on the Avatar on the Header
@@ -67,9 +67,9 @@ export default function UserProfile(props: any) {
             <MenuDivider />
             <MenuItem
               key='signout-menu'
-              onClick={async () =>
-                await signOut({ callbackUrl: `${url}/sys/signin` })
-              }
+              onClick={async () => {
+                await signOut({ callbackUrl: `${url}/sys/signin` });
+              }}
             >
               Sign out
             </MenuItem>

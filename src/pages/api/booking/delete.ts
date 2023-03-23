@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
+import { type Result } from 'types/api';
 
 import { actions } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';

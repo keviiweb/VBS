@@ -5,7 +5,7 @@ import Feature from '@components/landing/Features';
 import Video from '@components/landing/Video';
 import Carousel from '@components/landing/Carousel';
 
-import { GetServerSideProps } from 'next';
+import { type GetServerSideProps } from 'next';
 
 /**
  * Renders the main landing page.

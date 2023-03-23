@@ -18,7 +18,7 @@ import {
   Popover,
   PopoverContent,
   SimpleGrid,
-  StackDirection,
+  type StackDirection,
   Stack,
   Select,
   Text,
@@ -46,18 +46,18 @@ import SessionDeleteConfirmationModal from '@components/sys/cca/SessionDeleteCon
 import SessionCreateModal from '@components/sys/cca/SessionCreateModal';
 import MemberEditModal from '@root/src/components/sys/cca/MemberEditModal';
 
-import { Result } from 'types/api';
-import { CCARecord } from 'types/cca/ccaRecord';
-import { PopoverTriggerProps } from 'types/popover';
-import { CCASession } from 'types/cca/ccaSession';
-import { CCAAttendance } from 'types/cca/ccaAttendance';
+import { type Result } from 'types/api';
+import { type CCARecord } from 'types/cca/ccaRecord';
+import { type PopoverTriggerProps } from 'types/popover';
+import { type CCASession } from 'types/cca/ccaSession';
+import { type CCAAttendance } from 'types/cca/ccaAttendance';
 
 import moment from 'moment';
 import { CSVLink } from 'react-csv';
 
 import hasPermission from '@constants/sys/permission';
 import { actions } from '@constants/sys/admin';
-import { Session } from 'next-auth/core/types';
+import { type Session } from 'next-auth/core/types';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -295,7 +295,9 @@ export default function LeaderModalComponent({
           size='sm'
           isDisabled={submitButtonPressed}
           leftIcon={<InfoOutlineIcon />}
-          onClick={() => handleDetails(content)}
+          onClick={() => {
+            handleDetails(content);
+          }}
         >
           View Details
         </Button>
@@ -331,7 +333,9 @@ export default function LeaderModalComponent({
                 size='md'
                 isDisabled={submitButtonPressed}
                 leftIcon={<BellIcon />}
-                onClick={() => handleDetailsSession(content)}
+                onClick={() => {
+                  handleDetailsSession(content);
+                }}
               >
                 Details
               </Button>
@@ -342,7 +346,9 @@ export default function LeaderModalComponent({
                 size='md'
                 isDisabled={submitButtonPressed}
                 leftIcon={<EditIcon />}
-                onClick={() => handleEditSession(content)}
+                onClick={() => {
+                  handleEditSession(content);
+                }}
               >
                 Edit
               </Button>
@@ -353,7 +359,9 @@ export default function LeaderModalComponent({
                 size='md'
                 isDisabled={submitButtonPressed}
                 leftIcon={<DeleteIcon />}
-                onClick={() => handleDeleteSession(content)}
+                onClick={() => {
+                  handleDeleteSession(content);
+                }}
               >
                 Delete
               </Button>
@@ -382,7 +390,9 @@ export default function LeaderModalComponent({
               size='md'
               isDisabled={submitButtonPressed}
               leftIcon={<BellIcon />}
-              onClick={() => handleDetailsSession(content)}
+              onClick={() => {
+                handleDetailsSession(content);
+              }}
             >
               Details
             </Button>
@@ -797,14 +807,18 @@ export default function LeaderModalComponent({
         <ModalBody>
           <MemberEditModal
             isOpen={memberCreate}
-            onClose={() => setMemberCreateData(null)}
+            onClose={() => {
+              setMemberCreateData(null);
+            }}
             modalData={memberCreate}
             dataHandler={successCreateMember}
           />
 
           <SessionCreateModal
             isOpen={sessionCreate}
-            onClose={() => setSessionCreateData(null)}
+            onClose={() => {
+              setSessionCreateData(null);
+            }}
             modalData={sessionCreate}
             threshold={calendarThreshold}
             dataHandler={successEditSession}
@@ -812,14 +826,18 @@ export default function LeaderModalComponent({
 
           <SessionDeleteConfirmationModal
             isOpen={specificSessionDelete}
-            onClose={() => setSpecificSessionDeleteData(null)}
+            onClose={() => {
+              setSpecificSessionDeleteData(null);
+            }}
             modalData={specificSessionDelete}
             dataHandler={deleteSession}
           />
 
           <SessionEditModal
             isOpen={specificSession}
-            onClose={() => setSpecificSessionData(null)}
+            onClose={() => {
+              setSpecificSessionData(null);
+            }}
             modalData={specificSession}
             dataHandler={successEditSession}
             userSession={session}
@@ -827,13 +845,17 @@ export default function LeaderModalComponent({
 
           <LeaderStudentModalComponent
             isOpen={specificMemberData}
-            onClose={() => setSpecificMemberData(null)}
+            onClose={() => {
+              setSpecificMemberData(null);
+            }}
             modalData={specificMemberData}
           />
 
           <SessionModal
             isOpen={specificCCAData}
-            onClose={() => setSpecificCCAData(null)}
+            onClose={() => {
+              setSpecificCCAData(null);
+            }}
             modalData={specificCCAData}
             leader
             dataHandler={successEditSession}
@@ -842,7 +864,9 @@ export default function LeaderModalComponent({
 
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           <Stack spacing={5} w='full' align='center'>

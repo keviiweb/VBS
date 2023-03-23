@@ -6,7 +6,7 @@ import { currentSession } from '@helper/sys/session';
 
 import Layout from '@layout/sys/index';
 import Loading from '@layout/sys/Loading';
-import { Session } from 'next-auth/core/types';
+import { type Session } from 'next-auth/core/types';
 import { actions } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
 

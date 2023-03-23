@@ -30,15 +30,15 @@ import KEIPSModal from '@components/sys/misc/KEIPSModal';
 
 import { checkerString } from '@constants/sys/helper';
 
-import { KEIPS } from 'types/misc/keips';
-import { Result } from 'types/api';
+import { type KEIPS } from 'types/misc/keips';
+import { type Result } from 'types/api';
 
 import { actions, levels } from '@constants/sys/admin';
 import hasPermission from '@constants/sys/permission';
 
-import { Session } from 'next-auth/core/types';
+import { type Session } from 'next-auth/core/types';
 
-import { GetServerSideProps } from 'next';
+import { type GetServerSideProps } from 'next';
 import { currentSession } from '@helper/sys/sessionServer';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 
@@ -190,7 +190,9 @@ export default function ManageKEIPS(props: any) {
         <Button
           size='sm'
           leftIcon={<InfoOutlineIcon />}
-          onClick={() => handleDetails(content)}
+          onClick={() => {
+            handleDetails(content);
+          }}
         >
           View Details
         </Button>
@@ -349,7 +351,9 @@ export default function ManageKEIPS(props: any) {
       >
         <LoadingModal
           isOpen={!!submitButtonPressed}
-          onClose={() => setSubmitButtonPressed(false)}
+          onClose={() => {
+            setSubmitButtonPressed(false);
+          }}
         />
         <MotionBox variants={cardVariant} key='1'>
           {loadingData && (data === null || data === undefined) && (
@@ -378,7 +382,9 @@ export default function ManageKEIPS(props: any) {
 
               <KEIPSModal
                 isOpen={modalData}
-                onClose={() => setModalData(null)}
+                onClose={() => {
+                  setModalData(null);
+                }}
                 modalData={modalData}
               />
             </Box>

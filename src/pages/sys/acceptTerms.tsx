@@ -8,7 +8,7 @@ import {
   Text,
   useToast,
 } from '@chakra-ui/react';
-import { Result } from 'types/api';
+import { type Result } from 'types/api';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 import { useRouter } from 'next/router';
 
@@ -80,7 +80,9 @@ export default function AcceptTerms() {
     <Flex minH='100vh' align='center' justify='center' bg='gray.50'>
       <LoadingModal
         isOpen={!!submitButtonPressed}
-        onClose={() => setSubmitButtonPressed(false)}
+        onClose={() => {
+          setSubmitButtonPressed(false);
+        }}
       />
 
       <Stack mx='auto' maxW='lg' py={12} px={6}>

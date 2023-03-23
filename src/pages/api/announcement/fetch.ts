@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { Announcement } from 'types/misc/announcement';
+import { type Result } from 'types/api';
+import { type Announcement } from 'types/misc/announcement';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { fetchAllAnnouncements } from '@helper/sys/misc/announcement';

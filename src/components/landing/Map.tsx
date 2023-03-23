@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useCallback } from 'react';
 
-import { PopoverTriggerProps } from 'types/popover';
+import { type PopoverTriggerProps } from 'types/popover';
 import { checkerString } from '@constants/sys/helper';
 
 const PopoverTriggerNew: React.FC<

@@ -38,7 +38,9 @@ export default function MemberButton({
           size='md'
           margin='8px'
           key={newKey}
-          onClick={async () => await click()}
+          onClick={async () => {
+            await click();
+          }}
         >
           {name}
         </Button>

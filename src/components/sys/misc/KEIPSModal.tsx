@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 
-import { KEIPS, KEIPSCCA, KEIPSBonus } from 'types/misc/keips';
+import { type KEIPS, type KEIPSCCA, type KEIPSBonus } from 'types/misc/keips';
 import TableWidget from '@components/sys/misc/TableWidget';
 
 import { checkerString } from '@constants/sys/helper';
@@ -295,7 +295,9 @@ export default function KEIPSModal({ isOpen, onClose, modalData }) {
         <ModalBody>
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           {checkerString(matnet) && (

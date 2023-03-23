@@ -20,9 +20,9 @@ import {
 import { motion } from 'framer-motion';
 import { cardVariant, parentVariant } from '@root/motion';
 
-import { Result } from 'types/api';
-import { CCASession } from 'types/cca/ccaSession';
-import { CCAAttendance } from 'types/cca/ccaAttendance';
+import { type Result } from 'types/api';
+import { type CCASession } from 'types/cca/ccaSession';
+import { type CCAAttendance } from 'types/cca/ccaAttendance';
 
 import { checkerString } from '@constants/sys/helper';
 import { removeDuplicate } from '@constants/sys/ccaAttendance';
@@ -33,7 +33,7 @@ import LoadingModal from '@components/sys/misc/LoadingModal';
 import TableWidget from '@components/sys/misc/TableWidget';
 import SessionEditModal from '@components/sys/cca/SessionEditModal';
 import SessionDeleteConfirmationModal from '@components/sys/cca/SessionDeleteConfirmationModal';
-import { Session } from 'next-auth/core/types';
+import { type Session } from 'next-auth/core/types';
 
 const MotionSimpleGrid = motion(SimpleGrid);
 const MotionBox = motion(Box);
@@ -260,12 +260,16 @@ export default function SessionModal({
         <ModalBody>
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           <SessionEditModal
             isOpen={specificSession}
-            onClose={() => setSpecificSessionData(null)}
+            onClose={() => {
+              setSpecificSessionData(null);
+            }}
             modalData={specificSession}
             dataHandler={handleModalSuccessEdit}
             userSession={session}
@@ -273,7 +277,9 @@ export default function SessionModal({
 
           <SessionDeleteConfirmationModal
             isOpen={specificSessionDelete}
-            onClose={() => setSpecificSessionDeleteData(null)}
+            onClose={() => {
+              setSpecificSessionDeleteData(null);
+            }}
             modalData={specificSessionDelete}
             dataHandler={deleteSession}
           />

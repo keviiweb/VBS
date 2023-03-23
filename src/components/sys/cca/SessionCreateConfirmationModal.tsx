@@ -21,8 +21,8 @@ import { motion } from 'framer-motion';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 
 import { cardVariant, parentVariant } from '@root/motion';
-import { CCASession } from 'types/cca/ccaSession';
-import { Result } from 'types/api';
+import { type CCASession } from 'types/cca/ccaSession';
+import { type Result } from 'types/api';
 
 import { checkerString } from '@constants/sys/helper';
 
@@ -215,7 +215,9 @@ export default function SessionCreateConfirmationModal({
         <ModalBody>
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           {checkerString(ccaName) && (

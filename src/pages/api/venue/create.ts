@@ -1,11 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { Venue } from 'types/vbs/venue';
+import { type Result } from 'types/api';
+import { type Venue } from 'types/vbs/venue';
 
 import { createVenue } from '@helper/sys/vbs/venue';
 import { currentSession } from '@helper/sys/sessionServer';
 
-import formidable, { IncomingForm } from 'formidable';
+import type formidable from 'formidable';
+import { IncomingForm } from 'formidable';
 import { promises as fs } from 'fs';
 
 import { actions } from '@constants/sys/admin';
@@ -46,7 +47,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const form = new IncomingForm();
         form.parse(req, (err, fields, files) => {
           if (err !== undefined && err !== null) {
-            return reject(err);
+            reject(err);
+            return;
           }
           resolve({ fields, files });
           return true;

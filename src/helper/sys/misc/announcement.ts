@@ -1,9 +1,9 @@
 import { prisma } from '@constants/sys/db';
 import { checkerString } from '@constants/sys/helper';
 
-import { Announcement } from 'types/misc/announcement';
-import { Result } from 'types/api';
-import { Session } from 'next-auth/core/types';
+import { type Announcement } from 'types/misc/announcement';
+import { type Result } from 'types/api';
+import { type Session } from 'next-auth/core/types';
 
 import { logger } from '@helper/sys/misc/logger';
 

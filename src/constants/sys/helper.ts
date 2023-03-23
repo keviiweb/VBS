@@ -3,7 +3,7 @@ import {
   timeSlots,
 } from '@constants/sys/timeslot';
 
-import { TimeSlot } from 'types/vbs/timeslot';
+import { type TimeSlot } from 'types/vbs/timeslot';
 
 /**
  * Constant used for PERSONAL venue bookings

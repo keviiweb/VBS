@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { User } from 'types/misc/user';
+import { type Result } from 'types/api';
+import { type User } from 'types/misc/user';
 
 import { checkerString } from '@constants/sys/helper';
 import { actions } from '@constants/sys/admin';

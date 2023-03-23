@@ -22,9 +22,9 @@ import { checkerString } from '@constants/sys/helper';
 import TableWidget from '@components/sys/misc/TableWidget';
 import LoadingModal from '@components/sys/misc/LoadingModal';
 
-import { Result } from 'types/api';
-import { CCASession } from 'types/cca/ccaSession';
-import { Session } from 'next-auth/core/types';
+import { type Result } from 'types/api';
+import { type CCASession } from 'types/cca/ccaSession';
+import { type Session } from 'next-auth/core/types';
 
 import SessionModal from '@components/sys/cca/SessionModal';
 
@@ -102,7 +102,9 @@ export default function LeaderStudentModalComponent({
         <Button
           size='sm'
           leftIcon={<InfoOutlineIcon />}
-          onClick={() => handleDetails(content)}
+          onClick={() => {
+            handleDetails(content);
+          }}
         >
           View Details
         </Button>
@@ -280,7 +282,9 @@ export default function LeaderStudentModalComponent({
         <ModalBody>
           <SessionModal
             isOpen={specificCCAData}
-            onClose={() => setSpecificCCAData(null)}
+            onClose={() => {
+              setSpecificCCAData(null);
+            }}
             modalData={specificCCAData}
             leader={false}
             dataHandler={null}
@@ -289,7 +293,9 @@ export default function LeaderStudentModalComponent({
 
           <LoadingModal
             isOpen={!!submitButtonPressed}
-            onClose={() => setSubmitButtonPressed(false)}
+            onClose={() => {
+              setSubmitButtonPressed(false);
+            }}
           />
 
           {checkerString(ccaName) && (

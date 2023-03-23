@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { CCASession } from 'types/cca/ccaSession';
-import { CCA } from 'types/cca/cca';
-import { CCAAttendance } from 'types/cca/ccaAttendance';
-import { User } from 'types/misc/user';
+import { type Result } from 'types/api';
+import { type CCASession } from 'types/cca/ccaSession';
+import { type CCA } from 'types/cca/cca';
+import { type CCAAttendance } from 'types/cca/ccaAttendance';
+import { type User } from 'types/misc/user';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import { findCCAbyID } from '@helper/sys/cca/cca';

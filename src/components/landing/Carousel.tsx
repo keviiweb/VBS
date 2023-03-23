@@ -167,7 +167,9 @@ export default function Carousel() {
                     display='inline-block'
                     transition='background-color 0.6s ease'
                     _hover={{ bg: 'blackAlpha.800' }}
-                    onClick={() => setSlide(slide)}
+                    onClick={() => {
+                      setSlide(slide);
+                    }}
                   />
                 ))}
               </HStack>

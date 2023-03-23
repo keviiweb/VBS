@@ -39,12 +39,12 @@ export default function ButtonScrollTop () {
   useEffect(() => {
     window.addEventListener('scroll', onCheckScroll);
 
-    return () => window.removeEventListener('scroll', onCheckScroll);
+    return () => { window.removeEventListener('scroll', onCheckScroll); };
   }, [onCheckScroll]);
 
   return (
     <Button
-      onClick={() => onScrollTop()}
+      onClick={() => { onScrollTop(); }}
       id='scrollButton'
       style={showStyle.show}
     >

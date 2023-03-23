@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Result } from 'types/api';
-import { CCARecord } from 'types/cca/ccaRecord';
+import { type Result } from 'types/api';
+import { type CCARecord } from 'types/cca/ccaRecord';
 
 import { currentSession } from '@helper/sys/sessionServer';
 import {
