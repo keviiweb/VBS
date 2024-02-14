@@ -23,6 +23,12 @@ export default function Committee() {
       description: 'We work hard to give you the website you deserve.',
       link: '/landing/keweb',
     },
+    {
+      img: '/landing/cca/landing_dnd.jpg',
+      title: 'DND',
+      description: 'Craft an unforgettable night!',
+      link: '/landing/dnd',
+    },
   ];
 
   return (

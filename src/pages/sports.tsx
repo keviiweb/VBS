@@ -28,7 +28,14 @@ export default function Sports() {
   ];
   */
 
-  const content = [];
+  const content = [
+    {
+      img: '/landing/cca/landing_badminton.jpg',
+      title: 'Badminton',
+      description: 'Rackets and shuttlecocks',
+      link: '/landing/badminton',
+    },
+  ];
 
   return (
     <Landing>
@@ -67,7 +74,15 @@ export default function Sports() {
         animate='animate'
       >
         {content.map(
-          (slide: { title: string; description: string; img: string; }, sid) => (
+          (
+            slide: {
+              title: string;
+              description: string;
+              img: string;
+              link: string;
+            },
+            sid,
+          ) => (
             <MotionBox key={sid} variants={cardVariant}>
               <Card
                 key={sid}
@@ -76,7 +91,7 @@ export default function Sports() {
                 img={slide.img}
                 buttonLink={null}
                 buttonText={null}
-                link={null}
+                link={slide.link}
               />
             </MotionBox>
           ),

@@ -28,7 +28,14 @@ export default function Production() {
   ];
   */
 
-  const content = [];
+  const content = [
+    {
+      img: '/landing/cca/landing_hallplay.jpg',
+      title: 'Hallplay',
+      description: 'Step into the enchanting world of hallplay!',
+      link: '/landing/hallplay',
+    },
+  ];
 
   return (
     <Landing>
@@ -67,7 +74,15 @@ export default function Production() {
         animate='animate'
       >
         {content.map(
-          (slide: { title: string; description: string; img: string; }, sid) => (
+          (
+            slide: {
+              title: string;
+              description: string;
+              img: string;
+              link: string;
+            },
+            sid,
+          ) => (
             <MotionBox key={sid} variants={cardVariant}>
               <Card
                 key={sid}
@@ -76,7 +91,7 @@ export default function Production() {
                 img={slide.img}
                 buttonLink={null}
                 buttonText={null}
-                link={null}
+                link={slide.link}
               />
             </MotionBox>
           ),
