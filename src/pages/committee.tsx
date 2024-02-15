@@ -23,6 +23,18 @@ export default function Committee() {
       description: 'We work hard to give you the website you deserve.',
       link: '/landing/keweb',
     },
+    {
+        img: '/landing/cca/landing_mab.png',
+        title: 'Merit Award Board (MAB)',
+        description: 'Celebrating the achievements of our residents!',
+        link: '/landing/mab',
+    },
+    {
+        img: '/landing/cca/landing_keviingback.png',
+        title: 'KEVIIing Back',
+        description: 'We give back to the community!',
+        link: '/landing/keviiingback',
+    }
   ];
 
   return (

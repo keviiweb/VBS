@@ -17,18 +17,15 @@ const MotionSimpleGrid = motion(SimpleGrid);
  */
 export default function Cultural() {
   // Format for adding new CCAs
-  /*
   const content = [
     {
-      img: '/landing/cca/landing_keweb.png',
-      title: 'KE Web',
-      description: 'We work hard to give you the website you deserve.',
-      link: '/landing/keweb',
+      img: '/landing/cca/landing_acake.png', // for now
+      title: 'Choir',
+      description: 'We sing and we make music!',
+      link: '/landing/choir',
     },
   ];
-  */
-  const content = [];
-
+  
   return (
     <Landing>
       <Flex
